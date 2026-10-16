@@ -1,0 +1,239 @@
+const STATS = ['HP', '力量', '魔力', '速度', '技巧', '防守', '魔防', '幸运', '魅力'];
+const app = document.querySelector('#app');
+const characters = window.CHARACTERS;
+let state = { version: 1, roster: [], selection: [], initialLevels: {} };
+let activeRecord = null;
+let page = 'select';
+let query = '';
+function validate(data) {
+  if (data.version !== 1 || !Array.isArray(data.roster)) throw Error('备份格式不正确');
+  const ids = new Set();
+  for (const item of data.roster) {
+    if (!characters.some(c => c.id === item.id) || ids.has(item.id) || (item.initialLevel !== null && (!Number.isInteger(item.initialLevel) || item.initialLevel < 1)) || !Array.isArray(item.records)) throw Error('角色数据不正确');
+    ids.add(item.id);
+    item.records.forEach((r, i) => {
+      if (r.level !== item.initialLevel + i + 1 || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !STATS.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
+    });
+  }
+  if (data.selection && (!Array.isArray(data.selection) || data.selection.some(id => !characters.some(c => c.id === id)))) throw Error('角色选择不正确');
+  if (data.initialLevels && (typeof data.initialLevels !== 'object' || data.initialLevels === null)) throw Error('初始等级不正确');
+}
+function levelLabel(item, level) { return item.initialLevel === null ? `+${level}` : `LV ${level}`; }
+function escapeValue(value) { return String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+function validLevel(input) {
+  const valid = input.value === '' || /^[1-9][0-9]?$/.test(input.value);
+  input.setCustomValidity(valid ? '' : '请输入一至两位整数（1–99），或留空');
+  input.setAttribute('aria-invalid', String(!valid));
+  if (!valid) input.reportValidity();
+  return valid;
+}
+let noticeTimer;
+function notify(text) { clearTimeout(noticeTimer); document.querySelector('#notice').textContent = text; noticeTimer = setTimeout(() => document.querySelector('#notice').textContent = '', 4000); }
+function char(id) { return characters.find(c => c.id === id); }
+function backupFilename() {
+  const now = new Date();
+  const pad = value => String(value).padStart(2, '0');
+  const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  const time = `${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+  const random = crypto.getRandomValues(new Uint32Array(1))[0];
+  const suffix = ((now.getTime() + random) % (36 ** 5)).toString(36).padStart(5, '0');
+  return `Rigging-Buddy-${date}_${time}_${suffix}.json`;
+}
+function portrait(c) { return `<img draggable="false" src="${c.image}" alt="" loading="lazy">`; }
+function render() {
+  if (page === 'select') renderSelect();
+  if (page === 'levels') renderLevels();
+  if (page === 'summary') renderSummary();
+  if (page === 'record') renderRecord();
+}
+function renderSelect() {
+  app.innerHTML =
+    `<div class="toolbar"><label class="search">⌕ <input id="search" placeholder="搜索角色姓名" aria-label="搜索角色姓名"></label><span>共 ${characters.length} 位角色</span>${state.roster.length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
+  document.querySelector('#search').value = query;
+  renderCards();
+}
+function renderCards() {
+  const list = characters.filter(c => c.name.includes(query.trim()));
+  document.querySelector('#character-grid').innerHTML = list.map(c => {
+    const existing = state.roster.some(r => r.id === c.id), selected = state.selection.includes(c.id);
+    return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}>${portrait(c)}<span>${c.name}</span></button>`;
+  }).join('') || '<p class="empty">没有找到这个名字，换个关键词试试。</p>';
+  document.querySelector('#selected-count').textContent = `已选 ${state.selection.length} 位角色`;
+  document.querySelector('#choose-next').disabled = !state.selection.length;
+}
+function renderLevels() {
+  app.innerHTML =
+    `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+}
+function renderSummary() {
+  const total = state.roster.reduce((n, r) => n + r.records.length, 0);
+  const happy = state.roster.reduce((n, r) => n + r.records.filter(x => x.happy).length, 0);
+  app.innerHTML =
+    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions"><button data-action="reset">Reset</button><button data-action="export">↓ 导出 JSON</button><button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button><button class="primary" data-action="select">＋ 添加角色</button></div></div><div class="journals">${state.roster.map((item, index) => {
+      const c = char(item.id);
+      return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div><h2>${c.name}</h2><p>${item.initialLevel === null ? `已升级 ${item.records.length} 次` : `初始 LV ${item.initialLevel} → 当前 LV ${item.initialLevel + item.records.length}`}</p></div><button class="primary" data-start="${c.id}">记录升级 ＋</button></div><div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" aria-label="编辑${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'}"><div><b>${levelLabel(item, r.level)}</b><span>${r.happy ? '☺ 满意' : '☹ 不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${r.stats.join(' · ') || '本次没有属性提升'}</p></button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+    }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
+}
+function start(id) {
+  activeRecord = { id, stats: [], happy: false, manual: false };
+   page = 'record'; render(); window.scrollTo(0, 0);
+}
+function rememberListPosition() {
+  state.summaryScroll = window.scrollY;
+  
+  notify('');
+}
+function returnToSummary() {
+  page = 'summary'; render();
+  window.scrollTo(0, Number(state.summaryScroll) || 0);
+}
+function renderRecord() {
+  const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
+  const editing = d.editIndex !== undefined;
+  const next = editing ? item.records[d.editIndex].level : item.initialLevel + item.records.length + 1;
+  app.innerHTML = `<button class="back" data-action="leave">← 返回</button>` +
+    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2>本次属性提升</h2><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1 ▲' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="rating-title">这次升级，满意吗？ <span>${d.manual ? '已手动选择' : d.happy === null ? '4 点，请手动选择' : '已按点数推荐，可修改'}</span></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}"><span>☺</span> 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}"><span>☹</span> 不满意</button></div><p class="rule">0–3 点默认不满意 · 4 点手动评价 · 5–9 点默认满意</p><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
+}
+function saveRecord(next) {
+  const d = activeRecord;
+  if (!d || d.happy === null) return;
+  const item = state.roster.find(r => r.id === d.id);
+  if (!d.stats.length) {
+    if (next) return;
+    activeRecord = null;  notify(''); returnToSummary(); return;
+  }
+  if (d.editIndex !== undefined) {
+    item.records[d.editIndex] = { ...item.records[d.editIndex], stats: [...d.stats], happy: d.happy, updatedAt: new Date().toISOString() };
+  } else {
+    item.records.push({ level: item.initialLevel + item.records.length + 1, stats: [...d.stats], happy: d.happy, createdAt: new Date().toISOString() });
+  }
+  const id = d.id;
+  activeRecord = null;
+  
+  if (next) start(id); else returnToSummary();
+
+}
+app.addEventListener('input', e => {
+  if (e.target.matches('[data-level-input]')) { e.target.setCustomValidity(''); e.target.removeAttribute('aria-invalid'); }
+  if (e.target.id === 'search') { query = e.target.value; renderCards(); }
+  if (e.target.dataset.level) { state.initialLevels[e.target.dataset.level] = e.target.value;  }
+});
+app.addEventListener('focusin', e => { if (e.target.matches('input[data-level-input]')) e.target.select(); });
+app.addEventListener('click', e => {
+  if (e.target.matches('input[data-level-input]')) e.target.select();
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.edit) {
+    rememberListPosition();
+    const index = Number(b.dataset.index);
+    const record = state.roster.find(r => r.id === b.dataset.edit).records[index];
+    activeRecord = { id: b.dataset.edit, editIndex: index, stats: [...record.stats], happy: record.happy, manual: true };
+     page = 'record'; render(); window.scrollTo(0, 0);
+  }
+  if (b.dataset.character) {
+    const id = b.dataset.character;
+    state.selection = state.selection.includes(id) ? state.selection.filter(x => x !== id) : [...state.selection, id];
+     renderCards();
+  }
+  if (b.dataset.start) {
+    rememberListPosition();
+    start(b.dataset.start);
+  }
+  if (b.dataset.stat) {
+    const d = activeRecord, s = b.dataset.stat;
+    d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
+    d.manual = false; d.happy = d.stats.length === 4 ? null : d.stats.length >= 5;
+     renderRecord();
+  }
+  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.manual = true;  renderRecord(); }
+  const action = b.dataset.action;
+  if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
+  if (action === 'leave') { activeRecord = null; returnToSummary(); }
+  if (action === 'reset') { state = { version: 1, roster: [], selection: [], initialLevels: {} }; activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
+  if (action === 'batch') {
+    const input = document.querySelector('#batch-level');
+    if (!validLevel(input)) return;
+    state.selection.forEach(id => state.initialLevels[id] = input.value);  renderLevels();
+  }
+  if (action === 'create') {
+    const inputs = [...document.querySelectorAll('[data-level]')];
+    if (inputs.some(i => !validLevel(i))) return;
+    inputs.forEach(i => state.roster.push({ id: i.dataset.level, initialLevel: i.value === '' ? null : Number(i.value), records: [] }));
+    state.selection = []; state.initialLevels = {};  page = 'summary'; render();
+  }
+  if (action === 'next' || action === 'finish') saveRecord(action === 'next');
+  if (action === 'export') {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = backupFilename(); a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  if (action === 'import') document.querySelector('#import-file').click();
+});
+async function importFile(file) {
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text()); validate(data);
+    state = { version: 1, roster: data.roster, selection: data.selection || [], initialLevels: data.initialLevels || {} };
+    activeRecord = null;
+    page = state.roster.length ? 'summary' : state.selection.length ? 'levels' : 'select';
+    render(); window.scrollTo(0, 0); notify('');
+  } catch { notify('无法导入：文件不是有效的 Rigging Buddy 备份。当前数据未修改。'); }
+  document.querySelector('#import-file').value = '';
+}
+document.querySelector('#import-file').addEventListener('change', e => importFile(e.target.files[0]));
+let dragId = null;
+function isAfter(event, card) { const rect = card.getBoundingClientRect(); return event.clientY >= rect.top + rect.height / 2; }
+function clearDrag() {
+  dragId = null;
+  document.querySelectorAll('.dragging,.drop-before,.drop-after,.drag-over').forEach(el => el.classList.remove('dragging', 'drop-before', 'drop-after', 'drag-over'));
+}
+function moveCard(id, targetId, after = false) {
+  const list = page === 'levels' ? state.selection : state.roster;
+  const getId = x => typeof x === 'string' ? x : x.id;
+  const from = list.findIndex(x => getId(x) === id), to = list.findIndex(x => getId(x) === targetId);
+  if (from < 0 || to < 0 || from === to) return;
+  const [moved] = list.splice(from, 1);
+  const targetIndex = list.findIndex(x => getId(x) === targetId);
+  list.splice(targetIndex + (after ? 1 : 0), 0, moved);
+  const y = window.scrollY; render(); window.scrollTo(0, y);
+}
+app.addEventListener('dragstart', e => {
+  const card = e.target.closest('[data-sort-id]');
+  if (!card || e.target.closest('button,input')) { e.preventDefault(); return; }
+  dragId = card.dataset.sortId;
+  e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId);
+  card.classList.add('dragging');
+});
+document.addEventListener('dragover', e => {
+  const zone = e.target.closest('.import-zone');
+  const card = e.target.closest('[data-sort-id]');
+  if (zone && Array.from(e.dataTransfer.types).includes('Files')) {
+    e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; zone.classList.add('drag-over');
+  } else if (dragId && card) {
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.drop-before,.drop-after').forEach(el => el.classList.remove('drop-before', 'drop-after'));
+    if (card.dataset.sortId !== dragId) card.classList.add(isAfter(e, card) ? 'drop-after' : 'drop-before');
+    if (e.clientY < 70) window.scrollBy(0, -20);
+    else if (e.clientY > innerHeight - 70) window.scrollBy(0, 20);
+  } else if (Array.from(e.dataTransfer.types).includes('Files')) e.preventDefault();
+});
+document.addEventListener('dragleave', e => {
+  const zone = e.target.closest('.import-zone');
+  if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
+});
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  const zone = e.target.closest('.import-zone'), card = e.target.closest('[data-sort-id]');
+  if (zone && e.dataTransfer.files.length) importFile(e.dataTransfer.files[0]);
+  else if (dragId && card) moveCard(dragId, card.dataset.sortId, isAfter(e, card));
+  clearDrag();
+});
+document.addEventListener('dragend', clearDrag);
+app.addEventListener('keydown', e => {
+  if (!e.altKey || !['ArrowUp', 'ArrowDown'].includes(e.key) || !e.target.matches('[data-sort-id]')) return;
+  e.preventDefault();
+  const cards = [...app.querySelectorAll('[data-sort-id]')], index = cards.indexOf(e.target);
+  const target = cards[index + (e.key === 'ArrowUp' ? -1 : 1)];
+  if (!target) return;
+  const id = e.target.dataset.sortId; moveCard(id, target.dataset.sortId, e.key === 'ArrowDown');
+  app.querySelector(`[data-sort-id="${id}"]`).focus({ preventScroll: true });
+});
+render();
