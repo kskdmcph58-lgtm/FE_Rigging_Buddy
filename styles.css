@@ -23,4 +23,24 @@ button.record-chip.angry:hover{background:#583b3b;border-color:var(--red)}
 [data-level-input][aria-invalid="true"]{border-color:var(--red)}
 main{min-height:calc(100vh - 100px)}
 .big-level{font-size:64px}
+.actions{flex-wrap:wrap;justify-content:flex-end}
+.metrics{flex-shrink:0}
+.journal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px 16px;align-items:start}
+.journal-head{min-width:0}
+.journal-info{min-width:0}
+.journal-actions{display:flex;flex-direction:column;gap:8px;grid-column:2;grid-row:1/3}
+.journal-actions button{font-size:13px}
+button.danger{color:var(--red);border-color:#a85c56;background:#452f30}
+button.danger:hover{background:#633a3b;border-color:var(--red)}
+.journal .records{grid-column:1;margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr))}
+.initial-level{cursor:text;width:fit-content}
+.initial-level-form{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.initial-level-form input{width:70px;padding:7px}
+.journal-head .initial-level-form button{margin:0;padding:7px 10px;font-size:12px}
+.record-chip{position:relative;overflow:hidden}
+.record-chip.editable{padding-top:30px;border-style:dashed}
+.edit-pencil{position:absolute;top:5px;left:10px;z-index:2;color:var(--gold);font-size:20px!important;line-height:1}
+.skip-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(65,69,71,.88);color:#f4efdf;font-size:18px!important;font-weight:600;pointer-events:none}
+@media(max-width:800px){.journal .records{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{justify-content:flex-start}}
+@media(max-width:600px){.journal{gap:16px 10px}.journal-actions{grid-row:1}.journal-actions button{font-size:11px;padding:9px}.journal .records{grid-column:1/-1}.journal-head .drag-grip{font-size:18px}.journal-info{flex-basis:100%}.initial-level-form{gap:5px}}
 @media(max-width:600px){.big-level{font-size:42px}}
