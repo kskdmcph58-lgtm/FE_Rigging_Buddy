@@ -105,6 +105,19 @@ function renderRecord() {
   const next = editing ? item.records[d.editIndex].level : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave">← 返回</button>` +
     `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2>本次属性提升</h2><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1 ▲' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="rating-title">这次升级，满意吗？ <span>${d.manual ? '已手动选择' : d.happy === null ? '4 点，请手动选择' : '已按点数推荐，可修改'}</span></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}"><span>☺</span> 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}"><span>☹</span> 不满意</button></div><p class="rule">0–3 点默认不满意 · 4 点手动评价 · 5–9 点默认满意</p><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
+  if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
+}
+function deleteRecord() {
+  const d = activeRecord;
+  if (!d || d.editIndex === undefined) return;
+  const item = state.roster.find(r => r.id === d.id);
+  if (!item || !item.records[d.editIndex]) return;
+  if (d.editIndex !== item.records.length - 1 && !window.confirm('这不是该角色的最后一条记录。删除后，后续记录的等级将重新计算。确定删除这条记录吗？')) return;
+  item.records.splice(d.editIndex, 1);
+  renumberRecords(item);
+  if (!item.records.length) editingCharacters.delete(item.id);
+  activeRecord = null;
+  returnToSummary();
 }
 function saveRecord(next) {
   const d = activeRecord;
@@ -202,6 +215,7 @@ app.addEventListener('click', e => {
   }
   if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.manual = true;  renderRecord(); }
   const action = b.dataset.action;
+  if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
   if (action === 'reset') { state = { version: 1, roster: [], selection: [], initialLevels: {} }; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
