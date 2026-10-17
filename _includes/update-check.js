@@ -4,15 +4,17 @@
   const revision = document.querySelector('meta[name="app-version"]')?.content;
   const isRevision = value => typeof value === 'string' && /^[a-f0-9]{40}$/i.test(value);
   if (!isRevision(revision) || !/^https?:$/.test(location.protocol)) return;
+  const navigationType = window.performance?.getEntriesByType('navigation')[0]?.type;
+  if (navigationType === 'back_forward') return;
   const base = new URL('.', location.href);
   let checking = false;
   let navigating = false;
-  let lastCheck = 0;
+  let checked = false;
 
   async function checkForUpdate() {
-    if (checking || navigating || document.visibilityState === 'hidden' || Date.now() - lastCheck < 60000) return;
+    if (checked || checking || navigating) return;
+    checked = true;
     checking = true;
-    lastCheck = Date.now();
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
     try {
@@ -27,7 +29,7 @@
       // CDN propagation can briefly expose a new manifest with old HTML.
       // Never repeatedly reload that old document in a tight loop.
       const currentURL = new URL(location.href);
-      if (currentURL.searchParams.get('v') === latest && Date.now() - Number(currentURL.searchParams.get('_fresh')) < 60000) return;
+      if (navigationType !== 'reload' && currentURL.searchParams.get('v') === latest && Date.now() - Number(currentURL.searchParams.get('_fresh')) < 60000) return;
       const nextURL = new URL('index.html', base);
       nextURL.search = currentURL.search;
       nextURL.hash = currentURL.hash;
@@ -39,7 +41,7 @@
       if (html.querySelector('meta[name="app-version"]')?.content !== latest) return;
 
       // app.js captures in-memory work without touching existing localStorage.
-      // If saving is unavailable or a form is being edited, retry later.
+      // If saving is unavailable or a form is being edited, keep this page.
       if (!window.prepareForAppUpdate || !window.prepareForAppUpdate(latest)) return;
       navigating = true;
       location.replace(nextURL.href);
@@ -51,9 +53,6 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', checkForUpdate);
-  window.addEventListener('pageshow', checkForUpdate);
-  document.addEventListener('visibilitychange', checkForUpdate);
-  window.addEventListener('online', checkForUpdate);
-  setInterval(checkForUpdate, 5 * 60 * 1000);
+  // A fresh navigation/reload gets one check. Never update an idle open tab.
+  document.addEventListener('DOMContentLoaded', checkForUpdate, { once: true });
 })();
