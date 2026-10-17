@@ -134,17 +134,22 @@ function renderLevels() {
   app.innerHTML =
     `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
+function recordStats(stats) {
+  const ordered = STATS.filter(stat => stats.includes(stat));
+  if (!ordered.length) return '<span class="stat-line">本次没有属性提升</span>';
+  return `<span class="stat-line">${ordered.slice(0, 5).join(' · ')}</span>${ordered.length > 5 ? `<span class="stat-line">${ordered.slice(5).join(' · ')}</span>` : ''}`;
+}
 function renderSummary() {
   const total = state.roster.reduce((n, r) => n + r.records.length, 0);
   const happy = state.roster.reduce((n, r) => n + r.records.filter(x => x.happy && !x.skipped).length, 0);
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions"><button data-action="reset">重置</button><button data-action="reset-list">为当前列表重置</button><button data-action="export">导出</button><button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button><button class="primary" data-action="select">＋ 添加角色</button></div></div><div class="journals">${state.roster.map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div><div class="journals">${state.roster.map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
-        <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level" data-initial-level="${c.id}" tabindex="0" role="button" title="双击修改初始等级，也可按 Enter">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}</p></div></div>
+        <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing || !item.records.length ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button" title="双击修改初始等级，也可按 Enter">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}</p></div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button>${item.records.length ? `<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>` : ''}<button class="danger" data-delete-character="${c.id}">删除</button></div>
-        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${STATS.filter(stat => r.stats.includes(stat)).join(' · ') || '本次没有属性提升'}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
@@ -229,12 +234,14 @@ function updateRecordControls() {
   const next = app.querySelector('[data-action="next"]');
   if (next) next.disabled = d.happy === null || !d.stats.length;
 }
-function confirmRecordDeletion() {
+function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除') {
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
     dialog.className = 'confirm-dialog';
     dialog.setAttribute('aria-labelledby', 'delete-confirm-title');
     dialog.innerHTML = '<h2 id="delete-confirm-title">是否删除这条记录？</h2><form method="dialog"><button value="cancel" autofocus>返回</button><button class="danger" value="delete">删除</button></form>';
+    dialog.querySelector('h2').textContent = question;
+    dialog.querySelector('.danger').textContent = actionLabel;
     dialog.addEventListener('close', () => {
       const confirmed = dialog.returnValue === 'delete';
       dialog.remove();
@@ -418,6 +425,19 @@ app.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeSwipeCards();
 });
 app.addEventListener('click', e => {
+  const level = e.target.closest('[data-initial-level]');
+  if (level && !level.querySelector('input') && (editingCharacters.has(level.dataset.initialLevel) || !state.roster.find(item => item.id === level.dataset.initialLevel)?.records.length)) editInitialLevel(level);
+});
+document.addEventListener('click', e => {
+  document.querySelectorAll('.action-menu[open]').forEach(menu => {
+    if (!menu.contains(e.target) || e.target.closest('button')) menu.open = false;
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.action-menu[open]').forEach(menu => { menu.open = false; menu.querySelector('summary').focus(); });
+});
+app.addEventListener('click', async e => {
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   if (b.hasAttribute('data-search-history')) {
@@ -467,6 +487,7 @@ app.addEventListener('click', e => {
   }
   if (b.dataset.deleteCharacter) {
     const id = b.dataset.deleteCharacter;
+    if (!await confirmRecordDeletion(`是否删除${char(id).name}？`)) return;
     state.roster = state.roster.filter(item => item.id !== id);
     state.selection = state.selection.filter(selected => selected !== id);
     delete state.initialLevels[id];
@@ -494,6 +515,7 @@ app.addEventListener('click', e => {
   }
   if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; updateRecordControls(); }
   const action = b.dataset.action;
+  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？', '清空')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
