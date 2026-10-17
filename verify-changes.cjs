@@ -42,7 +42,8 @@ run(`state.roster = [{id:'c056', initialLevel:null, records:[]}]; activeRecord =
 assert.equal((app.innerHTML.match(/data-stat=/g) || []).length, 9);
 assert.ok(app.innerHTML.includes('record-character'));
 assert.ok(!app.innerHTML.includes('rating-title'));
-assert.ok(!app.innerHTML.includes('class="hero'));
+assert.ok(app.innerHTML.includes('class="hero'));
+assert.ok(app.innerHTML.includes('desktop-stat-title'));
 const clickRecord = dataset => listeners.click[0]({target:{matches:()=>false,closest:()=>({dataset,disabled:false,hasAttribute:()=>false})}});
 clickRecord({rating:'happy'});
 for (const stat of ['HP','力量','魔力','速度','技巧']) clickRecord({stat});

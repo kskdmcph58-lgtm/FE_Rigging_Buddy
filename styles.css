@@ -93,3 +93,15 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
 .search-icon{display:block;width:18px;height:18px;flex-shrink:0}
 .search input{min-width:0;flex:1;padding-inline:0}
 .search input:focus,.search input:focus-visible{outline:none;box-shadow:none}
+
+/* Full character presentation on desktop; compact identity on phones. */
+@media(min-width:601px){
+  .record-layout{display:grid;grid-template-columns:340px 1fr;gap:28px;max-width:960px;margin-inline:0}
+  .stat-heading .record-character{display:none}
+}
+@media(min-width:601px) and (max-width:800px){
+  .record-layout{grid-template-columns:230px 1fr;gap:16px}
+}
+@media(max-width:600px){
+  .record-layout>.hero,.desktop-stat-title{display:none}
+}
