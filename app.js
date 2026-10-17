@@ -89,6 +89,8 @@ function portrait(c) {
   return `<img draggable="false" src="${image}" alt="" loading="lazy">`;
 }
 function render() {
+  app.classList.toggle('select-page', page === 'select');
+  app.classList.toggle('levels-page', page === 'levels');
   app.classList.toggle('has-bottom-bar', page === 'select' || page === 'levels');
   app.classList.toggle('record-page', page === 'record');
   if (page === 'select') renderSelect();
@@ -132,7 +134,7 @@ function updateSelectionCount() {
 }
 function renderLevels() {
   app.innerHTML =
-    `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+    `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级（可留空）</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
   const ordered = STATS.filter(stat => stats.includes(stat));
@@ -349,7 +351,7 @@ app.addEventListener('touchstart', e => {
     swipeGesture = null;
     return;
   }
-  const card = e.target.closest('.journal');
+  const card = e.target.closest('.journal,.level-row');
   closeSwipeCards(card);
   if (card && e.target.closest('.drag-grip')) {
     closeSwipeCards();
@@ -358,7 +360,7 @@ app.addEventListener('touchstart', e => {
     e.preventDefault();
     return;
   }
-  if (!card || e.target.closest('input,[data-delete-character]')) return;
+  if (!card?.matches('.journal') || e.target.closest('input,[data-delete-character]')) return;
   swipeGesture = { card, x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, horizontal: false };
 }, { passive: false });
 app.addEventListener('touchmove', e => {
@@ -366,10 +368,11 @@ app.addEventListener('touchmove', e => {
     if (e.touches.length !== 1) { finishTouchSort(); return; }
     e.preventDefault();
     const { clientX: x, clientY: y } = e.touches[0];
-    let target = document.elementFromPoint(x, y)?.closest('.journal');
+    const selector = touchSort.card.matches('.level-row') ? '.level-row' : '.journal';
+    let target = document.elementFromPoint(x, y)?.closest(selector);
     if (!target) {
       let distance = Infinity;
-      app.querySelectorAll('.journal').forEach(card => {
+      app.querySelectorAll(selector).forEach(card => {
         if (card === touchSort.card) return;
         const rect = card.getBoundingClientRect();
         if (x < rect.left || x > rect.right) return;
