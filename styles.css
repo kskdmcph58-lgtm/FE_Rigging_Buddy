@@ -342,3 +342,40 @@ button,summary,[role="button"]{-webkit-tap-highlight-color:transparent}
  button.record-chip.upgraded:hover{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
  button.record-chip.upgraded:hover .upgrade-overlay{background:#55472f}
 }
+/* Inline validation and platform-independent edit marks. */
+.level-error{display:block;grid-column:1/-1;flex-basis:100%;color:var(--red);font-size:12px;line-height:1.5;text-align:right}
+.toolbar:has(.level-error){flex-wrap:wrap!important}
+.initial-level:not(:has(input))::after{content:none}
+.initial-pencil{display:inline-block;width:12px;height:12px;margin-left:6px;vertical-align:-1px;visibility:hidden;color:var(--gold)}
+.initial-level.can-edit .initial-pencil{visibility:visible}
+svg.edit-pencil{width:10px;height:10px}
+.dragging{user-select:none;-webkit-user-select:none}
+@media(max-width:600px){.initial-pencil{margin-left:4px}}
+.level-row>.level-error{color:var(--red);margin-left:0;display:block}
+input[data-level-input][aria-invalid="true"]:focus-visible{outline-color:var(--red)}
+@media(max-width:600px){
+ .record-chip p{display:flex;flex-direction:column;justify-content:flex-end;min-height:50.4px;line-height:19.2px}
+ .record-chip .stat-line{display:block}
+ .stat-line+.stat-line::before{content:none}
+}
+/* Wide overview: identity, records and actions share one horizontal band. */
+.record-chip .stat-hp{display:inline-block;width:2em;width:2ic;font:inherit;letter-spacing:normal;text-align:left}
+@media(min-width:1100px){
+ main.summary-page{max-width:1760px}
+ body:has(main.summary-page)>header{padding-inline:max(24px,calc((100% - 1712px)/2))}
+ .summary-page .journal{grid-template-columns:128px minmax(0,1fr) 90px;gap:16px;padding:20px;align-items:start}
+ .summary-page .journal-head{grid-column:1;grid-row:1;display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px 12px;align-self:start}
+ .summary-page .journal-head img{grid-column:2;grid-row:1;width:56px;height:56px}
+ .summary-page .journal-head .drag-grip{grid-column:1;grid-row:1;align-self:center}
+ .summary-page .journal-info{grid-column:2;grid-row:2}
+ .summary-page .journal-head h2{font-size:16px}
+ .summary-page .journal-head p{font-size:12px}
+ .summary-page .journal-actions{grid-column:3;grid-row:1;flex-direction:column;align-items:stretch;align-self:start;gap:8px}
+ .summary-page .journal-actions>button{width:100%;padding-inline:8px}
+ .summary-page .journal .records{grid-column:2;grid-row:1;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+ .summary-page .record-chip{padding:12px}
+ .summary-page .journal:has(.initial-level-form){grid-template-columns:176px minmax(0,1fr) 90px}
+}
+@media(min-width:1400px){
+ .summary-page .journal .records{grid-template-columns:repeat(5,minmax(0,1fr))}
+}

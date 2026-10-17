@@ -63,10 +63,25 @@ function levelLabel(item, level) { return item.initialLevel === null ? `LV +${le
 function escapeValue(value) { return String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
 function validLevel(input) {
   const valid = input.value === '' || /^[1-9][0-9]?$/.test(input.value);
-  input.setCustomValidity(valid ? '' : '请输入一至两位整数（1–99），或留空');
+  clearLevelError(input);
   input.setAttribute('aria-invalid', String(!valid));
-  if (!valid) input.reportValidity();
+  if (!valid) {
+    const error = document.createElement('span');
+    error.className = 'level-error';
+    error.id = `level-error-${input.dataset.level || input.closest('[data-initial-form]')?.dataset.initialForm || 'batch'}`;
+    error.setAttribute('role', 'alert');
+    error.textContent = '请输入 1–99，或留空';
+    (input.closest('.level-row,.initial-level-form,.toolbar') || input.parentElement).append(error);
+    input.setAttribute('aria-describedby', error.id);
+    input.focus();
+  }
   return valid;
+}
+function clearLevelError(input) {
+  const id = input.getAttribute('aria-describedby');
+  if (id?.startsWith('level-error-')) document.getElementById(id)?.remove();
+  input.removeAttribute('aria-describedby');
+  input.setCustomValidity('');
 }
 let noticeTimer;
 function notify(text) { clearTimeout(noticeTimer); document.querySelector('#notice').textContent = text; noticeTimer = setTimeout(() => document.querySelector('#notice').textContent = '', 4000); }
@@ -89,6 +104,7 @@ function portrait(c) {
   return `<img draggable="false" src="${image}" alt="" loading="lazy">`;
 }
 function render() {
+  app.classList.toggle('summary-page', page === 'summary');
   app.classList.toggle('select-page', page === 'select');
   app.classList.toggle('levels-page', page === 'levels');
   app.classList.toggle('has-bottom-bar', page === 'select' || page === 'levels');
@@ -137,21 +153,23 @@ function renderLevels() {
     `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级（可留空）</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
-  const ordered = STATS.filter(stat => stats.includes(stat));
-  if (!ordered.length) return '<span class="stat-line">本次没有属性提升</span>';
-  return `<span class="stat-line">${ordered.slice(0, 5).join(' · ')}</span>${ordered.length > 5 ? `<span class="stat-line">${ordered.slice(5).join(' · ')}</span>` : ''}`;
+  const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
+  return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => stat === 'HP' ? '<span class="stat-hp">HP</span>' : stat).join(' · ')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
+}
+function pencilIcon(className) {
+  return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
 function renderSummary() {
   const total = state.roster.reduce((n, r) => n + r.records.length, 0);
   const happy = state.roster.reduce((n, r) => n + r.records.filter(x => x.happy && !x.skipped).length, 0);
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div><div class="journals">${state.roster.map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button class="menu-danger" data-action="clear-skipped">清空已跳过</button><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div><div class="journals">${state.roster.map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
-        <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing || !item.records.length ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button" title="双击修改初始等级，也可按 Enter">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}</p></div></div>
-        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button>${item.records.length ? `<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>` : ''}<button class="danger" data-delete-character="${c.id}">删除</button></div>
-        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p></div></div>
+        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button><button class="danger" data-delete-character="${c.id}">删除</button></div>
+        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
@@ -292,7 +310,7 @@ function saveRecord(next) {
 
 }
 app.addEventListener('input', e => {
-  if (e.target.matches('[data-level-input]')) { e.target.setCustomValidity(''); e.target.removeAttribute('aria-invalid'); }
+  if (e.target.matches('[data-level-input]')) { clearLevelError(e.target); e.target.removeAttribute('aria-invalid'); }
   if (e.target.id === 'search') { query = e.target.value; renderCards(); app.querySelector('#search-history').hidden = true; }
   if (e.target.dataset.level) { state.initialLevels[e.target.dataset.level] = e.target.value;  }
 });
@@ -309,12 +327,12 @@ function editInitialLevel(label) {
   const item = state.roster.find(r => r.id === label.dataset.initialLevel);
   label.removeAttribute('role');
   label.removeAttribute('tabindex');
-  label.innerHTML = `<form class="initial-level-form" data-initial-form="${item.id}"><label>初始等级 <input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无"></label><button type="submit">保存</button><button type="button" data-cancel-initial>取消</button></form>`;
+  label.innerHTML = `<form novalidate class="initial-level-form" data-initial-form="${item.id}"><label>初始等级 <input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无"></label><button type="submit">保存</button><button type="button" data-cancel-initial>取消</button></form>`;
   label.querySelector('input').focus();
 }
 app.addEventListener('dblclick', e => {
   const label = e.target.closest('[data-initial-level]');
-  if (label) editInitialLevel(label);
+  if (label && editingCharacters.has(label.dataset.initialLevel)) editInitialLevel(label);
 });
 app.addEventListener('submit', e => {
   const form = e.target.closest('[data-initial-form]');
@@ -329,9 +347,47 @@ app.addEventListener('submit', e => {
 });
 let swipeGesture = null;
 let touchSort = null;
+let mouseSort = null;
+function sortTarget(x, y, source) {
+  const selector = source.matches('.level-row') ? '.level-row' : '.journal';
+  const container = source.parentElement.getBoundingClientRect();
+  if (x < container.left || x > container.right) return null;
+  let best = null, distance = Infinity;
+  app.querySelectorAll(selector).forEach(card => {
+    if (card === source) return;
+    const rect = card.getBoundingClientRect();
+    const gap = y < rect.top ? rect.top - y : y > rect.bottom ? y - rect.bottom : 0;
+    if (gap < distance) { distance = gap; best = card; }
+  });
+  return best;
+}
+function updateSortMarker(gesture) {
+  const target = sortTarget(gesture.x, gesture.y, gesture.card);
+  app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
+  gesture.target = target;
+  if (target) {
+    gesture.after = gesture.y >= target.getBoundingClientRect().top + target.getBoundingClientRect().height / 2;
+    target.classList.add(gesture.after ? 'drop-after' : 'drop-before');
+  }
+}
+function startSortScroll(gesture) {
+  let last = 0;
+  const frame = now => {
+    if (touchSort !== gesture && mouseSort !== gesture) return;
+    if (now - last > 16) {
+      const delta = gesture.y < 60 ? -8 : gesture.y > window.innerHeight - 60 ? 8 : 0;
+      if (delta && !gesture.scrollFinger) window.scrollBy(0, delta);
+      updateSortMarker(gesture);
+      last = now;
+    }
+    gesture.frame = requestAnimationFrame(frame);
+  };
+  gesture.frame = requestAnimationFrame(frame);
+}
 function finishTouchSort(commit = false) {
   if (!touchSort) return;
   const { card, target, after } = touchSort;
+  cancelAnimationFrame(touchSort.frame);
   if (commit && target) moveCard(card.dataset.sortId, target.dataset.sortId, after);
   card.classList.remove('dragging');
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
@@ -345,6 +401,12 @@ function closeSwipeCards(except = null) {
   });
 }
 app.addEventListener('touchstart', e => {
+  if (touchSort) {
+    const extra = [...e.touches].find(touch => touch.identifier !== touchSort.identifier);
+    if (extra) touchSort.scrollFinger = { identifier: extra.identifier, y: extra.clientY };
+    e.preventDefault();
+    return;
+  }
   swipeGesture = null;
   finishTouchSort();
   if (!window.matchMedia('(max-width:600px)').matches || e.touches.length !== 1) {
@@ -355,8 +417,9 @@ app.addEventListener('touchstart', e => {
   closeSwipeCards(card);
   if (card && e.target.closest('.drag-grip')) {
     closeSwipeCards();
-    touchSort = { card, target: null, after: false };
+    touchSort = { card, target: null, after: false, identifier: e.touches[0].identifier, x: e.touches[0].clientX, y: e.touches[0].clientY };
     card.classList.add('dragging');
+    startSortScroll(touchSort);
     e.preventDefault();
     return;
   }
@@ -365,29 +428,16 @@ app.addEventListener('touchstart', e => {
 }, { passive: false });
 app.addEventListener('touchmove', e => {
   if (touchSort) {
-    if (e.touches.length !== 1) { finishTouchSort(); return; }
     e.preventDefault();
-    const { clientX: x, clientY: y } = e.touches[0];
-    const selector = touchSort.card.matches('.level-row') ? '.level-row' : '.journal';
-    let target = document.elementFromPoint(x, y)?.closest(selector);
-    if (!target) {
-      let distance = Infinity;
-      app.querySelectorAll(selector).forEach(card => {
-        if (card === touchSort.card) return;
-        const rect = card.getBoundingClientRect();
-        if (x < rect.left || x > rect.right) return;
-        const gap = Math.min(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
-        if (gap < distance) { distance = gap; target = card; }
-      });
-    }
-    app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
-    touchSort.target = target && target !== touchSort.card ? target : null;
-    if (touchSort.target) {
-      touchSort.after = y >= target.getBoundingClientRect().top + target.getBoundingClientRect().height / 2;
-      target.classList.add(touchSort.after ? 'drop-after' : 'drop-before');
-    }
-    if (y < 70) window.scrollBy(0, -20);
-    else if (y > window.innerHeight - 70) window.scrollBy(0, 20);
+    const primary = [...e.touches].find(touch => touch.identifier === touchSort.identifier);
+    if (!primary) { finishTouchSort(); return; }
+    touchSort.x = primary.clientX; touchSort.y = primary.clientY;
+    const extra = [...e.touches].find(touch => touch.identifier !== touchSort.identifier);
+    if (extra) {
+      if (touchSort.scrollFinger?.identifier === extra.identifier) window.scrollBy(0, touchSort.scrollFinger.y - extra.clientY);
+      touchSort.scrollFinger = { identifier: extra.identifier, y: extra.clientY };
+    } else touchSort.scrollFinger = null;
+    updateSortMarker(touchSort);
     return;
   }
   if (!swipeGesture) return;
@@ -402,8 +452,11 @@ app.addEventListener('touchmove', e => {
   swipeGesture.dx = dx;
   e.preventDefault();
 }, { passive: false });
-app.addEventListener('touchend', () => {
-  if (touchSort) { finishTouchSort(true); return; }
+app.addEventListener('touchend', e => {
+  if (touchSort) {
+    if ([...(e.touches || [])].some(touch => touch.identifier === touchSort.identifier)) { touchSort.scrollFinger = null; return; }
+    finishTouchSort(true); return;
+  }
   if (swipeGesture?.horizontal) {
     suppressSwipeClickUntil = Date.now() + 400;
     if (Math.abs(swipeGesture.dx) >= 40) swipeGesture.card.classList.toggle('swipe-open', swipeGesture.dx < 0);
@@ -429,8 +482,22 @@ app.addEventListener('keydown', e => {
 });
 app.addEventListener('click', e => {
   const level = e.target.closest('[data-initial-level]');
-  if (level && !level.querySelector('input') && (editingCharacters.has(level.dataset.initialLevel) || !state.roster.find(item => item.id === level.dataset.initialLevel)?.records.length)) editInitialLevel(level);
+  if (level && !level.querySelector('input') && editingCharacters.has(level.dataset.initialLevel)) editInitialLevel(level);
 });
+document.addEventListener('click', e => {
+  if (page !== 'summary' || !e.target.closest('button,summary,a,[role="button"]')) return;
+  const rowId = e.target.closest('.journal')?.dataset.sortId;
+  let changed = false;
+  for (const id of editingCharacters) {
+    if (id !== rowId) { editingCharacters.delete(id); changed = true; }
+  }
+  if (changed) queueMicrotask(() => {
+    if (page !== 'summary') return;
+    const openMenus = [...app.querySelectorAll('.action-menu')].map(menu => menu.open);
+    renderSummary();
+    app.querySelectorAll('.action-menu').forEach((menu, index) => { menu.open = openMenus[index] || false; });
+  });
+}, true);
 document.addEventListener('click', e => {
   document.querySelectorAll('.action-menu[open]').forEach(menu => {
     if (!menu.contains(e.target) || e.target.closest('button')) menu.open = false;
@@ -518,6 +585,15 @@ app.addEventListener('click', async e => {
   }
   if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; updateRecordControls(); }
   const action = b.dataset.action;
+  if (action === 'clear-skipped') {
+    if (!state.roster.some(item => item.records.some(record => record.skipped))) { notify('暂无已跳过记录'); return; }
+    if (!await confirmRecordDeletion('是否清空所有已跳过记录？', '清空')) return;
+    state.roster.forEach(item => {
+      item.records = item.records.filter(record => !record.skipped);
+      renumberRecords(item);
+    });
+    rememberListPosition(); returnToSummary(); return;
+  }
   if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？', '清空')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
@@ -534,7 +610,7 @@ app.addEventListener('click', async e => {
     state.selection.forEach(id => state.initialLevels[id] = input.value);
     app.querySelectorAll('[data-level]').forEach(field => {
       field.value = input.value;
-      field.setCustomValidity('');
+      clearLevelError(field);
       field.removeAttribute('aria-invalid');
     });
   }
@@ -565,6 +641,38 @@ async function importFile(file) {
 }
 document.querySelector('#import-file').addEventListener('change', e => importFile(e.target.files[0]));
 let dragId = null;
+function finishMouseSort(commit = false) {
+  if (!mouseSort) return;
+  const gesture = mouseSort;
+  cancelAnimationFrame(gesture.frame);
+  if (gesture.started && commit && gesture.target) moveCard(gesture.card.dataset.sortId, gesture.target.dataset.sortId, gesture.after);
+  gesture.card.classList.remove('dragging');
+  app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
+  if (app.hasPointerCapture(gesture.pointerId)) app.releasePointerCapture(gesture.pointerId);
+  if (gesture.started) suppressSwipeClickUntil = Date.now() + 400;
+  mouseSort = null;
+}
+app.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,input,summary,[data-initial-level]')) return;
+  const card = e.target.closest('[data-sort-id]');
+  if (!card) return;
+  mouseSort = { card, pointerId: e.pointerId, x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, started: false };
+  app.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+app.addEventListener('pointermove', e => {
+  if (!mouseSort || mouseSort.pointerId !== e.pointerId) return;
+  mouseSort.x = e.clientX; mouseSort.y = e.clientY;
+  if (!mouseSort.started && Math.hypot(e.clientX - mouseSort.startX, e.clientY - mouseSort.startY) >= 5) {
+    mouseSort.started = true;
+    mouseSort.card.classList.add('dragging');
+    startSortScroll(mouseSort);
+  }
+  if (mouseSort.started) { e.preventDefault(); updateSortMarker(mouseSort); }
+});
+app.addEventListener('pointerup', e => { if (mouseSort?.pointerId === e.pointerId) finishMouseSort(true); });
+app.addEventListener('pointercancel', () => finishMouseSort());
+window.addEventListener('blur', () => { finishMouseSort(); finishTouchSort(); });
 function isAfter(event, card) { const rect = card.getBoundingClientRect(); return event.clientY >= rect.top + rect.height / 2; }
 function clearDrag() {
   dragId = null;
@@ -583,7 +691,7 @@ function moveCard(id, targetId, after = false) {
   targetCard.parentNode.insertBefore(movedCard, after ? targetCard.nextSibling : targetCard);
 }
 app.addEventListener('dragstart', e => {
-  if (touchSort) { e.preventDefault(); return; }
+  if (touchSort || mouseSort) { e.preventDefault(); return; }
   const card = e.target.closest('[data-sort-id]');
   if (!card || e.target.closest('button,input,[data-initial-level]')) { e.preventDefault(); return; }
   dragId = card.dataset.sortId;
@@ -592,7 +700,8 @@ app.addEventListener('dragstart', e => {
 });
 document.addEventListener('dragover', e => {
   const zone = e.target.closest('.import-zone');
-  const card = e.target.closest('[data-sort-id]');
+  const source = dragId && app.querySelector(`[data-sort-id="${dragId}"]`);
+  const card = source ? sortTarget(e.clientX, e.clientY, source) : null;
   if (zone && Array.from(e.dataTransfer.types).includes('Files')) {
     e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; zone.classList.add('drag-over');
   } else if (dragId && card) {
@@ -609,7 +718,9 @@ document.addEventListener('dragleave', e => {
 });
 document.addEventListener('drop', e => {
   e.preventDefault();
-  const zone = e.target.closest('.import-zone'), card = e.target.closest('[data-sort-id]');
+  const zone = e.target.closest('.import-zone');
+  const source = dragId && app.querySelector(`[data-sort-id="${dragId}"]`);
+  const card = source ? sortTarget(e.clientX, e.clientY, source) : null;
   if (zone && e.dataTransfer.files.length) importFile(e.dataTransfer.files[0]);
   else if (dragId && card) moveCard(dragId, card.dataset.sortId, isAfter(e, card));
   clearDrag();
@@ -622,7 +733,7 @@ app.addEventListener('keydown', e => {
     app.querySelector('#search-history').hidden = true;
     return;
   }
-  if (e.key === 'Enter' && e.target.matches('[data-initial-level]')) {
+  if (e.key === 'Enter' && e.target.matches('[data-initial-level]') && editingCharacters.has(e.target.dataset.initialLevel)) {
     e.preventDefault(); editInitialLevel(e.target); return;
   }
   if (e.key === 'Escape' && e.target.closest('[data-initial-form]')) {
@@ -641,7 +752,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (dragId || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value) return false;
+  if (dragId || mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
