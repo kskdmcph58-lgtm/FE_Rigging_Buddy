@@ -34,10 +34,22 @@ button.danger{color:var(--red);border-color:#a85c56;background:#452f30}@media (h
 .initial-level-form{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .initial-level-form input{width:70px;padding:7px}
 .journal-head .initial-level-form button{margin:0;padding:7px 10px;font-size:12px}
-.record-chip{position:relative;overflow:hidden}
+.record-chip{position:relative;overflow:hidden;isolation:isolate;-webkit-tap-highlight-color:transparent}
+.record-chip .record-overlay{border-radius:inherit}
 .record-chip.editable{padding-top:30px;border-style:dashed}
 .edit-pencil{position:absolute;top:5px;left:10px;z-index:2;color:var(--gold);font-size:20px!important;line-height:1}
-.skip-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(65,69,71,.88);color:#f4efdf;font-size:18px!important;font-weight:600;pointer-events:none}
+.record-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px 8px;background:rgba(65,69,71,.88);color:#f4efdf;font-size:18px!important;font-weight:600;pointer-events:none}
+.record-chip:is(.skipped,.upgraded)>div,.record-chip:is(.skipped,.upgraded)>strong{position:relative;z-index:1;color:var(--gold)}
+.record-chip:is(.skipped,.upgraded)>div>span{visibility:hidden}
+.record-chip.skipped>div,.record-chip.skipped>strong{visibility:hidden}
+.record-chip.upgraded{border-color:var(--gold)}
+.upgrade-overlay{background:#493e2b;color:#f0d79b}
+.record-chip.upgraded>div,.record-chip.upgraded>strong{color:#f0d79b}
+@media(max-width:600px){
+  .record-chip.upgraded>strong{visibility:hidden}
+  .record-chip.upgraded::after{content:attr(data-growth);position:absolute;left:16px;bottom:12px;z-index:1;color:#f0d79b;font:28px/1.2 Georgia,serif;pointer-events:none}
+}
+.record-chip.upgraded>strong small{display:none}
 @media(max-width:800px){.journal .records{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{justify-content:flex-start}}
 @media(max-width:600px){.journal{gap:16px 10px}.journal-actions{grid-row:1}.journal-actions button{font-size:11px;padding:9px}.journal .records{grid-column:1/-1}.journal-head .drag-grip{font-size:18px}.journal-info{flex-basis:100%}.initial-level-form{gap:5px}}
 @media(max-width:600px){.big-level{font-size:42px}}
@@ -125,3 +137,43 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
   .record-page .stats{grid-auto-rows:51px}
   .record-page .stat{height:51px}
 }
+
+/* Explicit top alignment avoids native button centering when adjacent cards wrap. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button.record-chip{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:154px;font-size:14px;line-height:1.4}
+.record-chip>div{flex-wrap:wrap;row-gap:4px;min-height:20px}
+.record-chip>div>b,.record-chip>strong{white-space:nowrap}
+.record-chip>div>span{display:inline-flex;align-items:center;white-space:nowrap}
+.record-chip>strong{margin-top:16px;line-height:1.2}
+.record-chip p{margin-top:12px;overflow-wrap:anywhere}
+@media(max-width:600px){
+  .record-chip>div{flex-direction:row;align-items:center;flex-wrap:nowrap;min-height:20px}
+  .record-chip>div>b{font-size:13px}
+  .record-chip>div>span{font-size:0}
+  .record-chip .rating-icon{width:16px;height:16px;margin-right:0}
+  .record-chip>strong{margin-top:12px}
+  button.record-chip{min-height:0}
+  .record-chip p{margin-top:auto;padding-top:12px}
+}
+/* Compact mobile identity and a swipe-revealed delete rail. */
+@media(max-width:600px){
+  .journal{overflow:hidden;position:relative;column-gap:8px}
+  .journal-head{flex-wrap:nowrap;gap:8px;align-self:center}
+  .journal-head img{width:58px;height:58px;flex-shrink:0}
+  .journal-head .drag-grip{display:flex;align-items:center;justify-content:center;width:16px;min-height:44px;touch-action:none;-webkit-user-select:none;user-select:none}
+  .journal.dragging{opacity:.55}
+  .journal.drop-before,.journal.drop-after{overflow:visible}
+  .journal-info{flex:1;min-width:0}
+  .journal-head h2{font-size:16px;overflow-wrap:anywhere}
+  .journal-head p{margin-top:8px;line-height:1.5}
+  .journal-actions{align-self:center}
+  .journal-actions button{min-height:36px}
+  .journal-actions [data-delete-character]{position:absolute;top:0;bottom:0;right:0;width:76px;border:0;border-radius:0;background:#793c38;color:#ffe5df;visibility:hidden;transform:translateX(100%);z-index:3;font-size:14px}
+  .journal-head,.journal .records,.journal-actions>button{transition:transform .2s ease,visibility .2s}
+  .journal.swipe-open .journal-head,.journal.swipe-open .records,.journal.swipe-open .journal-actions>button:not([data-delete-character]){transform:translateX(-76px)}
+  .journal.swipe-open [data-delete-character]{visibility:visible;transform:translateX(0)}
+}
+@media(prefers-reduced-motion:reduce){.journal-head,.journal .records,.journal-actions>button{transition:none}}
+/* Center the insertion marker in the 22px journal gap, including list ends. */
+.journal.drop-before::before{top:-13.5px}
+.journal.drop-after::after{bottom:-13.5px}

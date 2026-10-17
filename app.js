@@ -52,7 +52,7 @@ function validate(data) {
     ids.add(item.id);
     let level = (item.initialLevel ?? 0) + 1;
     item.records.forEach(r => {
-      if (r.level !== level || (r.skipped !== undefined && typeof r.skipped !== 'boolean') || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !STATS.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
+      if (r.level !== level || (r.skipped !== undefined && typeof r.skipped !== 'boolean') || (r.upgraded !== undefined && typeof r.upgraded !== 'boolean') || (r.skipped && r.upgraded) || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !STATS.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
       if (!r.skipped) level++;
     });
   }
@@ -144,7 +144,7 @@ function renderSummary() {
       return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level" data-initial-level="${c.id}" tabindex="0" role="button" title="双击修改初始等级，也可按 Enter">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}</p></div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button>${item.records.length ? `<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>` : ''}<button class="danger" data-delete-character="${c.id}">删除</button></div>
-        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" aria-label="${editing ? '编辑' : r.skipped ? '取消跳过' : '跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${r.stats.join(' · ') || '本次没有属性提升'}</p>${r.skipped ? '<span class="skip-overlay">已跳过</span>' : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${r.stats.join(' · ') || '本次没有属性提升'}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
@@ -303,6 +303,105 @@ app.addEventListener('submit', e => {
   renumberRecords(item);
   rememberListPosition(); returnToSummary();
 });
+let swipeGesture = null;
+let touchSort = null;
+function finishTouchSort(commit = false) {
+  if (!touchSort) return;
+  const { card, target, after } = touchSort;
+  if (commit && target) moveCard(card.dataset.sortId, target.dataset.sortId, after);
+  card.classList.remove('dragging');
+  app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
+  touchSort = null;
+  suppressSwipeClickUntil = Date.now() + 400;
+}
+let suppressSwipeClickUntil = 0;
+function closeSwipeCards(except = null) {
+  app.querySelectorAll('.journal.swipe-open').forEach(card => {
+    if (card !== except) card.classList.remove('swipe-open');
+  });
+}
+app.addEventListener('touchstart', e => {
+  swipeGesture = null;
+  finishTouchSort();
+  if (!window.matchMedia('(max-width:600px)').matches || e.touches.length !== 1) {
+    swipeGesture = null;
+    return;
+  }
+  const card = e.target.closest('.journal');
+  closeSwipeCards(card);
+  if (card && e.target.closest('.drag-grip')) {
+    closeSwipeCards();
+    touchSort = { card, target: null, after: false };
+    card.classList.add('dragging');
+    e.preventDefault();
+    return;
+  }
+  if (!card || e.target.closest('input,[data-delete-character]')) return;
+  swipeGesture = { card, x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, horizontal: false };
+}, { passive: false });
+app.addEventListener('touchmove', e => {
+  if (touchSort) {
+    if (e.touches.length !== 1) { finishTouchSort(); return; }
+    e.preventDefault();
+    const { clientX: x, clientY: y } = e.touches[0];
+    let target = document.elementFromPoint(x, y)?.closest('.journal');
+    if (!target) {
+      let distance = Infinity;
+      app.querySelectorAll('.journal').forEach(card => {
+        if (card === touchSort.card) return;
+        const rect = card.getBoundingClientRect();
+        if (x < rect.left || x > rect.right) return;
+        const gap = Math.min(Math.abs(y - rect.top), Math.abs(y - rect.bottom));
+        if (gap < distance) { distance = gap; target = card; }
+      });
+    }
+    app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
+    touchSort.target = target && target !== touchSort.card ? target : null;
+    if (touchSort.target) {
+      touchSort.after = y >= target.getBoundingClientRect().top + target.getBoundingClientRect().height / 2;
+      target.classList.add(touchSort.after ? 'drop-after' : 'drop-before');
+    }
+    if (y < 70) window.scrollBy(0, -20);
+    else if (y > window.innerHeight - 70) window.scrollBy(0, 20);
+    return;
+  }
+  if (!swipeGesture) return;
+  if (e.touches.length !== 1) { swipeGesture = null; return; }
+  const dx = e.touches[0].clientX - swipeGesture.x;
+  const dy = e.touches[0].clientY - swipeGesture.y;
+  if (!swipeGesture.horizontal) {
+    if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { swipeGesture = null; return; }
+    if (Math.abs(dx) < 12 || Math.abs(dx) <= Math.abs(dy) * 1.4) return;
+    swipeGesture.horizontal = true;
+  }
+  swipeGesture.dx = dx;
+  e.preventDefault();
+}, { passive: false });
+app.addEventListener('touchend', () => {
+  if (touchSort) { finishTouchSort(true); return; }
+  if (swipeGesture?.horizontal) {
+    suppressSwipeClickUntil = Date.now() + 400;
+    if (Math.abs(swipeGesture.dx) >= 40) swipeGesture.card.classList.toggle('swipe-open', swipeGesture.dx < 0);
+  }
+  swipeGesture = null;
+});
+app.addEventListener('touchcancel', () => { swipeGesture = null; finishTouchSort(); });
+app.addEventListener('click', e => {
+  if (Date.now() < suppressSwipeClickUntil) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+  const open = e.target.closest('.journal.swipe-open');
+  if (open && !e.target.closest('[data-delete-character]')) {
+    open.classList.remove('swipe-open');
+    e.preventDefault(); e.stopImmediatePropagation();
+  } else closeSwipeCards(open);
+}, true);
+app.addEventListener('keydown', e => {
+  if (!window.matchMedia('(max-width:600px)').matches) return;
+  const card = e.target.closest('.journal');
+  if (card && e.key === 'ArrowLeft' && !e.altKey && !e.target.matches('input')) {
+    closeSwipeCards(card); card.classList.add('swipe-open'); e.preventDefault();
+  }
+  if (e.key === 'Escape') closeSwipeCards();
+});
 app.addEventListener('click', e => {
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -331,7 +430,14 @@ app.addEventListener('click', e => {
     const item = state.roster.find(r => r.id === b.dataset.edit);
     const record = item.records[index];
     if (!editingCharacters.has(item.id)) {
-      record.skipped = !record.skipped;
+      if (record.skipped) {
+        record.skipped = false;
+        record.upgraded = true;
+      } else if (record.upgraded) {
+        record.upgraded = false;
+      } else {
+        record.skipped = true;
+      }
       renumberRecords(item);
       returnToSummary();
       return;
@@ -437,6 +543,7 @@ function moveCard(id, targetId, after = false) {
   targetCard.parentNode.insertBefore(movedCard, after ? targetCard.nextSibling : targetCard);
 }
 app.addEventListener('dragstart', e => {
+  if (touchSort) { e.preventDefault(); return; }
   const card = e.target.closest('[data-sort-id]');
   if (!card || e.target.closest('button,input,[data-initial-level]')) { e.preventDefault(); return; }
   dragId = card.dataset.sortId;
