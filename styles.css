@@ -334,3 +334,11 @@ button,summary,[role="button"]{-webkit-tap-highlight-color:transparent}
  .bottom-bar button::after,.select-page .toolbar>button::after,.levels-page .toolbar>button::after{content:'';position:absolute;inset:-4px 0}
  #selected-count{font-size:12px;white-space:nowrap}
 }
+/* Completed records reserve the strong gold edge for pointer interaction. */
+@media(min-width:601px){
+ .record-chip.upgraded{border-color:#746345}
+}
+@media(min-width:601px) and (hover:hover) and (pointer:fine){
+ button.record-chip.upgraded:hover{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+ button.record-chip.upgraded:hover .upgrade-overlay{background:#55472f}
+}
