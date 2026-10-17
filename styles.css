@@ -44,3 +44,17 @@ button.danger:hover{background:#633a3b;border-color:var(--red)}
 @media(max-width:800px){.journal .records{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{justify-content:flex-start}}
 @media(max-width:600px){.journal{gap:16px 10px}.journal-actions{grid-row:1}.journal-actions button{font-size:11px;padding:9px}.journal .records{grid-column:1/-1}.journal-head .drag-grip{font-size:18px}.journal-info{flex-basis:100%}.initial-level-form{gap:5px}}
 @media(max-width:600px){.big-level{font-size:42px}}
+
+/* Keep setup actions reachable without covering the final row. */
+html{scrollbar-gutter:stable}
+main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,1180px);margin:0;padding:18px 24px calc(18px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--bg);box-shadow:0 -10px 24px #0003;gap:12px}
+.search-box{position:relative;width:320px;max-width:100%}
+.search-box .search{width:100%}
+.search-history{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:6;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px #0005}
+.search-history[hidden]{display:none}
+.search-history-title{padding:8px;color:var(--muted);font-size:12px}
+.search-history button{display:block;width:100%;text-align:left;border:0;padding:9px;overflow-wrap:anywhere}
+.search-history button[data-clear-search]{border-top:1px solid var(--line);border-radius:0;color:var(--muted);font-size:12px}
+.has-bottom-bar~#notice{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+@media(max-width:600px){.search-box{width:100%}.bottom-bar{padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}}

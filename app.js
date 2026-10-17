@@ -5,6 +5,39 @@ let state = { version: 1, roster: [], selection: [], initialLevels: {} };
 let activeRecord = null;
 let page = 'select';
 let query = '';
+const SEARCH_HISTORY_KEY = 'rigging-buddy:character-search:v1';
+let searchHistory = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
+  if (Array.isArray(saved)) searchHistory = saved.filter(s => typeof s === 'string' && s.length <= 80).slice(0, 8);
+} catch { /* Search still works when storage is unavailable. */ }
+function normalizeSearch(text) {
+  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s'’·-]/g, '');
+}
+function phonetic(text) {
+  return normalizeSearch(window.pinyinPro.pinyin(text, { toneType: 'none', type: 'array' }).join(''));
+}
+const searchIndex = characters.map(c => ({
+  character: c,
+  keys: [normalizeSearch(c.name), normalizeSearch(c.englishName), phonetic(c.name),
+    normalizeSearch(window.pinyinPro.pinyin(c.name, { pattern: 'first', toneType: 'none', type: 'array' }).join(''))]
+}));
+function searchCharacters(text) {
+  const key = normalizeSearch(text.trim()), sound = phonetic(text.trim());
+  return searchIndex.filter(entry => entry.keys.some(value => value.includes(key) || (sound && value.includes(sound)))).map(entry => entry.character);
+}
+function rememberSearch() {
+  const value = query.trim().slice(0, 80);
+  if (!value) return;
+  searchHistory = [value, ...searchHistory.filter(s => s !== value)].slice(0, 8);
+  try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(searchHistory)); } catch { /* Optional storage. */ }
+}
+function showSearchHistory() {
+  const history = app.querySelector('#search-history');
+  if (!history) return;
+  history.innerHTML = '<div class="search-history-title">本工具最近搜索</div>' + searchHistory.map(s => `<button type="button" data-search-history="${escapeValue(s)}">${escapeValue(s)}</button>`).join('') + '<button type="button" data-clear-search>清空搜索记录</button>';
+  history.hidden = !searchHistory.length;
+}
 const editingCharacters = new Set();
 function nextLevel(item) { return (item.initialLevel ?? 0) + item.records.filter(r => !r.skipped).length + 1; }
 function renumberRecords(item) {
@@ -26,7 +59,7 @@ function validate(data) {
   if (data.selection && (!Array.isArray(data.selection) || data.selection.some(id => !characters.some(c => c.id === id)))) throw Error('角色选择不正确');
   if (data.initialLevels && (typeof data.initialLevels !== 'object' || data.initialLevels === null)) throw Error('初始等级不正确');
 }
-function levelLabel(item, level) { return item.initialLevel === null ? `+${level}` : `LV ${level}`; }
+function levelLabel(item, level) { return item.initialLevel === null ? `LV +${level}` : `LV ${level}`; }
 function escapeValue(value) { return String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
 function validLevel(input) {
   const valid = input.value === '' || /^[1-9][0-9]?$/.test(input.value);
@@ -49,6 +82,7 @@ function backupFilename() {
 }
 function portrait(c) { return `<img draggable="false" src="${c.image}" alt="" loading="lazy">`; }
 function render() {
+  app.classList.toggle('has-bottom-bar', page === 'select' || page === 'levels');
   if (page === 'select') renderSelect();
   if (page === 'levels') renderLevels();
   if (page === 'summary') renderSummary();
@@ -58,14 +92,30 @@ function renderSelect() {
   app.innerHTML =
     `<div class="toolbar"><label class="search">⌕ <input id="search" placeholder="搜索角色姓名" aria-label="搜索角色姓名"></label><span>共 ${characters.length} 位角色</span>${state.roster.length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
   document.querySelector('#search').value = query;
+  const searchInput = app.querySelector('#search');
+  searchInput.name = 'rigging-buddy-character-search';
+  searchInput.type = 'search';
+  searchInput.autocomplete = 'off';
+  searchInput.spellcheck = false;
+  searchInput.placeholder = '姓名 / 拼音 / 首字母';
+  searchInput.setAttribute('aria-label', '搜索角色姓名、拼音或首字母');
+  const searchBox = document.createElement('div');
+  searchBox.className = 'search-box';
+  const searchLabel = searchInput.parentElement;
+  searchLabel.replaceWith(searchBox);
+  searchBox.append(searchLabel);
+  searchBox.insertAdjacentHTML('beforeend', '<div id="search-history" class="search-history" hidden></div>');
   renderCards();
 }
 function renderCards() {
-  const list = characters.filter(c => c.name.includes(query.trim()));
+  const list = searchCharacters(query);
   document.querySelector('#character-grid').innerHTML = list.map(c => {
     const existing = state.roster.some(r => r.id === c.id), selected = state.selection.includes(c.id);
     return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}>${portrait(c)}<span>${c.name}</span></button>`;
   }).join('') || '<p class="empty">没有找到这个名字，换个关键词试试。</p>';
+  updateSelectionCount();
+}
+function updateSelectionCount() {
   document.querySelector('#selected-count').textContent = `已选 ${state.selection.length} 位角色`;
   document.querySelector('#choose-next').disabled = !state.selection.length;
 }
@@ -92,7 +142,7 @@ function start(id) {
 }
 function rememberListPosition() {
   state.summaryScroll = window.scrollY;
-  
+
   notify('');
 }
 function returnToSummary() {
@@ -134,16 +184,23 @@ function saveRecord(next) {
   }
   const id = d.id;
   activeRecord = null;
-  
+
   if (next) start(id); else returnToSummary();
 
 }
 app.addEventListener('input', e => {
   if (e.target.matches('[data-level-input]')) { e.target.setCustomValidity(''); e.target.removeAttribute('aria-invalid'); }
-  if (e.target.id === 'search') { query = e.target.value; renderCards(); }
+  if (e.target.id === 'search') { query = e.target.value; renderCards(); app.querySelector('#search-history').hidden = true; }
   if (e.target.dataset.level) { state.initialLevels[e.target.dataset.level] = e.target.value;  }
 });
 app.addEventListener('focusin', e => { if (e.target.matches('input[data-level-input]')) e.target.select(); });
+app.addEventListener('focusin', e => { if (e.target.id === 'search') showSearchHistory(); });
+app.addEventListener('focusout', e => {
+  if (e.target.closest('.search-box') && !e.relatedTarget?.closest('.search-box')) {
+    rememberSearch();
+    app.querySelector('#search-history').hidden = true;
+  }
+});
 function editInitialLevel(label) {
   if (label.querySelector('input')) return;
   const item = state.roster.find(r => r.id === label.dataset.initialLevel);
@@ -170,6 +227,24 @@ app.addEventListener('submit', e => {
 app.addEventListener('click', e => {
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.hasAttribute('data-search-history')) {
+    query = b.dataset.searchHistory;
+    app.querySelector('#search').value = query;
+    renderCards(); rememberSearch();
+    app.querySelector('#search').focus();
+    app.querySelector('#search-history').hidden = true;
+    return;
+  }
+  if (b.hasAttribute('data-clear-search')) {
+    searchHistory = [];
+    try { localStorage.removeItem(SEARCH_HISTORY_KEY); } catch { /* Optional storage. */ }
+    query = '';
+    app.querySelector('#search').value = '';
+    renderCards();
+    app.querySelector('#search').focus();
+    app.querySelector('#search-history').hidden = true;
+    return;
+  }
   if (b.hasAttribute('data-cancel-initial')) { rememberListPosition(); returnToSummary(); return; }
   if (b.dataset.edit) {
     rememberListPosition();
@@ -201,7 +276,11 @@ app.addEventListener('click', e => {
   if (b.dataset.character) {
     const id = b.dataset.character;
     state.selection = state.selection.includes(id) ? state.selection.filter(x => x !== id) : [...state.selection, id];
-     renderCards();
+    const selected = state.selection.includes(id);
+    b.classList.toggle('selected', selected);
+    b.setAttribute('aria-pressed', String(selected));
+    updateSelectionCount();
+    rememberSearch();
   }
   if (b.dataset.start) {
     rememberListPosition();
@@ -304,6 +383,12 @@ document.addEventListener('drop', e => {
 });
 document.addEventListener('dragend', clearDrag);
 app.addEventListener('keydown', e => {
+  if (e.target.id === 'search' && ['Enter', 'Escape'].includes(e.key) && !e.isComposing) {
+    e.preventDefault();
+    if (e.key === 'Enter') rememberSearch();
+    app.querySelector('#search-history').hidden = true;
+    return;
+  }
   if (e.key === 'Enter' && e.target.matches('[data-initial-level]')) {
     e.preventDefault(); editInitialLevel(e.target); return;
   }
