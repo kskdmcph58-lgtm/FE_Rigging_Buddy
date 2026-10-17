@@ -1,0 +1,12 @@
+plugins:
+  - jekyll-github-metadata
+include:
+  - vendor
+exclude:
+  - README.md
+  - CACHE_UPDATES.md
+  - scripts
+  - tests
+  - verify-changes.cjs
+  - verify-dom.cjs
+  - verify-updates.cjs

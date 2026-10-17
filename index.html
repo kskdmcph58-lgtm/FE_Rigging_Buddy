@@ -1,12 +1,17 @@
+---
+layout: null
+---
 <!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="app-version" content="{{ site.github.build_revision }}">
+  <script>{% include update-check.js %}</script>
   <title>Rigging Buddy · 万缕千丝</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="characters.js"></script>
-  <script defer src="vendor/pinyin-pro.js"></script>
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="styles.css?v={{ site.github.build_revision }}">
+  <script defer src="characters.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="vendor/pinyin-pro.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="app.js?v={{ site.github.build_revision }}"></script>
 </head>
 <body>
   <header><a class="brand" href="index.html"><span class="brand-mark">✦</span><span>Rigging Buddy<small>万缕千丝 · 升级凹点助手</small></span></a></header>

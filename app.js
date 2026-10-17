@@ -83,7 +83,11 @@ function backupFilename() {
 function ratingIcon(happy) {
   return `<svg class="rating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r=".8" fill="currentColor" stroke="none"/><path d="${happy ? 'M8 14 Q12 19 16 14' : 'M8 17 Q12 12 16 17'}"/></svg>`;
 }
-function portrait(c) { return `<img draggable="false" src="${c.image}" alt="" loading="lazy">`; }
+function portrait(c) {
+  const revision = document.querySelector('meta[name="app-version"]')?.content;
+  const image = /^[a-f0-9]{40}$/i.test(revision || '') ? `${c.image}?v=${revision}` : c.image;
+  return `<img draggable="false" src="${image}" alt="" loading="lazy">`;
+}
 function render() {
   app.classList.toggle('has-bottom-bar', page === 'select' || page === 'levels');
   app.classList.toggle('record-page', page === 'record');
@@ -112,10 +116,14 @@ function renderSelect() {
 }
 function renderCards() {
   const list = searchCharacters(query);
-  document.querySelector('#character-grid').innerHTML = list.map(c => {
+  const grid = document.querySelector('#character-grid');
+  if (!grid.children.length) grid.innerHTML = characters.map(c => {
     const existing = state.roster.some(r => r.id === c.id), selected = state.selection.includes(c.id);
     return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}>${portrait(c)}<span>${c.name}</span></button>`;
-  }).join('') || '<p class="empty">没有找到这个名字，换个关键词试试。</p>';
+  }).join('') + '<p class="empty" hidden>没有找到这个名字，换个关键词试试。</p>';
+  const matches = new Set(list.map(c => c.id));
+  grid.querySelectorAll('[data-character]').forEach(card => { card.hidden = !matches.has(card.dataset.character); });
+  grid.querySelector('.empty').hidden = list.length > 0;
   updateSelectionCount();
 }
 function updateSelectionCount() {
@@ -129,7 +137,7 @@ function renderLevels() {
 function renderSummary() {
   const total = state.roster.reduce((n, r) => n + r.records.length, 0);
   const happy = state.roster.reduce((n, r) => n + r.records.filter(x => x.happy && !x.skipped).length, 0);
-  app.innerHTML =
+  const markup =
     `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions"><button data-action="reset">重置</button><button data-action="reset-list">为当前列表重置</button><button data-action="export">导出</button><button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button><button class="primary" data-action="select">＋ 添加角色</button></div></div><div class="journals">${state.roster.map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
@@ -138,6 +146,48 @@ function renderSummary() {
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button>${item.records.length ? `<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>` : ''}<button class="danger" data-delete-character="${c.id}">删除</button></div>
         <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" aria-label="${editing ? '编辑' : r.skipped ? '取消跳过' : '跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : ''} ${editing ? 'editable' : ''}">${editing ? '<span class="edit-pencil" aria-hidden="true">✎</span>' : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${r.stats.join(' · ') || '本次没有属性提升'}</p>${r.skipped ? '<span class="skip-overlay">已跳过</span>' : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
+  if (app.querySelector('.summary-top')) {
+    const template = document.createElement('template');
+    template.innerHTML = markup;
+    syncChildren(app, template.content);
+  } else app.innerHTML = markup;
+}
+// Reconcile summary changes in place, retaining keyed journals and their images.
+function syncChildren(current, desired) {
+  const key = node => {
+    if (node.nodeType !== 1) return null;
+    for (const attribute of ['data-sort-id', 'data-start', 'data-toggle-edit', 'data-delete-character', 'data-edit']) {
+      if (node.hasAttribute(attribute)) return `${attribute}:${node.getAttribute(attribute)}:${node.getAttribute('data-index') || ''}`;
+    }
+    return null;
+  };
+  const keyed = new Map([...current.childNodes].filter(key).map(node => [key(node), node]));
+  let cursor = current.firstChild;
+  for (const next of [...desired.childNodes]) {
+    const id = key(next);
+    let node = id ? keyed.get(id) : cursor;
+    if (!node || node.nodeType !== next.nodeType || node.nodeName !== next.nodeName || key(node) !== id) {
+      node = next.cloneNode(true);
+      current.insertBefore(node, cursor);
+    } else {
+      if (node !== cursor) current.insertBefore(node, cursor);
+      if (node.nodeType === 1) {
+        for (const attribute of [...node.attributes]) {
+          if (!next.hasAttribute(attribute.name)) node.removeAttribute(attribute.name);
+        }
+        for (const attribute of [...next.attributes]) {
+          if (node.getAttribute(attribute.name) !== attribute.value) node.setAttribute(attribute.name, attribute.value);
+        }
+        syncChildren(node, next);
+      } else if (node.nodeValue !== next.nodeValue) node.nodeValue = next.nodeValue;
+    }
+    cursor = node.nextSibling;
+  }
+  while (cursor) {
+    const next = cursor.nextSibling;
+    cursor.remove();
+    cursor = next;
+  }
 }
 function start(id) {
   activeRecord = { id, stats: [], happy: false };
@@ -159,6 +209,25 @@ function renderRecord() {
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
     `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<h2>${c.name}</h2></div><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1 ▲' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
   if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
+}
+// Keep portraits and focused buttons mounted during record interactions.
+function updateRecordControls() {
+  const d = activeRecord;
+  app.querySelectorAll('[data-stat]').forEach(button => {
+    const selected = d.stats.includes(button.dataset.stat);
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    button.querySelector('b').textContent = selected ? '+1 ▲' : '—';
+  });
+  app.querySelector('.total strong').firstChild.nodeValue = `+${d.stats.length}`;
+  app.querySelectorAll('[data-rating]').forEach(button => {
+    const selected = d.happy === (button.dataset.rating === 'happy');
+    button.classList.toggle('chosen', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  app.querySelector('[data-action="finish"]').disabled = d.happy === null && d.stats.length > 0;
+  const next = app.querySelector('[data-action="next"]');
+  if (next) next.disabled = d.happy === null || !d.stats.length;
 }
 function deleteRecord() {
   const d = activeRecord;
@@ -188,7 +257,14 @@ function saveRecord(next) {
   const id = d.id;
   activeRecord = null;
 
-  if (next) start(id); else returnToSummary();
+  if (next) {
+    activeRecord = { id, stats: [], happy: false };
+    const level = nextLevel(item);
+    app.querySelector('.big-level').textContent = levelLabel(item, level);
+    app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
+    app.querySelector('.stat-heading>span').textContent = levelLabel(item, level);
+    updateRecordControls();
+  } else returnToSummary();
 
 }
 app.addEventListener('input', e => {
@@ -293,9 +369,9 @@ app.addEventListener('click', e => {
     const d = activeRecord, s = b.dataset.stat;
     d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
     d.happy = d.stats.length === 4 ? null : d.stats.length >= 5;
-     renderRecord();
+    updateRecordControls();
   }
-  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy';  renderRecord(); }
+  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; updateRecordControls(); }
   const action = b.dataset.action;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
@@ -309,7 +385,12 @@ app.addEventListener('click', e => {
   if (action === 'batch') {
     const input = document.querySelector('#batch-level');
     if (!validLevel(input)) return;
-    state.selection.forEach(id => state.initialLevels[id] = input.value);  renderLevels();
+    state.selection.forEach(id => state.initialLevels[id] = input.value);
+    app.querySelectorAll('[data-level]').forEach(field => {
+      field.value = input.value;
+      field.setCustomValidity('');
+      field.removeAttribute('aria-invalid');
+    });
   }
   if (action === 'create') {
     const inputs = [...document.querySelectorAll('[data-level]')];
@@ -351,7 +432,9 @@ function moveCard(id, targetId, after = false) {
   const [moved] = list.splice(from, 1);
   const targetIndex = list.findIndex(x => getId(x) === targetId);
   list.splice(targetIndex + (after ? 1 : 0), 0, moved);
-  const y = window.scrollY; render(); window.scrollTo(0, y);
+  const movedCard = app.querySelector(`[data-sort-id="${id}"]`);
+  const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);
+  targetCard.parentNode.insertBefore(movedCard, after ? targetCard.nextSibling : targetCard);
 }
 app.addEventListener('dragstart', e => {
   const card = e.target.closest('[data-sort-id]');
@@ -406,4 +489,46 @@ app.addEventListener('keydown', e => {
   const id = e.target.dataset.sortId; moveCard(id, target.dataset.sortId, e.key === 'ArrowDown');
   app.querySelector(`[data-sort-id="${id}"]`).focus({ preventScroll: true });
 });
+// Only used for a same-tab deployment update; existing localStorage is untouched.
+function updateSessionKey() {
+  return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
+}
+window.prepareForAppUpdate = revision => {
+  if (dragId || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value) return false;
+  try {
+    const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
+      editingCharacters: [...editingCharacters], scrollY: window.scrollY };
+    const serialized = JSON.stringify(snapshot);
+    sessionStorage.setItem(updateSessionKey(), serialized);
+    return sessionStorage.getItem(updateSessionKey()) === serialized;
+  } catch {
+    // Never discard work if Safari denies storage or the storage quota is full.
+    return false;
+  }
+};
+function restoreAfterAppUpdate() {
+  try {
+    const key = updateSessionKey();
+    const saved = JSON.parse(sessionStorage.getItem(key) || 'null');
+    if (!saved || saved.schema !== 1 || Date.now() - saved.savedAt > 24 * 60 * 60 * 1000) return;
+    // A versioned update navigation must be present; ordinary visits start normally.
+    if (new URL(window.location.href).searchParams.get('v') !== saved.revision) return;
+    validate(saved.state);
+    if (!['select', 'levels', 'summary', 'record'].includes(saved.page) || typeof saved.query !== 'string' || !Array.isArray(saved.editingCharacters)) return;
+    const d = saved.activeRecord;
+    if (saved.page === 'record') {
+      const item = saved.state.roster.find(r => r.id === d?.id);
+      if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return;
+      if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return;
+    }
+    state = saved.state;
+    page = saved.page;
+    query = saved.query;
+    activeRecord = saved.page === 'record' ? d : null;
+    saved.editingCharacters.filter(id => state.roster.some(r => r.id === id)).forEach(id => editingCharacters.add(id));
+    sessionStorage.removeItem(key);
+    setTimeout(() => window.scrollTo(0, Number(saved.scrollY) || 0), 0);
+  } catch { /* Leave an unreadable snapshot untouched; do not modify user storage. */ }
+}
+restoreAfterAppUpdate();
 render();

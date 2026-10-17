@@ -1,3 +1,7 @@
 /README.md
 /scripts/
 /tests/
+CACHE_UPDATES.md
+verify-updates.cjs
+verify-dom.cjs
+verify-changes.cjs
