@@ -49,7 +49,7 @@ button.danger{color:var(--red);border-color:#a85c56;background:#452f30}@media (h
   .record-chip.upgraded>strong{visibility:hidden}
   .record-chip.upgraded::after{content:attr(data-growth);position:absolute;left:16px;bottom:12px;z-index:1;color:#f0d79b;font:28px/1.2 Georgia,serif;pointer-events:none}
 }
-.record-chip.upgraded>strong small{display:none}
+@media(max-width:600px){.record-chip.upgraded>strong small{display:none}}
 @media(max-width:800px){.journal .records{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{justify-content:flex-start}}
 @media(max-width:600px){.journal{gap:16px 10px}.journal-actions{grid-row:1}.journal-actions button{font-size:11px;padding:9px}.journal .records{grid-column:1/-1}.journal-head .drag-grip{font-size:18px}.journal-info{flex-basis:100%}.initial-level-form{gap:5px}}
 @media(max-width:600px){.big-level{font-size:42px}}
@@ -140,12 +140,15 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
 
 /* Explicit top alignment avoids native button centering when adjacent cards wrap. */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-button.record-chip{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:154px;font-size:14px;line-height:1.4}
+button.record-chip{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;min-height:0;font-size:14px;line-height:1.4}
 .record-chip>div{flex-wrap:wrap;row-gap:4px;min-height:20px}
 .record-chip>div>b,.record-chip>strong{white-space:nowrap}
 .record-chip>div>span{display:inline-flex;align-items:center;white-space:nowrap}
 .record-chip>strong{margin-top:16px;line-height:1.2}
-.record-chip p{margin-top:12px;overflow-wrap:anywhere}
+.record-chip p{margin-top:auto;padding-top:12px;overflow-wrap:anywhere}
+@media(min-width:601px){
+  .record-chip.upgraded>p{position:relative;z-index:1;color:#f0d79b;opacity:1}
+}
 @media(max-width:600px){
   .record-chip>div{flex-direction:row;align-items:center;flex-wrap:nowrap;min-height:20px}
   .record-chip>div>b{font-size:13px}
