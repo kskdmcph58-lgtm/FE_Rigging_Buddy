@@ -58,3 +58,34 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
 .search-history button[data-clear-search]{border-top:1px solid var(--line);border-radius:0;color:var(--muted);font-size:12px}
 .has-bottom-bar~#notice{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
 @media(max-width:600px){.search-box{width:100%}.bottom-bar{padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}}
+
+/* A compact floating action bar keeps wide screens visually balanced. */
+.bottom-bar{width:min(calc(100% - 48px),760px);bottom:20px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#192b2d;box-shadow:0 6px 24px #0004}
+.levels{margin-inline:auto}
+.record-layout{display:block;max-width:600px;margin-inline:auto}
+.record-character{display:flex;align-items:center;gap:12px;min-width:0}
+.record-character img{width:44px;height:44px;object-fit:cover;border-radius:50%;background:#314643;flex-shrink:0}
+.stat-heading{gap:12px}
+.stat-heading .record-character h2{font:600 18px "Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:0;overflow-wrap:anywhere}
+.stat-heading>span{white-space:nowrap;flex-shrink:0}
+.ratings{margin-top:16px}
+.record-actions{margin-top:18px;flex-wrap:wrap}
+@media(max-width:600px){
+  main.record-page{padding:12px 16px 16px;min-height:calc(100dvh - 85px)}
+  .record-page .back{margin-bottom:10px;min-height:24px;display:block}
+  .record-page .stat-panel{padding:16px 22px}
+  .record-page .stat-heading{padding-bottom:12px}
+  .record-character{gap:8px}
+  .record-character img{width:36px;height:36px}
+  .stat-heading .record-character h2{font-size:16px}
+  .stat-heading>span{font-size:20px}
+  .record-page .stats{margin-top:8px}
+  .record-page .total{padding:10px 0}
+  .record-page .total strong{font-size:26px}
+  .record-page .ratings{margin-top:10px;gap:12px}
+  .record-page .ratings button{padding:8px;min-height:44px}
+  .record-page .ratings span{font-size:22px}
+  .record-page .record-actions{margin-top:12px;gap:10px}
+  .record-page .record-actions button{min-height:44px;padding:10px 8px}
+  .bottom-bar{width:calc(100% - 24px);bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:10px 12px}
+}
