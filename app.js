@@ -91,14 +91,13 @@ function render() {
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search">⌕ <input id="search" placeholder="搜索角色姓名" aria-label="搜索角色姓名"></label><span>共 ${characters.length} 位角色</span>${state.roster.length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${state.roster.length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
   document.querySelector('#search').value = query;
   const searchInput = app.querySelector('#search');
   searchInput.name = 'rigging-buddy-character-search';
   searchInput.type = 'search';
   searchInput.autocomplete = 'off';
   searchInput.spellcheck = false;
-  searchInput.placeholder = '姓名 / 拼音 / 首字母';
   searchInput.setAttribute('aria-label', '搜索角色姓名、拼音或首字母');
   const searchBox = document.createElement('div');
   searchBox.className = 'search-box';

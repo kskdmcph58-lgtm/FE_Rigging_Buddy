@@ -89,3 +89,7 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
   .record-page .record-actions button{min-height:44px;padding:10px 8px}
   .bottom-bar{width:calc(100% - 24px);bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:10px 12px}
 }
+
+.search-icon{display:block;width:18px;height:18px;flex-shrink:0}
+.search input{min-width:0;flex:1;padding-inline:0}
+.search input:focus,.search input:focus-visible{outline:none;box-shadow:none}
