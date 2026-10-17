@@ -70,7 +70,7 @@ main.has-bottom-bar{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))
 @media(max-width:600px){.search-box{width:100%}.bottom-bar{padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}}
 
 /* A compact floating action bar keeps wide screens visually balanced. */
-.bottom-bar{width:min(calc(100% - 48px),760px);bottom:20px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#192b2d;box-shadow:0 6px 24px #0004}
+.bottom-bar{width:min(calc(100% - 48px),760px);bottom:20px;padding:12px 16px;border:1px solid #71807880;border-radius:12px;background:#34443f;box-shadow:0 12px 36px #0009,0 2px 8px #0005,inset 0 1px 0 #ffffff08}
 .levels{margin-inline:auto}
 .record-layout{display:block;max-width:600px;margin-inline:auto}
 .record-character{display:flex;align-items:center;gap:12px;min-width:0}
@@ -190,7 +190,7 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
 .confirm-dialog button+button{border-left:1px solid #52615b80}
 .confirm-dialog button.danger{background:transparent;color:#ff9b91;font-weight:600}
 .confirm-dialog button:focus-visible{outline:2px solid var(--gold);outline-offset:-5px;border-radius:6px}
-.confirm-dialog button:active{background:#ffffff0d}
+.confirm-dialog button.touch-pressed{background:#ffffff0d}
 @media(hover:hover) and (pointer:fine){
   .confirm-dialog button:hover{background:#ffffff0a}
   .confirm-dialog button.danger:hover{background:#ef8b8012}
@@ -226,8 +226,12 @@ header{padding-inline:max(24px,calc((100% - 1132px)/2))}
 .menu-panel .menu-danger{color:var(--red)}
 .menu-panel .menu-danger+ .menu-danger{border-top:1px solid var(--line);border-radius:0 0 8px 8px}
 button{transition:background .14s,border-color .14s}
-button:active:not(:disabled){background-color:#ffffff0d}
-button.primary:active:not(:disabled){background:#cbb887}
+@media(hover:hover) and (pointer:fine){
+ button:active:not(:disabled){background-color:#ffffff0d}
+ button.primary:active:not(:disabled){background:#cbb887}
+}
+button.touch-pressed:not(:disabled){background-color:#ffffff0d}
+button.primary.touch-pressed:not(:disabled){background:#cbb887}
 @media(hover:hover) and (pointer:fine){.journal-actions button.danger:hover{background:#ef8b8012;border-color:transparent}}
 @media(min-width:1024px){.journal .records{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:800px){.summary-top{gap:16px}}
@@ -268,7 +272,7 @@ button.primary:active:not(:disabled){background:#cbb887}
 .action-menu>summary{line-height:20px}
 .menu-chevron,.add-icon{display:block;width:16px;height:16px;flex-shrink:0}
 .action-menu[open] .menu-chevron{transform:rotate(180deg)}
-button,summary,[role="button"]{-webkit-tap-highlight-color:transparent}
+button,summary,a,[role="button"],[data-initial-level]{-webkit-tap-highlight-color:transparent}
 .menu-panel button{transition:none}
 /* Keep compact visuals while retaining generous touch targets. */
 @media(min-width:601px){
@@ -329,7 +333,7 @@ button,summary,[role="button"]{-webkit-tap-highlight-color:transparent}
  .level-row strong{font-size:14px;max-width:none}
  .level-row>.level-value{gap:4px;font-size:12px}
  .level-row input{width:48px}
- .bottom-bar{width:calc(100% - 32px);padding:10px 12px}
+ .bottom-bar{width:calc(100% - 56px);padding:10px 12px}
  .bottom-bar button{font-size:12px;white-space:nowrap}
  .bottom-bar button::after,.select-page .toolbar>button::after,.levels-page .toolbar>button::after{content:'';position:absolute;inset:-4px 0}
  #selected-count{font-size:12px;white-space:nowrap}
@@ -378,4 +382,27 @@ input[data-level-input][aria-invalid="true"]:focus-visible{outline-color:var(--r
 }
 @media(min-width:1400px){
  .summary-page .journal .records{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+/* Match the two Latin glyph cells to the surrounding CJK attribute labels. */
+.record-chip .stat-hp{display:inline-grid;grid-template-columns:1fr 1fr;width:2em;width:2ic;vertical-align:baseline;position:relative;top:-.04em}
+.record-chip .stat-hp>span{font:inherit;text-align:center;line-height:inherit}
+/* One desktop content boundary across selection, setup, overview and recording. */
+/* Touch feedback ends immediately; retain transform/visibility for swipe rails. */
+@media(hover:none), (pointer:coarse){
+ button,summary{transition-property:transform,visibility}
+}
+.levels-page .toolbar>button:last-child{margin-left:0}
+@media(min-width:601px){
+ .levels-page .level-row{grid-template-columns:16px 48px 164px 140px;justify-content:start}
+ .levels-page .table-head{display:grid;grid-template-columns:264px 140px;justify-content:start;letter-spacing:0}
+ .levels-page .level-value{justify-content:flex-start}
+ .levels-page .level-error{text-align:left}
+}
+@media(min-width:1100px){
+ main{max-width:1760px}
+ header{padding-inline:max(24px,calc((100% - 1712px)/2))}
+ .levels-page .levels{max-width:none;width:100%}
+ .bottom-bar{width:min(calc(100% - 48px),760px)}
+ .select-page .character-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+ .record-layout{max-width:none;width:100%;grid-template-columns:minmax(260px,.7fr) minmax(0,1.3fr);gap:24px}
 }

@@ -154,7 +154,7 @@ function renderLevels() {
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
-  return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => stat === 'HP' ? '<span class="stat-hp">HP</span>' : stat).join(' · ')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
+  return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => stat === 'HP' ? '<span class="stat-hp" aria-label="HP"><span aria-hidden="true">H</span><span aria-hidden="true">P</span></span>' : stat).join(' · ')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
 }
 function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
@@ -484,6 +484,22 @@ app.addEventListener('click', e => {
   const level = e.target.closest('[data-initial-level]');
   if (level && !level.querySelector('input') && editingCharacters.has(level.dataset.initialLevel)) editInitialLevel(level);
 });
+// Native touch :active can outlive the gesture; own the visual press lifecycle.
+let touchPressedButton = null;
+function clearTouchPress() {
+  touchPressedButton?.classList.remove('touch-pressed');
+  touchPressedButton = null;
+}
+document.addEventListener('pointerdown', e => {
+  clearTouchPress();
+  if (e.pointerType === 'mouse') return;
+  const button = e.target.closest('button:not(:disabled)');
+  if (button) { touchPressedButton = button; button.classList.add('touch-pressed'); }
+}, true);
+document.addEventListener('pointerup', clearTouchPress, true);
+document.addEventListener('pointercancel', clearTouchPress, true);
+document.addEventListener('touchmove', clearTouchPress, { passive: true, capture: true });
+window.addEventListener('blur', clearTouchPress);
 document.addEventListener('click', e => {
   if (page !== 'summary' || !e.target.closest('button,summary,a,[role="button"]')) return;
   const rowId = e.target.closest('.journal')?.dataset.sortId;
