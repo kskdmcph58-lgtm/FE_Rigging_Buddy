@@ -398,13 +398,13 @@ window.CHARACTERS = [
   {
     "id": "c067",
     "name": "马兹",
-    "image": "assets/portraits/mars.png",
+    "image": "assets/portraits/mars.webp",
     "englishName": "Mars"
   },
   {
     "id": "c068",
     "name": "拉苦裟导师",
-    "image": "assets/portraits/raksha.png",
+    "image": "assets/portraits/raksha.webp",
     "englishName": "Raksha"
   },
   {
