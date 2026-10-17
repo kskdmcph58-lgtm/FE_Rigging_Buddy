@@ -62,7 +62,7 @@ window.CHARACTERS = [
   {
     "id": "c011",
     "name": "米迦艾拉",
-    "image": "assets/portraits/mikaela.png",
+    "image": "assets/portraits/mikaela.webp",
     "englishName": "Mikaela"
   },
   {
@@ -98,7 +98,7 @@ window.CHARACTERS = [
   {
     "id": "c017",
     "name": "蕾达",
-    "image": "assets/portraits/leda.png",
+    "image": "assets/portraits/leda.webp",
     "englishName": "Leda"
   },
   {
@@ -116,13 +116,13 @@ window.CHARACTERS = [
   {
     "id": "c020",
     "name": "穆",
-    "image": "assets/portraits/mu.png",
+    "image": "assets/portraits/mu.webp",
     "englishName": "Mu"
   },
   {
     "id": "c021",
     "name": "奥琳琵娅",
-    "image": "assets/portraits/olympia.png",
+    "image": "assets/portraits/olympia.webp",
     "englishName": "Olympia"
   },
   {
@@ -134,7 +134,7 @@ window.CHARACTERS = [
   {
     "id": "c023",
     "name": "盖茨",
-    "image": "assets/portraits/gaitz.png",
+    "image": "assets/portraits/gaitz.webp",
     "englishName": "Gaitz"
   },
   {
@@ -146,7 +146,7 @@ window.CHARACTERS = [
   {
     "id": "c025",
     "name": "杰斯塔",
-    "image": "assets/portraits/jester.png",
+    "image": "assets/portraits/jester.webp",
     "englishName": "Jester"
   },
   {
@@ -230,7 +230,7 @@ window.CHARACTERS = [
   {
     "id": "c039",
     "name": "哪吒",
-    "image": "assets/portraits/nezha.png",
+    "image": "assets/portraits/nezha.webp",
     "englishName": "Nezha"
   },
   {
@@ -392,7 +392,7 @@ window.CHARACTERS = [
   {
     "id": "c066",
     "name": "卡拉",
-    "image": "assets/portraits/kalla.png",
+    "image": "assets/portraits/kalla.webp",
     "englishName": "Kalla"
   },
   {
