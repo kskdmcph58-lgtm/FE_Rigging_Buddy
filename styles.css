@@ -385,7 +385,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible{outline-color:var(--r
 }
 /* Match the two Latin glyph cells to the surrounding CJK attribute labels. */
 .record-chip .stat-hp{display:inline-grid;grid-template-columns:1fr 1fr;width:2em;width:2ic;vertical-align:baseline;position:relative;top:-.04em}
-.record-chip .stat-hp>span{font:inherit;text-align:center;line-height:inherit}
+.record-chip .stat-hp>span{font:inherit;font-weight:500;text-align:center;line-height:inherit;transform:scaleX(1.4)}
 /* One desktop content boundary across selection, setup, overview and recording. */
 /* Touch feedback ends immediately; retain transform/visibility for swipe rails. */
 @media(hover:none), (pointer:coarse){
@@ -404,5 +404,5 @@ input[data-level-input][aria-invalid="true"]:focus-visible{outline-color:var(--r
  .levels-page .levels{max-width:none;width:100%}
  .bottom-bar{width:min(calc(100% - 48px),760px)}
  .select-page .character-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
- .record-layout{max-width:none;width:100%;grid-template-columns:minmax(260px,.7fr) minmax(0,1.3fr);gap:24px}
+ main.record-page{max-width:1180px}
 }
