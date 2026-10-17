@@ -39,9 +39,8 @@ button.danger{color:var(--red);border-color:#a85c56;background:#452f30}@media (h
 .record-chip.editable{padding-top:30px;border-style:dashed}
 .edit-pencil{position:absolute;top:5px;left:10px;z-index:2;color:var(--gold);font-size:20px!important;line-height:1}
 .record-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px 8px;background:rgba(65,69,71,.88);color:#f4efdf;font-size:18px!important;font-weight:600;pointer-events:none}
-.record-chip:is(.skipped,.upgraded)>div,.record-chip:is(.skipped,.upgraded)>strong{position:relative;z-index:1;color:var(--gold)}
-.record-chip:is(.skipped,.upgraded)>div>span{visibility:hidden}
-.record-chip.skipped>div,.record-chip.skipped>strong{visibility:hidden}
+.record-chip.upgraded>div,.record-chip.upgraded>strong{position:relative;z-index:1;color:var(--gold)}
+.record-chip.upgraded>div>span{visibility:hidden}
 .record-chip.upgraded{border-color:var(--gold)}
 .upgrade-overlay{background:#493e2b;color:#f0d79b}
 .record-chip.upgraded>div,.record-chip.upgraded>strong{color:#f0d79b}
