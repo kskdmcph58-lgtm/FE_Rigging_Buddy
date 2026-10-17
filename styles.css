@@ -181,3 +181,17 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
 /* Center the insertion marker in the 22px journal gap, including list ends. */
 .journal.drop-before::before{top:-13.5px}
 .journal.drop-after::after{bottom:-13.5px}
+/* Compact alert with a centered question and two equal action areas. */
+.confirm-dialog{width:min(288px,calc(100% - 48px));padding:0;overflow:hidden;border:1px solid #52615b66;border-radius:18px;background:#223332;color:var(--text);box-shadow:0 20px 64px #0006;font-family:system-ui,"Microsoft YaHei",sans-serif}
+.confirm-dialog::backdrop{background:#050c0d80;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.confirm-dialog h2{font-family:inherit;font-size:17px;font-weight:600;line-height:1.5;text-align:center;letter-spacing:0;margin:0;padding:28px 20px}
+.confirm-dialog form{display:grid;grid-template-columns:1fr 1fr;margin:0;border-top:1px solid #52615b80}
+.confirm-dialog button{min-width:0;min-height:50px;padding:12px;border:0;border-radius:0;background:transparent;color:var(--text);font-size:16px;font-weight:500;-webkit-tap-highlight-color:transparent}
+.confirm-dialog button+button{border-left:1px solid #52615b80}
+.confirm-dialog button.danger{background:transparent;color:#ff9b91;font-weight:600}
+.confirm-dialog button:focus-visible{outline:2px solid var(--gold);outline-offset:-5px;border-radius:6px}
+.confirm-dialog button:active{background:#ffffff0d}
+@media(hover:hover) and (pointer:fine){
+  .confirm-dialog button:hover{background:#ffffff0a}
+  .confirm-dialog button.danger:hover{background:#ef8b8012}
+}

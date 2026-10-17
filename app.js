@@ -229,12 +229,27 @@ function updateRecordControls() {
   const next = app.querySelector('[data-action="next"]');
   if (next) next.disabled = d.happy === null || !d.stats.length;
 }
-function deleteRecord() {
+function confirmRecordDeletion() {
+  return new Promise(resolve => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'confirm-dialog';
+    dialog.setAttribute('aria-labelledby', 'delete-confirm-title');
+    dialog.innerHTML = '<h2 id="delete-confirm-title">是否删除这条记录？</h2><form method="dialog"><button value="cancel" autofocus>返回</button><button class="danger" value="delete">删除</button></form>';
+    dialog.addEventListener('close', () => {
+      const confirmed = dialog.returnValue === 'delete';
+      dialog.remove();
+      resolve(confirmed);
+    }, { once: true });
+    document.body.append(dialog);
+    dialog.showModal();
+  });
+}
+async function deleteRecord() {
   const d = activeRecord;
   if (!d || d.editIndex === undefined) return;
   const item = state.roster.find(r => r.id === d.id);
   if (!item || !item.records[d.editIndex]) return;
-  if (d.editIndex !== item.records.length - 1 && !window.confirm('这不是该角色的最后一条记录。删除后，后续记录的等级将重新计算。确定删除这条记录吗？')) return;
+  if (!await confirmRecordDeletion() || activeRecord !== d) return;
   item.records.splice(d.editIndex, 1);
   renumberRecords(item);
   if (!item.records.length) editingCharacters.delete(item.id);
