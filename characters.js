@@ -362,7 +362,7 @@ window.CHARACTERS = [
   {
     "id": "c061",
     "name": "亚丝望",
-    "image": "assets/portraits/aswan.png",
+    "image": "assets/portraits/aswan.webp",
     "englishName": "Aswan"
   },
   {
