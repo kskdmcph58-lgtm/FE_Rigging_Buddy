@@ -44,19 +44,19 @@ window.CHARACTERS = [
   {
     "id": "c008",
     "name": "迪托利希",
-    "image": "assets/portraits/dietrich.png",
+    "image": "assets/portraits/dietrich.webp",
     "englishName": "Dietrich"
   },
   {
     "id": "c009",
     "name": "法毕欧",
-    "image": "assets/portraits/fabio.png",
+    "image": "assets/portraits/fabio.webp",
     "englishName": "Fabio"
   },
   {
     "id": "c010",
     "name": "艾丝梅拉尔达",
-    "image": "assets/portraits/esmeralda.png",
+    "image": "assets/portraits/esmeralda.webp",
     "englishName": "Esmeralda"
   },
   {
@@ -218,7 +218,7 @@ window.CHARACTERS = [
   {
     "id": "c037",
     "name": "爱娜特莉亚",
-    "image": "assets/portraits/anatolia.png",
+    "image": "assets/portraits/anatolia.webp",
     "englishName": "Anatolia"
   },
   {
@@ -410,7 +410,7 @@ window.CHARACTERS = [
   {
     "id": "c069",
     "name": "伊莉亚娜",
-    "image": "assets/portraits/iliana.jpeg",
+    "image": "assets/portraits/iliana.webp",
     "englishName": "Iliana"
   },
   {
