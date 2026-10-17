@@ -104,13 +104,13 @@ window.CHARACTERS = [
   {
     "id": "c018",
     "name": "巴卡尼亚",
-    "image": "assets/portraits/buccar.png",
+    "image": "assets/portraits/buccar.webp",
     "englishName": "Buccar"
   },
   {
     "id": "c019",
     "name": "西洛可",
-    "image": "assets/portraits/sirocco.png",
+    "image": "assets/portraits/sirocco.webp",
     "englishName": "Sirocco"
   },
   {
@@ -128,7 +128,7 @@ window.CHARACTERS = [
   {
     "id": "c022",
     "name": "贝特兰",
-    "image": "assets/portraits/bertrand.png",
+    "image": "assets/portraits/bertrand.webp",
     "englishName": "Bertrand"
   },
   {
@@ -152,7 +152,7 @@ window.CHARACTERS = [
   {
     "id": "c026",
     "name": "丹提",
-    "image": "assets/portraits/dante.png",
+    "image": "assets/portraits/dante.webp",
     "englishName": "Dante"
   },
   {
@@ -188,7 +188,7 @@ window.CHARACTERS = [
   {
     "id": "c032",
     "name": "谭利穆恩",
-    "image": "assets/portraits/talimun.png",
+    "image": "assets/portraits/talimun.webp",
     "englishName": "Talimun"
   },
   {
@@ -224,7 +224,7 @@ window.CHARACTERS = [
   {
     "id": "c038",
     "name": "沙兰",
-    "image": "assets/portraits/sha-lan.png",
+    "image": "assets/portraits/sha-lan.webp",
     "englishName": "Sha Lan"
   },
   {
@@ -242,7 +242,7 @@ window.CHARACTERS = [
   {
     "id": "c041",
     "name": "哈尔温",
-    "image": "assets/portraits/halvin.png",
+    "image": "assets/portraits/halvin.webp",
     "englishName": "Halvin"
   },
   {
