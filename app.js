@@ -486,11 +486,16 @@ app.addEventListener('click', e => {
 });
 // Native touch :active can outlive the gesture; own the visual press lifecycle.
 let touchPressedButton = null;
+document.documentElement.dataset.inputMode = matchMedia('(pointer:coarse)').matches ? 'touch' : 'mouse';
+document.addEventListener('keydown', e => {
+  if (!e.metaKey && !e.ctrlKey && !e.altKey) document.documentElement.dataset.inputMode = 'keyboard';
+}, true);
 function clearTouchPress() {
   touchPressedButton?.classList.remove('touch-pressed');
   touchPressedButton = null;
 }
 document.addEventListener('pointerdown', e => {
+  document.documentElement.dataset.inputMode = e.pointerType === 'mouse' ? 'mouse' : 'touch';
   clearTouchPress();
   if (e.pointerType === 'mouse') return;
   const button = e.target.closest('button:not(:disabled)');

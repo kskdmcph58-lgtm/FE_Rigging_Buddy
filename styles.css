@@ -333,7 +333,7 @@ button,summary,a,[role="button"],[data-initial-level]{-webkit-tap-highlight-colo
  .level-row strong{font-size:14px;max-width:none}
  .level-row>.level-value{gap:4px;font-size:12px}
  .level-row input{width:48px}
- .bottom-bar{width:calc(100% - 56px);padding:10px 12px}
+ .bottom-bar{width:calc(100% - 56px);padding:10px 12px;bottom:calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 4px 12px -3px #0009,0 1px 4px #0005,inset 0 1px 0 #ffffff08}
  .bottom-bar button{font-size:12px;white-space:nowrap}
  .bottom-bar button::after,.select-page .toolbar>button::after,.levels-page .toolbar>button::after{content:'';position:absolute;inset:-4px 0}
  #selected-count{font-size:12px;white-space:nowrap}
@@ -388,6 +388,8 @@ input[data-level-input][aria-invalid="true"]:focus-visible{outline-color:var(--r
 .record-chip .stat-hp>span{font:inherit;font-weight:500;text-align:center;line-height:inherit;transform:scaleX(1.4)}
 /* One desktop content boundary across selection, setup, overview and recording. */
 /* Touch feedback ends immediately; retain transform/visibility for swipe rails. */
+/* Keep autofocus functional without showing keyboard rings after touch input. */
+html[data-input-mode="touch"] :is(button,summary,a,[role="button"],[data-sort-id]):focus-visible{outline:none}
 @media(hover:none), (pointer:coarse){
  button,summary{transition-property:transform,visibility}
 }
