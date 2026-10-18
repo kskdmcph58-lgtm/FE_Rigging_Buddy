@@ -11,10 +11,12 @@ layout: null
   <link rel="stylesheet" href="styles.css?v={{ site.github.build_revision }}">
   <script defer src="characters.js?v={{ site.github.build_revision }}"></script>
   <script defer src="vendor/pinyin-pro.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="model.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="features.js?v={{ site.github.build_revision }}"></script>
   <script defer src="app.js?v={{ site.github.build_revision }}"></script>
 </head>
 <body>
-  <header><a class="brand" href="index.html"><span class="brand-mark">✦</span><span>Rigging Buddy<small>万缕千丝 · 升级凹点助手</small></span></a></header>
+  <header><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 40" width="32" height="40" fill="currentColor"><path d="M16 3C13 14 10 17 2 20c8 3 11 6 14 17 3-11 6-14 14-17C22 17 19 14 16 3Z"/></svg></span><span>Rigging Buddy<small>万缕千丝 · 升级凹点助手</small></span></a></header>
   <main id="app"></main>
   <input id="import-file" type="file" accept="application/json,.json" hidden>
   <div id="notice" role="status" aria-live="polite"></div>

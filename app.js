@@ -1,7 +1,8 @@
 const STATS = ['HP', '力量', '魔力', '速度', '技巧', '防守', '魔防', '幸运', '魅力'];
 const app = document.querySelector('#app');
 const characters = window.CHARACTERS;
-let state = { version: 1, roster: [], selection: [], initialLevels: {} };
+const M = window.RiggingModel;
+let state = { version: 2, roster: [], selection: [], initialLevels: {} };
 let activeRecord = null;
 let page = 'select';
 let query = '';
@@ -39,26 +40,11 @@ function showSearchHistory() {
   history.hidden = !searchHistory.length;
 }
 const editingCharacters = new Set();
-function nextLevel(item) { return (item.initialLevel ?? 0) + item.records.filter(r => !r.skipped).length + 1; }
-function renumberRecords(item) {
-  let level = (item.initialLevel ?? 0) + 1;
-  item.records.forEach(record => { record.level = level; if (!record.skipped) level++; });
-}
-function validate(data) {
-  if (data.version !== 1 || !Array.isArray(data.roster)) throw Error('备份格式不正确');
-  const ids = new Set();
-  for (const item of data.roster) {
-    if (!characters.some(c => c.id === item.id) || ids.has(item.id) || (item.initialLevel !== null && (!Number.isInteger(item.initialLevel) || item.initialLevel < 1)) || !Array.isArray(item.records)) throw Error('角色数据不正确');
-    ids.add(item.id);
-    let level = (item.initialLevel ?? 0) + 1;
-    item.records.forEach(r => {
-      if (r.level !== level || (r.skipped !== undefined && typeof r.skipped !== 'boolean') || (r.upgraded !== undefined && typeof r.upgraded !== 'boolean') || (r.skipped && r.upgraded) || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !STATS.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
-      if (!r.skipped) level++;
-    });
-  }
-  if (data.selection && (!Array.isArray(data.selection) || data.selection.some(id => !characters.some(c => c.id === id)))) throw Error('角色选择不正确');
-  if (data.initialLevels && (typeof data.initialLevels !== 'object' || data.initialLevels === null)) throw Error('初始等级不正确');
-}
+function nextLevel(item) { return M.nextLevel(item); }
+// A skipped attempt previews the level it attempted, but never advances it.
+function recordDisplayLevel(item, record) { return M.level(item, record) + (record.skipped ? 1 : 0); }
+function visibleRoster() { return state.roster.filter(item => !item.deleted); }
+function validate(data) { return M.migrate(data, characters.map(c => c.id)); }
 function levelLabel(item, level) { return item.initialLevel === null ? `LV +${level}` : `LV ${level}`; }
 function escapeValue(value) { return String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
 function validLevel(input) {
@@ -104,6 +90,7 @@ function portrait(c) {
   return `<img draggable="false" src="${image}" alt="" loading="lazy">`;
 }
 function render() {
+  hideExpectationTip();
   app.classList.toggle('summary-page', page === 'summary');
   app.classList.toggle('select-page', page === 'select');
   app.classList.toggle('levels-page', page === 'levels');
@@ -113,11 +100,13 @@ function render() {
   if (page === 'levels') renderLevels();
   if (page === 'summary') renderSummary();
   if (page === 'record') renderRecord();
+  refreshRowSelection();
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${state.roster.length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${visibleRoster().length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
   document.querySelector('#search').value = query;
+  if (!visibleRoster().length && state.roster.some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
   const searchInput = app.querySelector('#search');
   searchInput.name = 'rigging-buddy-character-search';
   searchInput.type = 'search';
@@ -136,8 +125,8 @@ function renderCards() {
   const list = searchCharacters(query);
   const grid = document.querySelector('#character-grid');
   if (!grid.children.length) grid.innerHTML = characters.map(c => {
-    const existing = state.roster.some(r => r.id === c.id), selected = state.selection.includes(c.id);
-    return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}>${portrait(c)}<span>${c.name}</span></button>`;
+    const existing = visibleRoster().some(r => r.id === c.id), selected = state.selection.includes(c.id);
+    return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}>${portrait(c)}<span>${c.name}</span>${state.roster.some(item => item.id === c.id && item.deleted) ? '<i>可恢复</i>' : ''}</button>`;
   }).join('') + '<p class="empty" hidden>没有找到这个名字，换个关键词试试。</p>';
   const matches = new Set(list.map(c => c.id));
   grid.querySelectorAll('[data-character]').forEach(card => { card.hidden = !matches.has(card.dataset.character); });
@@ -150,7 +139,7 @@ function updateSelectionCount() {
 }
 function renderLevels() {
   app.innerHTML =
-    `<section class="panel levels"><div class="toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button></div><div class="table-head"><span>角色</span><span>当前等级（可留空）</span></div>${state.selection.map((id, index) => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
@@ -160,22 +149,23 @@ function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
 function renderSummary() {
-  const total = state.roster.reduce((n, r) => n + r.records.length, 0);
-  const happy = state.roster.reduce((n, r) => n + r.records.filter(x => x.happy && !x.skipped).length, 0);
+  const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
+  const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && !x.skipped && !x.ratingPending).length, 0);
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${state.roster.length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button class="menu-danger" data-action="clear-skipped">清空已跳过</button><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div><div class="journals">${state.roster.map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete">撤回上次删除</button><button class="menu-danger" data-action="clear-skipped">清空已跳过</button><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
-        <div class="journal-head"><span class="drag-grip" aria-hidden="true">⠿</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p></div></div>
+        <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button><button class="danger" data-delete-character="${c.id}">删除</button></div>
-        <div class="records">${item.records.length ? item.records.map((r, recordIndex) => `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, r.level)}" class="record-chip ${r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, r.level)}</b><span>${ratingIcon(r.happy)}${r.happy ? '满意' : '不满意'}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, recordDisplayLevel(item, r))}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, recordDisplayLevel(item, r))}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
     template.innerHTML = markup;
     syncChildren(app, template.content);
   } else app.innerHTML = markup;
+  refreshRowSelection();
 }
 // Reconcile summary changes in place, retaining keyed journals and their images.
 function syncChildren(current, desired) {
@@ -215,7 +205,7 @@ function syncChildren(current, desired) {
   }
 }
 function start(id) {
-  activeRecord = { id, stats: [], happy: false };
+  activeRecord = newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
 }
 function rememberListPosition() {
@@ -230,10 +220,11 @@ function returnToSummary() {
 function renderRecord() {
   const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
   const editing = d.editIndex !== undefined;
-  const next = editing ? item.records[d.editIndex].level : nextLevel(item);
+  const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<h2>${c.name}</h2></div><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
+    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<h2>${c.name}</h2></div><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="rating-rule-note">${draftRuleNote(d)} <button data-action="recalculate">重新判定</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
   if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
+  updateRecordControls();
 }
 // Keep portraits and focused buttons mounted during record interactions.
 function updateRecordControls() {
@@ -252,7 +243,8 @@ function updateRecordControls() {
   });
   app.querySelector('[data-action="finish"]').disabled = d.happy === null && d.stats.length > 0;
   const next = app.querySelector('[data-action="next"]');
-  if (next) next.disabled = d.happy === null || !d.stats.length;
+  if (next) next.disabled = d.happy === null || (!d.stats.length && d.ratingSource !== 'manual' && !draftRule(d));
+  app.querySelector('.rating-rule-note').firstChild.textContent = `${draftRuleNote(d)} `;
 }
 function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除') {
   return new Promise(resolve => {
@@ -277,9 +269,8 @@ async function deleteRecord() {
   const item = state.roster.find(r => r.id === d.id);
   if (!item || !item.records[d.editIndex]) return;
   if (!await confirmRecordDeletion() || activeRecord !== d) return;
-  item.records.splice(d.editIndex, 1);
-  renumberRecords(item);
-  if (!item.records.length) editingCharacters.delete(item.id);
+  softDelete([item.records[d.editIndex]]);
+  if (!M.live(item).length) editingCharacters.delete(item.id);
   activeRecord = null;
   returnToSummary();
 }
@@ -287,20 +278,20 @@ function saveRecord(next) {
   const d = activeRecord;
   if (!d || (d.stats.length && d.happy === null)) return;
   const item = state.roster.find(r => r.id === d.id);
-  if (!d.stats.length) {
+  if (!d.stats.length && d.editIndex === undefined && d.ratingSource !== 'manual' && !draftRule(d)) {
     if (next) return;
     activeRecord = null;  notify(''); returnToSummary(); return;
   }
   if (d.editIndex !== undefined) {
-    item.records[d.editIndex] = { ...item.records[d.editIndex], stats: [...d.stats], happy: d.happy, updatedAt: new Date().toISOString() };
+    item.records[d.editIndex] = { ...item.records[d.editIndex], stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
   } else {
-    item.records.push({ level: nextLevel(item), stats: [...d.stats], happy: d.happy, createdAt: new Date().toISOString() });
+    item.records.push({ id: M.uid(), seq: M.nextSeq(item), stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', createdAt: new Date().toISOString() });
   }
   const id = d.id;
   activeRecord = null;
 
   if (next) {
-    activeRecord = { id, stats: [], happy: false };
+    activeRecord = newRecordDraft(id);
     const level = nextLevel(item);
     app.querySelector('.big-level').textContent = levelLabel(item, level);
     app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
@@ -342,7 +333,6 @@ app.addEventListener('submit', e => {
   if (!validLevel(input)) return;
   const item = state.roster.find(r => r.id === form.dataset.initialForm);
   item.initialLevel = input.value === '' ? null : Number(input.value);
-  renumberRecords(item);
   rememberListPosition(); returnToSummary();
 });
 let swipeGesture = null;
@@ -354,7 +344,7 @@ function sortTarget(x, y, source) {
   if (x < container.left || x > container.right) return null;
   let best = null, distance = Infinity;
   app.querySelectorAll(selector).forEach(card => {
-    if (card === source) return;
+    if (movingIds(source.dataset.sortId).includes(card.dataset.sortId)) return;
     const rect = card.getBoundingClientRect();
     const gap = y < rect.top ? rect.top - y : y > rect.bottom ? y - rect.bottom : 0;
     if (gap < distance) { distance = gap; best = card; }
@@ -389,7 +379,7 @@ function finishTouchSort(commit = false) {
   const { card, target, after } = touchSort;
   cancelAnimationFrame(touchSort.frame);
   if (commit && target) moveCard(card.dataset.sortId, target.dataset.sortId, after);
-  card.classList.remove('dragging');
+  clearMoving();
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   touchSort = null;
   suppressSwipeClickUntil = Date.now() + 400;
@@ -409,7 +399,7 @@ app.addEventListener('touchstart', e => {
   }
   swipeGesture = null;
   finishTouchSort();
-  if (!window.matchMedia('(max-width:600px)').matches || e.touches.length !== 1) {
+  if (e.touches.length !== 1) {
     swipeGesture = null;
     return;
   }
@@ -418,12 +408,12 @@ app.addEventListener('touchstart', e => {
   if (card && e.target.closest('.drag-grip')) {
     closeSwipeCards();
     touchSort = { card, target: null, after: false, identifier: e.touches[0].identifier, x: e.touches[0].clientX, y: e.touches[0].clientY };
-    card.classList.add('dragging');
+    markMoving(card.dataset.sortId);
     startSortScroll(touchSort);
     e.preventDefault();
     return;
   }
-  if (!card?.matches('.journal') || e.target.closest('input,[data-delete-character]')) return;
+  if (!matchMedia('(max-width:600px)').matches || multiSelectMode || !card?.matches('.journal') || e.target.closest('button,input,[data-delete-character]')) return;
   swipeGesture = { card, x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, horizontal: false };
 }, { passive: false });
 app.addEventListener('touchmove', e => {
@@ -472,6 +462,12 @@ app.addEventListener('click', e => {
     e.preventDefault(); e.stopImmediatePropagation();
   } else closeSwipeCards(open);
 }, true);
+app.addEventListener('click', e => {
+  const row = e.target.closest('[data-sort-id]');
+  if (!row || e.target.closest('button,input,select,summary,a,[role="button"],.drag-grip')) return;
+  if (matchMedia('(pointer:coarse)').matches && !multiSelectMode) return;
+  selectRow(row.dataset.sortId, e);
+});
 app.addEventListener('keydown', e => {
   if (!window.matchMedia('(max-width:600px)').matches) return;
   const card = e.target.closest('.journal');
@@ -531,6 +527,16 @@ document.addEventListener('keydown', e => {
 app.addEventListener('click', async e => {
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.rowSelect) { selectRow(b.dataset.rowSelect, { toggle: true, shiftKey:e.shiftKey, ctrlKey:e.ctrlKey, metaKey:e.metaKey }); return; }
+  if (b.dataset.expectationEdit) { openExpectationEditor([b.dataset.expectationEdit]); return; }
+  if (b.dataset.expectationDetail) { openExpectationDetails(b.dataset.expectationDetail); return; }
+  if (b.dataset.action === 'multi-select') { multiSelectMode = !multiSelectMode; if (!multiSelectMode) rowSelection.clear(); refreshRowSelection(); return; }
+  if (b.dataset.action === 'select-all-rows') { rowIds().forEach(id => rowSelection.add(id)); refreshRowSelection(); return; }
+  if (b.dataset.action === 'clear-row-selection') { rowSelection.clear(); selectionAnchor = null; refreshRowSelection(); return; }
+  if (b.dataset.action === 'invert-rows') { rowIds().forEach(id => rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id)); refreshRowSelection(); return; }
+  if (b.dataset.action === 'batch-expectation') { if (rowSelection.size) openExpectationEditor(rowIds().filter(id => rowSelection.has(id))); return; }
+  if (b.dataset.action === 'undo-delete') { undoDelete(); return; }
+  if (b.dataset.action === 'recalculate') { await applyDraftRating(activeRecord, true); updateRecordControls(); return; }
   if (b.hasAttribute('data-search-history')) {
     query = b.dataset.searchHistory;
     app.querySelector('#search').value = query;
@@ -564,11 +570,10 @@ app.addEventListener('click', async e => {
       } else {
         record.skipped = true;
       }
-      renumberRecords(item);
       returnToSummary();
       return;
     }
-    activeRecord = { id: b.dataset.edit, editIndex: index, stats: [...record.stats], happy: record.happy };
+    activeRecord = { id: b.dataset.edit, editIndex: index, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
      page = 'record'; render(); window.scrollTo(0, 0);
   }
   if (b.dataset.toggleEdit) {
@@ -579,7 +584,7 @@ app.addEventListener('click', async e => {
   if (b.dataset.deleteCharacter) {
     const id = b.dataset.deleteCharacter;
     if (!await confirmRecordDeletion(`是否删除${char(id).name}？`)) return;
-    state.roster = state.roster.filter(item => item.id !== id);
+    softDelete([state.roster.find(item => item.id === id)]);
     state.selection = state.selection.filter(selected => selected !== id);
     delete state.initialLevels[id];
     editingCharacters.delete(id);
@@ -589,6 +594,12 @@ app.addEventListener('click', async e => {
     const id = b.dataset.character;
     state.selection = state.selection.includes(id) ? state.selection.filter(x => x !== id) : [...state.selection, id];
     const selected = state.selection.includes(id);
+    const archived = state.roster.find(item => item.id === id && item.deleted);
+    if (selected && archived) {
+      if (!Object.hasOwn(state.initialLevels,id)) state.initialLevels[id] = archived.initialLevel ?? '';
+      state.draftExpectations ||= {};
+      if (!Object.hasOwn(state.draftExpectations,id)) state.draftExpectations[id] = M.copy(M.ruleAt(archived, M.nextSeq(archived)));
+    }
     b.classList.toggle('selected', selected);
     b.setAttribute('aria-pressed', String(selected));
     updateSelectionCount();
@@ -601,27 +612,24 @@ app.addEventListener('click', async e => {
   if (b.dataset.stat) {
     const d = activeRecord, s = b.dataset.stat;
     d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
-    d.happy = d.stats.length === 4 ? null : d.stats.length >= 5;
+    await applyDraftRating(d);
     updateRecordControls();
   }
-  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; updateRecordControls(); }
+  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.ratingSource = 'manual'; activeRecord.keepManual = false; updateRecordControls(); }
   const action = b.dataset.action;
   if (action === 'clear-skipped') {
-    if (!state.roster.some(item => item.records.some(record => record.skipped))) { notify('暂无已跳过记录'); return; }
+    if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) { notify('暂无已跳过记录'); return; }
     if (!await confirmRecordDeletion('是否清空所有已跳过记录？', '清空')) return;
-    state.roster.forEach(item => {
-      item.records = item.records.filter(record => !record.skipped);
-      renumberRecords(item);
-    });
+    softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
     rememberListPosition(); returnToSummary(); return;
   }
-  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？', '清空')) return;
+  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？自定义属性期望将保留。', '清空')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (action === 'reset') { state = { version: 1, roster: [], selection: [], initialLevels: {} }; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
+  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
-    state.roster.forEach(item => { item.records = []; });
+    softDelete(visibleRoster().flatMap(item => M.live(item)));
     editingCharacters.clear(); activeRecord = null;
     rememberListPosition(); returnToSummary();
   }
@@ -638,7 +646,15 @@ app.addEventListener('click', async e => {
   if (action === 'create') {
     const inputs = [...document.querySelectorAll('[data-level]')];
     if (inputs.some(i => !validLevel(i))) return;
-    inputs.forEach(i => state.roster.push({ id: i.dataset.level, initialLevel: i.value === '' ? null : Number(i.value), records: [] }));
+    inputs.forEach(i => {
+      const id = i.dataset.level, existing = state.roster.find(item => item.id === id);
+      const item = existing || { id, records: [] };
+      item.initialLevel = i.value === '' ? null : Number(i.value);
+      delete item.deleted; delete item.deletedAt; delete item.deletionBatch;
+      if (state.draftExpectations && Object.hasOwn(state.draftExpectations, id)) M.setRule(item, M.nextSeq(item), state.draftExpectations[id], false);
+      if (!existing) state.roster.push(item);
+    });
+    state.draftExpectations = {};
     state.selection = []; state.initialLevels = {};  page = 'summary'; render();
   }
   if (action === 'next' || action === 'finish') saveRecord(action === 'next');
@@ -651,11 +667,12 @@ app.addEventListener('click', async e => {
 async function importFile(file) {
   if (!file) return;
   try {
-    const data = JSON.parse(await file.text()); validate(data);
-    state = { version: 1, roster: data.roster, selection: data.selection || [], initialLevels: data.initialLevels || {} };
+    const data = validate(JSON.parse(await file.text()));
+    state = data;
+    clearRowSelection();
     editingCharacters.clear();
     activeRecord = null;
-    page = state.roster.length ? 'summary' : state.selection.length ? 'levels' : 'select';
+    page = visibleRoster().length ? 'summary' : state.selection.length ? 'levels' : 'select';
     render(); window.scrollTo(0, 0); notify('');
   } catch { notify('无法导入：文件不是有效的 Rigging Buddy 备份。当前数据未修改。'); }
   document.querySelector('#import-file').value = '';
@@ -667,7 +684,7 @@ function finishMouseSort(commit = false) {
   const gesture = mouseSort;
   cancelAnimationFrame(gesture.frame);
   if (gesture.started && commit && gesture.target) moveCard(gesture.card.dataset.sortId, gesture.target.dataset.sortId, gesture.after);
-  gesture.card.classList.remove('dragging');
+  clearMoving();
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   if (app.hasPointerCapture(gesture.pointerId)) app.releasePointerCapture(gesture.pointerId);
   if (gesture.started) suppressSwipeClickUntil = Date.now() + 400;
@@ -676,7 +693,7 @@ function finishMouseSort(commit = false) {
 app.addEventListener('pointerdown', e => {
   if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,input,summary,[data-initial-level]')) return;
   const card = e.target.closest('[data-sort-id]');
-  if (!card) return;
+  if (!card || !e.target.closest('.drag-grip')) return;
   mouseSort = { card, pointerId: e.pointerId, x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, started: false };
   app.setPointerCapture(e.pointerId);
   e.preventDefault();
@@ -686,7 +703,7 @@ app.addEventListener('pointermove', e => {
   mouseSort.x = e.clientX; mouseSort.y = e.clientY;
   if (!mouseSort.started && Math.hypot(e.clientX - mouseSort.startX, e.clientY - mouseSort.startY) >= 5) {
     mouseSort.started = true;
-    mouseSort.card.classList.add('dragging');
+    markMoving(mouseSort.card.dataset.sortId);
     startSortScroll(mouseSort);
   }
   if (mouseSort.started) { e.preventDefault(); updateSortMarker(mouseSort); }
@@ -697,27 +714,30 @@ window.addEventListener('blur', () => { finishMouseSort(); finishTouchSort(); })
 function isAfter(event, card) { const rect = card.getBoundingClientRect(); return event.clientY >= rect.top + rect.height / 2; }
 function clearDrag() {
   dragId = null;
+  clearMoving();
   document.querySelectorAll('.dragging,.drop-before,.drop-after,.drag-over').forEach(el => el.classList.remove('dragging', 'drop-before', 'drop-after', 'drag-over'));
 }
 function moveCard(id, targetId, after = false) {
   const list = page === 'levels' ? state.selection : state.roster;
   const getId = x => typeof x === 'string' ? x : x.id;
-  const from = list.findIndex(x => getId(x) === id), to = list.findIndex(x => getId(x) === targetId);
-  if (from < 0 || to < 0 || from === to) return;
-  const [moved] = list.splice(from, 1);
-  const targetIndex = list.findIndex(x => getId(x) === targetId);
-  list.splice(targetIndex + (after ? 1 : 0), 0, moved);
-  const movedCard = app.querySelector(`[data-sort-id="${id}"]`);
+  const ids = movingIds(id);
+  if (ids.includes(targetId) || !list.some(x => getId(x) === targetId)) return;
+  const moved = list.filter(x => ids.includes(getId(x))), remaining = list.filter(x => !ids.includes(getId(x)));
+  const targetIndex = remaining.findIndex(x => getId(x) === targetId);
+  remaining.splice(targetIndex + (after ? 1 : 0), 0, ...moved);
+  list.splice(0, list.length, ...remaining);
   const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);
-  targetCard.parentNode.insertBefore(movedCard, after ? targetCard.nextSibling : targetCard);
+  const anchor = after ? targetCard.nextSibling : targetCard;
+  moved.forEach(item => targetCard.parentNode.insertBefore(app.querySelector(`[data-sort-id="${getId(item)}"]`), anchor));
+  refreshRowSelection();
 }
 app.addEventListener('dragstart', e => {
   if (touchSort || mouseSort) { e.preventDefault(); return; }
   const card = e.target.closest('[data-sort-id]');
-  if (!card || e.target.closest('button,input,[data-initial-level]')) { e.preventDefault(); return; }
+  if (!card || !e.target.closest('.drag-grip')) { e.preventDefault(); return; }
   dragId = card.dataset.sortId;
   e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId);
-  card.classList.add('dragging');
+  markMoving(card.dataset.sortId);
 });
 document.addEventListener('dragover', e => {
   const zone = e.target.closest('.import-zone');
@@ -762,7 +782,10 @@ app.addEventListener('keydown', e => {
   }
   if (!e.altKey || !['ArrowUp', 'ArrowDown'].includes(e.key) || !e.target.matches('[data-sort-id]')) return;
   e.preventDefault();
-  const cards = [...app.querySelectorAll('[data-sort-id]')], index = cards.indexOf(e.target);
+  const ids = movingIds(e.target.dataset.sortId);
+  const cards = [...app.querySelectorAll('[data-sort-id]')];
+  const selectedIndices = cards.map((c,i) => ids.includes(c.dataset.sortId) ? i : -1).filter(i => i >= 0);
+  const index = e.key === 'ArrowUp' ? Math.min(...selectedIndices) : Math.max(...selectedIndices);
   const target = cards[index + (e.key === 'ArrowUp' ? -1 : 1)];
   if (!target) return;
   const id = e.target.dataset.sortId; moveCard(id, target.dataset.sortId, e.key === 'ArrowDown');
@@ -773,7 +796,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (dragId || mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value) return false;
+  if (dragId || mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
@@ -792,13 +815,14 @@ function restoreAfterAppUpdate() {
     if (!saved || saved.schema !== 1 || Date.now() - saved.savedAt > 24 * 60 * 60 * 1000) return;
     // A versioned update navigation must be present; ordinary visits start normally.
     if (new URL(window.location.href).searchParams.get('v') !== saved.revision) return;
-    validate(saved.state);
+    saved.state = validate(saved.state);
     if (!['select', 'levels', 'summary', 'record'].includes(saved.page) || typeof saved.query !== 'string' || !Array.isArray(saved.editingCharacters)) return;
     const d = saved.activeRecord;
     if (saved.page === 'record') {
       const item = saved.state.roster.find(r => r.id === d?.id);
       if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return;
       if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return;
+      d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
     }
     state = saved.state;
     page = saved.page;
