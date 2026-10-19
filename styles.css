@@ -9,6 +9,11 @@ button.record-chip{text-align:left;width:100%;min-width:0}@media (hover:hover) a
 [data-sort-id]:active{cursor:grabbing}
 .drag-grip{color:var(--muted);font-size:24px;user-select:none;flex-shrink:0}
 .dragging{opacity:.35}
+#drag-preview{position:fixed;width:min(240px,calc(100vw - 60px));height:68px;z-index:30;pointer-events:none;opacity:.78}
+.drag-preview-card{position:absolute;inset:0;transform:translate(calc(var(--layer)*12px),calc(var(--layer)*22px));display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #718078;border-radius:12px;background:#253c3a;box-shadow:0 8px 22px #0005;color:var(--text)}
+.drag-preview-card img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#314643}
+.drag-preview-card strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.sorting-cards,body.sorting-cards *{cursor:grabbing!important}
 .drop-target{outline:2px solid var(--gold);outline-offset:3px;background:#35463b}
 .import-zone{border:1px dashed #8c9b86;background:#21332e66;min-width:112px}
 .import-zone.drag-over{background:#3b5244;border:1px dashed var(--gold)}
@@ -172,7 +177,6 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
   .journal-head{flex-wrap:nowrap;gap:8px;align-self:center}
   .journal-head img{width:58px;height:58px;flex-shrink:0}
   .journal-head .drag-grip{display:flex;align-items:center;justify-content:center;width:16px;min-height:44px;touch-action:none;-webkit-user-select:none;user-select:none}
-  .journal.dragging{opacity:.55}
   .journal.drop-before,.journal.drop-after{overflow:visible}
   .journal-info{flex:1;min-width:0}
   .journal-head h2{font-size:16px;overflow-wrap:anywhere}
@@ -185,9 +189,6 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
   .journal.swipe-open [data-delete-character]{visibility:visible;transform:translateX(0)}
 }
 @media(prefers-reduced-motion:reduce){.journal-head,.journal .records,.journal-actions>button{transition:none}}
-/* Center the insertion marker in the 22px journal gap, including list ends. */
-.journal.drop-before::before{top:-13.5px}
-.journal.drop-after::after{bottom:-13.5px}
 /* All modal dialogs share one surface and action hierarchy. */
 .app-dialog{padding:0;max-height:90vh;max-height:90dvh;overflow:hidden;border:1px solid #52615b;border-radius:18px;background:#1d3031;color:var(--text);box-shadow:0 20px 64px #0007;font-family:system-ui,"Microsoft YaHei",sans-serif}
 .app-dialog::backdrop{background:#050c0d99;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}

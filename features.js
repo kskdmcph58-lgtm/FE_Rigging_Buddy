@@ -53,14 +53,38 @@ function selectRow(id, event = {}) {
 function movingIds(id) { return rowSelection.has(id) ? rowIds().filter(value => rowSelection.has(value)) : [id]; }
 function markMoving(id) {
   const ids = movingIds(id);
+  document.querySelector('#drag-preview')?.remove();
+  const preview = document.createElement('div');
+  preview.id = 'drag-preview'; preview.setAttribute('aria-hidden', 'true'); preview.inert = true;
+  // Keep document order, with the first selected character in front.
+  ids.slice(0, 4).forEach((value, index) => {
+    const layer = document.createElement('div'); layer.className = 'drag-preview-card';
+    layer.style.setProperty('--layer', index); layer.style.zIndex = 4 - index;
+    const character = char(value);
+    layer.innerHTML = `${portrait(character)}<strong>${escapeValue(character.name)}</strong>`;
+    preview.append(layer);
+  });
+  document.body.append(preview);
+  document.body.classList.add('sorting-cards');
   app.querySelectorAll('[data-sort-id]').forEach(row => row.classList.toggle('dragging', ids.includes(row.dataset.sortId)));
   let badge = document.querySelector('#drag-count');
   if (!badge) { badge = document.createElement('div'); badge.id = 'drag-count'; badge.setAttribute('role','status'); document.body.append(badge); }
   badge.textContent = `移动 ${ids.length} 位角色`;
 }
-function clearMoving() { document.querySelector('#drag-count')?.remove(); app.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging')); }
+function positionDragPreview(x, y) {
+  const preview = document.querySelector('#drag-preview'); if (!preview) return;
+  const width = preview.offsetWidth + (preview.children.length - 1) * 12;
+  const height = 68 + (preview.children.length - 1) * 22;
+  preview.style.left = `${Math.max(8, Math.min(x + 18, innerWidth - width - 8))}px`;
+  preview.style.top = `${Math.max(8, Math.min(y + 18, innerHeight - height - 8))}px`;
+}
+function clearMoving() {
+  document.querySelector('#drag-count')?.remove(); document.querySelector('#drag-preview')?.remove();
+  document.body.classList.remove('sorting-cards');
+  app.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+}
 
-// Pointer selection is independent of grip-based sorting and touch scrolling.
+// Pointer selection excludes sorting targets and interactive controls.
 let marquee = null;
 function refreshCharacterSelection() {
   app.querySelectorAll('[data-character]').forEach(card=>{

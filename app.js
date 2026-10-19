@@ -193,7 +193,7 @@ function updateSelectionCount() {
 }
 function renderLevels() {
   app.innerHTML =
-    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="true" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
@@ -209,7 +209,7 @@ function renderSummary() {
     `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete">撤回上次删除</button><button class="menu-danger" data-action="clear-skipped">清空已跳过</button><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
-      return `<article class="journal panel" draggable="true" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
+      return `<article class="journal panel" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button><button class="danger" data-delete-character="${c.id}">删除</button></div>
         <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, recordDisplayLevel(item, r))}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, recordDisplayLevel(item, r))}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
@@ -406,6 +406,7 @@ function sortTarget(x, y, source) {
   return best;
 }
 function updateSortMarker(gesture) {
+  positionDragPreview(gesture.x, gesture.y);
   const target = sortTarget(gesture.x, gesture.y, gesture.card);
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   gesture.target = target;
@@ -463,6 +464,7 @@ app.addEventListener('touchstart', e => {
     closeSwipeCards();
     touchSort = { card, target: null, after: false, identifier: e.touches[0].identifier, x: e.touches[0].clientX, y: e.touches[0].clientY };
     markMoving(card.dataset.sortId);
+    positionDragPreview(touchSort.x, touchSort.y);
     startSortScroll(touchSort);
     e.preventDefault();
     return;
@@ -733,7 +735,6 @@ async function importFile(file) {
   document.querySelector('#import-file').value = '';
 }
 document.querySelector('#import-file').addEventListener('change', e => importFile(e.target.files[0]));
-let dragId = null;
 function finishMouseSort(commit = false) {
   if (!mouseSort) return;
   const gesture = mouseSort;
@@ -771,9 +772,8 @@ app.addEventListener('pointermove', e => {
 app.addEventListener('pointerup', e => { if (mouseSort?.pointerId === e.pointerId) finishMouseSort(true); });
 app.addEventListener('pointercancel', () => finishMouseSort());
 window.addEventListener('blur', () => { finishMouseSort(); finishTouchSort(); });
-function isAfter(event, card) { const rect = card.getBoundingClientRect(); return event.clientY >= rect.top + rect.height / 2; }
 function clearDrag() {
-  dragId = null;
+  finishMouseSort(); finishTouchSort();
   clearMoving();
   document.querySelectorAll('.dragging,.drop-before,.drop-after,.drag-over').forEach(el => el.classList.remove('dragging', 'drop-before', 'drop-after', 'drag-over'));
 }
@@ -791,27 +791,13 @@ function moveCard(id, targetId, after = false) {
   moved.forEach(item => targetCard.parentNode.insertBefore(app.querySelector(`[data-sort-id="${getId(item)}"]`), anchor));
   refreshRowSelection();
 }
-app.addEventListener('dragstart', e => {
-  if (touchSort || mouseSort) { e.preventDefault(); return; }
-  const card = mouseSortTarget(e.target);
-  if (!card) { e.preventDefault(); return; }
-  dragId = card.dataset.sortId;
-  e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId);
-  markMoving(card.dataset.sortId);
-});
+// Sorting uses pointer/touch gestures only. Native DnD remains for backup files.
+app.addEventListener('dragstart', e => { e.preventDefault(); });
 document.addEventListener('dragover', e => {
+  if (!Array.from(e.dataTransfer.types).includes('Files')) return;
+  e.preventDefault();
   const zone = e.target.closest('.import-zone');
-  const source = dragId && app.querySelector(`[data-sort-id="${dragId}"]`);
-  const card = source ? sortTarget(e.clientX, e.clientY, source) : null;
-  if (zone && Array.from(e.dataTransfer.types).includes('Files')) {
-    e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; zone.classList.add('drag-over');
-  } else if (dragId && card) {
-    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-    document.querySelectorAll('.drop-before,.drop-after').forEach(el => el.classList.remove('drop-before', 'drop-after'));
-    if (card.dataset.sortId !== dragId) card.classList.add(isAfter(e, card) ? 'drop-after' : 'drop-before');
-    if (e.clientY < 70) window.scrollBy(0, -20);
-    else if (e.clientY > innerHeight - 70) window.scrollBy(0, 20);
-  } else if (Array.from(e.dataTransfer.types).includes('Files')) e.preventDefault();
+  if (zone) { e.dataTransfer.dropEffect = 'copy'; zone.classList.add('drag-over'); }
 });
 document.addEventListener('dragleave', e => {
   const zone = e.target.closest('.import-zone');
@@ -820,13 +806,17 @@ document.addEventListener('dragleave', e => {
 document.addEventListener('drop', e => {
   e.preventDefault();
   const zone = e.target.closest('.import-zone');
-  const source = dragId && app.querySelector(`[data-sort-id="${dragId}"]`);
-  const card = source ? sortTarget(e.clientX, e.clientY, source) : null;
   if (zone && e.dataTransfer.files.length) importFile(e.dataTransfer.files[0]);
-  else if (dragId && card) moveCard(dragId, card.dataset.sortId, isAfter(e, card));
-  clearDrag();
+  document.querySelectorAll('.import-zone.drag-over').forEach(el => el.classList.remove('drag-over'));
 });
-document.addEventListener('dragend', clearDrag);
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.import-zone.drag-over').forEach(el => el.classList.remove('drag-over'));
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && (mouseSort || touchSort)) {
+    finishMouseSort(); finishTouchSort(); e.preventDefault();
+  }
+});
 app.addEventListener('keydown', e => {
   if (e.target.id === 'search' && ['Enter', 'Escape'].includes(e.key) && !e.isComposing) {
     e.preventDefault();
@@ -856,7 +846,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (dragId || mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
+  if (mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
