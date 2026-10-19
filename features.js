@@ -12,6 +12,7 @@ function refreshRowSelection() {
   if (selectionPage !== page) { clearRowSelection(); selectionPage = page; }
   const ids = rowIds();
   for (const id of rowSelection) if (!ids.includes(id)) rowSelection.delete(id);
+  if (rowSelection.size) multiSelectMode = true;
   app.classList.toggle('multi-select-mode', multiSelectMode);
   app.querySelectorAll('[data-sort-id]').forEach(row => {
     const selected = rowSelection.has(row.dataset.sortId);
