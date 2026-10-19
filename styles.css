@@ -1158,6 +1158,11 @@ main.has-bottom-bar {
   color: var(--muted);
   line-height: 1.4;
 }
+.record-level-transition,
+.record-target-level,
+.stats-growth {
+  display: none;
+}
 .ratings {
   margin-top: 16px;
 }
@@ -3263,6 +3268,140 @@ html[data-input-mode="touch"] button.expectation-link {
 }
 .expand-records {
   display: none;
+}
+@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  body:has(main.record-page)>header {
+    display: none;
+  }
+  main.record-page {
+    min-height: 100dvh;
+  }
+  .record-page .record-layout {
+    display: block;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  .record-page .record-layout>.hero,
+  .record-page .desktop-stat-title {
+    display: none;
+  }
+  .record-page .stat-heading .record-character {
+    display: flex;
+  }
+  .record-page .record-level-current,
+  .record-page .heading-growth {
+    display: none;
+  }
+  .record-page .record-level-transition {
+    display: inline;
+    white-space: nowrap;
+  }
+  .record-page .record-target-level {
+    display: block;
+    color: var(--gold);
+    font: 28px/1.2 var(--font-display);
+  }
+  .record-page .stats-growth {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: 8px;
+    color: var(--gold);
+    gap: 3px;
+  }
+}
+@media(max-width:1100px) and (max-height:500px) and (orientation:landscape) and (pointer:coarse),
+      (max-width:600px) and (max-height:500px) and (orientation:landscape) {
+  main.record-page {
+    padding: 8px 12px;
+  }
+  .record-page .back {
+    min-height: 32px;
+    height: 32px;
+    padding: 5px 10px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .record-page .record-layout {
+    max-width: none;
+  }
+  .record-page .stat-panel {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) clamp(210px,30vw,260px);
+    grid-template-rows: minmax(40px,auto) auto auto auto;
+    gap: 8px 16px;
+    padding: 10px;
+  }
+  .record-page .stat-heading {
+    grid-column: 2;
+    grid-row: 1;
+    border: 0;
+    padding: 0;
+  }
+  .record-page .record-character {
+    gap: 8px;
+  }
+  .record-page .record-character img {
+    width: 36px;
+    height: 36px;
+  }
+  .record-page .stat-heading .record-character h2 {
+    font-size: 16px;
+  }
+  .record-page .record-level {
+    margin-top: 2px;
+  }
+  .record-page .stats {
+    grid-column: 1;
+    grid-row: 1/5;
+    grid-template-rows: repeat(5,minmax(36px,1fr));
+    grid-auto-rows: 36px;
+    align-content: stretch;
+    gap: 0 16px;
+    margin: 0;
+  }
+  .record-page .stat {
+    min-height: 36px;
+    height: 100%;
+    padding: 6px 8px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .record-page .rating-rule-note {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+  }
+  .record-page .ratings {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+    gap: 8px;
+  }
+  .record-page .ratings button {
+    min-height: 40px;
+    padding: 6px;
+    font-size: 13px;
+    gap: 4px;
+  }
+  .record-page .ratings .rating-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .record-page .record-actions {
+    grid-column: 2;
+    grid-row: 4;
+    flex-direction: column;
+    margin: 0;
+    gap: 8px;
+  }
+  .record-page .record-actions button {
+    flex: none;
+    min-height: 40px;
+    padding: 8px;
+  }
 }
 @media(min-width:601px) {
   .journal .expand-records {

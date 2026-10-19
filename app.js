@@ -444,7 +444,7 @@ function renderRecord() {
   const editing = d.editIndex !== undefined;
   const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level">${levelLabel(item, next)}</p></div></div><span class="growth-total" aria-live="polite"><strong>+${d.stats.length}</strong><small> 点</small></span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
+    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong><small> 点</small></span></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong><small> 点</small></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
   if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
   updateRecordControls();
 }
@@ -457,15 +457,15 @@ function updateRecordControls() {
     button.setAttribute('aria-pressed', String(selected));
     button.querySelector('b').textContent = selected ? '+1' : '—';
   });
-  app.querySelector('.growth-total strong').textContent = `+${d.stats.length}`;
+  app.querySelectorAll('.growth-total strong').forEach(total => { total.textContent = `+${d.stats.length}`; });
   app.querySelectorAll('[data-rating]').forEach(button => {
     const selected = d.happy === (button.dataset.rating === 'happy');
     button.classList.toggle('chosen', selected);
     button.setAttribute('aria-pressed', String(selected));
   });
-  app.querySelector('[data-action="finish"]').disabled = d.happy === null && d.stats.length > 0;
+  app.querySelector('[data-action="finish"]').disabled = d.happy === null;
   const next = app.querySelector('[data-action="next"]');
-  if (next) next.disabled = d.happy === null || (!d.stats.length && d.ratingSource !== 'manual' && !draftRule(d));
+  if (next) next.disabled = d.happy === null;
 }
 function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除', description = '') {
   return new Promise(resolve => {
@@ -505,14 +505,10 @@ async function deleteRecord() {
 }
 function saveRecord(next) {
   const d = activeRecord;
-  if (!d || (d.stats.length && d.happy === null)) return;
+  if (!d || d.happy === null) return;
   const item = state.roster.find(r => r.id === d.id);
   if (d.editIndex === undefined && (M.nextSeq(item) > M.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= M.limits.records)) {
     notify('记录已达上限，请导出备份'); return;
-  }
-  if (!d.stats.length && d.editIndex === undefined && d.ratingSource !== 'manual' && !draftRule(d)) {
-    if (next) return;
-    activeRecord = null;  notify(''); returnToSummary(); return;
   }
   if (d.editIndex !== undefined) {
     item.records[d.editIndex] = { ...item.records[d.editIndex], stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
@@ -527,7 +523,9 @@ function saveRecord(next) {
     const level = nextLevel(item);
     app.querySelector('.big-level').textContent = levelLabel(item, level);
     app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
-    app.querySelector('.record-level').textContent = levelLabel(item, level);
+    app.querySelector('.record-level-current').textContent = levelLabel(item, level);
+    app.querySelector('.record-level-transition').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
+    app.querySelector('.record-target-level').textContent = levelLabel(item, level);
     hideExpectationTip();
     updateRecordControls();
   } else {
