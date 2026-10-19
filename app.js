@@ -299,13 +299,21 @@ function updateRecordControls() {
   const next = app.querySelector('[data-action="next"]');
   if (next) next.disabled = d.happy === null || (!d.stats.length && d.ratingSource !== 'manual' && !draftRule(d));
 }
-function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除') {
+function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除', description = '') {
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog confirm-dialog';
     dialog.setAttribute('aria-labelledby', 'delete-confirm-title');
     dialog.innerHTML = '<h2 id="delete-confirm-title">是否删除这条记录？</h2><form method="dialog"><button value="cancel" autofocus>返回</button><button class="danger" value="delete">删除</button></form>';
     dialog.querySelector('h2').textContent = question;
+    if (description) {
+      const detail = document.createElement('p');
+      detail.id = 'delete-confirm-description'; detail.className = 'confirm-description';
+      detail.textContent = description;
+      dialog.querySelector('h2').after(detail);
+      dialog.classList.add('has-description');
+      dialog.setAttribute('aria-describedby', detail.id);
+    }
     dialog.querySelector('.danger').textContent = actionLabel;
     dialog.addEventListener('close', () => {
       const confirmed = dialog.returnValue === 'delete';
@@ -680,7 +688,7 @@ app.addEventListener('click', async e => {
     softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
     rememberListPosition(); returnToSummary(); return;
   }
-  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？自定义属性期望将保留。', '清空')) return;
+  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }

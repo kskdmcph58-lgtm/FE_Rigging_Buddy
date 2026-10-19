@@ -196,6 +196,8 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
 .app-dialog button{min-width:0;min-height:36px;padding:7px 12px;border:1px solid #53605a;border-radius:8px;font:13px/20px system-ui,"Microsoft YaHei",sans-serif}
 .confirm-dialog{width:min(400px,calc(100% - 32px));overflow-y:auto}
 .confirm-dialog h2{padding:24px}
+.confirm-dialog.has-description h2{padding-bottom:8px}
+.confirm-description{margin:0;padding:0 24px 24px;font:400 14px/1.6 system-ui,"Microsoft YaHei",sans-serif;color:var(--muted)}
 .confirm-dialog form{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:12px;margin:0;padding:16px 24px;background:#223332;border-top:1px solid var(--line)}
 .confirm-dialog button{min-width:64px}
 .confirm-dialog button.danger{background:#743e39;border-color:#a85b52;color:#ffe3dc;font-weight:600}
@@ -204,6 +206,7 @@ button.record-chip{display:flex;flex-direction:column;align-items:stretch;justif
 @media(max-width:600px){
  .app-dialog h2{font-size:18px}
  .confirm-dialog h2{padding:20px 16px}
+ .confirm-description{padding:0 16px 20px}
  .confirm-dialog form{padding:16px;gap:12px}
  .app-dialog button{font-size:12px}
  .confirm-dialog button{position:relative}
