@@ -3,6 +3,7 @@ const app = document.querySelector('#app');
 const characters = window.CHARACTERS;
 const M = window.RiggingModel;
 const LOCAL_STATE_KEY = `rigging-buddy:save:${new URL('.', location.href).pathname}`;
+const LOCAL_PAGE_KEY = `${LOCAL_STATE_KEY}:page`;
 const trackedObjects = new WeakMap();
 let localSaveTimer, storageReady = false, storageBlocked = false, storageWarning = false, lastLocalSave = null;
 function trackState(value) {
@@ -39,7 +40,13 @@ function restoreLocalState() {
     lastLocalSave=localStorage.getItem(LOCAL_STATE_KEY);
     if(lastLocalSave) {
       state=trackState(validate(JSON.parse(lastLocalSave)));
-      page=state.selection.length?'levels':visibleRoster().length?'summary':'select';
+      // Pending additions can coexist with an existing roster; they do not imply
+      // the user was viewing the level setup page.
+      page=visibleRoster().length?'summary':state.selection.length?'levels':'select';
+      try {
+        const savedPage=sessionStorage.getItem(LOCAL_PAGE_KEY);
+        if(savedPage==='select'||savedPage==='summary'||(savedPage==='levels'&&state.selection.length))page=savedPage;
+      } catch { /* Fall back to the data-derived page when session storage is unavailable. */ }
     }
   } catch {
     storageBlocked=true;
@@ -135,6 +142,7 @@ function portrait(c) {
   return `<img draggable="false" src="${image}" alt="" loading="lazy">`;
 }
 function render() {
+  try { sessionStorage.setItem(LOCAL_PAGE_KEY,page==='record'?'summary':page); } catch { /* Navigation memory is optional. */ }
   hideExpectationTip();
   app.classList.toggle('summary-page', page === 'summary');
   app.classList.toggle('select-page', page === 'select');
@@ -340,7 +348,8 @@ function saveRecord(next) {
     const level = nextLevel(item);
     app.querySelector('.big-level').textContent = levelLabel(item, level);
     app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
-    app.querySelector('.stat-heading>span').textContent = levelLabel(item, level);
+    app.querySelector('.record-level').textContent = levelLabel(item, level);
+    hideExpectationTip();
     updateRecordControls();
   } else returnToSummary();
 
@@ -658,10 +667,10 @@ app.addEventListener('click', async e => {
   if (b.dataset.stat) {
     const d = activeRecord, s = b.dataset.stat;
     d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
-    await applyDraftRating(d);
+    applyDraftRating(d);
     updateRecordControls();
   }
-  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.ratingSource = 'manual'; activeRecord.keepManual = false; updateRecordControls(); }
+  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.ratingSource = 'manual'; updateRecordControls(); }
   const action = b.dataset.action;
   if (action === 'clear-skipped') {
     if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) { notify('暂无已跳过记录'); return; }
@@ -736,10 +745,15 @@ function finishMouseSort(commit = false) {
   if (gesture.started) suppressSwipeClickUntil = Date.now() + 400;
   mouseSort = null;
 }
+function mouseSortTarget(target) {
+  if (target.closest('button,input,select,textarea,a,label,summary,[role="button"],[contenteditable],.record-chip')) return null;
+  const card = target.closest('[data-sort-id]');
+  return card && (card.matches('.journal') || target.closest('.drag-grip')) ? card : null;
+}
 app.addEventListener('pointerdown', e => {
-  if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,input,summary,[data-initial-level]')) return;
-  const card = e.target.closest('[data-sort-id]');
-  if (!card || !e.target.closest('.drag-grip')) return;
+  if (e.pointerType !== 'mouse' || e.button !== 0) return;
+  const card = mouseSortTarget(e.target);
+  if (!card) return;
   mouseSort = { card, pointerId: e.pointerId, x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, started: false };
   app.setPointerCapture(e.pointerId);
   e.preventDefault();
@@ -779,8 +793,8 @@ function moveCard(id, targetId, after = false) {
 }
 app.addEventListener('dragstart', e => {
   if (touchSort || mouseSort) { e.preventDefault(); return; }
-  const card = e.target.closest('[data-sort-id]');
-  if (!card || !e.target.closest('.drag-grip')) { e.preventDefault(); return; }
+  const card = mouseSortTarget(e.target);
+  if (!card) { e.preventDefault(); return; }
   dragId = card.dataset.sortId;
   e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId);
   markMoving(card.dataset.sortId);

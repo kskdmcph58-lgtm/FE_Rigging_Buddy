@@ -118,6 +118,7 @@ function updateMarquee() {
   refreshRowSelection();
 }
 document.addEventListener('pointerdown', e => {
+  if (e.defaultPrevented) return;
   if (e.pointerType !== 'mouse' || e.button !== 0 || !['select','levels','summary'].includes(page) || document.querySelector('dialog[open]')) return;
   if (e.clientX >= document.documentElement.clientWidth || e.clientY >= document.documentElement.clientHeight) return;
   const character=page==='select'&&e.target.closest('[data-character]:not(:disabled)');
@@ -197,18 +198,10 @@ function openRecordExpectationDetails() {
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});
   document.body.append(dialog);dialog.showModal();
 }
-async function applyDraftRating(d) {
-  const result = M.evaluate(draftRule(d), d.stats);
-  const protectedRating = d.ratingSource !== 'auto';
-  if (protectedRating && d.happy !== result) {
-    if (d.keepManual) return;
-    const answer = await choiceDialog('是否覆盖这条记录的手动评价？', [
-      { value:'keep',label:'保留手动评价' }, {value:'replace',label:'按规则判定'}
-    ]);
-    if (activeRecord !== d) return;
-    if (answer !== 'replace') { d.keepManual = true; return; }
-  } else if (protectedRating) return;
-  d.happy = result; d.ratingSource = 'auto'; d.keepManual = false;
+function applyDraftRating(d) {
+  // Evaluate only on a stats or effective-rule change; manual clicks never re-run it.
+  d.happy = M.evaluate(draftRule(d), d.stats);
+  d.ratingSource = 'auto';
 }
 
 function ruleMarkup(rule, depth = 0) {
@@ -291,8 +284,7 @@ async function saveExpectations(ids, rule) {
     }
   }
   if(draft && activeRecord===draft && JSON.stringify(draftRule(draft))!==previousRule) {
-    delete draft.keepManual;
-    await applyDraftRating(draft);
+    applyDraftRating(draft);
   }
   return true;
 }

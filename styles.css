@@ -528,6 +528,12 @@ body.marquee-selecting,body.marquee-selecting *{user-select:none!important;-webk
 .row-select svg{width:18px;height:18px;visibility:hidden}
 .row-select[aria-pressed="true"] svg{visibility:inherit}
 .drag-grip svg{display:block}
+/* Expand desktop grip hit areas without moving the icon or surrounding content. */
+@media(min-width:601px){
+ .journal-head .drag-grip{position:relative}
+ .journal-head .drag-grip::before{content:'';position:absolute;inset:-10px -10px -10px -14px}
+ .multi-select-mode .drag-grip::before{left:-4px}
+}
 .levels-page .levels .setup-toolbar{flex-wrap:wrap;gap:12px;margin-bottom:12px;padding-bottom:16px}
 .setup-toolbar .selection-toolbar{margin:0 0 0 auto}
 .summary-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:12px 20px;min-width:0}
