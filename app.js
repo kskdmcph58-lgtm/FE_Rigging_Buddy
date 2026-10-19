@@ -2,7 +2,52 @@ const STATS = ['HP', '力量', '魔力', '速度', '技巧', '防守', '魔防',
 const app = document.querySelector('#app');
 const characters = window.CHARACTERS;
 const M = window.RiggingModel;
-let state = { version: 2, roster: [], selection: [], initialLevels: {} };
+const LOCAL_STATE_KEY = `rigging-buddy:save:${new URL('.', location.href).pathname}`;
+const trackedObjects = new WeakMap();
+let localSaveTimer, storageReady = false, storageBlocked = false, storageWarning = false, lastLocalSave = null;
+function trackState(value) {
+  if (!value || typeof value !== 'object') return value;
+  if (trackedObjects.has(value)) return trackedObjects.get(value);
+  const proxy = new Proxy(value, {
+    get(target,key,receiver) { return trackState(Reflect.get(target,key,receiver)); },
+    set(target,key,value,receiver) { const changed=target[key]!==value; const result=Reflect.set(target,key,value,receiver); if(changed)scheduleLocalSave(); return result; },
+    deleteProperty(target,key) { const result=Reflect.deleteProperty(target,key);scheduleLocalSave();return result; }
+  });
+  trackedObjects.set(value,proxy);trackedObjects.set(proxy,proxy);return proxy;
+}
+function scheduleLocalSave() {
+  if (!storageReady || storageBlocked) return;
+  clearTimeout(localSaveTimer);localSaveTimer=setTimeout(saveLocalState,150);
+}
+function saveLocalState() {
+  clearTimeout(localSaveTimer);
+  if (!storageReady || storageBlocked) return;
+  try {
+    const serialized=JSON.stringify(state);
+    if(serialized===lastLocalSave)return;
+    // Do not silently overwrite work saved by another tab.
+    if(localStorage.getItem(LOCAL_STATE_KEY)!==lastLocalSave) {
+      storageBlocked=true;notify('其他页面已更新本地记录。请先导出当前备份，再刷新读取。');return;
+    }
+    localStorage.setItem(LOCAL_STATE_KEY,serialized);lastLocalSave=serialized;storageWarning=false;
+  } catch {
+    if(!storageWarning){storageWarning=true;notify('本地保存失败，请导出备份保留记录。');}
+  }
+}
+function restoreLocalState() {
+  try {
+    lastLocalSave=localStorage.getItem(LOCAL_STATE_KEY);
+    if(lastLocalSave) {
+      state=trackState(validate(JSON.parse(lastLocalSave)));
+      page=state.selection.length?'levels':visibleRoster().length?'summary':'select';
+    }
+  } catch {
+    storageBlocked=true;
+    setTimeout(()=>notify('本地记录暂时无法读取，原数据已保留，未覆盖。'),0);
+  }
+  storageReady=true;
+}
+let state = trackState({ version: 2, roster: [], selection: [], initialLevels: {} });
 let activeRecord = null;
 let page = 'select';
 let query = '';
@@ -101,6 +146,7 @@ function render() {
   if (page === 'summary') renderSummary();
   if (page === 'record') renderRecord();
   refreshRowSelection();
+  scheduleLocalSave();
 }
 function renderSelect() {
   app.innerHTML =
@@ -222,7 +268,7 @@ function renderRecord() {
   const editing = d.editIndex !== undefined;
   const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<h2>${c.name}</h2></div><span>${levelLabel(item, next)}</span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="total"><span>本次成长</span><strong>+${d.stats.length}<small> 点</small></strong></div><div class="rating-rule-note">${draftRuleNote(d)} <button data-action="recalculate">重新判定</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
+    `<div class="record-layout"><aside class="hero panel">${portrait(c)}<div><div class="eyebrow">LEVEL UP</div><h2>${c.name}</h2><div class="big-level">${levelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level">${levelLabel(item, next)}</p></div></div><span class="growth-total" aria-live="polite"><strong>+${d.stats.length}</strong><small> 点</small></span></div><div class="stats">${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null && d.stats.length ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null || !d.stats.length ? 'disabled' : ''}>保存 · 下一级 →</button>`}</div></section></div>`;
   if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
   updateRecordControls();
 }
@@ -235,7 +281,7 @@ function updateRecordControls() {
     button.setAttribute('aria-pressed', String(selected));
     button.querySelector('b').textContent = selected ? '+1' : '—';
   });
-  app.querySelector('.total strong').firstChild.nodeValue = `+${d.stats.length}`;
+  app.querySelector('.growth-total strong').textContent = `+${d.stats.length}`;
   app.querySelectorAll('[data-rating]').forEach(button => {
     const selected = d.happy === (button.dataset.rating === 'happy');
     button.classList.toggle('chosen', selected);
@@ -244,12 +290,11 @@ function updateRecordControls() {
   app.querySelector('[data-action="finish"]').disabled = d.happy === null && d.stats.length > 0;
   const next = app.querySelector('[data-action="next"]');
   if (next) next.disabled = d.happy === null || (!d.stats.length && d.ratingSource !== 'manual' && !draftRule(d));
-  app.querySelector('.rating-rule-note').firstChild.textContent = `${draftRuleNote(d)} `;
 }
 function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除') {
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
-    dialog.className = 'confirm-dialog';
+    dialog.className = 'app-dialog confirm-dialog';
     dialog.setAttribute('aria-labelledby', 'delete-confirm-title');
     dialog.innerHTML = '<h2 id="delete-confirm-title">是否删除这条记录？</h2><form method="dialog"><button value="cancel" autofocus>返回</button><button class="danger" value="delete">删除</button></form>';
     dialog.querySelector('h2').textContent = question;
@@ -495,10 +540,12 @@ document.addEventListener('pointerdown', e => {
   clearTouchPress();
   if (e.pointerType === 'mouse') return;
   const button = e.target.closest('button:not(:disabled)');
+  if (button?.matches('.expectation-link') || (matchMedia('(max-width:600px)').matches && button?.matches('.expectation-setting'))) return;
   if (button) { touchPressedButton = button; button.classList.add('touch-pressed'); }
 }, true);
 document.addEventListener('pointerup', clearTouchPress, true);
 document.addEventListener('pointercancel', clearTouchPress, true);
+document.addEventListener('click', clearTouchPress, true);
 document.addEventListener('touchmove', clearTouchPress, { passive: true, capture: true });
 window.addEventListener('blur', clearTouchPress);
 document.addEventListener('click', e => {
@@ -529,14 +576,13 @@ app.addEventListener('click', async e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   if (b.dataset.rowSelect) { selectRow(b.dataset.rowSelect, { toggle: true, shiftKey:e.shiftKey, ctrlKey:e.ctrlKey, metaKey:e.metaKey }); return; }
   if (b.dataset.expectationEdit) { openExpectationEditor([b.dataset.expectationEdit]); return; }
-  if (b.dataset.expectationDetail) { openExpectationDetails(b.dataset.expectationDetail); return; }
+  if (b.dataset.expectationDetail) { if(b.hasAttribute('data-record-expectation'))openRecordExpectationDetails();else openExpectationDetails(b.dataset.expectationDetail); return; }
   if (b.dataset.action === 'multi-select') { multiSelectMode = !multiSelectMode; if (!multiSelectMode) rowSelection.clear(); refreshRowSelection(); return; }
   if (b.dataset.action === 'select-all-rows') { rowIds().forEach(id => rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'clear-row-selection') { rowSelection.clear(); selectionAnchor = null; refreshRowSelection(); return; }
   if (b.dataset.action === 'invert-rows') { rowIds().forEach(id => rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'batch-expectation') { if (rowSelection.size) openExpectationEditor(rowIds().filter(id => rowSelection.has(id))); return; }
   if (b.dataset.action === 'undo-delete') { undoDelete(); return; }
-  if (b.dataset.action === 'recalculate') { await applyDraftRating(activeRecord, true); updateRecordControls(); return; }
   if (b.hasAttribute('data-search-history')) {
     query = b.dataset.searchHistory;
     app.querySelector('#search').value = query;
@@ -668,7 +714,7 @@ async function importFile(file) {
   if (!file) return;
   try {
     const data = validate(JSON.parse(await file.text()));
-    state = data;
+    state = trackState(data);
     clearRowSelection();
     editingCharacters.clear();
     activeRecord = null;
@@ -824,7 +870,7 @@ function restoreAfterAppUpdate() {
       if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return;
       d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
     }
-    state = saved.state;
+    state = trackState(saved.state);
     page = saved.page;
     query = saved.query;
     activeRecord = saved.page === 'record' ? d : null;
@@ -833,5 +879,8 @@ function restoreAfterAppUpdate() {
     setTimeout(() => window.scrollTo(0, Number(saved.scrollY) || 0), 0);
   } catch { /* Leave an unreadable snapshot untouched; do not modify user storage. */ }
 }
+restoreLocalState();
 restoreAfterAppUpdate();
 render();
+window.addEventListener('pagehide',saveLocalState);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});

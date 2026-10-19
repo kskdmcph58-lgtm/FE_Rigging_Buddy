@@ -26,7 +26,7 @@ function refreshRowSelection() {
     check.setAttribute('aria-pressed', String(selected));
     check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
     const avatar = row.querySelector('img');
-    if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - 10}px`;
+    if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
   });
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
     b.textContent = multiSelectMode ? '完成多选' : '多选'; b.setAttribute('aria-pressed', String(multiSelectMode));
@@ -167,7 +167,7 @@ function undoDelete() {
 
 function choiceDialog(question, choices) {
   return new Promise(resolve => {
-    const dialog = document.createElement('dialog'); dialog.className = 'confirm-dialog choice-dialog';
+    const dialog = document.createElement('dialog'); dialog.className = 'app-dialog confirm-dialog choice-dialog';
     dialog.innerHTML = `<h2>${escapeValue(question)}</h2><form method="dialog">${choices.map((c,i) => `<button value="${c.value}" ${i === 0 ? 'autofocus' : ''}>${escapeValue(c.label)}</button>`).join('')}</form>`;
     const titleId = `choice-${M.uid()}`; dialog.querySelector('h2').id = titleId; dialog.setAttribute('aria-labelledby',titleId);
     dialog.addEventListener('close', () => { const value = dialog.returnValue; dialog.remove(); resolve(value || 'cancel'); }, { once:true });
@@ -182,22 +182,31 @@ function newRecordDraft(id) {
   const item = state.roster.find(i => i.id === id);
   return { id, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
 }
-function draftRuleNote(d) {
-  const item = state.roster.find(i => i.id === d.id);
-  const seq = d.editIndex === undefined ? M.nextSeq(item) : item.records[d.editIndex].seq;
-  return `记录 +${seq} · ${draftRule(d) ? '使用属性期望' : '默认判定：4 点需手动选择'}`;
+function recordExpectationMarkup() {
+  const rule = draftRule(activeRecord);
+  return rule ? ruleMarkup(rule) : `<p class="rule-default">${defaultRuleText}</p>`;
 }
-async function applyDraftRating(d, explicit = false) {
+function openRecordExpectationDetails() {
+  hideExpectationTip();
+  const dialog=document.createElement('dialog');dialog.className='app-dialog expectation-dialog';
+  dialog.setAttribute('aria-labelledby','record-expectation-title');
+  dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2><button data-close>关闭</button></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  dialog.querySelector('[data-close]').onclick=()=>dialog.close();
+  dialog.querySelector('[data-edit-expectation]').onclick=()=>{const id=activeRecord.id;dialog.close();openExpectationEditor([id]);};
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  document.body.append(dialog);dialog.showModal();
+}
+async function applyDraftRating(d) {
   const result = M.evaluate(draftRule(d), d.stats);
   const protectedRating = d.ratingSource !== 'auto';
   if (protectedRating && d.happy !== result) {
-    if (d.keepManual && !explicit) return;
+    if (d.keepManual) return;
     const answer = await choiceDialog('是否覆盖这条记录的手动评价？', [
       { value:'keep',label:'保留手动评价' }, {value:'replace',label:'按规则判定'}
     ]);
     if (activeRecord !== d) return;
     if (answer !== 'replace') { d.keepManual = true; return; }
-  } else if (protectedRating && !explicit) return;
+  } else if (protectedRating) return;
   d.happy = result; d.ratingSource = 'auto'; d.keepManual = false;
 }
 
@@ -236,7 +245,7 @@ function openExpectationDetails(id) {
   hideExpectationTip();
   const item = state.roster.find(r => r.id === id);
   if (!item.expectations?.length) { openExpectationEditor([id]); return; }
-  const dialog = document.createElement('dialog'); dialog.className = 'expectation-dialog';
+  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';
   dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2><button data-close aria-label="关闭">关闭</button></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});
@@ -246,6 +255,8 @@ function openExpectationDetails(id) {
 }
 
 async function saveExpectations(ids, rule) {
+  const draft = page==='record' && activeRecord && ids.includes(activeRecord.id) ? activeRecord : null;
+  const previousRule = draft ? JSON.stringify(draftRule(draft)) : null;
   if (page === 'levels') {
     state.draftExpectations ||= {};
     ids.forEach(id => state.draftExpectations[id] = M.copy(rule));
@@ -277,6 +288,10 @@ async function saveExpectations(ids, rule) {
       if (result !== null) record.happy = result;
       record.ratingSource = 'auto';
     }
+  }
+  if(draft && activeRecord===draft && JSON.stringify(draftRule(draft))!==previousRule) {
+    delete draft.keepManual;
+    await applyDraftRating(draft);
   }
   return true;
 }
@@ -334,10 +349,10 @@ window.addEventListener('resize',()=>closeStyledSelect());
 
 function openExpectationEditor(ids) {
   let rule = null;
-  const rules = ids.map(id => page === 'levels' ? state.draftExpectations?.[id] || null : M.ruleAt(state.roster.find(i => i.id === id), M.nextSeq(state.roster.find(i => i.id === id))));
+  const rules = ids.map(id => page === 'levels' ? state.draftExpectations?.[id] || null : page==='record' && activeRecord?.id===id ? draftRule(activeRecord) : M.ruleAt(state.roster.find(i => i.id === id), M.nextSeq(state.roster.find(i => i.id === id))));
   const mixed = rules.some(r => JSON.stringify(r) !== JSON.stringify(rules[0]));
   rule = M.copy(mixed ? null : rules[0]);
-  const dialog = document.createElement('dialog'); dialog.className = 'expectation-dialog editor-dialog';
+  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';
   dialog.setAttribute('aria-labelledby','expectation-editor-title');
   dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位角色`}</p></div><button data-close>返回</button></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些角色的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button class="primary" data-save-rule>保存期望</button></footer>`;
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }
@@ -431,7 +446,7 @@ function showExpectationTip(b) {
   hideExpectationTip();
   const item=state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!item)return;
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
-  expectationTip.innerHTML=expectationRanges(item);document.body.append(expectationTip);
+  expectationTip.innerHTML=b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
   const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect();
   expectationTip.style.left=`${Math.max(12,Math.min(innerWidth-tip.width-12,r.left))}px`;
