@@ -35,6 +35,14 @@ function refreshRowSelection() {
   app.querySelectorAll('.selection-count').forEach(el => el.textContent = multiSelectMode || rowSelection.size ? `已选 ${rowSelection.size} 位` : '');
   app.querySelectorAll('.selection-actions').forEach(el => el.hidden = !rowSelection.size && !multiSelectMode);
   app.querySelectorAll('[data-action="batch-expectation"]').forEach(b => b.disabled = !rowSelection.size);
+  // Match visual and keyboard order while keeping the desktop toggle anchored.
+  app.querySelectorAll('.selection-toolbar').forEach(toolbar => {
+    const toggle = toolbar.querySelector('[data-action="multi-select"]');
+    const actions = toolbar.querySelector('.selection-actions');
+    if (!toggle || !actions) return;
+    if (matchMedia('(min-width:601px)').matches) { toolbar.prepend(actions); toolbar.append(toggle); }
+    else { toolbar.prepend(toggle); toolbar.append(actions); }
+  });
 }
 function selectRow(id, event = {}) {
   const ids = rowIds(), additive = event.ctrlKey || event.metaKey;
@@ -184,19 +192,25 @@ function showUndoNotice(count) {
 function undoDelete() {
   const deleted = state.roster.flatMap(item => [item, ...item.records]).filter(o => o.deleted);
   const latest = deleted.reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
-  if (!latest) { notify('暂无可撤回的删除'); return; }
+  if (!latest) return;
   const batch = latest.deletionBatch;
   deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { delete o.deleted; delete o.deletedAt; delete o.deletionBatch; });
   state.selection = state.selection.filter(id => !visibleRoster().some(item => item.id === id));
-  page = 'summary'; activeRecord = null; render(); notify('已撤回删除');
+  page = 'summary'; activeRecord = null; render(); notify('');
 }
 
-function choiceDialog(question, choices) {
+function choiceDialog(question, choices, description = '') {
   return new Promise(resolve => {
-    const dialog = document.createElement('dialog'); dialog.className = 'app-dialog confirm-dialog choice-dialog';
-    dialog.innerHTML = `<h2>${escapeValue(question)}</h2><form method="dialog">${choices.map((c,i) => `<button value="${c.value}" ${i === 0 ? 'autofocus' : ''}>${escapeValue(c.label)}</button>`).join('')}</form>`;
-    const titleId = `choice-${M.uid()}`; dialog.querySelector('h2').id = titleId; dialog.setAttribute('aria-labelledby',titleId);
-    dialog.addEventListener('close', () => { const value = dialog.returnValue; dialog.remove(); resolve(value || 'cancel'); }, { once:true });
+    const dialog = document.createElement('dialog'); dialog.className = 'app-dialog choice-dialog';
+    const titleId = `choice-${M.uid()}`;
+    dialog.innerHTML = `<h2 id="${titleId}">${escapeValue(question)}</h2>${description ? `<p id="${titleId}-description" class="choice-description">${escapeValue(description)}</p>` : ''}<form method="dialog"><fieldset class="choice-list"><legend class="visually-hidden">${escapeValue(question)}</legend>${choices.map((c,i) => `<label class="choice-option"><input type="radio" name="choice" value="${escapeValue(c.value)}" ${i === 0 ? 'checked autofocus' : ''}><span><strong>${escapeValue(c.label)}</strong>${c.description ? `<span class="choice-detail">${escapeValue(c.description)}</span>` : ''}</span></label>`).join('')}</fieldset><div class="choice-actions"><button type="button" value="cancel">返回</button><button class="primary" value="apply">应用</button></div></form>`;
+    dialog.querySelector('button[value="cancel"]').onclick = () => dialog.close('cancel');
+    dialog.setAttribute('aria-labelledby',titleId);
+    if (description) dialog.setAttribute('aria-describedby',`${titleId}-description`);
+    dialog.addEventListener('close', () => {
+      const value = dialog.returnValue === 'apply' ? dialog.querySelector('input[name="choice"]:checked')?.value : 'cancel';
+      dialog.remove(); resolve(value || 'cancel');
+    }, { once:true });
     document.body.append(dialog); dialog.showModal();
   });
 }
@@ -281,20 +295,38 @@ async function saveExpectations(ids, rule) {
     return true;
   }
   const items = visibleRoster().filter(i => ids.includes(i.id));
+  const history = items.flatMap(item => M.live(item).map(record => ({ item, record })));
+  const ratingChanges = record => {
+    const result = M.evaluate(rule, record.stats);
+    return result === null ? !record.ratingPending : !!record.ratingPending || result !== record.happy;
+  };
+  const changesHistory = history.some(({ item, record }) =>
+    JSON.stringify(M.ruleAt(item, record.seq)) !== JSON.stringify(rule) || record.ratingSource === 'auto' && ratingChanges(record));
   let scope = 'future';
-  if (items.some(i => i.records.length)) {
-    scope = await choiceDialog('新的属性期望应用到哪些记录？', [
-      {value:'cancel',label:'返回'}, {value:'future',label:'仅未来记录'}, {value:'history',label:'包含历史记录'}
-    ]);
-    if (!['future','history'].includes(scope)) return false;
-  }
-  const conflicts = scope === 'history' ? items.flatMap(i => M.live(i)).filter(r => r.ratingSource !== 'auto' && M.evaluate(rule,r.stats) !== r.happy) : [];
   let overwrite = false;
-  if (conflicts.length) {
-    const answer = await choiceDialog(`有 ${conflicts.length} 条手动或旧存档评价与新规则不同，是否覆盖？`, [
-      {value:'cancel',label:'返回'}, {value:'keep',label:'保留原评价'}, {value:'replace',label:'覆盖原评价'}
-    ]);
-    if (answer === 'cancel') return false;
+  // No live history, or the same effective history: there is nothing to decide.
+  if (changesHistory) {
+    const records = history.map(({ record }) => record);
+    const automatic = records.filter(record => record.ratingSource === 'auto');
+    const protectedRecords = records.filter(record => record.ratingSource !== 'auto');
+    const conflicts = protectedRecords.filter(ratingChanges);
+    const sourceLabel = records => {
+      const manual = records.some(record => record.ratingSource === 'manual');
+      const legacy = records.some(record => record.ratingSource !== 'manual');
+      return manual && legacy ? '手动及旧存档评价' : manual ? '手动评价' : '旧存档评价';
+    };
+    const protectedLabel = sourceLabel(protectedRecords);
+    const historyDescription = '历史和今后记录均使用新规则。' +
+      (automatic.length ? '历史自动评价重算。' : '') +
+      (protectedRecords.length ? `${protectedLabel}保留。` : '');
+    const answer = await choiceDialog('属性期望应用范围', [
+      {value:'future',label:'仅今后的记录',description:'从下一条记录起使用新规则，历史规则和评价不变。'},
+      {value:'history',label:protectedRecords.length ? `包含历史，保留${protectedLabel}` : '包含历史记录',description:historyDescription},
+      ...(conflicts.length ? [{value:'replace',label:'包含历史，重算全部评价',description:`历史和今后记录均使用新规则；所有历史评价重算，其中 ${conflicts.length} 条${sourceLabel(conflicts)}将改变。`}] : [])
+    ], '将保存当前属性期望。请选择是否将新规则同时用于已有记录。' +
+      (rule === null && records.some(record => record.stats.length === 4 && (record.ratingSource === 'auto' || conflicts.includes(record))) ? '重算后的 4 点记录将变为待评价。' : ''));
+    if (!['future','history','replace'].includes(answer)) return false;
+    scope = answer === 'future' ? 'future' : 'history';
     overwrite = answer === 'replace';
   }
   for (const item of items) {
@@ -406,17 +438,35 @@ function openExpectationEditor(ids) {
     const focusAdd = focused?.classList.contains('select-trigger') ? focused.previousElementSibling?.dataset.add : undefined;
     dialog.querySelector('#rule-editor').innerHTML = rule ? editor(rule) + '<button class="wrap-rule" data-wrap>将当前规则放入新条件组</button>' : '<div class="rule-empty"><p>未设置，使用默认判定</p><button data-enable class="primary">设置条件</button></div>';
     dialog.querySelector('.rule-preview div').innerHTML=ruleMarkup(rule);
-    dialog.querySelectorAll('select[data-add]').forEach(select=>{select.querySelector('[value="stat"]').disabled=usedStats(nodeAt(select.dataset.add)).size>=STATS.length;});
+    const size = M.ruleSize(rule);
+    const wrap = dialog.querySelector('[data-wrap]');
+    if (wrap) wrap.disabled = size.depth >= M.limits.ruleDepth || size.nodes >= M.limits.ruleNodes;
+    dialog.querySelectorAll('select[data-add]').forEach(select=>{
+      const depth = (select.dataset.add.match(/\b(children|child)\b/g) || []).length;
+      const full = size.nodes >= M.limits.ruleNodes || depth >= M.limits.ruleDepth;
+      select.querySelector('[value="stat"]').disabled = full || usedStats(nodeAt(select.dataset.add)).size >= STATS.length;
+      select.querySelector('[value="total"]').disabled = full;
+      select.querySelector('[value="all"]').disabled = size.nodes + 2 > M.limits.ruleNodes || depth + 2 > M.limits.ruleDepth;
+    });
     enhanceSelects(dialog);
     if (focusField && focusPath !== undefined) dialog.querySelector(`[data-path="${focusPath}"] > select[data-field="${focusField}"], [data-path="${focusPath}"] > .rule-group-head > select[data-field="${focusField}"]`)?.nextElementSibling?.focus({preventScroll:true});
     if (focusAdd !== undefined) dialog.querySelector(`select[data-add="${focusAdd}"]`)?.nextElementSibling?.focus({preventScroll:true});
+  }
+  function acceptEdit(change) {
+    const previous = M.copy(rule);
+    change();
+    const size = M.ruleSize(rule);
+    if (size.nodes <= M.limits.ruleNodes && size.depth <= M.limits.ruleDepth) return true;
+    rule = previous;
+    dialog.querySelector('.editor-error').textContent = '条件过多或层级过深，请简化';
+    return false;
   }
   dialog.addEventListener('change',e=>{
     if (e.target.hasAttribute('data-add')) {
       const node=nodeAt(e.target.dataset.add),type=e.target.value;
       const available=STATS.find(s=>!usedStats(node).has(s));
       if(type==='stat'&&!available)return;
-      if(type) node.children.push(type==='stat'?{type,stat:available}:type==='total'?{type,op:'gte',value:5}:{type:'all',children:[{type:'stat',stat:'速度'}]});
+      if(type && !acceptEdit(()=>node.children.push(type==='stat'?{type,stat:available}:type==='total'?{type,op:'gte',value:5}:{type:'all',children:[{type:'stat',stat:'速度'}]}))) { draw(); return; }
     } else if(e.target.dataset.field) {
       const node=nodeAt(e.target.closest('[data-path]').dataset.path),field=e.target.dataset.field;
       if(field==='stat'&&unavailableStats(e.target.closest('[data-path]').dataset.path).has(e.target.value)){draw();return;}
@@ -431,8 +481,8 @@ function openExpectationEditor(ids) {
     if(b.hasAttribute('data-close')){dialog.close();return;}
     if(b.hasAttribute('data-enable'))rule={type:'all',children:[{type:'stat',stat:'力量'}]};
     else if(b.hasAttribute('data-reset-rule'))rule=null;
-    else if(b.hasAttribute('data-wrap'))rule={type:'all',children:[rule]};
-    else if(b.hasAttribute('data-negate'))replace(b.dataset.negate,{type:'not',child:nodeAt(b.dataset.negate)});
+    else if(b.hasAttribute('data-wrap')) { if(!acceptEdit(()=>rule={type:'all',children:[rule]}))return; }
+    else if(b.hasAttribute('data-negate')) { if(!acceptEdit(()=>replace(b.dataset.negate,{type:'not',child:nodeAt(b.dataset.negate)})))return; }
     else if(b.hasAttribute('data-unnegate'))replace(b.dataset.unnegate,nodeAt(b.dataset.unnegate).child);
     else if(b.hasAttribute('data-remove')){
       removeNode(b.dataset.remove);
@@ -449,7 +499,7 @@ function openExpectationEditor(ids) {
       saving=true;b.disabled=true;
       const ok=await saveExpectations(ids,rule);
       saving=false;b.disabled=false;
-      if(ok){dialog.close();render();notify('属性期望已保存');}return;
+      if(ok){dialog.close();render();}return;
     } else return;
     dialog.querySelector('.editor-error').textContent='';draw();
   });

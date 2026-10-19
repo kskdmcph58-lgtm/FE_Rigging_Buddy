@@ -7,6 +7,12 @@ exclude:
   - CACHE_UPDATES.md
   - scripts
   - tests
+  - checks
+  - test_support.py
+  - requirements-dev.txt
+  - DATA_FORMAT.md
+  - debug.log
+  - "仓库审查报告_2026-10-19.md"
   - verify-changes.cjs
   - verify-dom.cjs
   - verify-updates.cjs

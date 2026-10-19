@@ -1,4 +1,4 @@
-const STATS = ['HP', '力量', '魔力', '速度', '技巧', '防守', '魔防', '幸运', '魅力'];
+const STATS = window.RiggingModel.stats;
 const app = document.querySelector('#app');
 const characters = window.CHARACTERS;
 const M = window.RiggingModel;
@@ -6,6 +6,21 @@ const LOCAL_STATE_KEY = `rigging-buddy:save:${new URL('.', location.href).pathna
 const LOCAL_PAGE_KEY = `${LOCAL_STATE_KEY}:page`;
 const trackedObjects = new WeakMap();
 let localSaveTimer, storageReady = false, storageBlocked = false, storageWarning = false, lastLocalSave = null;
+let storageIssue = '';
+function setStorageIssue(issue = '') {
+  const previousIssue = storageIssue;
+  storageIssue = issue;
+  storageBlocked = issue === 'read' || issue === 'conflict';
+  storageWarning = issue === 'write';
+  const banner = document.querySelector('#storage-status');
+  banner.hidden = !issue;
+  if (!issue) { banner.replaceChildren(); return; }
+  if (previousIssue === issue && banner.childNodes.length) return;
+  const message = issue === 'read' ? '本地记录无法读取，原文件已保留。' : issue === 'conflict' ? '另一页已保存，此页更改尚未保存。' : '此页更改尚未保存。';
+  const action = issue === 'read' ? '恢复备份' : issue === 'conflict' ? '保存此页' : '重试保存';
+  const exportLabel = issue === 'read' && typeof lastLocalSave === 'string' ? '导出原文件' : '导出备份';
+  banner.innerHTML = `<span>${message}</span><div><button data-storage-action="${issue === 'read' ? 'import' : 'save'}">${action}</button><button data-storage-action="export">${exportLabel}</button></div>`;
+}
 function trackState(value) {
   if (!value || typeof value !== 'object') return value;
   if (trackedObjects.has(value)) return trackedObjects.get(value);
@@ -20,19 +35,19 @@ function scheduleLocalSave() {
   if (!storageReady || storageBlocked) return;
   clearTimeout(localSaveTimer);localSaveTimer=setTimeout(saveLocalState,150);
 }
-function saveLocalState() {
+function saveLocalState(replace = false) {
   clearTimeout(localSaveTimer);
-  if (!storageReady || storageBlocked) return;
+  if (!storageReady || (storageBlocked && replace !== true)) return false;
   try {
     const serialized=JSON.stringify(state);
-    if(serialized===lastLocalSave)return;
+    if(serialized===lastLocalSave && !storageIssue && replace !== true)return true;
     // Do not silently overwrite work saved by another tab.
-    if(localStorage.getItem(LOCAL_STATE_KEY)!==lastLocalSave) {
-      storageBlocked=true;notify('其他页面已更新本地记录。请先导出当前备份，再刷新读取。');return;
+    if(replace !== true && localStorage.getItem(LOCAL_STATE_KEY)!==lastLocalSave) {
+      setStorageIssue('conflict');return false;
     }
-    localStorage.setItem(LOCAL_STATE_KEY,serialized);lastLocalSave=serialized;storageWarning=false;
+    localStorage.setItem(LOCAL_STATE_KEY,serialized);lastLocalSave=serialized;setStorageIssue();return true;
   } catch {
-    if(!storageWarning){storageWarning=true;notify('本地保存失败，请导出备份保留记录。');}
+    setStorageIssue('write');return false;
   }
 }
 function restoreLocalState() {
@@ -49,8 +64,7 @@ function restoreLocalState() {
       } catch { /* Fall back to the data-derived page when session storage is unavailable. */ }
     }
   } catch {
-    storageBlocked=true;
-    setTimeout(()=>notify('本地记录暂时无法读取，原数据已保留，未覆盖。'),0);
+    setStorageIssue('read');
   }
   storageReady=true;
 }
@@ -122,7 +136,11 @@ function clearLevelError(input) {
   input.setCustomValidity('');
 }
 let noticeTimer;
-function notify(text) { clearTimeout(noticeTimer); document.querySelector('#notice').textContent = text; noticeTimer = setTimeout(() => document.querySelector('#notice').textContent = '', 4000); }
+function notify(text) {
+  clearTimeout(noticeTimer);
+  document.querySelector('#notice').textContent = text;
+  if (text) noticeTimer = setTimeout(() => document.querySelector('#notice').textContent = '', 4000);
+}
 function char(id) { return characters.find(c => c.id === id); }
 function backupFilename() {
   const now = new Date();
@@ -133,6 +151,17 @@ function backupFilename() {
   const suffix = ((now.getTime() + random) % (36 ** 5)).toString(36).padStart(5, '0');
   return `Rigging-Buddy-${date}_${time}_${suffix}.json`;
 }
+function exportBackup(text = JSON.stringify(state, null, 2)) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = backupFilename(); a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+document.querySelector('#storage-status').addEventListener('click', e => {
+  const action = e.target.closest('[data-storage-action]')?.dataset.storageAction;
+  if (action === 'save') saveLocalState(storageIssue === 'conflict');
+  if (action === 'import') document.querySelector('#import-file').click();
+  if (action === 'export') exportBackup(storageIssue === 'read' && typeof lastLocalSave === 'string' ? lastLocalSave : undefined);
+});
 function ratingIcon(happy) {
   return `<svg class="rating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r=".8" fill="currentColor" stroke="none"/><path d="${happy ? 'M8 14 Q12 19 16 14' : 'M8 17 Q12 12 16 17'}"/></svg>`;
 }
@@ -193,11 +222,11 @@ function updateSelectionCount() {
 }
 function renderLevels() {
   app.innerHTML =
-    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
-  return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => stat === 'HP' ? '<span class="stat-hp" aria-label="HP"><span aria-hidden="true">H</span><span aria-hidden="true">P</span></span>' : stat).join(' · ')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
+  return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => `<span class="stat-name">${stat}</span>`).join('<span class="stat-separator" aria-hidden="true"> · </span>')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
 }
 function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
@@ -205,14 +234,17 @@ function pencilIcon(className) {
 function renderSummary() {
   const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
   const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && !x.skipped && !x.ratingPending).length, 0);
+  const canUndo = state.roster.some(item => item.deleted || item.records.some(record => record.deleted));
+  const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.skipped));
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete">撤回上次删除</button><button class="menu-danger" data-action="clear-skipped">清空已跳过</button><button class="menu-danger" data-action="reset-list">清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
+      const displayLevels = M.displayLevels(item);
       return `<article class="journal panel" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
-        <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" tabindex="0" role="button">初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
+        <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button><button class="danger" data-delete-character="${c.id}">删除</button></div>
-        <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${editing ? '编辑' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}${c.name} ${levelLabel(item, recordDisplayLevel(item, r))}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, recordDisplayLevel(item, r))}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.skipped ? '已跳过，' : r.upgraded ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, displayLevels[recordIndex])}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
@@ -263,7 +295,7 @@ function start(id) {
    page = 'record'; render(); window.scrollTo(0, 0);
 }
 function rememberListPosition() {
-  state.summaryScroll = window.scrollY;
+  state.summaryScroll = Math.max(0, window.scrollY);
 
   notify('');
 }
@@ -339,6 +371,9 @@ function saveRecord(next) {
   const d = activeRecord;
   if (!d || (d.stats.length && d.happy === null)) return;
   const item = state.roster.find(r => r.id === d.id);
+  if (d.editIndex === undefined && (M.nextSeq(item) > M.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= M.limits.records)) {
+    notify('记录已达上限，请导出备份'); return;
+  }
   if (!d.stats.length && d.editIndex === undefined && d.ratingSource !== 'manual' && !draftRule(d)) {
     if (next) return;
     activeRecord = null;  notify(''); returnToSummary(); return;
@@ -380,7 +415,7 @@ function editInitialLevel(label) {
   const item = state.roster.find(r => r.id === label.dataset.initialLevel);
   label.removeAttribute('role');
   label.removeAttribute('tabindex');
-  label.innerHTML = `<form novalidate class="initial-level-form" data-initial-form="${item.id}"><label>初始等级 <input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无"></label><button type="submit">保存</button><button type="button" data-cancel-initial>取消</button></form>`;
+  label.innerHTML = `<form novalidate class="initial-level-form" data-initial-form="${item.id}"><label>初始等级 <input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无"></label><button type="submit">保存</button><button type="button" data-cancel-initial>取消</button></form>`;
   label.querySelector('input').focus();
 }
 app.addEventListener('dblclick', e => {
@@ -556,6 +591,9 @@ function clearTouchPress() {
 }
 document.addEventListener('pointerdown', e => {
   document.documentElement.dataset.inputMode = e.pointerType === 'mouse' ? 'mouse' : 'touch';
+  // A new gesture is intentional; only suppress the click generated by the
+  // completed drag/swipe, never the user's next button press.
+  suppressSwipeClickUntil = 0;
   clearTouchPress();
   if (e.pointerType === 'mouse') return;
   const button = e.target.closest('button:not(:disabled)');
@@ -683,7 +721,7 @@ app.addEventListener('click', async e => {
   if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.ratingSource = 'manual'; updateRecordControls(); }
   const action = b.dataset.action;
   if (action === 'clear-skipped') {
-    if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) { notify('暂无已跳过记录'); return; }
+    if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) return;
     if (!await confirmRecordDeletion('是否清空所有已跳过记录？', '清空')) return;
     softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
     rememberListPosition(); returnToSummary(); return;
@@ -723,25 +761,56 @@ app.addEventListener('click', async e => {
     state.selection = []; state.initialLevels = {};  page = 'summary'; render();
   }
   if (action === 'next' || action === 'finish') saveRecord(action === 'next');
-  if (action === 'export') {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
-    const a = document.createElement('a'); a.href = url; a.download = backupFilename(); a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
+  if (action === 'export') exportBackup();
   if (action === 'import') document.querySelector('#import-file').click();
 });
+let importRequest = 0;
 async function importFile(file) {
   if (!file) return;
+  const request = ++importRequest;
+  let data;
   try {
-    const data = validate(JSON.parse(await file.text()));
+    if (file.size > M.limits.fileBytes) { notify('备份超过 10 MB，请选择较小文件'); return; }
+    data = validate(JSON.parse(await file.text()));
+  } catch {
+    if (request === importRequest) notify('备份无效，原记录未改动');
+    return;
+  } finally {
+    document.querySelector('#import-file').value = '';
+  }
+  if (request !== importRequest) return;
+  // Retain the original nodes as well as data, including unfinished form input.
+  const previous = { state, page, activeRecord, query, editing: [...editingCharacters],
+    selected: [...rowSelection], selectionAnchor, selectionPage, multiSelectMode,
+    className: app.className, nodes: [...app.childNodes], ready: storageReady, scrollY,
+    focused: document.activeElement };
+  clearTimeout(localSaveTimer);
+  storageReady = false;
+  try {
+    app.replaceChildren();
     state = trackState(data);
-    clearRowSelection();
-    editingCharacters.clear();
-    activeRecord = null;
+    clearRowSelection(); editingCharacters.clear(); activeRecord = null; query = '';
     page = visibleRoster().length ? 'summary' : state.selection.length ? 'levels' : 'select';
-    render(); window.scrollTo(0, 0); notify('');
-  } catch { notify('无法导入：文件不是有效的 Rigging Buddy 备份。当前数据未修改。'); }
-  document.querySelector('#import-file').value = '';
+    render();
+  } catch {
+    ({ state, page, activeRecord, query, selectionAnchor, selectionPage, multiSelectMode } = previous);
+    editingCharacters.clear(); previous.editing.forEach(id => editingCharacters.add(id));
+    rowSelection.clear(); previous.selected.forEach(id => rowSelection.add(id));
+    app.replaceChildren(...previous.nodes); app.className = previous.className;
+    if (previous.focused?.isConnected) previous.focused.focus({ preventScroll: true });
+    storageReady = previous.ready;
+    try { sessionStorage.setItem(LOCAL_PAGE_KEY, page === 'record' ? 'summary' : page); } catch { /* Optional navigation memory. */ }
+    window.scrollTo(0, previous.scrollY);
+    scheduleLocalSave(); notify('恢复失败，原记录未改动'); return;
+  }
+  storageReady = previous.ready;
+  clearDrag();
+  // Choosing a backup explicitly replaces this site's saved state, including a
+  // corrupt save or a prior tab conflict. A write failure stays visible.
+  saveLocalState(true);
+  window.scrollTo(0, 0); notify('');
 }
+
 document.querySelector('#import-file').addEventListener('change', e => importFile(e.target.files[0]));
 function finishMouseSort(commit = false) {
   if (!mouseSort) return;
@@ -764,7 +833,7 @@ app.addEventListener('pointerdown', e => {
   const card = mouseSortTarget(e.target);
   if (!card) return;
   mouseSort = { card, pointerId: e.pointerId, x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY, started: false };
-  app.setPointerCapture(e.pointerId);
+  // Capture only after movement: a click must still reach its original row.
   e.preventDefault();
 });
 app.addEventListener('pointermove', e => {
@@ -772,6 +841,7 @@ app.addEventListener('pointermove', e => {
   mouseSort.x = e.clientX; mouseSort.y = e.clientY;
   if (!mouseSort.started && Math.hypot(e.clientX - mouseSort.startX, e.clientY - mouseSort.startY) >= 5) {
     mouseSort.started = true;
+    app.setPointerCapture(e.pointerId);
     markMoving(mouseSort.card.dataset.sortId);
     startSortScroll(mouseSort);
   }
@@ -832,7 +902,7 @@ app.addEventListener('keydown', e => {
     app.querySelector('#search-history').hidden = true;
     return;
   }
-  if (e.key === 'Enter' && e.target.matches('[data-initial-level]') && editingCharacters.has(e.target.dataset.initialLevel)) {
+  if (['Enter', ' '].includes(e.key) && e.target.matches('[data-initial-level]') && editingCharacters.has(e.target.dataset.initialLevel)) {
     e.preventDefault(); editInitialLevel(e.target); return;
   }
   if (e.key === 'Escape' && e.target.closest('[data-initial-form]')) {
