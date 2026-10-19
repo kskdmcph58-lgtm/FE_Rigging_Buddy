@@ -1460,36 +1460,6 @@ button.record-chip {
   .journal-actions {
     align-self: center;
   }
-  .journal-actions [data-delete-character] {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 76px;
-    border: 0;
-    border-radius: 0;
-    background: var(--danger-fill);
-    color: var(--on-danger);
-    visibility: hidden;
-    transform: translateX(100%);
-    z-index: 3;
-    font-size: 14px;
-  }
-  .journal-head,.journal .records,.journal-actions>button {
-    transition: transform .2s ease,visibility .2s;
-  }
-  .journal.swipe-open .journal-head,.journal.swipe-open .records,.journal.swipe-open .journal-actions>button:not([data-delete-character]) {
-    transform: translateX(-76px);
-  }
-  .journal.swipe-open [data-delete-character] {
-    visibility: visible;
-    transform: translateX(0);
-  }
-}
-@media(prefers-reduced-motion:reduce) {
-  .journal-head,.journal .records,.journal-actions>button {
-    transition: none;
-  }
 }
 .app-dialog {
   padding: 0;
@@ -1733,10 +1703,6 @@ header {
 .journal-actions button {
   min-height: 44px;
 }
-.journal-actions button.danger {
-  background: transparent;
-  border-color: transparent;
-}
 .record-chip p {
   font-size: 12px;
   line-height: 1.6;
@@ -1850,12 +1816,6 @@ button.touch-pressed:not(:disabled) {
 button.primary.touch-pressed:not(:disabled) {
   background: #cbb887;
 }
-@media(hover:hover) and (pointer:fine) {
-  .journal-actions button.danger:hover {
-    background: #ef8b8012;
-    border-color: transparent;
-  }
-}
 @media(min-width:1024px) {
   .journal .records {
     grid-template-columns: repeat(3,minmax(0,1fr));
@@ -1922,10 +1882,6 @@ button.primary.touch-pressed:not(:disabled) {
   .journal-actions button {
     padding: 10px 9px;
     min-height: 44px;
-  }
-  .journal-actions button[data-delete-character] {
-    background: var(--danger-fill);
-    color: var(--on-danger);
   }
   .initial-level:not(:has(input))::after {
     margin-left: 4px;
@@ -2010,35 +1966,22 @@ button,summary,a,[role="button"],[data-initial-level] {
 .menu-panel button {
   transition: none;
 }
-@media(min-width:601px) {
-  .journal-actions button.danger {
-    background: #efa39c12;
-    border-color: #a85c5680;
-    color: var(--red);
-  }
-}
-@media(min-width:601px) and (hover:hover) and (pointer:fine) {
-  .journal-actions button.danger:hover {
-    background: #efa39c24;
-    border-color: #a85c56;
-  }
-}
 @media(max-width:600px) {
   .journal-actions {
     gap: 12px;
   }
-  .journal-actions>button:not([data-delete-character]),.summary-actions>button,.action-menu>summary {
+  .journal-actions>button,.summary-actions>button,.action-menu>summary {
     position: relative;
     min-height: 36px;
     height: 36px;
     padding-block: 7px;
     line-height: 20px;
   }
-  .journal-actions>button:not([data-delete-character]) {
+  .journal-actions>button {
     font-size: 12px;
     padding-inline: 10px;
   }
-  .journal-actions>button:not([data-delete-character])::after,.summary-actions>button::after,.action-menu>summary::after {
+  .journal-actions>button::after,.summary-actions>button::after,.action-menu>summary::after {
     content: '';
     position: absolute;
     inset: -4px 0;
@@ -2931,9 +2874,6 @@ body.marquee-selecting,body.marquee-selecting * {
 .journal-head {
   padding-left: 0;
 }
-.multi-select-mode .journal-head {
-  padding-left: 24px;
-}
 .row-select,.level-row .row-select,.journal>.row-select {
   display: block;
   visibility: hidden;
@@ -2978,7 +2918,7 @@ body.marquee-selecting,body.marquee-selecting * {
     position: absolute;
     inset: -10px -10px -10px -14px;
   }
-  .multi-select-mode .drag-grip::before {
+  .multi-select-mode .level-row .drag-grip::before {
     left: -4px;
   }
 }
@@ -2988,7 +2928,7 @@ body.marquee-selecting,body.marquee-selecting * {
   margin-bottom: 12px;
   padding-bottom: 16px;
 }
-.setup-toolbar .selection-toolbar {
+.setup-toolbar .selection-toolbar-anchor {
   margin: 0 0 0 auto;
 }
 .summary-controls {
@@ -3016,11 +2956,17 @@ body.marquee-selecting,body.marquee-selecting * {
   }
 }
 @media(min-width:1100px) {
+  .journal>.row-select {
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .summary-page .journal {
     grid-template-columns: 128px minmax(0,1fr) 90px;
   }
-  .multi-select-mode.summary-page .journal {
-    grid-template-columns: 152px minmax(0,1fr) 90px;
+}
+@media(min-width:601px) and (max-width:1099px) {
+  .multi-select-mode .journal-head {
+    padding-left: 24px;
   }
 }
 @media(min-width:601px) {
@@ -3051,6 +2997,19 @@ body.marquee-selecting,body.marquee-selecting * {
     grid-column: 3;
     grid-row: 1;
   }
+  .selection-toolbar:has(>[data-action="delete-selected-characters"]) {
+    grid-template-columns: minmax(0,1fr) auto auto auto;
+  }
+  .selection-toolbar>[data-action="delete-selected-characters"] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .selection-toolbar:has(>[data-action="delete-selected-characters"])>.selection-count {
+    grid-column: 3;
+  }
+  .selection-toolbar:has(>[data-action="delete-selected-characters"])>[data-action="multi-select"] {
+    grid-column: 4;
+  }
   .selection-toolbar .selection-count:empty {
     display: none;
   }
@@ -3060,7 +3019,7 @@ body.marquee-selecting,body.marquee-selecting * {
   .selection-toolbar .selection-actions {
     justify-content: flex-end;
   }
-  .setup-toolbar .selection-toolbar {
+  .setup-toolbar .selection-toolbar-anchor {
     flex: 1;
     align-self: flex-start;
     margin-top: 2px;
@@ -3070,7 +3029,7 @@ body.marquee-selecting,body.marquee-selecting * {
     align-self: flex-start;
     align-items: flex-start;
   }
-  .summary-controls .selection-toolbar {
+  .summary-controls .selection-toolbar-anchor {
     flex: 1;
   }
 }
@@ -3079,7 +3038,7 @@ body.marquee-selecting,body.marquee-selecting * {
     width: 100%;
     justify-content: space-between;
   }
-  .summary-controls .selection-toolbar {
+  .summary-controls .selection-toolbar-anchor {
     order: 2;
   }
 }
@@ -3087,7 +3046,7 @@ body.marquee-selecting,body.marquee-selecting * {
   .levels-page .level-row {
     padding-left: 4px;
   }
-  .setup-toolbar .selection-toolbar {
+  .setup-toolbar .selection-toolbar-anchor {
     margin-left: 0;
     flex-basis: 100%;
   }
@@ -3195,5 +3154,152 @@ html[data-input-mode="touch"] button.expectation-link {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
+  }
+}
+.selection-toolbar-anchor {
+  min-width: 0;
+  max-width: 100%;
+}
+.selection-toolbar-anchor .selection-toolbar {
+  margin: 0;
+}
+.selection-toolbar [hidden] {
+  display: none;
+}
+@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  .summary-controls .selection-toolbar-anchor {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .setup-toolbar .selection-toolbar-anchor {
+    width: 100%;
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+  .selection-toolbar,
+  .selection-toolbar:has(>[data-action="delete-selected-characters"]) {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .selection-toolbar>[data-action="multi-select"],
+  .selection-toolbar:has(>[data-action="delete-selected-characters"])>[data-action="multi-select"] {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+  .selection-toolbar>.selection-count,
+  .selection-toolbar:has(>[data-action="delete-selected-characters"])>.selection-count {
+    grid-column: 2;
+    grid-row: 1;
+    white-space: nowrap;
+  }
+  .selection-toolbar>[data-action="delete-selected-characters"] {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .selection-toolbar>.selection-actions {
+    grid-column: 1/-1;
+    grid-row: 2;
+    flex-wrap: nowrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  .selection-toolbar button {
+    padding-inline: 10px;
+  }
+  .selection-toolbar.selection-single-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  .selection-toolbar.selection-single-row>.selection-actions,
+  .selection-toolbar.selection-single-row>.selection-count,
+  .selection-toolbar.selection-single-row>button {
+    flex: 0 0 auto;
+  }
+  .selection-toolbar.selection-single-row>[data-action="delete-selected-characters"] {
+    margin-left: auto;
+  }
+}
+.selection-toolbar-backdrop {
+  display: none;
+}
+.selection-toolbar-anchor.is-floating .selection-toolbar-backdrop {
+  display: block;
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--selection-bar-height);
+  z-index: 40;
+  background: #122322;
+  border-bottom: 1px solid var(--overlay-line);
+  box-shadow: 0 6px 18px #0003;
+}
+.selection-toolbar-anchor.is-floating .selection-toolbar {
+  position: fixed;
+  top: 8px;
+  left: var(--selection-left);
+  width: var(--selection-width);
+  z-index: 41;
+}
+@media(max-width:1100px) and (pointer:coarse) {
+  .selection-toolbar-anchor.is-floating .selection-toolbar {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}
+@media(min-width:601px) {
+  .summary-page .journals {
+    gap: 16px;
+  }
+  .summary-page .journal {
+    padding: 14px;
+    gap: 12px;
+  }
+}
+.expand-records {
+  display: none;
+}
+@media(min-width:601px) {
+  .journal .expand-records {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .journal.has-record-rail .records {
+    min-width: 0;
+    overflow: hidden;
+    overflow-anchor: none;
+    align-content: start;
+  }
+  .journal.has-record-rail.records-expanded .records {
+    display: grid;
+    grid-template-columns: repeat(var(--record-columns,1),minmax(0,1fr));
+    align-items: start;
+    gap: 10px;
+  }
+  .journal.has-record-rail:not(.records-expanded) .records {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .journal.has-record-rail:not(.records-expanded) .records::-webkit-scrollbar {
+    display: none;
+  }
+  .journal.has-record-rail:not(.records-expanded) .record-chip {
+    flex: 0 0 var(--chip-width,180px);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .journal.has-record-rail:not(.records-expanded) .records::after {
+    content: '';
+    flex: 0 0 max(0px,calc(100% - var(--chip-width,180px) - 10px));
   }
 }

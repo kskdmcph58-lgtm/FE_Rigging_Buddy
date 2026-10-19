@@ -187,7 +187,7 @@ function render() {
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${visibleRoster().length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import" title="拖入 JSON 备份，或点击选择文件">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${visibleRoster().length ? '<button data-action="summary">← 返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级 →</button></div>`;
   document.querySelector('#search').value = query;
   if (!visibleRoster().length && state.roster.some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
   const searchInput = app.querySelector('#search');
@@ -231,6 +231,134 @@ function recordStats(stats) {
 function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
+const expandedJournals = new Set();
+const recordRails = new WeakMap();
+const desktopRecords = matchMedia('(min-width:601px)');
+function compactRecords(item) {
+  const records = M.live(item);
+  return records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;
+}
+function railState(rail) {
+  if (!recordRails.has(rail)) recordRails.set(rail, { frame: 0, timer: 0, signature: '', initialized: false, step: 0 });
+  return recordRails.get(rail);
+}
+function stopRail(rail) {
+  const status = railState(rail);
+  cancelAnimationFrame(status.frame); clearTimeout(status.timer); status.frame = 0;
+}
+function moveRail(rail, target, duration = 120) {
+  stopRail(rail);
+  target = Math.max(0, Math.min(target, rail.scrollWidth - rail.clientWidth));
+  const from = rail.scrollLeft, status = railState(rail);
+  if (!duration || Math.abs(target - from) < 1 || matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    rail.scrollLeft = target; return;
+  }
+  const start = performance.now();
+  const tick = now => {
+    const t = Math.min(1, (now - start) / duration);
+    rail.scrollLeft = from + (target - from) * (1 - Math.pow(1 - t, 3));
+    if (t < 1) status.frame = requestAnimationFrame(tick);
+    else { status.frame = 0; clearTimeout(status.timer); }
+  };
+  status.frame = requestAnimationFrame(tick);
+}
+function defaultRailPosition(rail) {
+  const chips = [...rail.querySelectorAll('.record-chip')];
+  let processed = 0;
+  while (processed < chips.length && chips[processed].matches('.upgraded,.skipped')) processed++;
+  return Math.max(0, processed - 1) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
+}
+function setJournalExpanded(journal, expanded, animate = true) {
+  const rail = journal.querySelector('.records');
+  const previousHeight = rail.getBoundingClientRect().height;
+  const chips = [...rail.querySelectorAll('.record-chip')];
+  const slideOpen = expanded && !journal.classList.contains('records-expanded') && chips.length <= 5;
+  const previousPositions = slideOpen ? chips.map(chip => chip.getBoundingClientRect()) : [];
+  stopRail(rail);
+  rail.getAnimations().forEach(animation => animation.cancel());
+  chips.forEach(chip => chip.getAnimations().forEach(animation => animation.cancel()));
+  expanded ? expandedJournals.add(journal.dataset.sortId) : expandedJournals.delete(journal.dataset.sortId);
+  journal.classList.toggle('records-expanded', expanded);
+  const button = journal.querySelector('[data-expand-records]');
+  if (button) { button.textContent = expanded ? '收起' : '展开'; button.setAttribute('aria-expanded', String(expanded)); }
+  if (expanded) rail.scrollLeft = 0;
+  else moveRail(rail, defaultRailPosition(rail));
+  const nextHeight = rail.getBoundingClientRect().height;
+  // Short lists keep the same height: animate the cards back from their
+  // scrolled positions so revealing hidden history still has a visible motion.
+  if (slideOpen && animate && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    chips.forEach((chip, index) => {
+      const next = chip.getBoundingClientRect(), previous = previousPositions[index];
+      const x = previous.left - next.left, y = previous.top - next.top;
+      if (Math.abs(x) > 1 || Math.abs(y) > 1) chip.animate([
+        { transform: `translate(${x}px,${y}px)` }, { transform: 'translate(0,0)' }
+      ], { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+    });
+  }
+  if (animate && !matchMedia('(prefers-reduced-motion:reduce)').matches && Math.abs(nextHeight - previousHeight) > 1) {
+    rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], {
+      duration: 130, easing: 'cubic-bezier(.16,1,.3,1)'
+    });
+  }
+}
+function refreshRecordRails() {
+  app.querySelectorAll('.journal').forEach(journal => {
+    const rail = journal.querySelector('.records');
+    const status = railState(rail);
+    const first = !status.initialized;
+    status.initialized = true;
+    if (!desktopRecords.matches || !journal.classList.contains('has-record-rail')) {
+      stopRail(rail); rail.scrollLeft = 0; status.signature = ''; return;
+    }
+    const width = rail.clientWidth;
+    const columns = Math.max(1, Math.min(5, Math.floor((width + 10) / 190)));
+    const step = (width - (columns - 1) * 10) / columns + 10;
+    const previousPosition = status.step ? rail.scrollLeft / status.step : 0;
+    rail.style.setProperty('--chip-width', `${step - 10}px`);
+    rail.style.setProperty('--record-columns', columns);
+    const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
+    if (status.signature !== signature) {
+      status.signature = signature;
+      if (!journal.classList.contains('records-expanded')) moveRail(rail, defaultRailPosition(rail), first ? 0 : 120);
+    } else if (status.step !== step && !journal.classList.contains('records-expanded')) {
+      // Selection adds a checkbox column. Keep the same reviewed card when
+      // its width changes, instead of resetting the user's browsing position.
+      moveRail(rail, previousPosition * step, 0);
+    }
+    status.step = step;
+  });
+}
+app.addEventListener('wheel', event => {
+  const rail = event.target.closest('.has-record-rail:not(.records-expanded) .records');
+  if (!desktopRecords.matches || !rail || event.ctrlKey) return;
+  stopRail(rail);
+  const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? rail.clientWidth : 1);
+  const target = Math.max(0, Math.min(rail.scrollLeft + delta, rail.scrollWidth - rail.clientWidth));
+  if (Math.abs(target - rail.scrollLeft) < .5) return;
+  event.preventDefault(); rail.scrollLeft = target;
+}, { passive: false });
+app.addEventListener('scroll', event => {
+  const rail = event.target;
+  if (!desktopRecords.matches || !rail.matches?.('.has-record-rail:not(.records-expanded) .records')) return;
+  const status = railState(rail);
+  if (status.frame) return;
+  clearTimeout(status.timer);
+  status.timer = setTimeout(() => {
+    const step = parseFloat(rail.style.getPropertyValue('--chip-width')) + 10;
+    moveRail(rail, Math.round(rail.scrollLeft / step) * step, 80);
+  }, 70);
+}, true);
+app.addEventListener('pointerdown', event => {
+  const rail = event.target.closest('.records');
+  if (rail) stopRail(rail);
+});
+document.addEventListener('click', event => {
+  if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil) return;
+  app.querySelectorAll('.has-record-rail').forEach(journal => {
+    if (!journal.contains(event.target)) setJournalExpanded(journal, false);
+  });
+}, true);
+window.addEventListener('resize', refreshRecordRails);
 function renderSummary() {
   const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
   const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && !x.skipped && !x.ratingPending).length, 0);
@@ -241,9 +369,9 @@ function renderSummary() {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       const displayLevels = M.displayLevels(item);
-      return `<article class="journal panel" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
+      return `<article class="journal panel ${compactRecords(item) ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
-        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button><button class="danger" data-delete-character="${c.id}">删除</button></div>
+        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compactRecords(item) ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
         <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.skipped ? '已跳过，' : r.upgraded ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, displayLevels[recordIndex])}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
@@ -257,13 +385,16 @@ function renderSummary() {
 function syncChildren(current, desired) {
   const key = node => {
     if (node.nodeType !== 1) return null;
-    for (const attribute of ['data-sort-id', 'data-start', 'data-toggle-edit', 'data-delete-character', 'data-edit']) {
+    for (const attribute of ['data-sort-id', 'data-start', 'data-toggle-edit', 'data-edit']) {
       if (node.hasAttribute(attribute)) return `${attribute}:${node.getAttribute(attribute)}:${node.getAttribute('data-index') || ''}`;
     }
     return null;
   };
   const keyed = new Map([...current.childNodes].filter(key).map(node => [key(node), node]));
   let cursor = current.firstChild;
+  // Selection owns this leading checkbox; it is absent from the render template.
+  // Keep it out of reconciliation so updates retain the journal's record rail.
+  if (current.matches?.('.journal') && cursor?.nodeType === 1 && cursor.matches('.row-select')) cursor = cursor.nextSibling;
   for (const next of [...desired.childNodes]) {
     const id = key(next);
     let node = id ? keyed.get(id) : cursor;
@@ -273,12 +404,17 @@ function syncChildren(current, desired) {
     } else {
       if (node !== cursor) current.insertBefore(node, cursor);
       if (node.nodeType === 1) {
+        const chipWidth = node.matches('.records') ? node.style.getPropertyValue('--chip-width') : '';
+        const recordColumns = node.matches('.records') ? node.style.getPropertyValue('--record-columns') : '';
         for (const attribute of [...node.attributes]) {
           if (!next.hasAttribute(attribute.name)) node.removeAttribute(attribute.name);
         }
         for (const attribute of [...next.attributes]) {
           if (node.getAttribute(attribute.name) !== attribute.value) node.setAttribute(attribute.name, attribute.value);
         }
+        // Rail sizing is measured at runtime; retain it through record updates.
+        if (chipWidth) node.style.setProperty('--chip-width', chipWidth);
+        if (recordColumns) node.style.setProperty('--record-columns', recordColumns);
         syncChildren(node, next);
       } else if (node.nodeValue !== next.nodeValue) node.nodeValue = next.nodeValue;
     }
@@ -394,7 +530,10 @@ function saveRecord(next) {
     app.querySelector('.record-level').textContent = levelLabel(item, level);
     hideExpectationTip();
     updateRecordControls();
-  } else returnToSummary();
+  } else {
+    if (desktopRecords.matches && M.live(item).length > 5) expandedJournals.add(id);
+    returnToSummary();
+  }
 
 }
 app.addEventListener('input', e => {
@@ -432,7 +571,6 @@ app.addEventListener('submit', e => {
   item.initialLevel = input.value === '' ? null : Number(input.value);
   rememberListPosition(); returnToSummary();
 });
-let swipeGesture = null;
 let touchSort = null;
 let mouseSort = null;
 function sortTarget(x, y, source) {
@@ -480,14 +618,9 @@ function finishTouchSort(commit = false) {
   clearMoving();
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   touchSort = null;
-  suppressSwipeClickUntil = Date.now() + 400;
+  suppressGestureClickUntil = Date.now() + 400;
 }
-let suppressSwipeClickUntil = 0;
-function closeSwipeCards(except = null) {
-  app.querySelectorAll('.journal.swipe-open').forEach(card => {
-    if (card !== except) card.classList.remove('swipe-open');
-  });
-}
+let suppressGestureClickUntil = 0;
 app.addEventListener('touchstart', e => {
   if (touchSort) {
     const extra = [...e.touches].find(touch => touch.identifier !== touchSort.identifier);
@@ -495,16 +628,10 @@ app.addEventListener('touchstart', e => {
     e.preventDefault();
     return;
   }
-  swipeGesture = null;
   finishTouchSort();
-  if (e.touches.length !== 1) {
-    swipeGesture = null;
-    return;
-  }
+  if (e.touches.length !== 1) return;
   const card = e.target.closest('.journal,.level-row');
-  closeSwipeCards(card);
   if (card && e.target.closest('.drag-grip')) {
-    closeSwipeCards();
     touchSort = { card, target: null, after: false, identifier: e.touches[0].identifier, x: e.touches[0].clientX, y: e.touches[0].clientY };
     markMoving(card.dataset.sortId);
     positionDragPreview(touchSort.x, touchSort.y);
@@ -512,8 +639,6 @@ app.addEventListener('touchstart', e => {
     e.preventDefault();
     return;
   }
-  if (!matchMedia('(max-width:600px)').matches || multiSelectMode || !card?.matches('.journal') || e.target.closest('button,input,[data-delete-character]')) return;
-  swipeGesture = { card, x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, horizontal: false };
 }, { passive: false });
 app.addEventListener('touchmove', e => {
   if (touchSort) {
@@ -529,51 +654,23 @@ app.addEventListener('touchmove', e => {
     updateSortMarker(touchSort);
     return;
   }
-  if (!swipeGesture) return;
-  if (e.touches.length !== 1) { swipeGesture = null; return; }
-  const dx = e.touches[0].clientX - swipeGesture.x;
-  const dy = e.touches[0].clientY - swipeGesture.y;
-  if (!swipeGesture.horizontal) {
-    if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { swipeGesture = null; return; }
-    if (Math.abs(dx) < 12 || Math.abs(dx) <= Math.abs(dy) * 1.4) return;
-    swipeGesture.horizontal = true;
-  }
-  swipeGesture.dx = dx;
-  e.preventDefault();
 }, { passive: false });
 app.addEventListener('touchend', e => {
   if (touchSort) {
     if ([...(e.touches || [])].some(touch => touch.identifier === touchSort.identifier)) { touchSort.scrollFinger = null; return; }
     finishTouchSort(true); return;
   }
-  if (swipeGesture?.horizontal) {
-    suppressSwipeClickUntil = Date.now() + 400;
-    if (Math.abs(swipeGesture.dx) >= 40) swipeGesture.card.classList.toggle('swipe-open', swipeGesture.dx < 0);
-  }
-  swipeGesture = null;
 });
-app.addEventListener('touchcancel', () => { swipeGesture = null; finishTouchSort(); });
+app.addEventListener('touchcancel', () => finishTouchSort());
 app.addEventListener('click', e => {
-  if (Date.now() < suppressSwipeClickUntil) { e.preventDefault(); e.stopImmediatePropagation(); return; }
-  const open = e.target.closest('.journal.swipe-open');
-  if (open && !e.target.closest('[data-delete-character]')) {
-    open.classList.remove('swipe-open');
-    e.preventDefault(); e.stopImmediatePropagation();
-  } else closeSwipeCards(open);
+  if (Date.now() < suppressGestureClickUntil) { e.preventDefault(); e.stopImmediatePropagation(); return; }
 }, true);
 app.addEventListener('click', e => {
+  if (!multiSelectMode) return;
   const row = e.target.closest('[data-sort-id]');
-  if (!row || e.target.closest('button,input,select,summary,a,[role="button"],.drag-grip')) return;
-  if (matchMedia('(pointer:coarse)').matches && !multiSelectMode) return;
-  selectRow(row.dataset.sortId, e);
-});
-app.addEventListener('keydown', e => {
-  if (!window.matchMedia('(max-width:600px)').matches) return;
-  const card = e.target.closest('.journal');
-  if (card && e.key === 'ArrowLeft' && !e.altKey && !e.target.matches('input')) {
-    closeSwipeCards(card); card.classList.add('swipe-open'); e.preventDefault();
-  }
-  if (e.key === 'Escape') closeSwipeCards();
+  if (!row || e.target.closest('button,input,select,textarea,summary,a,label,[role="button"],.drag-grip')) return;
+  if (editingCharacters.has(row.dataset.sortId) && e.target.closest('[data-initial-level]')) return;
+  selectRow(row.dataset.sortId, { shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey });
 });
 app.addEventListener('click', e => {
   const level = e.target.closest('[data-initial-level]');
@@ -592,8 +689,8 @@ function clearTouchPress() {
 document.addEventListener('pointerdown', e => {
   document.documentElement.dataset.inputMode = e.pointerType === 'mouse' ? 'mouse' : 'touch';
   // A new gesture is intentional; only suppress the click generated by the
-  // completed drag/swipe, never the user's next button press.
-  suppressSwipeClickUntil = 0;
+  // completed drag, never the user's next button press.
+  suppressGestureClickUntil = 0;
   clearTouchPress();
   if (e.pointerType === 'mouse') return;
   const button = e.target.closest('button:not(:disabled)');
@@ -631,13 +728,28 @@ document.addEventListener('keydown', e => {
 app.addEventListener('click', async e => {
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
-  if (b.dataset.rowSelect) { selectRow(b.dataset.rowSelect, { toggle: true, shiftKey:e.shiftKey, ctrlKey:e.ctrlKey, metaKey:e.metaKey }); return; }
+  if (b.dataset.expandRecords) {
+    const journal = b.closest('.journal');
+    setJournalExpanded(journal, !journal.classList.contains('records-expanded'));
+    return;
+  }
+  if (b.dataset.rowSelect) { selectRow(b.dataset.rowSelect, { shiftKey:e.shiftKey, ctrlKey:e.ctrlKey, metaKey:e.metaKey }); return; }
   if (b.dataset.expectationEdit) { openExpectationEditor([b.dataset.expectationEdit]); return; }
   if (b.dataset.expectationDetail) { if(b.hasAttribute('data-record-expectation'))openRecordExpectationDetails();else openExpectationDetails(b.dataset.expectationDetail); return; }
   if (b.dataset.action === 'multi-select') { multiSelectMode = !multiSelectMode; if (!multiSelectMode) rowSelection.clear(); refreshRowSelection(); return; }
   if (b.dataset.action === 'select-all-rows') { rowIds().forEach(id => rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'clear-row-selection') { rowSelection.clear(); selectionAnchor = null; refreshRowSelection(); return; }
   if (b.dataset.action === 'invert-rows') { rowIds().forEach(id => rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id)); refreshRowSelection(); return; }
+  if (b.dataset.action === 'delete-selected-characters') {
+    const items = visibleRoster().filter(item => rowSelection.has(item.id));
+    if (!items.length || !await confirmRecordDeletion(`是否删除选中的 ${items.length} 位角色？`)) return;
+    softDelete(items);
+    const ids = new Set(items.map(item => item.id));
+    state.selection = state.selection.filter(id => !ids.has(id));
+    ids.forEach(id => { delete state.initialLevels[id]; editingCharacters.delete(id); expandedJournals.delete(id); });
+    rowSelection.clear(); selectionAnchor = null;
+    rememberListPosition(); returnToSummary(); return;
+  }
   if (b.dataset.action === 'batch-expectation') { if (rowSelection.size) openExpectationEditor(rowIds().filter(id => rowSelection.has(id))); return; }
   if (b.dataset.action === 'undo-delete') { undoDelete(); return; }
   if (b.hasAttribute('data-search-history')) {
@@ -682,15 +794,6 @@ app.addEventListener('click', async e => {
   if (b.dataset.toggleEdit) {
     const id = b.dataset.toggleEdit;
     editingCharacters.has(id) ? editingCharacters.delete(id) : editingCharacters.add(id);
-    rememberListPosition(); returnToSummary();
-  }
-  if (b.dataset.deleteCharacter) {
-    const id = b.dataset.deleteCharacter;
-    if (!await confirmRecordDeletion(`是否删除${char(id).name}？`)) return;
-    softDelete([state.roster.find(item => item.id === id)]);
-    state.selection = state.selection.filter(selected => selected !== id);
-    delete state.initialLevels[id];
-    editingCharacters.delete(id);
     rememberListPosition(); returnToSummary();
   }
   if (b.dataset.character) {
@@ -820,7 +923,7 @@ function finishMouseSort(commit = false) {
   clearMoving();
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   if (app.hasPointerCapture(gesture.pointerId)) app.releasePointerCapture(gesture.pointerId);
-  if (gesture.started) suppressSwipeClickUntil = Date.now() + 400;
+  if (gesture.started) suppressGestureClickUntil = Date.now() + 400;
   mouseSort = null;
 }
 function mouseSortTarget(target) {
@@ -866,7 +969,15 @@ function moveCard(id, targetId, after = false) {
   list.splice(0, list.length, ...remaining);
   const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);
   const anchor = after ? targetCard.nextSibling : targetCard;
-  moved.forEach(item => targetCard.parentNode.insertBefore(app.querySelector(`[data-sort-id="${getId(item)}"]`), anchor));
+  moved.forEach(item => {
+    const card = app.querySelector(`[data-sort-id="${getId(item)}"]`);
+    const rail = card.querySelector('.records');
+    // Reparenting a journal can reset its descendant scroll offsets in browsers.
+    // Restore the current review position, rather than recomputing the default.
+    const scrollLeft = rail?.scrollLeft;
+    targetCard.parentNode.insertBefore(card, anchor);
+    if (rail) rail.scrollLeft = scrollLeft;
+  });
   refreshRowSelection();
 }
 // Sorting uses pointer/touch gestures only. Native DnD remains for backup files.

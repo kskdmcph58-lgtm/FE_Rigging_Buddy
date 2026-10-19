@@ -1,13 +1,70 @@
 /* Selection, expectation editing and reversible deletion. Loaded before app.js. */
 const rowSelection = new Set();
 let selectionPage = '', selectionAnchor = null, multiSelectMode = false;
+const compactSelectionToolbar = matchMedia('(max-width:600px), (max-width:1100px) and (pointer:coarse)');
 const defaultRuleText = '默认：0–3 点不满意，4 点手动选择，5–9 点满意。';
 function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; multiSelectMode = false; }
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
 function selectionToolbar(withToggle = true) {
-  return `<div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button><button data-action="batch-expectation">设置属性期望</button></div></div>`;
+  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span>${page === 'summary' ? '<button class="danger" data-action="delete-selected-characters" hidden>删除角色</button>' : ''}<div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button><button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
 }
+function layoutCompactSelectionToolbar(toolbar) {
+  if (!compactSelectionToolbar.matches) { toolbar.classList.remove('selection-single-row'); return; }
+  const toggle = toolbar.querySelector('[data-action="multi-select"]');
+  const actions = toolbar.querySelector('.selection-actions');
+  const count = toolbar.querySelector('.selection-count');
+  const remove = toolbar.querySelector('[data-action="delete-selected-characters"]');
+  if (!toggle || !actions || !count) return;
+  const buttons = [...actions.querySelectorAll('button')];
+  const text = document.createRange(); text.selectNodeContents(count);
+  const actionWidth = buttons.reduce((width, button) => width + button.offsetWidth, 0)
+    + Math.max(0, buttons.length - 1) * (parseFloat(getComputedStyle(actions).columnGap) || 0);
+  const required = toggle.offsetWidth + actionWidth + text.getBoundingClientRect().width
+    + (remove && !remove.hidden ? remove.offsetWidth + 8 : 0) + 16;
+  const single = !actions.hidden && toolbar.clientWidth >= required + 2;
+  toolbar.classList.toggle('selection-single-row', single);
+  const order = single ? [toggle, actions, count, remove] : [toggle, count, remove, actions];
+  order.filter(Boolean).forEach((node, index) => {
+    if (toolbar.children[index] !== node) toolbar.insertBefore(node, toolbar.children[index] || null);
+  });
+}
+function updateFloatingSelectionBar() {
+  app.querySelectorAll('.selection-toolbar-anchor').forEach(anchor => {
+    const toolbar = anchor.querySelector('.selection-toolbar');
+    const rect = anchor.getBoundingClientRect();
+    const floating = multiSelectMode && ['summary', 'levels'].includes(page) && rect.top < 8;
+    const wasFloating = anchor.classList.contains('is-floating');
+    if (floating) {
+      // Keep the original slot in the layout and move the actual controls, so
+      // their horizontal positions, focus and delegated actions stay intact.
+      toolbar.style.setProperty('--selection-left', `${rect.left}px`);
+      toolbar.style.setProperty('--selection-width', `${rect.width}px`);
+      anchor.classList.add('is-floating');
+      layoutCompactSelectionToolbar(toolbar);
+      anchor.style.height = `${toolbar.offsetHeight}px`;
+      anchor.style.setProperty('--selection-bar-height', `${toolbar.offsetHeight + 16}px`);
+      if (!wasFloating && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+        toolbar.animate([{ transform: 'translateY(calc(-100% - 8px))' }, { transform: 'translateY(0)' }],
+          { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+        anchor.querySelector('.selection-toolbar-backdrop').animate(
+          [{ transform: 'translateY(-100%)' }, { transform: 'translateY(0)' }],
+          { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+      }
+    } else {
+      anchor.classList.remove('is-floating'); anchor.style.height = '';
+      toolbar.getAnimations().forEach(animation => animation.cancel());
+      anchor.querySelector('.selection-toolbar-backdrop').getAnimations().forEach(animation => animation.cancel());
+      toolbar.style.removeProperty('--selection-left'); toolbar.style.removeProperty('--selection-width');
+      layoutCompactSelectionToolbar(toolbar);
+    }
+  });
+}
+let selectionBarFrame = 0;
+window.addEventListener('scroll', () => {
+  if (selectionBarFrame) return;
+  selectionBarFrame = requestAnimationFrame(() => { selectionBarFrame = 0; updateFloatingSelectionBar(); });
+}, { passive: true });
 function refreshRowSelection() {
   if (selectionPage !== page) { clearRowSelection(); selectionPage = page; }
   const ids = rowIds();
@@ -27,7 +84,8 @@ function refreshRowSelection() {
     check.setAttribute('aria-pressed', String(selected));
     check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
     const avatar = row.querySelector('img');
-    if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
+    if (row.matches('.journal') && matchMedia('(min-width:1100px)').matches) check.style.top = '';
+    else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
   });
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
     b.textContent = multiSelectMode ? '完成多选' : '多选'; b.setAttribute('aria-pressed', String(multiSelectMode));
@@ -35,25 +93,38 @@ function refreshRowSelection() {
   app.querySelectorAll('.selection-count').forEach(el => el.textContent = multiSelectMode || rowSelection.size ? `已选 ${rowSelection.size} 位` : '');
   app.querySelectorAll('.selection-actions').forEach(el => el.hidden = !rowSelection.size && !multiSelectMode);
   app.querySelectorAll('[data-action="batch-expectation"]').forEach(b => b.disabled = !rowSelection.size);
+  app.querySelectorAll('[data-action="delete-selected-characters"]').forEach(b => {
+    b.disabled = !rowSelection.size; b.hidden = !multiSelectMode;
+  });
   // Match visual and keyboard order while keeping the desktop toggle anchored.
   app.querySelectorAll('.selection-toolbar').forEach(toolbar => {
     const toggle = toolbar.querySelector('[data-action="multi-select"]');
     const actions = toolbar.querySelector('.selection-actions');
+    const count = toolbar.querySelector('.selection-count');
+    const remove = toolbar.querySelector('[data-action="delete-selected-characters"]');
     if (!toggle || !actions) return;
-    if (matchMedia('(min-width:601px)').matches) { toolbar.prepend(actions); toolbar.append(toggle); }
-    else { toolbar.prepend(toggle); toolbar.append(actions); }
+    if (!compactSelectionToolbar.matches) {
+      toolbar.prepend(actions);
+      if (remove) toolbar.insertBefore(remove, count);
+      toolbar.append(toggle);
+    } else {
+      toolbar.prepend(toggle); toolbar.insertBefore(count, toggle.nextSibling);
+      if (remove) toolbar.insertBefore(remove, count.nextSibling);
+      toolbar.append(actions);
+    }
   });
+  updateFloatingSelectionBar();
+  if (page === 'summary') refreshRecordRails();
 }
 function selectRow(id, event = {}) {
   const ids = rowIds(), additive = event.ctrlKey || event.metaKey;
-  if (additive || event.shiftKey || event.toggle) multiSelectMode = true;
+  multiSelectMode = true;
   if (event.shiftKey && selectionAnchor && ids.includes(selectionAnchor)) {
     if (!additive) rowSelection.clear();
     const a = ids.indexOf(selectionAnchor), b = ids.indexOf(id);
     ids.slice(Math.min(a,b), Math.max(a,b) + 1).forEach(value => rowSelection.add(value));
   } else {
-    if (additive || (multiSelectMode && matchMedia('(pointer:coarse)').matches) || event.toggle) rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id);
-    else { rowSelection.clear(); rowSelection.add(id); }
+    rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id);
     selectionAnchor = id;
   }
   refreshRowSelection();
@@ -119,8 +190,12 @@ function finishMarquee(cancel = false) {
         rememberSearch();
       }
       refreshCharacterSelection();
-    } else if (cancel) { rowSelection.clear(); m.before.forEach(id => rowSelection.add(id)); multiSelectMode = m.mode; }
-    suppressSwipeClickUntil = Date.now() + 400;
+    } else {
+      rowSelection.clear();
+      (cancel ? m.before : m.pending || m.before).forEach(id => rowSelection.add(id));
+      multiSelectMode = cancel ? m.mode : m.mode || rowSelection.size > 0;
+    }
+    suppressGestureClickUntil = Date.now() + 400;
     if (app.hasPointerCapture(m.pointer)) app.releasePointerCapture(m.pointer);
     if(!m.characters)refreshRowSelection();
   }
@@ -140,21 +215,24 @@ function updateMarquee() {
     });
     state.selection=[...selection];refreshCharacterSelection();return;
   }
-  rowSelection.clear(); if (m.add || m.toggle) m.before.forEach(id => rowSelection.add(id));
+  const selection = m.add || m.toggle ? new Set(m.before) : new Set();
   app.querySelectorAll('[data-sort-id]').forEach(row => {
     const r = row.getBoundingClientRect(), id = row.dataset.sortId;
     if (r.right+scrollX>left && r.left+scrollX<right && r.bottom+scrollY>top && r.top+scrollY<bottom) {
-      if (m.toggle && m.before.has(id)) rowSelection.delete(id); else rowSelection.add(id);
+      if (m.toggle && m.before.has(id)) selection.delete(id); else selection.add(id);
     }
+    row.classList.toggle('row-selected', selection.has(id));
   });
-  refreshRowSelection();
+  // Preview the hit rows without changing layout or opening selection controls.
+  // Commit only on release; an empty drag must not enter multi-select mode.
+  m.pending = selection;
 }
 document.addEventListener('pointerdown', e => {
   if (e.defaultPrevented) return;
   if (e.pointerType !== 'mouse' || e.button !== 0 || !['select','levels','summary'].includes(page) || document.querySelector('dialog[open]')) return;
   if (e.clientX >= document.documentElement.clientWidth || e.clientY >= document.documentElement.clientHeight) return;
   const character=page==='select'&&e.target.closest('[data-character]:not(:disabled)');
-  if (!character&&e.target.closest('button,input,select,textarea,a,label,summary,[role="button"],[contenteditable],.drag-grip,.menu-panel,.select-options')) return;
+  if (!character&&e.target.closest('button,input,select,textarea,a,label,summary,[role="button"],[contenteditable],.drag-grip,.menu-panel,.select-options,.selection-toolbar-backdrop')) return;
   marquee = {characters:page==='select',pointer:e.pointerId,x:e.pageX,y:e.pageY,clientX:e.clientX,clientY:e.clientY,before:new Set(page==='select'?state.selection:rowSelection),mode:multiSelectMode,add:e.shiftKey,toggle:e.ctrlKey||e.metaKey};
   e.preventDefault();
 });
@@ -163,7 +241,7 @@ document.addEventListener('pointermove', e => {
   m.clientX=e.clientX; m.clientY=e.clientY;
   if (!m.active && Math.hypot(e.pageX-m.x,e.pageY-m.y)<5) return;
   if (!m.active) {
-    m.active=true; if(!m.characters)multiSelectMode=true; m.box=document.createElement('div'); m.box.className='selection-marquee';
+    m.active=true; m.box=document.createElement('div'); m.box.className='selection-marquee';
     document.body.append(m.box); document.body.classList.add('marquee-selecting'); app.setPointerCapture(m.pointer);
     const tick=()=>{if(marquee!==m)return; const speed=m.clientY<48?-Math.ceil((48-m.clientY)/5):m.clientY>innerHeight-48?Math.ceil((m.clientY-innerHeight+48)/5):0;if(speed)scrollBy(0,speed);updateMarquee();m.frame=requestAnimationFrame(tick);};
     m.frame=requestAnimationFrame(tick);
@@ -533,12 +611,8 @@ document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-d
 document.addEventListener('focusout',e=>{if(e.target===expectationTipOwner)hideExpectationTip();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')hideExpectationTip();});
 
-document.addEventListener('click',e=>{
-  if(typeof page==='undefined'||Date.now()<suppressSwipeClickUntil||document.querySelector('dialog[open]'))return;
-  if(!e.target.closest('#notice,.selection-toolbar,[data-sort-id],button,input,summary,a,[role="button"]')){rowSelection.clear();refreshRowSelection();}
-});
 document.addEventListener('keydown',e=>{
   if(typeof page==='undefined'||document.querySelector('dialog[open]')||e.target.closest('input,textarea,select'))return;
   if(e.key==='Escape'){clearRowSelection();refreshRowSelection();}
-  if(e.key===' '&&e.target.matches('[data-sort-id]')){e.preventDefault();selectRow(e.target.dataset.sortId,{...e,toggle:true});}
+  if(e.key===' '&&e.target.matches('[data-sort-id]')){e.preventDefault();selectRow(e.target.dataset.sortId,{shiftKey:e.shiftKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey});}
 });
