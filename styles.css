@@ -3426,7 +3426,7 @@ html[data-input-mode="touch"] button.expectation-link {
     align-items: flex-start;
     gap: 10px;
     overflow-x: auto;
-    overscroll-behavior-x: contain;
+    overscroll-behavior: contain;
     scrollbar-width: none;
   }
   .journal.has-record-rail:not(.records-expanded) .records::-webkit-scrollbar {

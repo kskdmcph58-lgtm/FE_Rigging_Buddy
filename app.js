@@ -242,9 +242,12 @@ function railState(rail) {
   if (!recordRails.has(rail)) recordRails.set(rail, { frame: 0, timer: 0, signature: '', initialized: false, step: 0 });
   return recordRails.get(rail);
 }
-function stopRail(rail) {
+function stopRail(rail, keepWheel = false) {
   const status = railState(rail);
   cancelAnimationFrame(status.frame); clearTimeout(status.timer); status.frame = 0;
+  status.edgeAnimations?.forEach(animation => animation.cancel());
+  status.edgeAnimations = null;
+  if (!keepWheel) status.wheelGesture = null;
 }
 function moveRail(rail, target, duration = 120) {
   stopRail(rail);
@@ -328,25 +331,58 @@ function refreshRecordRails() {
     status.step = step;
   });
 }
+function bounceRailEdge(rail, direction) {
+  stopRail(rail);
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const status = railState(rail);
+  const distance = -direction * parseFloat(rail.style.getPropertyValue('--chip-width')) / 2;
+  status.edgeDirection = direction;
+  status.edgeAnimations = [...rail.querySelectorAll('.record-chip')].map(chip => chip.animate([
+    { transform: 'translateX(0)', offset: 0, easing: 'ease-out' },
+    { transform: `translateX(${distance}px)`, offset: .4, easing: 'ease-in-out' },
+    { transform: 'translateX(0)', offset: 1 }
+  ], { duration: 320 }));
+}
+function scheduleRailSnap(rail) {
+  const status = railState(rail);
+  clearTimeout(status.timer);
+  status.timer = setTimeout(() => {
+    const step = parseFloat(rail.style.getPropertyValue('--chip-width')) + 10;
+    let target = Math.round(rail.scrollLeft / step) * step;
+    // Finish wheel gestures in their direction, including any partial card.
+    const gesture = status.wheelGesture;
+    if (gesture) {
+      // scrollLeft is pixel-rounded while card widths can be fractional.
+      const position = (rail.scrollLeft - gesture.direction * .5) / step;
+      target = (gesture.direction > 0 ? Math.ceil(position) : Math.floor(position)) * step;
+      const minimum = (Math.round(gesture.start / step) + gesture.direction) * step;
+      target = gesture.direction > 0 ? Math.max(target, minimum) : Math.min(target, minimum);
+    }
+    moveRail(rail, target, 80);
+  }, 70);
+}
 app.addEventListener('wheel', event => {
   const rail = event.target.closest('.has-record-rail:not(.records-expanded) .records');
   if (!desktopRecords.matches || !rail || event.ctrlKey) return;
-  stopRail(rail);
+  event.preventDefault();
   const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? rail.clientWidth : 1);
+  if (!delta) return;
+  const status = railState(rail), direction = Math.sign(delta);
+  // Let one edge bounce finish during a wheel burst; reversing cancels it.
+  if (status.edgeDirection === direction && status.edgeAnimations?.some(animation => animation.playState === 'running')) return;
+  stopRail(rail, true);
   const target = Math.max(0, Math.min(rail.scrollLeft + delta, rail.scrollWidth - rail.clientWidth));
-  if (Math.abs(target - rail.scrollLeft) < .5) return;
-  event.preventDefault(); rail.scrollLeft = target;
+  if (target === rail.scrollLeft) { bounceRailEdge(rail, direction); return; }
+  if (status.wheelGesture?.direction !== direction) status.wheelGesture = { start: rail.scrollLeft, direction };
+  rail.scrollLeft = target;
+  scheduleRailSnap(rail);
 }, { passive: false });
 app.addEventListener('scroll', event => {
   const rail = event.target;
   if (!desktopRecords.matches || !rail.matches?.('.has-record-rail:not(.records-expanded) .records')) return;
   const status = railState(rail);
   if (status.frame) return;
-  clearTimeout(status.timer);
-  status.timer = setTimeout(() => {
-    const step = parseFloat(rail.style.getPropertyValue('--chip-width')) + 10;
-    moveRail(rail, Math.round(rail.scrollLeft / step) * step, 80);
-  }, 70);
+  scheduleRailSnap(rail);
 }, true);
 app.addEventListener('pointerdown', event => {
   const rail = event.target.closest('.records');
