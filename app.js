@@ -683,7 +683,16 @@ function updateSortMarker(gesture) {
   app.querySelectorAll('.drop-before,.drop-after').forEach(node => node.classList.remove('drop-before', 'drop-after'));
   gesture.target = target;
   if (target) {
-    gesture.after = gesture.y >= target.getBoundingClientRect().top + target.getBoundingClientRect().height / 2;
+    const rect = target.getBoundingClientRect();
+    gesture.after = gesture.y >= rect.top + rect.height / 2;
+    const rows = [...target.parentElement.children].filter(node => node.matches('[data-sort-id]'));
+    const index = rows.indexOf(target);
+    const neighbor = rows[index + (gesture.after ? 1 : -1)] || rows[index + (gesture.after ? -1 : 1)];
+    const neighborRect = neighbor?.getBoundingClientRect();
+    const gap = neighborRect ? Math.max(0, neighborRect.top >= rect.bottom ? neighborRect.top - rect.bottom : rect.top - neighborRect.bottom) : 0;
+    const border = parseFloat(getComputedStyle(target)[gesture.after ? 'borderBottomWidth' : 'borderTopWidth']) || 0;
+    // Both sides of the same insertion gap must draw at its exact midpoint.
+    target.style.setProperty('--sort-marker-offset', `${-gap / 2 - 1.5 - border}px`);
     target.classList.add(gesture.after ? 'drop-after' : 'drop-before');
   }
 }
@@ -1064,6 +1073,7 @@ function moveCard(id, targetId, after = false) {
   const moved = list.filter(x => ids.includes(getId(x))), remaining = list.filter(x => !ids.includes(getId(x)));
   const targetIndex = remaining.findIndex(x => getId(x) === targetId);
   remaining.splice(targetIndex + (after ? 1 : 0), 0, ...moved);
+  if (remaining.every((item, index) => getId(item) === getId(list[index]))) return;
   list.splice(0, list.length, ...remaining);
   const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);
   const anchor = after ? targetCard.nextSibling : targetCard;
@@ -1076,6 +1086,7 @@ function moveCard(id, targetId, after = false) {
     targetCard.parentNode.insertBefore(card, anchor);
     if (rail) rail.scrollLeft = scrollLeft;
   });
+  if (multiSelectMode) clearRowSelection();
   refreshRowSelection();
 }
 // Sorting uses pointer/touch gestures only. Native DnD remains for backup files.

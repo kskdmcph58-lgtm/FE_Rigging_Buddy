@@ -836,10 +836,10 @@ body.sorting-cards,body.sorting-cards * {
   border-radius: 2px;
 }
 .drop-before::before {
-  top: -3px;
+  top: var(--sort-marker-offset,-3px);
 }
 .drop-after::after {
-  bottom: -3px;
+  bottom: var(--sort-marker-offset,-3px);
 }
 [data-level-input][aria-invalid="true"] {
   border-color: var(--red);
@@ -1713,10 +1713,10 @@ header {
   line-height: 1.6;
 }
 .journal.drop-before::before {
-  top: -14.5px;
+  top: var(--sort-marker-offset,-10.5px);
 }
 .journal.drop-after::after {
-  bottom: -14.5px;
+  bottom: var(--sort-marker-offset,-10.5px);
 }
 .initial-level {
   min-height: 24px;
