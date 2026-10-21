@@ -803,8 +803,9 @@ document.addEventListener('click', clearTouchPress, true);
 document.addEventListener('touchmove', clearTouchPress, { passive: true, capture: true });
 window.addEventListener('blur', clearTouchPress);
 document.addEventListener('click', e => {
-  if (page !== 'summary' || !e.target.closest('button,summary,a,[role="button"]')) return;
-  const rowId = e.target.closest('.journal')?.dataset.sortId;
+  if (page !== 'summary' || Date.now() < suppressGestureClickUntil) return;
+  const control = e.target.closest('button,input,select,textarea,label,summary,a,[role="button"],[contenteditable]');
+  const rowId = control ? e.target.closest('.journal')?.dataset.sortId : null;
   let changed = false;
   for (const id of editingCharacters) {
     if (id !== rowId) { editingCharacters.delete(id); changed = true; }
