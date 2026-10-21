@@ -2287,6 +2287,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     max-width: 1760px;
   }
   body:has(main.summary-page)>header {
+    height: 78px;
     padding-inline: max(24px,calc((100% - 1712px)/2));
   }
   .summary-page .journal {

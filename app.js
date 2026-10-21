@@ -245,6 +245,7 @@ function railState(rail) {
 function stopRail(rail, keepWheel = false) {
   const status = railState(rail);
   cancelAnimationFrame(status.frame); clearTimeout(status.timer); status.frame = 0;
+  clearTimeout(status.autoTimer); status.autoUntil = 0;
   status.edgeAnimations?.forEach(animation => animation.cancel());
   status.edgeAnimations = null;
   if (!keepWheel) status.wheelGesture = null;
@@ -271,8 +272,61 @@ function defaultRailPosition(rail) {
   while (processed < chips.length && chips[processed].matches('.upgraded,.skipped')) processed++;
   return Math.max(0, processed - 1) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
 }
+function autoPositionRail(rail, duration = 120) {
+  const status = railState(rail);
+  clearTimeout(status.autoTimer);
+  if (status.autoUntil > performance.now()) {
+    status.autoTimer = setTimeout(() => {
+      if (!rail.isConnected) return;
+      autoPositionRail(rail, duration);
+    }, status.autoUntil - performance.now());
+    return;
+  }
+  status.autoPending = false;
+  if (status.retiring) { finishRecordRail(rail, duration); return; }
+  moveRail(rail, defaultRailPosition(rail), duration);
+}
+function finishRecordRail(rail, duration = 120) {
+  const status = railState(rail);
+  const chips = [...rail.querySelectorAll('.record-chip')];
+  const before = chips.map(chip => chip.getBoundingClientRect());
+  const height = rail.getBoundingClientRect().height;
+  status.retiring = false;
+  status.autoPending = false;
+  stopRail(rail);
+  expandedJournals.delete(rail.closest('.journal').dataset.sortId);
+  renderSummary();
+  if (!duration || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  // Leaving rail mode resets scrollLeft in layout. Animate from the old visual
+  // positions so the return to the grid has the same motion as a normal scroll.
+  chips.forEach((chip, index) => {
+    const next = chip.getBoundingClientRect(), previous = before[index];
+    const x = previous.left - next.left, y = previous.top - next.top;
+    if (Math.abs(x) > 1 || Math.abs(y) > 1 || Math.abs(previous.width - next.width) > 1) {
+      chip.animate([
+        { transformOrigin: 'top left', transform: `translate(${x}px,${y}px) scaleX(${previous.width / next.width})` },
+        { transformOrigin: 'top left', transform: 'none' }
+      ], { duration, easing: 'cubic-bezier(.16,1,.3,1)' });
+    }
+  });
+  const nextHeight = rail.getBoundingClientRect().height;
+  if (Math.abs(height - nextHeight) > 1) rail.animate([
+    { height: `${height}px` }, { height: `${nextHeight}px` }
+  ], { duration, easing: 'cubic-bezier(.16,1,.3,1)' });
+}
+app.addEventListener('pointerout', event => {
+  if (event.pointerType !== 'mouse' || !desktopRecords.matches) return;
+  const journal = event.target.closest('.journal');
+  if (!journal?.matches('.has-record-rail:not(.records-expanded)') || journal.contains(event.relatedTarget)) return;
+  const rail = journal.querySelector('.records'), status = railState(rail);
+  if (!status.autoPending) return;
+  status.autoUntil = 0;
+  autoPositionRail(rail);
+});
 function setJournalExpanded(journal, expanded, animate = true) {
   const rail = journal.querySelector('.records');
+  railState(rail).autoPending = false;
+  if (railState(rail).retiring) { finishRecordRail(rail, animate ? 120 : 0); return; }
   const previousHeight = rail.getBoundingClientRect().height;
   const chips = [...rail.querySelectorAll('.record-chip')];
   const slideOpen = expanded && !journal.classList.contains('records-expanded') && chips.length <= 5;
@@ -311,6 +365,7 @@ function refreshRecordRails() {
     const first = !status.initialized;
     status.initialized = true;
     if (!desktopRecords.matches || !journal.classList.contains('has-record-rail')) {
+      status.autoPending = false;
       stopRail(rail); rail.scrollLeft = 0; status.signature = ''; return;
     }
     const width = rail.clientWidth;
@@ -322,7 +377,7 @@ function refreshRecordRails() {
     const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
     if (status.signature !== signature) {
       status.signature = signature;
-      if (!journal.classList.contains('records-expanded')) moveRail(rail, defaultRailPosition(rail), first ? 0 : 120);
+      if (!journal.classList.contains('records-expanded')) autoPositionRail(rail, first ? 0 : 120);
     } else if (status.step !== step && !journal.classList.contains('records-expanded')) {
       // Selection adds a checkbox column. Keep the same reviewed card when
       // its width changes, instead of resetting the user's browsing position.
@@ -381,7 +436,7 @@ app.addEventListener('scroll', event => {
   const rail = event.target;
   if (!desktopRecords.matches || !rail.matches?.('.has-record-rail:not(.records-expanded) .records')) return;
   const status = railState(rail);
-  if (status.frame) return;
+  if (status.frame || status.autoUntil > performance.now()) return;
   scheduleRailSnap(rail);
 }, true);
 app.addEventListener('pointerdown', event => {
@@ -405,9 +460,11 @@ function renderSummary() {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       const displayLevels = M.displayLevels(item);
-      return `<article class="journal panel ${compactRecords(item) ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
+      const previousRail = app.querySelector(`.journal[data-sort-id="${c.id}"] .records`);
+      const compact = compactRecords(item) || (desktopRecords.matches && previousRail && railState(previousRail).retiring);
+      return `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
-        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compactRecords(item) ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
+        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
         <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.skipped ? '已跳过，' : r.upgraded ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, displayLevels[recordIndex])}</b><span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length} <small>点</small></strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
@@ -811,6 +868,12 @@ app.addEventListener('click', async e => {
     const item = state.roster.find(r => r.id === b.dataset.edit);
     const record = item.records[index];
     if (!editingCharacters.has(item.id)) {
+      const status = railState(b.closest('.records'));
+      status.autoUntil = performance.now() + 1000;
+      // Manual browsing cancels the timer, but row exit still settles this change.
+      status.autoPending = true;
+      // Every status click renews this row's countdown, including skipped -> upgraded.
+      status.signature = '';
       if (record.skipped) {
         record.skipped = false;
         record.upgraded = true;
@@ -819,6 +882,7 @@ app.addEventListener('click', async e => {
       } else {
         record.skipped = true;
       }
+      status.retiring = desktopRecords.matches && !compactRecords(item) && b.closest('.journal').matches('.has-record-rail:not(.records-expanded)');
       returnToSummary();
       return;
     }
