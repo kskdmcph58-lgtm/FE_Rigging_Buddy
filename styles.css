@@ -3449,7 +3449,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .profession-field.can-edit { cursor:pointer; border:0; border-radius:6px; padding:4px 6px; }
 .profession-field.can-edit:hover { background:#ffffff0c; }
 .profession-field:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
-.record-chip>div>.profession-field { flex:1; font-size:11px; overflow:hidden; text-overflow:ellipsis; }
+.record-chip>div>.profession-field { flex:1; height:20px; box-sizing:border-box; padding:0 4px; font-size:11px; overflow:hidden; text-overflow:ellipsis; }
 .record-chip>div>.profession-field>span { display:block; overflow:hidden; text-overflow:ellipsis; }
 .record-chip>div>.profession-field img { width:20px; height:20px; }
 .record-chip>div>.profession-field.can-edit { position:relative; z-index:4; }

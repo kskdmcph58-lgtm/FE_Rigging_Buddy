@@ -336,7 +336,7 @@ function ruleSummary(rule) {
 }
 function expectationLink(item, editing) {
   const configured = item.expectations?.some(range => range.rule);
-  return configured || editing ? `<button class="expectation-link" data-expectation-detail="${item.id}">${configured ? '属性期望' : '设置属性期望'}</button>` : '';
+  return `<button class="expectation-link" ${!configured && !editing ? 'style="visibility:hidden" aria-hidden="true" tabindex="-1"' : ''} data-expectation-detail="${item.id}">${configured ? '属性期望' : '设置属性期望'}</button>`;
 }
 function expectationRanges(item) {
   const ranges = item.expectations || [];
