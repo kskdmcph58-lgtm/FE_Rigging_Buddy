@@ -3463,6 +3463,16 @@ html[data-input-mode="touch"] button.expectation-link {
 .stat-heading>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
 .stat-heading>.profession-field.can-edit>span { text-decoration:none; }
 .stat-heading>.heading-growth { margin-left:14px; }
+@media(min-width:601px) and (pointer:fine), (min-width:1101px) {
+  .stat-heading>.profession-field.can-edit { order:0; margin:0; padding:0; min-height:48px; max-width:none; gap:10px; color:var(--text); font:22px/1.3 var(--font-display); }
+  .stat-heading>.profession-field img { order:0; width:48px; height:48px; border-radius:5px; }
+  .stat-heading>.desktop-stat-title { order:1; margin-left:auto; font-size:18px; letter-spacing:1px; }
+  .stat-heading>.heading-growth { order:2; margin-left:0; }
+}
+@media(min-width:601px) and (max-width:800px) and (pointer:fine) {
+  .stat-heading { flex-wrap:wrap; }
+  .stat-heading>.profession-field.can-edit { flex-basis:100%; justify-content:flex-start; }
+}
 /* Use the same centered surface and controls as the existing app dialogs. */
 .app-dialog.profession-picker {
   position:fixed; inset:0; margin:auto; width:min(1120px,calc(100vw - 32px));
