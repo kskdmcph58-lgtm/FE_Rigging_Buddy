@@ -232,7 +232,7 @@ function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
 const expandedJournals = new Set();
-let recordReturnId = null;
+let recordReturnPosition = null;
 const recordRails = new WeakMap();
 const desktopRecords = matchMedia('(min-width:601px)');
 function compactRecords(item) {
@@ -540,7 +540,11 @@ function syncChildren(current, desired) {
   }
 }
 function start(id) {
-  recordReturnId = desktopRecords.matches ? id : null;
+  const rail = app.querySelector(`.journal[data-sort-id="${id}"] .records`);
+  const step = rail && railState(rail).step;
+  recordReturnPosition = desktopRecords.matches
+    ? { id, position: step ? rail.scrollLeft / step : 0 }
+    : null;
   activeRecord = newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
 }
@@ -550,18 +554,24 @@ function rememberListPosition() {
   notify('');
 }
 function returnToSummary() {
-  const returnId = recordReturnId;
-  recordReturnId = null;
+  const previous = recordReturnPosition;
+  recordReturnPosition = null;
   page = 'summary'; render();
   window.scrollTo(0, Number(state.summaryScroll) || 0);
-  const rail = returnId && desktopRecords.matches
-    ? app.querySelector(`.journal.has-record-rail:not(.records-expanded)[data-sort-id="${returnId}"] .records`)
+  const rail = previous && desktopRecords.matches
+    ? app.querySelector(`.journal.has-record-rail:not(.records-expanded)[data-sort-id="${previous.id}"] .records`)
     : null;
   if (rail && rail.scrollWidth > rail.clientWidth) {
     // Align the latest card with the right edge, excluding the rail's trailing spacer.
     const latest = rail.querySelector('.record-chip:last-child');
     const target = rail.scrollLeft + latest.getBoundingClientRect().right
       - rail.getBoundingClientRect().left - rail.clientWidth;
+    const previousLeft = previous.position * railState(rail).step;
+    // Use existing empty slots before moving the row to reveal new records.
+    if (target <= previousLeft + 1) {
+      moveRail(rail, previousLeft, 0);
+      return;
+    }
     moveRail(rail, target, 0);
     const status = railState(rail);
     status.autoPending = true;
