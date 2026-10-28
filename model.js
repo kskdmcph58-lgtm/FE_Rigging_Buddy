@@ -108,6 +108,7 @@ window.RiggingModel = (() => {
           r.seq = last + 1; r.id = uid(); r.ratingSource = 'legacy';
         }
         if (!Number.isSafeInteger(r.seq) || r.seq <= last || r.seq > limits.seq || typeof r.id !== 'string' || !r.id || r.id.length > 128 || recordIds.has(r.id)) throw Error('记录序号或 ID 不正确');
+        if (r.profession !== undefined && r.profession !== null && !window.PROFESSIONS.names.includes(r.profession)) throw Error('Invalid profession');
         metadata(r);
         if (r.ratingSource !== undefined && !['auto', 'manual', 'legacy'].includes(r.ratingSource)) throw Error('评价来源不正确');
         r.ratingSource ||= 'legacy';

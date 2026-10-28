@@ -298,7 +298,7 @@ function draftRule(d) {
 }
 function newRecordDraft(id) {
   const item = state.roster.find(i => i.id === id);
-  return { id, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
+  return { id, profession: M.live(item).at(-1)?.profession || null, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
 }
 function recordExpectationMarkup() {
   const rule = draftRule(activeRecord);

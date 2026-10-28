@@ -3443,3 +3443,80 @@ html[data-input-mode="touch"] button.expectation-link {
     flex: 0 0 max(0px,calc(100% - var(--chip-width,180px) - 10px));
   }
 }
+/* Class fields share one picker in the journal and level editor. */
+.profession-field { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:0; color:inherit; font:12px/1.2 var(--font-ui); white-space:nowrap; }
+.profession-field img { width:24px; height:24px; object-fit:contain; border-radius:3px; flex:none; }
+.profession-field.can-edit { cursor:pointer; border:0; border-radius:6px; padding:4px 6px; }
+.profession-field.can-edit:hover { background:#ffffff0c; }
+.profession-field:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.record-chip>div>.profession-field { flex:1; font-size:11px; overflow:hidden; text-overflow:ellipsis; }
+.record-chip>div>.profession-field>span { display:block; overflow:hidden; text-overflow:ellipsis; }
+.record-chip>div>.profession-field img { width:20px; height:20px; }
+.record-chip>div>.profession-field.can-edit { position:relative; z-index:4; }
+.record-chip .record-overlay { pointer-events:none; }
+.record-chip.upgraded>div>.profession-field,.record-chip.skipped>div>.profession-field { visibility:visible; position:relative; z-index:auto; }
+.record-chip.upgraded>div>.profession-field { color:#82765c; }
+.record-chip.skipped>div>.profession-field { color:#62625d; }
+.stat-heading>.profession-field { margin-left:auto; flex-shrink:1; min-height:40px; max-width:180px; color:var(--text); font:16px/1.4 var(--font-ui); }
+.stat-heading>.profession-field img { width:30px; height:30px; order:1; }
+.stat-heading>.profession-field.can-edit { padding:6px 2px; border-radius:4px; color:var(--muted); }
+.stat-heading>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
+.stat-heading>.profession-field.can-edit>span { text-decoration:none; }
+.stat-heading>.heading-growth { margin-left:14px; }
+/* Use the same centered surface and controls as the existing app dialogs. */
+.app-dialog.profession-picker {
+  position:fixed; inset:0; margin:auto; width:min(1120px,calc(100vw - 32px));
+  max-width:none; max-height:calc(100dvh - 32px); padding:0;
+  border-radius:12px; overflow:hidden;
+}
+.profession-picker[open] { display:flex; flex-direction:column; }
+.profession-titlebar { padding:20px 24px 16px; flex:none; border-bottom:1px solid var(--control-line); }
+.profession-titlebar h2 { margin:0; font:600 18px var(--font-ui); letter-spacing:0; }
+.profession-scroll { min-height:0; overflow:auto; overscroll-behavior:contain; padding:16px 24px; }
+.profession-table { min-width:920px; display:grid; gap:6px; }
+.profession-tier { display:grid; grid-template-columns:92px repeat(5,minmax(0,1fr)); border:1px solid var(--control-line); background:#0a1d2026; }
+.profession-tier h3 { display:flex; align-items:center; margin:0; padding:12px; font:500 13px var(--font-ui); color:var(--text); background:#ffffff03; }
+.profession-options { display:flex; flex-wrap:wrap; align-content:start; gap:4px; padding:8px; border-left:1px solid var(--control-line); }
+.profession-base .profession-options { grid-column:2 / -1; }
+.profession-picker .profession-option { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; width:56px; min-width:0; min-height:70px; padding:4px 0; border:1px solid transparent; background:transparent; border-radius:8px; color:var(--text); }
+.profession-option img { width:40px; height:40px; object-fit:contain; border-radius:4px; }
+.profession-option span { font:11px/1.4 var(--font-ui); white-space:nowrap; }
+.profession-picker .profession-option:hover { background:#d9c59312; border-color:var(--control-line); }
+.profession-picker .profession-option[aria-pressed="true"] { border-color:var(--gold); background:#d9c59318; }
+.profession-footer { display:flex; justify-content:space-between; gap:12px; padding:16px 24px; flex:none; border-top:1px solid var(--control-line); }
+@media(max-width:600px) {
+  .stat-heading>.profession-field { order:1; margin:0 auto; max-width:108px; font-size:11px; padding:4px; }
+  .stat-heading>.profession-field.can-edit { position:relative; min-height:28px; padding:4px 7px; border:1px solid var(--control-line); border-radius:6px; background:#ffffff06; color:var(--text); }
+  .stat-heading>.profession-field.can-edit::before { content:''; position:absolute; inset:-8px -4px; }
+  .stat-heading>.profession-field.can-edit:hover { background:#ffffff0c; }
+  .stat-heading>.profession-field.can-edit:active { background:#ffffff14; }
+  .stat-heading>.profession-field img { display:none; }
+  .stat-heading>.record-character { flex-shrink:0; }
+  .stat-heading>.record-target-level { order:2; }
+  .stat-heading>.heading-growth { margin:0; }
+  .record-chip>div>.profession-field { gap:2px; font-size:10px; padding:2px; }
+  .record-chip>div>.profession-field img { display:none; }
+  .app-dialog.profession-picker { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); }
+  .profession-titlebar { padding:16px; }
+  .profession-scroll { padding:12px; }
+  .profession-footer { padding:12px 16px; }
+  .profession-table { min-width:0; gap:0; }
+  .profession-tier { display:block; border:0; border-bottom:1px solid var(--control-line); padding:10px 0; background:transparent; }
+  .profession-tier:last-child { border-bottom:0; }
+  .profession-tier h3 { position:static; padding:0 2px 8px; font-size:12px; color:var(--muted); background:transparent; }
+  .profession-tier .profession-options { display:contents; }
+  .profession-tier { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+  .profession-tier h3 { grid-column:1 / -1; }
+  .profession-picker .profession-option { width:100%; min-height:68px; padding:4px 0; }
+  .profession-picker .profession-option[aria-pressed="true"] { border-color:transparent; background:transparent; }
+  .profession-picker .profession-option[aria-pressed="true"] img { outline:1px solid var(--gold); outline-offset:1px; }
+  .profession-picker .profession-option:hover { border-color:transparent; background:transparent; }
+  .profession-option img { width:36px; height:36px; }
+  .profession-option span { font-size:11px; }
+  .profession-footer button { position:relative; }
+  .profession-footer button::after { content:''; position:absolute; inset:-4px 0; }
+}
+@media(orientation:landscape) and (max-height:600px) {
+  .profession-titlebar { padding:12px 20px; }
+  .profession-footer { padding:10px 20px; }
+}
