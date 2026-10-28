@@ -232,6 +232,7 @@ function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
 const expandedJournals = new Set();
+let recordReturnId = null;
 const recordRails = new WeakMap();
 const desktopRecords = matchMedia('(min-width:601px)');
 function compactRecords(item) {
@@ -275,16 +276,30 @@ function defaultRailPosition(rail) {
 function autoPositionRail(rail, duration = 120) {
   const status = railState(rail);
   clearTimeout(status.autoTimer);
-  if (status.autoUntil > performance.now()) {
+  const deadline = Math.max(status.autoUntil || 0, status.returnUntil || 0);
+  if (deadline > performance.now()) {
     status.autoTimer = setTimeout(() => {
       if (!rail.isConnected) return;
       autoPositionRail(rail, duration);
-    }, status.autoUntil - performance.now());
+    }, deadline - performance.now());
     return;
   }
   status.autoPending = false;
+  status.returnUntil = 0;
+  clearTimeout(status.returnTimer);
   if (status.retiring) { finishRecordRail(rail, duration); return; }
   moveRail(rail, defaultRailPosition(rail), duration);
+}
+function scheduleRecordReturn(rail) {
+  const status = railState(rail);
+  clearTimeout(status.returnTimer);
+  status.returnUntil = performance.now() + 5000;
+  status.returnTimer = setTimeout(() => {
+    if (!rail.isConnected) return;
+    status.returnUntil = 0;
+    status.autoUntil = 0;
+    autoPositionRail(rail);
+  }, 5000);
 }
 function finishRecordRail(rail, duration = 120) {
   const status = railState(rail);
@@ -319,13 +334,15 @@ app.addEventListener('pointerout', event => {
   const journal = event.target.closest('.journal');
   if (!journal?.matches('.has-record-rail:not(.records-expanded)') || journal.contains(event.relatedTarget)) return;
   const rail = journal.querySelector('.records'), status = railState(rail);
-  if (!status.autoPending) return;
+  if (!status.autoPending || status.returnUntil) return;
   status.autoUntil = 0;
   autoPositionRail(rail);
 });
 function setJournalExpanded(journal, expanded, animate = true) {
   const rail = journal.querySelector('.records');
   railState(rail).autoPending = false;
+  railState(rail).returnUntil = 0;
+  clearTimeout(railState(rail).returnTimer);
   if (railState(rail).retiring) { finishRecordRail(rail, animate ? 120 : 0); return; }
   const previousHeight = rail.getBoundingClientRect().height;
   const chips = [...rail.querySelectorAll('.record-chip')];
@@ -366,6 +383,8 @@ function refreshRecordRails() {
     status.initialized = true;
     if (!desktopRecords.matches || !journal.classList.contains('has-record-rail')) {
       status.autoPending = false;
+      status.returnUntil = 0;
+      clearTimeout(status.returnTimer);
       stopRail(rail); rail.scrollLeft = 0; status.signature = ''; return;
     }
     const width = rail.clientWidth;
@@ -423,6 +442,7 @@ app.addEventListener('wheel', event => {
   const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? rail.clientWidth : 1);
   if (!delta) return;
   const status = railState(rail), direction = Math.sign(delta);
+  if (status.returnUntil) scheduleRecordReturn(rail);
   // Let one edge bounce finish during a wheel burst; reversing cancels it.
   if (status.edgeDirection === direction && status.edgeAnimations?.some(animation => animation.playState === 'running')) return;
   stopRail(rail, true);
@@ -520,6 +540,7 @@ function syncChildren(current, desired) {
   }
 }
 function start(id) {
+  recordReturnId = desktopRecords.matches ? id : null;
   activeRecord = newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
 }
@@ -529,8 +550,23 @@ function rememberListPosition() {
   notify('');
 }
 function returnToSummary() {
+  const returnId = recordReturnId;
+  recordReturnId = null;
   page = 'summary'; render();
   window.scrollTo(0, Number(state.summaryScroll) || 0);
+  const rail = returnId && desktopRecords.matches
+    ? app.querySelector(`.journal.has-record-rail:not(.records-expanded)[data-sort-id="${returnId}"] .records`)
+    : null;
+  if (rail && rail.scrollWidth > rail.clientWidth) {
+    // Align the latest card with the right edge, excluding the rail's trailing spacer.
+    const latest = rail.querySelector('.record-chip:last-child');
+    const target = rail.scrollLeft + latest.getBoundingClientRect().right
+      - rail.getBoundingClientRect().left - rail.clientWidth;
+    moveRail(rail, target, 0);
+    const status = railState(rail);
+    status.autoPending = true;
+    scheduleRecordReturn(rail);
+  }
 }
 function renderRecord() {
   const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
@@ -624,7 +660,6 @@ function saveRecord(next) {
     hideExpectationTip();
     updateRecordControls();
   } else {
-    if (desktopRecords.matches && M.live(item).length > 5) expandedJournals.add(id);
     returnToSummary();
   }
 
