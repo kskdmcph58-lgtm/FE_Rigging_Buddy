@@ -43,25 +43,57 @@ function professionMarkup(value, editable, id = '', index = '') {
   return `<span class="profession-field ${editable ? 'can-edit' : ''}" ${editable ? `role="button" tabindex="0" data-profession data-character="${id}" data-record-index="${index}" aria-label="选择职业，${name || '暂无'}" aria-haspopup="dialog"` : ''}>${content}</span>`;
 }
 
+function currentProfession(item) {
+  if (item && Object.hasOwn(item, 'pendingProfession')) return item.pendingProfession;
+  const latest = item && M.live(item).at(-1);
+  return (latest ? latest.profession : item?.initialProfession) || null;
+}
+
+function setupProfession(id) {
+  return Object.hasOwn(state.draftProfessions || {}, id) ? state.draftProfessions[id] : currentProfession(state.roster.find(item => item.id === id));
+}
+
+function setupProfessionButton(id) {
+  return `<button class="profession-setting" data-profession data-setup-profession="${id}" aria-label="设置${char(id).name}职业" aria-haspopup="dialog">${setupProfession(id) || '选择职业'}</button>`;
+}
+
 function openProfessionPicker(anchor) {
   if (document.querySelector('.profession-picker')) return;
+  const setup = page === 'levels' && (anchor.hasAttribute('data-setup-profession') || anchor.dataset.action === 'batch-profession');
+  let setupIds = [];
+  if (setup) {
+    setupIds = anchor.dataset.setupProfession ? [anchor.dataset.setupProfession] : [...state.selection];
+    if (anchor.dataset.action === 'batch-profession') setupIds = setupIds.filter(id => rowSelection.has(id));
+  }
+  if (setup && !setupIds.length) return;
   const id = anchor.dataset.character;
   const item = id ? state.roster.find(i => i.id === id) : null;
   const record = item ? item.records[Number(anchor.dataset.recordIndex)] : activeRecord;
-  if (!record || (item && !editingCharacters.has(id))) return;
+  if (!setup && (!record || (item && !editingCharacters.has(id)))) return;
+  const selected = setup ? setupProfession(setupIds[0]) : record.profession;
+  const mixed = setup && setupIds.some(id => setupProfession(id) !== selected);
   const data = window.PROFESSIONS;
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog profession-picker';
   dialog.setAttribute('aria-labelledby', 'profession-title');
-  const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${record.profession === name}"><img src="assets/classes/${data.icons[name]}.png" alt="" loading="lazy"><span>${name}</span></button>`;
+  const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${!mixed && selected === name}"><img src="assets/classes/${data.icons[name]}.png" alt="" loading="lazy"><span>${name}</span></button>`;
   const group = (title, cells, base = false) => `<section class="profession-tier ${base ? 'profession-base' : ''}"><h3>${title}</h3>${cells.map(names => `<div class="profession-options">${names.map(option).join('')}</div>`).join('')}</section>`;
   dialog.innerHTML = `<div class="profession-titlebar"><h2 id="profession-title">选择职业</h2></div><div class="profession-scroll"><div class="profession-table">${group('基础职业', [data.base], true)}${data.rows.map((row, t) => group(data.tiers[t], row)).join('')}</div></div><div class="profession-footer"><button data-class="">清除职业</button><button data-dismiss>关闭</button></div>`;
   dialog.addEventListener('click', e => {
     const choice = e.target.closest('[data-class]');
     if (choice) {
-      record.profession = choice.dataset.class || null;
-      if (item) { record.updatedAt = new Date().toISOString(); renderSummary(); }
-      else updateRecordControls();
+      if (setup) {
+        state.draftProfessions ||= {};
+        setupIds.forEach(id => state.draftProfessions[id] = choice.dataset.class || null);
+        app.querySelectorAll('[data-setup-profession]:not([data-setup-profession=""])').forEach(button => {
+          button.textContent = setupProfession(button.dataset.setupProfession) || '选择职业';
+        });
+        if (setupIds.length > 1) notify(`已为 ${setupIds.length} 位角色${choice.dataset.class ? '设置职业：' + choice.dataset.class : '清除职业'}`);
+      } else {
+        record.profession = choice.dataset.class || null;
+        if (item) { record.updatedAt = new Date().toISOString(); renderSummary(); }
+        else updateRecordControls();
+      }
       dialog.close();
     } else if (e.target.closest('[data-dismiss]')) dialog.close();
     else if (e.target === dialog) {

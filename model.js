@@ -93,6 +93,8 @@ window.RiggingModel = (() => {
     for (const item of data.roster) {
       if (!item || !characterIds.includes(item.id) || ids.has(item.id) || (item.initialLevel !== null && (!Number.isSafeInteger(item.initialLevel) || item.initialLevel < 1 || item.initialLevel > 99)) || !Array.isArray(item.records)) throw Error('角色数据不正确');
       metadata(item);
+      if (item.initialProfession !== undefined && item.initialProfession !== null && !window.PROFESSIONS.names.includes(item.initialProfession)) throw Error('初始职业不正确');
+      if (item.pendingProfession !== undefined && item.pendingProfession !== null && !window.PROFESSIONS.names.includes(item.pendingProfession)) throw Error('待记录职业不正确');
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
       ids.add(item.id); rangesValid(item.expectations);
@@ -124,6 +126,12 @@ window.RiggingModel = (() => {
     }
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
     if (data.deletionCounter !== undefined && (!Number.isSafeInteger(data.deletionCounter) || data.deletionCounter < 0)) throw Error('删除顺序不正确');
+    if (data.draftProfessions !== undefined) {
+      if (!data.draftProfessions || typeof data.draftProfessions !== 'object' || Array.isArray(data.draftProfessions)) throw Error('待设置职业不正确');
+      for (const [id, value] of Object.entries(data.draftProfessions)) {
+        if (!characterIds.includes(id) || (value !== null && !window.PROFESSIONS.names.includes(value))) throw Error('待设置职业不正确');
+      }
+    }
     if (data.draftExpectations !== undefined) {
       if (!data.draftExpectations || typeof data.draftExpectations !== 'object' || Array.isArray(data.draftExpectations)) throw Error('待设置期望不正确');
       for (const [id, rule] of Object.entries(data.draftExpectations)) { if (!characterIds.includes(id)) throw Error('未知角色'); validRule(rule); }

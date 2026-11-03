@@ -2173,9 +2173,11 @@ button,summary,a,[role="button"],[data-initial-level] {
     font-size: 12px;
   }
   .level-row {
-    grid-template-columns: 16px 40px minmax(0,1fr) auto;
-    gap: 8px;
-    padding: 12px 4px;
+    /* The longest roster name is six Han characters. */
+    grid-template-columns: 12px 40px 84px minmax(0,1fr) 64px;
+    column-gap: 4px;
+    padding: 8px 4px;
+    font-size: 13px;
     min-height: 65px;
   }
   .level-row img {
@@ -2532,7 +2534,7 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--muted);
   margin: 0 0 20px;
 }
-.expectation-setting {
+.expectation-setting,.profession-setting {
   font-size: 12px;
   line-height: 20px;
   min-height: 36px;
@@ -2778,19 +2780,19 @@ body.marquee-selecting,body.marquee-selecting * {
 }
 @media(min-width:601px) {
   .levels-page .level-row {
-    grid-template-columns: 16px 48px 164px 140px minmax(100px,1fr);
+    grid-template-columns: 16px 48px 164px 140px 140px minmax(100px,1fr);
   }
   .levels-page .table-head {
-    grid-template-columns: 264px 152px minmax(100px,1fr);
+    grid-template-columns: 264px 152px 152px minmax(100px,1fr);
   }
 }
 @media(min-width:601px) and (max-width:850px) {
   .levels-page .level-row {
-    grid-template-columns: 16px 40px minmax(75px,1fr) 80px 108px;
+    grid-template-columns: 16px 40px minmax(75px,1fr) 80px 100px 100px;
     gap: 8px;
   }
   .levels-page .table-head {
-    grid-template-columns: minmax(155px,1fr) 88px 108px;
+    grid-template-columns: minmax(155px,1fr) 88px 108px 100px;
     font-size: 11px;
   }
   .level-row input {
@@ -2801,14 +2803,14 @@ body.marquee-selecting,body.marquee-selecting * {
   .selection-toolbar {
     gap: 8px;
   }
-  .levels-page .table-head>span:last-child {
+  .levels-page .table-head>span:nth-child(n+3) {
     display: none;
   }
   .expectation-setting {
     grid-column: 3/-1;
     grid-row: 2;
-    min-height: 36px;
-    padding: 7px 0;
+    min-height: 28px;
+    padding: 3px 0;
     font-size: 12px;
     border-color: transparent;
     color: var(--gold);
@@ -2816,6 +2818,22 @@ body.marquee-selecting,body.marquee-selecting * {
   }
   .expectation-setting::before {
     content: '属性期望 · ';
+  }
+  .profession-setting {
+    grid-column: 4;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 40px;
+    padding: 4px 2px;
+    border-color: transparent;
+    color: var(--gold);
+    font-size: 12px;
+    line-height: 16px;
+    text-align: left;
+  }
+  .levels-page :is(.profession-setting,.expectation-setting):is(:hover,:active,.touch-pressed) {
+    background: transparent;
+    border-color: transparent;
   }
   .expectation-setting::after {
     content: '';
@@ -2826,7 +2844,7 @@ body.marquee-selecting,body.marquee-selecting * {
     margin: 0;
   }
   .levels-page .level-row {
-    row-gap: 4px;
+    row-gap: 0;
   }
   .record-chip.rating-pending>div>span {
     font-size: 11px;
@@ -2848,7 +2866,7 @@ body.marquee-selecting,body.marquee-selecting * {
     grid-row: 1;
   }
   .level-row>.level-value {
-    grid-column: 4;
+    grid-column: 5;
     grid-row: 1;
   }
   .expectation-dialog {
@@ -2873,6 +2891,18 @@ body.marquee-selecting,body.marquee-selecting * {
 }
 .levels-page .level-row {
   padding-left: 12px;
+}
+@media(max-width:360px) {
+  .levels-page { padding-inline:8px; }
+  .levels-page .levels { padding-inline:12px; }
+}
+@media(max-width:400px) {
+  .multi-select-mode.levels-page .level-row {
+    grid-template-columns:12px 40px minmax(84px,1fr) 64px;
+  }
+  .multi-select-mode.levels-page .level-value { grid-column:4; }
+  .multi-select-mode.levels-page .profession-setting { grid-column:3/-1; grid-row:2; min-height:28px; padding:3px 0; }
+  .multi-select-mode.levels-page .expectation-setting { grid-row:3; }
 }
 .multi-select-mode.levels-page .level-row {
   padding-left: 36px;
@@ -3214,6 +3244,7 @@ html[data-input-mode="touch"] button.expectation-link {
     gap: 6px;
     justify-content: flex-start;
   }
+  .levels-page .selection-toolbar>.selection-actions { flex-wrap: wrap; }
   .selection-toolbar button {
     padding-inline: 10px;
   }

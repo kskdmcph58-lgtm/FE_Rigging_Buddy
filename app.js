@@ -222,7 +222,7 @@ function updateSelectionCount() {
 }
 function renderLevels() {
   app.innerHTML =
-    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span><button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
+    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置职业</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>职业</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span>${setupProfessionButton(id)}<button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">← 返回选择</button><button class="primary" data-action="create">开始记录 →</button></div>`;
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
@@ -657,6 +657,7 @@ function saveRecord(next) {
     item.records.push({ id: M.uid(), seq: M.nextSeq(item), profession: d.profession || null, stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', createdAt: new Date().toISOString() });
   }
   const id = d.id;
+  if (d.editIndex === undefined) delete item.pendingProfession;
   activeRecord = null;
 
   if (next) {
@@ -681,6 +682,15 @@ app.addEventListener('input', e => {
 });
 app.addEventListener('focusin', e => { if (e.target.matches('input[data-level-input]')) e.target.select(); });
 app.addEventListener('focusin', e => { if (e.target.id === 'search') showSearchHistory(); });
+document.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0) return;
+  if (e.clientX >= document.documentElement.clientWidth || e.clientY >= document.documentElement.clientHeight) return;
+  const field = document.activeElement;
+  if (!field?.matches('input,textarea,[contenteditable="true"]')) return;
+  if (e.target.closest('button,input,textarea,select,a,label,summary,[role="button"],[contenteditable]')) return;
+  // Marquee selection and row dragging prevent the browser's normal blur.
+  field.blur();
+}, true);
 app.addEventListener('focusout', e => {
   if (e.target.closest('.search-box') && !e.relatedTarget?.closest('.search-box')) {
     rememberSearch();
@@ -900,6 +910,7 @@ app.addEventListener('click', async e => {
     rowSelection.clear(); selectionAnchor = null;
     rememberListPosition(); returnToSummary(); return;
   }
+  if (b.dataset.action === 'batch-profession') { openProfessionPicker(b); return; }
   if (b.dataset.action === 'batch-expectation') { if (rowSelection.size) openExpectationEditor(rowIds().filter(id => rowSelection.has(id))); return; }
   if (b.dataset.action === 'undo-delete') { undoDelete(); return; }
   if (b.hasAttribute('data-search-history')) {
@@ -990,7 +1001,7 @@ app.addEventListener('click', async e => {
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
+  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));
     editingCharacters.clear(); activeRecord = null;
@@ -1013,11 +1024,14 @@ app.addEventListener('click', async e => {
       const id = i.dataset.level, existing = state.roster.find(item => item.id === id);
       const item = existing || { id, records: [] };
       item.initialLevel = i.value === '' ? null : Number(i.value);
+      item.initialProfession = setupProfession(id);
+      if (existing && Object.hasOwn(state.draftProfessions || {}, id)) item.pendingProfession = item.initialProfession;
       delete item.deleted; delete item.deletedAt; delete item.deletionBatch;
       if (state.draftExpectations && Object.hasOwn(state.draftExpectations, id)) M.setRule(item, M.nextSeq(item), state.draftExpectations[id], false);
       if (!existing) state.roster.push(item);
     });
     state.draftExpectations = {};
+    state.draftProfessions = {};
     state.selection = []; state.initialLevels = {};  page = 'summary'; render();
   }
   if (action === 'next' || action === 'finish') saveRecord(action === 'next');

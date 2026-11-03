@@ -7,7 +7,7 @@ function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; mul
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
 function selectionToolbar(withToggle = true) {
-  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span>${page === 'summary' ? '<button class="danger" data-action="delete-selected-characters" hidden>删除角色</button>' : ''}<div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button><button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
+  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span>${page === 'summary' ? '<button class="danger" data-action="delete-selected-characters" hidden>删除角色</button>' : ''}<div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置职业</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
 }
 function layoutCompactSelectionToolbar(toolbar) {
   if (!compactSelectionToolbar.matches) { toolbar.classList.remove('selection-single-row'); return; }
@@ -83,7 +83,8 @@ function refreshRowSelection() {
     }
     check.setAttribute('aria-pressed', String(selected));
     check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
-    const avatar = row.querySelector('img');
+    const image = row.querySelector('img');
+    const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
     if (row.matches('.journal') && matchMedia('(min-width:1100px)').matches) check.style.top = '';
     else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
   });
@@ -92,7 +93,7 @@ function refreshRowSelection() {
   });
   app.querySelectorAll('.selection-count').forEach(el => el.textContent = multiSelectMode || rowSelection.size ? `已选 ${rowSelection.size} 位` : '');
   app.querySelectorAll('.selection-actions').forEach(el => el.hidden = !rowSelection.size && !multiSelectMode);
-  app.querySelectorAll('[data-action="batch-expectation"]').forEach(b => b.disabled = !rowSelection.size);
+  app.querySelectorAll('[data-action="batch-expectation"],[data-action="batch-profession"]').forEach(b => b.disabled = !rowSelection.size);
   app.querySelectorAll('[data-action="delete-selected-characters"]').forEach(b => {
     b.disabled = !rowSelection.size; b.hidden = !multiSelectMode;
   });
@@ -298,7 +299,7 @@ function draftRule(d) {
 }
 function newRecordDraft(id) {
   const item = state.roster.find(i => i.id === id);
-  return { id, profession: M.live(item).at(-1)?.profession || null, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
+  return { id, profession: currentProfession(item), stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
 }
 function recordExpectationMarkup() {
   const rule = draftRule(activeRecord);
