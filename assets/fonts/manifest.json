@@ -1,0 +1,27 @@
+{
+  "method": "Half-intensity contours traced from original BC4 bitmap glyphs; these are converted outlines, not original vector fonts.",
+  "fonts": [
+    {
+      "file": "wlqs-system-cn.woff2",
+      "source": "__System_CNzh.bffnt.zst",
+      "source_sha256": "a787b8930ddd92237842e548e2c20c750f40c44bd969c1b8236ba42db52f123d",
+      "characters": 7546,
+      "bytes": 3273284
+    },
+    {
+      "file": "wlqs-number.woff2",
+      "source": "__Number.bffnt.zst",
+      "source_sha256": "97caa790557e83880fd00e34e407ce06b9d8181d07e12c2300e0faac09b5f000",
+      "characters": 12,
+      "bytes": 3144
+    },
+    {
+      "file": "wlqs-level-up.woff2",
+      "source": "__FEFont_Large.bffnt.zst",
+      "source_sha256": "46471265ed702701c13acd377d590d8c22e7f16ccc37188aa682c78be97158a2",
+      "characters": 66,
+      "bytes": 15744
+    }
+  ],
+  "upgrade_title": "MID_Sys_LevelUp = Level Up; lowercase p has the flat-foot uppercase-looking P glyph."
+}

@@ -38,7 +38,7 @@ window.PROFESSIONS = (() => {
 function professionMarkup(value, editable, id = '', index = '') {
   const name = window.PROFESSIONS.names.includes(value) ? value : null;
   if (!name && !editable) return '';
-  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png" alt="">` : ''}<span>${name || '选择职业'}</span>`;
+  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png" alt="">` : ''}<span${name ? ' class="game-text"' : ''}>${name || '选择职业'}</span>`;
   // Record cards are buttons: use a separate keyboard target without nesting buttons.
   return `<span class="profession-field ${editable ? 'can-edit' : ''}" ${editable ? `role="button" tabindex="0" data-profession data-character="${id}" data-record-index="${index}" aria-label="选择职业，${name || '暂无'}" aria-haspopup="dialog"` : ''}>${content}</span>`;
 }
@@ -54,7 +54,7 @@ function setupProfession(id) {
 }
 
 function setupProfessionButton(id) {
-  return `<button class="profession-setting" data-profession data-setup-profession="${id}" aria-label="设置${char(id).name}职业" aria-haspopup="dialog">${setupProfession(id) || '选择职业'}</button>`;
+  return `<button class="profession-setting${setupProfession(id) ? ' game-text' : ''}" data-profession data-setup-profession="${id}" aria-label="设置${char(id).name}职业" aria-haspopup="dialog">${setupProfession(id) || '选择职业'}</button>`;
 }
 
 function openProfessionPicker(anchor) {
@@ -87,6 +87,7 @@ function openProfessionPicker(anchor) {
         setupIds.forEach(id => state.draftProfessions[id] = choice.dataset.class || null);
         app.querySelectorAll('[data-setup-profession]:not([data-setup-profession=""])').forEach(button => {
           button.textContent = setupProfession(button.dataset.setupProfession) || '选择职业';
+          button.classList.toggle('game-text', !!setupProfession(button.dataset.setupProfession));
         });
         if (setupIds.length > 1) notify(`已为 ${setupIds.length} 位角色${choice.dataset.class ? '设置职业：' + choice.dataset.class : '清除职业'}`);
       } else {

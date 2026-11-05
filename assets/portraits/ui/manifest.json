@@ -1,0 +1,82 @@
+{
+  "source": "Layout/CommonMenu.arc.zst",
+  "entries": [
+    {
+      "texture": "UnitGrid_Bg_Decide^q",
+      "output": "meal-decided.png",
+      "size": [
+        300,
+        232
+      ],
+      "sha256": "8aff4f2f3051cd0ac432cecd100e6ab98e349acca1fbd491d935c26ab43895df"
+    },
+    {
+      "texture": "UnitGrid_Bg_Default^q",
+      "output": "meal-background.png",
+      "size": [
+        300,
+        232
+      ],
+      "sha256": "cda92722503d4d79b58bed511288efeabfb70e4ff82dd2700aabd2ea05d168f0"
+    },
+    {
+      "texture": "UnitGrid_Bg_Select^q",
+      "output": "meal-selected.png",
+      "size": [
+        300,
+        232
+      ],
+      "sha256": "1073c00b5192b5b0bc1196f1baf64845c191048a57143b935d193c53ca63970f"
+    },
+    {
+      "texture": "UnitGrid_Mask^t",
+      "output": "meal-mask.png",
+      "size": [
+        300,
+        280
+      ],
+      "sha256": "735a5250ec0be2e41a7b066b1e784183f04796013c8682ed109ff035be6527ee"
+    },
+    {
+      "texture": "Cursor^q",
+      "source": "Layout/Common.arc.zst",
+      "output": "meal-quill.png",
+      "size": [
+        96,
+        96
+      ],
+      "tint": "UI gold #d8c394; original alpha retained",
+      "sha256": "9966b39c1de206a8d43f1eb8559e85fb0015df5392fa9c310042afd3da28a2d9"
+    }
+  ],
+  "layout": "Common_UnitGrid_MenuItem.bflyt",
+  "face": [
+    214,
+    200
+  ],
+  "background": [
+    214,
+    166
+  ],
+  "cursor": {
+    "layout": "Common_System_Cursor.bflyt",
+    "size": [
+      62,
+      62
+    ],
+    "location": [
+      -68,
+      64
+    ],
+    "paneTranslation": [
+      -26,
+      26
+    ],
+    "cssCenterPercent": [
+      6.074766,
+      16.5
+    ],
+    "cssWidthPercent": 28.971963
+  },
+  "maskChannels": "BNTX 0x03020202: RGB=R, alpha=G. BC5 green exported as PNG alpha."
+}
