@@ -169,6 +169,9 @@ function ratingIcon(happy) {
 function portrait(c, kind = 'small', sizes = '56px') {
   const revision = document.querySelector('meta[name="app-version"]')?.content;
   const versioned = path => /^[a-f0-9]{40}$/i.test(revision || '') ? `${path}?v=${revision}` : path;
+  if (kind === 'narrow') {
+    return `<img draggable="false" src="${versioned(c.image.replace('/grid/', '/troop/'))}" alt="" loading="lazy" decoding="async">`;
+  }
   if (kind === 'small' && c.image.startsWith('assets/portraits/before-part3/grid/')) {
     const variant = size => versioned(c.image.replace('/grid/', `/small/${size}/`));
     return `<img draggable="false" src="${variant(56)}" srcset="${[56, 112, 168].map(size => `${variant(size)} ${size}w`).join(', ')}" sizes="${sizes}" alt="" loading="lazy" decoding="async">`;
@@ -225,9 +228,156 @@ function updateSelectionCount() {
   document.querySelector('#selected-count').textContent = `已选 ${state.selection.length} 位角色`;
   document.querySelector('#choose-next').disabled = !state.selection.length;
 }
+
+let setupLevelEdit = null;
+let setupToggleAfterCommit = null;
+function setupLevelText(id) {
+  const value = String(state.initialLevels[id] ?? '');
+  return value ? escapeValue(value) : '<span class="setup-level-empty">暂无</span>';
+}
+function paintSetupLevel(cell) {
+  cell.setAttribute('role','button');cell.tabIndex=0;
+  cell.innerHTML=setupLevelText(cell.dataset.setupLevel);
+  cell.setAttribute('aria-label',`${char(cell.dataset.setupLevel).name}当前等级，${state.initialLevels[cell.dataset.setupLevel] || '暂无'}，点击编辑`);
+}
+function finishSetupLevel(cancel=false) {
+  const edit=setupLevelEdit;if(!edit)return true;
+  if(!cancel&&!validLevel(edit.input))return false;
+  setupLevelEdit=null;
+  clearLevelError(edit.input);
+  if(!cancel)edit.ids.forEach(id=>{if(state.selection.includes(id))state.initialLevels[id]=edit.input.value;});
+  for(const id of edit.ids){const cell=app.querySelector(`[data-setup-level="${id}"]`);if(cell)paintSetupLevel(cell);}
+  if(!cancel&&edit.batch){clearRowSelection();refreshRowSelection();}
+  scheduleLocalSave();return true;
+}
+function editSetupLevel(cell) {
+  if(setupLevelEdit?.cell===cell)return;
+  if(!finishSetupLevel())return;
+  const id=cell.dataset.setupLevel,batch=multiSelectMode&&rowSelection.has(id);
+  const ids=batch?state.selection.filter(value=>rowSelection.has(value)):[id];
+  cell.removeAttribute('role');cell.removeAttribute('tabindex');
+  cell.innerHTML=`<input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${char(id).name}当前等级">`;
+  const input=cell.querySelector('input');setupLevelEdit={cell,input,ids,batch};input.focus();input.select();
+}
+function openSetupLevelDialog() {
+  if(!finishSetupLevel()||document.querySelector('.setup-level-dialog'))return;
+  const ids=[...state.selection];if(!ids.length)return;
+  const values=ids.map(id=>String(state.initialLevels[id]??''));
+  const shared=values.every(value=>value===values[0])?values[0]:'';
+  const dialog=document.createElement('dialog');dialog.className='app-dialog setup-level-dialog';
+  dialog.setAttribute('aria-labelledby','setup-level-dialog-title');
+  dialog.innerHTML=`<header><h2 id="setup-level-dialog-title">全部设置等级</h2></header><form novalidate><div class="setup-level-dialog-body"><input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input value="${escapeValue(shared)}" placeholder="暂无" aria-label="当前等级" aria-describedby="setup-level-dialog-help"><p id="setup-level-dialog-help">范围为 1–99</p></div><footer><button type="button" data-cancel>取消</button><button type="submit" class="primary">确认</button></footer></form>`;
+  dialog.querySelector('[data-cancel]').onclick=()=>dialog.close();
+  dialog.querySelector('input').addEventListener('input',e=>{
+    clearLevelError(e.target);e.target.removeAttribute('aria-invalid');
+    e.target.setAttribute('aria-describedby','setup-level-dialog-help');
+  });
+  dialog.querySelector('form').onsubmit=e=>{
+    e.preventDefault();const input=dialog.querySelector('input');if(!validLevel(input))return;
+    ids.filter(id=>state.selection.includes(id)).forEach(id=>{state.initialLevels[id]=input.value;const cell=app.querySelector(`[data-setup-level="${id}"]`);if(cell)paintSetupLevel(cell);});
+    clearRowSelection();refreshRowSelection();scheduleLocalSave();dialog.close();
+  };
+  dialog.addEventListener('close',()=>{dialog.remove();app.querySelector('[data-action="batch"]')?.focus({preventScroll:true});},{once:true});
+  document.body.append(dialog);dialog.showModal();dialog.querySelector('input').focus();dialog.querySelector('input').select();
+}
+function setupExpectationRule(id) { return state.draftExpectations?.[id] || null; }
+function setupRuleText(rule) {
+  if(!rule)return '属性期望未设置';
+  if(rule.type==='stat')return `${rule.stat}提升`;
+  if(rule.type==='total')return `总点数 ${{gt:'>',gte:'≥',lt:'<',lte:'≤'}[rule.op]} ${rule.value}`;
+  if(rule.type==='not')return `不满足（${setupRuleText(rule.child)}）`;
+  if(rule.children.length===1)return setupRuleText(rule.children[0]);
+  return `（${rule.children.map(setupRuleText).join(rule.type==='all'?' 且 ':' 或 ')}）`;
+}
+function setupExpectationButton(id) {
+  const full=setupRuleText(setupExpectationRule(id));
+  return `<button class="expectation-setting" data-expectation-edit="${id}" data-setup-expectation="${id}" aria-label="${char(id).name}属性期望：${escapeValue(full)}"><span class="setup-rule-summary">${escapeValue(full)}</span></button>`;
+}
+function setupConditionCount(rule) {
+  if(!rule)return 0;
+  if(rule.type==='not')return setupConditionCount(rule.child);
+  return rule.children?rule.children.reduce((sum,child)=>sum+setupConditionCount(child),0):1;
+}
+let setupSummaryCanvas=null,setupSummaryFrame=0;
+const setupSummaryObserver=typeof ResizeObserver==='function'?new ResizeObserver(()=>{
+  cancelAnimationFrame(setupSummaryFrame);setupSummaryFrame=requestAnimationFrame(refreshSetupExpectationSummaries);
+}):null;
+function refreshSetupHeadingAlignment(context) {
+  app.querySelectorAll('.table-head>span').forEach(heading=>{
+    if(!heading.textContent)return;
+    const style=getComputedStyle(heading),size=parseFloat(style.fontSize);
+    context.font=`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const metrics=context.measureText(heading.textContent);
+    // CSS uses this webfont's hhea ascent/descent (1000 / -200).
+    // Canvas fontBoundingBox* can instead expose the larger Windows metrics.
+    const offset=(size*.8-metrics.actualBoundingBoxAscent+metrics.actualBoundingBoxDescent)/2;
+    heading.style.setProperty('--setup-heading-offset',`${Math.max(0,offset)}px`);
+  });
+}
+function refreshSetupExpectationSummaries() {
+  if(page!=='levels')return;
+  setupSummaryCanvas ||= document.createElement('canvas');
+  const context=setupSummaryCanvas.getContext('2d');
+  refreshSetupHeadingAlignment(context);
+  app.querySelectorAll('[data-setup-expectation]').forEach(button=>{
+    const span=button.querySelector('.setup-rule-summary'),rule=setupExpectationRule(button.dataset.setupExpectation);
+    const style=getComputedStyle(span);
+    context.font=`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const available=Math.max(0,span.getBoundingClientRect().width-4);
+    const width=text=>context.measureText(text).width+(parseFloat(style.letterSpacing)||0)*text.length;
+    const full=setupRuleText(rule);
+    const draw=(content,count='')=>{
+      let text=span.querySelector('.setup-rule-content');
+      if(!text){span.textContent='';text=document.createElement('span');text.className='setup-rule-content';span.append(text);}
+      if(text.textContent!==content)text.textContent=content;
+      let suffix=span.querySelector('.setup-rule-count');
+      if(count){if(!suffix){suffix=document.createElement('span');suffix.className='setup-rule-count';span.append(suffix);}if(suffix.textContent!==count)suffix.textContent=count;}
+      else suffix?.remove();
+    };
+    if(!rule||width(full)<=available){draw(full);return;}
+    let group=rule;while(group.children?.length===1)group=group.children[0];
+    const total=setupConditionCount(group);
+    if(total<2){draw(full);return;}
+    const parts=group.children?group.children.map(setupRuleText):[setupRuleText(group)];
+    const prefix=group.children?(group.type==='all'?'全部：':'任一：'):'';
+    const suffix=`等 ${total} 项条件`,budget=Math.max(0,available-width(suffix)-3);
+    for(let count=parts.length-1;count>=1;count--){const content=prefix+parts.slice(0,count).join('、');if(width(content)<=budget){draw(content,suffix);return;}}
+    let first=parts[0];
+    while(first.length>1&&width(prefix+first+'…')>budget)first=first.slice(0,-1);
+    draw(prefix+first+'…',suffix);
+  });
+}
+app.addEventListener('click',e=>{
+  const cell=e.target.closest('[data-setup-level]');
+  if(cell&&!cell.querySelector('input')){editSetupLevel(cell);e.stopImmediatePropagation();}
+});
+app.addEventListener('pointerdown',e=>{
+  setupToggleAfterCommit=setupLevelEdit?.batch&&e.target.closest('[data-action="multi-select"]')?false:null;
+},true);
+app.addEventListener('keydown',e=>{
+  if(e.isComposing)return;
+  if(e.target.matches('[data-level]')&&e.target.closest('[data-setup-level]')){
+    if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();const cell=setupLevelEdit?.cell;if(finishSetupLevel(e.key==='Escape'))cell?.focus({preventScroll:true});}
+  } else if(e.target.matches('[data-setup-level]')&&['Enter',' '].includes(e.key)){
+    e.preventDefault();e.stopImmediatePropagation();editSetupLevel(e.target);
+  }
+});
+app.addEventListener('focusout',e=>{if(e.target===setupLevelEdit?.input)finishSetupLevel();});
+window.addEventListener('resize',refreshSetupExpectationSummaries);
 function renderLevels() {
-  app.innerHTML =
-    `<section class="panel levels"><div class="toolbar setup-toolbar"><label>统一设为 <input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="" data-level-input aria-label="统一初始等级"></label><button data-action="batch">应用到全部</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置职业</button>${selectionToolbar()}</div><p class="expectation-default-note">${defaultRuleText}</p><div class="table-head"><span>角色</span><span>当前等级（可留空）</span><span>职业</span><span>属性期望</span></div>${state.selection.map(id => { const c = char(id); return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<strong>${c.name}</strong><span class="level-value">LV <input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${c.name}初始等级"></span>${setupProfessionButton(id)}<button class="expectation-setting" data-expectation-edit="${id}" aria-label="设置${c.name}属性期望">${escapeValue(ruleSummary(state.draftExpectations?.[id]))}</button></div>`; }).join('')}</section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
+  setupLevelEdit=null;
+  app.innerHTML=`<section class="levels">
+    <div class="toolbar setup-toolbar"><button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置职业</button>${selectionToolbar()}</div>
+    <div class="table-head"><span class="setup-name-heading">角色</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
+    ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
+      <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
+      <div class="setup-character">${portrait(c,'narrow')}<strong>${c.name}</strong></div>
+      <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
+      ${setupProfessionButton(id)}${setupExpectationButton(id)}</div>`;}).join('')}
+    </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
+  setupSummaryObserver?.disconnect();
+  app.querySelectorAll('[data-setup-expectation]').forEach(button=>setupSummaryObserver?.observe(button));
+  document.fonts?.ready.then(()=>{if(page==='levels')refreshSetupExpectationSummaries();});
 }
 function recordStats(stats) {
   const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
@@ -683,7 +833,6 @@ function saveRecord(next) {
 app.addEventListener('input', e => {
   if (e.target.matches('[data-level-input]')) { clearLevelError(e.target); e.target.removeAttribute('aria-invalid'); }
   if (e.target.id === 'search') { query = e.target.value; renderCards(); app.querySelector('#search-history').hidden = true; }
-  if (e.target.dataset.level) { state.initialLevels[e.target.dataset.level] = e.target.value;  }
 });
 app.addEventListener('focusin', e => { if (e.target.matches('input[data-level-input]')) e.target.select(); });
 app.addEventListener('focusin', e => { if (e.target.id === 'search') showSearchHistory(); });
@@ -729,7 +878,9 @@ let mouseSort = null;
 function sortTarget(x, y, source) {
   const selector = source.matches('.level-row') ? '.level-row' : '.journal';
   const container = source.parentElement.getBoundingClientRect();
-  if (x < container.left || x > container.right) return null;
+  const grip = source.querySelector('.drag-grip')?.getBoundingClientRect();
+  const left = Math.min(container.left, grip?.left ?? container.left);
+  if (x < left || x > container.right) return null;
   let best = null, distance = Infinity;
   app.querySelectorAll(selector).forEach(card => {
     if (movingIds(source.dataset.sortId).includes(card.dataset.sortId)) return;
@@ -901,11 +1052,25 @@ app.addEventListener('click', async e => {
   if (b.dataset.rowSelect) { selectRow(b.dataset.rowSelect, { shiftKey:e.shiftKey, ctrlKey:e.ctrlKey, metaKey:e.metaKey }); return; }
   if (b.dataset.expectationEdit) { openExpectationEditor([b.dataset.expectationEdit]); return; }
   if (b.dataset.expectationDetail) { if(b.hasAttribute('data-record-expectation'))openRecordExpectationDetails();else openExpectationDetails(b.dataset.expectationDetail); return; }
-  if (b.dataset.action === 'multi-select') { multiSelectMode = !multiSelectMode; if (!multiSelectMode) rowSelection.clear(); refreshRowSelection(); return; }
+  if (b.dataset.action === 'multi-select') { multiSelectMode = setupToggleAfterCommit ?? !multiSelectMode; setupToggleAfterCommit=null; if (!multiSelectMode) rowSelection.clear(); refreshRowSelection(); return; }
   if (b.dataset.action === 'select-all-rows') { rowIds().forEach(id => rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'clear-row-selection') { rowSelection.clear(); selectionAnchor = null; refreshRowSelection(); return; }
   if (b.dataset.action === 'invert-rows') { rowIds().forEach(id => rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'delete-selected-characters') {
+    if (page === 'levels') {
+      const ids = state.selection.filter(id => rowSelection.has(id));
+      if (!ids.length || !await confirmRecordDeletion(`是否从待添加列表中删除选中的 ${ids.length} 位角色？`)) return;
+      const removed = new Set(ids);
+      state.selection = state.selection.filter(id => !removed.has(id));
+      ids.forEach(id => {
+        delete state.initialLevels[id];
+        if (state.draftProfessions) delete state.draftProfessions[id];
+        if (state.draftExpectations) delete state.draftExpectations[id];
+      });
+      rowSelection.clear(); selectionAnchor = null;
+      if (!state.selection.length) page = 'select';
+      render(); return;
+    }
     const items = visibleRoster().filter(item => rowSelection.has(item.id));
     if (!items.length || !await confirmRecordDeletion(`是否删除选中的 ${items.length} 位角色？`)) return;
     softDelete(items);
@@ -1012,23 +1177,15 @@ app.addEventListener('click', async e => {
     editingCharacters.clear(); activeRecord = null;
     rememberListPosition(); returnToSummary();
   }
-  if (action === 'batch') {
-    const input = document.querySelector('#batch-level');
-    if (!validLevel(input)) return;
-    state.selection.forEach(id => state.initialLevels[id] = input.value);
-    app.querySelectorAll('[data-level]').forEach(field => {
-      field.value = input.value;
-      clearLevelError(field);
-      field.removeAttribute('aria-invalid');
-    });
-  }
+  if (action === 'batch') { openSetupLevelDialog(); return; }
   if (action === 'create') {
-    const inputs = [...document.querySelectorAll('[data-level]')];
-    if (inputs.some(i => !validLevel(i))) return;
-    inputs.forEach(i => {
-      const id = i.dataset.level, existing = state.roster.find(item => item.id === id);
+    if (!finishSetupLevel()) return;
+    const invalid = state.selection.find(id => !/^(?:[1-9][0-9]?)?$/.test(String(state.initialLevels[id] ?? '')));
+    if (invalid) { editSetupLevel(app.querySelector(`[data-setup-level="${invalid}"]`)); validLevel(setupLevelEdit.input); return; }
+    state.selection.forEach(id => {
+      const value = String(state.initialLevels[id] ?? ''), existing = state.roster.find(item => item.id === id);
       const item = existing || { id, records: [] };
-      item.initialLevel = i.value === '' ? null : Number(i.value);
+      item.initialLevel = value === '' ? null : Number(value);
       item.initialProfession = setupProfession(id);
       if (existing && Object.hasOwn(state.draftProfessions || {}, id)) item.pendingProfession = item.initialProfession;
       delete item.deleted; delete item.deletedAt; delete item.deletionBatch;

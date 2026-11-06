@@ -1,0 +1,324 @@
+{
+  "source": "Layout/Textures/Icon_Job.arc.zst",
+  "palette_source": "Layout/Common.arc.zst:Common_System_Color.bflyt/Force_JobIcon_Player",
+  "player_rgba": [
+    12,
+    82,
+    240,
+    255
+  ],
+  "native_logic": "main 0x19df8b8 selects %s_Clr; 0x19dfa54..0x19dfa70 applies the force color to Icon01 over Icon00.",
+  "composition": "Decode RGBA8_SRGB Clr RGB to linear light, multiply by the normalized native material constant, encode to sRGB PNG; preserve Clr alpha; source-over base. Native family background stays 50x50 within 64x64 icon.",
+  "color_space": {
+    "texture_format": "0xb06 RGBA8_SRGB",
+    "material_constant": "linear normalized RGB",
+    "display_white_tint_srgb": [
+      61,
+      154,
+      248,
+      255
+    ]
+  },
+  "entries": [
+    {
+      "file": "commoner.png",
+      "base": "JID_無職_平民男",
+      "color_layer": "JID_無職_平民男_Clr"
+    },
+    {
+      "file": "noble.png",
+      "base": "JID_無職_貴族男",
+      "color_layer": "JID_無職_貴族男_Clr"
+    },
+    {
+      "file": "gladiator.png",
+      "base": "JID_闘士男",
+      "color_layer": "JID_闘士男_Clr"
+    },
+    {
+      "file": "hunter.png",
+      "base": "JID_猟兵男",
+      "color_layer": "JID_猟兵男_Clr"
+    },
+    {
+      "file": "soldier.png",
+      "base": "JID_兵士男",
+      "color_layer": "JID_兵士男_Clr"
+    },
+    {
+      "file": "ornius-rider.png",
+      "base": "JID_飛駝兵男",
+      "color_layer": "JID_飛駝兵男_Clr"
+    },
+    {
+      "file": "diviner.png",
+      "base": "JID_呪い師男",
+      "color_layer": "JID_呪い師男_Clr"
+    },
+    {
+      "file": "myrmidon.png",
+      "base": "JID_剣士男",
+      "color_layer": "JID_剣士男_Clr"
+    },
+    {
+      "file": "brigand.png",
+      "base": "JID_ブリガンド男",
+      "color_layer": "JID_ブリガンド男_Clr"
+    },
+    {
+      "file": "pugilist.png",
+      "base": "JID_セスタス男",
+      "color_layer": "JID_セスタス男_Clr"
+    },
+    {
+      "file": "archer.png",
+      "base": "JID_アーチャー男",
+      "color_layer": "JID_アーチャー男_Clr"
+    },
+    {
+      "file": "rogue.png",
+      "base": "JID_ローグ男",
+      "color_layer": "JID_ローグ男_Clr"
+    },
+    {
+      "file": "armored-knight.png",
+      "base": "JID_重装歩兵男",
+      "color_layer": "JID_重装歩兵男_Clr"
+    },
+    {
+      "file": "light-cavalry.png",
+      "base": "JID_軽騎兵男",
+      "color_layer": "JID_軽騎兵男_Clr"
+    },
+    {
+      "file": "charioteer.png",
+      "base": "JID_戦車兵男",
+      "color_layer": "JID_戦車兵男_Clr"
+    },
+    {
+      "file": "armored-ornius-rider.png",
+      "base": "JID_騎甲駝兵男",
+      "color_layer": "JID_騎甲駝兵男_Clr"
+    },
+    {
+      "file": "wing-soldier.png",
+      "base": "JID_天翼兵女",
+      "color_layer": "JID_天翼兵女_Clr"
+    },
+    {
+      "file": "shaman.png",
+      "base": "JID_シャーマン男",
+      "color_layer": "JID_シャーマン男_Clr"
+    },
+    {
+      "file": "priest.png",
+      "base": "JID_プリースト男",
+      "color_layer": "JID_プリースト男_Clr"
+    },
+    {
+      "file": "shido.png",
+      "base": "JID_シドー男",
+      "color_layer": "JID_シドー男_Clr"
+    },
+    {
+      "file": "dancer.png",
+      "base": "JID_踊り子男",
+      "color_layer": "JID_踊り子男_Clr"
+    },
+    {
+      "file": "warrior.png",
+      "base": "JID_ウォーリアー男",
+      "color_layer": "JID_ウォーリアー男_Clr"
+    },
+    {
+      "file": "blacksmith.png",
+      "base": "JID_鍛冶師男",
+      "color_layer": "JID_鍛冶師男_Clr"
+    },
+    {
+      "file": "sniper.png",
+      "base": "JID_スナイパー男",
+      "color_layer": "JID_スナイパー男_Clr"
+    },
+    {
+      "file": "forest-knight.png",
+      "base": "JID_フォレストナイト男",
+      "color_layer": "JID_フォレストナイト男_Clr"
+    },
+    {
+      "file": "ranger.png",
+      "base": "JID_レンジャー男",
+      "color_layer": "JID_レンジャー男_Clr"
+    },
+    {
+      "file": "guardian.png",
+      "base": "JID_ガーディアン男",
+      "color_layer": "JID_ガーディアン男_Clr"
+    },
+    {
+      "file": "dreadnought.png",
+      "base": "JID_ヘヴィアーマー男",
+      "color_layer": "JID_ヘヴィアーマー男_Clr"
+    },
+    {
+      "file": "bardinger.png",
+      "base": "JID_バーディンガー男",
+      "color_layer": "JID_バーディンガー男_Clr"
+    },
+    {
+      "file": "caladrius.png",
+      "base": "JID_カラドリオス男",
+      "color_layer": "JID_カラドリオス男_Clr"
+    },
+    {
+      "file": "cataphract.png",
+      "base": "JID_カタフラクト男",
+      "color_layer": "JID_カタフラクト男_Clr"
+    },
+    {
+      "file": "elephant-rider.png",
+      "base": "JID_戦象兵男",
+      "color_layer": "JID_戦象兵男_Clr"
+    },
+    {
+      "file": "dragoon.png",
+      "base": "JID_ドラグーン男",
+      "color_layer": "JID_ドラグーン男_Clr"
+    },
+    {
+      "file": "troubadour.png",
+      "base": "JID_トルバドール男",
+      "color_layer": "JID_トルバドール男_Clr"
+    },
+    {
+      "file": "ovate.png",
+      "base": "JID_ウァテス男",
+      "color_layer": "JID_ウァテス男_Clr"
+    },
+    {
+      "file": "bishop.png",
+      "base": "JID_ビショップ男",
+      "color_layer": "JID_ビショップ男_Clr"
+    },
+    {
+      "file": "swordmaster.png",
+      "base": "JID_ソードマスター男",
+      "color_layer": "JID_ソードマスター男_Clr"
+    },
+    {
+      "file": "high-savant.png",
+      "base": "JID_ハイエピタフ男",
+      "color_layer": "JID_ハイエピタフ男_Clr"
+    },
+    {
+      "file": "battlemaster.png",
+      "base": "JID_バトルマスター男",
+      "color_layer": "JID_バトルマスター男_Clr"
+    },
+    {
+      "file": "war-monk.png",
+      "base": "JID_バトルモンク男",
+      "color_layer": "JID_バトルモンク男_Clr"
+    },
+    {
+      "file": "bow-adept.png",
+      "base": "JID_マスターアーチ男",
+      "color_layer": "JID_マスターアーチ男_Clr"
+    },
+    {
+      "file": "bow-knight.png",
+      "base": "JID_ボウナイト男",
+      "color_layer": "JID_ボウナイト男_Clr"
+    },
+    {
+      "file": "shadow-seeker.png",
+      "base": "JID_シャドーシーカー男",
+      "color_layer": "JID_シャドーシーカー男_Clr"
+    },
+    {
+      "file": "sentinel.png",
+      "base": "JID_ホーリーランサー男",
+      "color_layer": "JID_ホーリーランサー男_Clr"
+    },
+    {
+      "file": "castle-knight.png",
+      "base": "JID_フォートレス男",
+      "color_layer": "JID_フォートレス男_Clr"
+    },
+    {
+      "file": "orichaldia.png",
+      "base": "JID_オリハルディア男",
+      "color_layer": "JID_オリハルディア男_Clr"
+    },
+    {
+      "file": "great-knight.png",
+      "base": "JID_グレートナイト男",
+      "color_layer": "JID_グレートナイト男_Clr"
+    },
+    {
+      "file": "celestial-trooper.png",
+      "base": "JID_聖天翼兵女",
+      "color_layer": "JID_聖天翼兵女_Clr"
+    },
+    {
+      "file": "bau-lord.png",
+      "base": "JID_ドラゴンマスター男",
+      "color_layer": "JID_ドラゴンマスター男_Clr"
+    },
+    {
+      "file": "druid.png",
+      "base": "JID_ドルイド男",
+      "color_layer": "JID_ドルイド男_Clr"
+    },
+    {
+      "file": "wiseman.png",
+      "base": "JID_ワイズマン男",
+      "color_layer": "JID_ワイズマン男_Clr"
+    },
+    {
+      "file": "valkyrium.png",
+      "base": "JID_ヴァルキュリウム男",
+      "color_layer": "JID_ヴァルキュリウム男_Clr"
+    },
+    {
+      "file": "the-blade.png",
+      "base": "JID_ザ・ブレイド男",
+      "color_layer": "JID_ザ・ブレイド男_Clr"
+    },
+    {
+      "file": "the-apsara.png",
+      "base": "JID_ジ・アプサラス男",
+      "color_layer": "JID_ジ・アプサラス男_Clr"
+    },
+    {
+      "file": "the-eternal.png",
+      "base": "JID_ジ・エターナル男",
+      "color_layer": "JID_ジ・エターナル男_Clr"
+    },
+    {
+      "file": "the-godhand.png",
+      "base": "JID_ザ・ゴッドハンド男",
+      "color_layer": "JID_ザ・ゴッドハンド男_Clr"
+    },
+    {
+      "file": "the-calamity.png",
+      "base": "JID_ザ・カラミティ男",
+      "color_layer": "JID_ザ・カラミティ男_Clr"
+    },
+    {
+      "file": "the-trident.png",
+      "base": "JID_ザ・トライデント男",
+      "color_layer": "JID_ザ・トライデント男_Clr"
+    },
+    {
+      "file": "the-cavalier.png",
+      "base": "JID_ザ・キャバリアー男",
+      "color_layer": "JID_ザ・キャバリアー男_Clr"
+    },
+    {
+      "file": "the-avatar.png",
+      "base": "JID_ジ・アヴァタール男",
+      "color_layer": "JID_ジ・アヴァタール男_Clr"
+    }
+  ]
+}

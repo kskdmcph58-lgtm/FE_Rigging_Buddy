@@ -38,9 +38,9 @@ window.PROFESSIONS = (() => {
 function professionMarkup(value, editable, id = '', index = '') {
   const name = window.PROFESSIONS.names.includes(value) ? value : null;
   if (!name && !editable) return '';
-  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png" alt="">` : ''}<span${name ? ' class="game-text"' : ''}>${name || '选择职业'}</span>`;
+  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png" alt="">` : ''}<span class="${name ? 'game-text' : 'profession-placeholder'}">${name || '选择兵种'}</span>`;
   // Record cards are buttons: use a separate keyboard target without nesting buttons.
-  return `<span class="profession-field ${editable ? 'can-edit' : ''}" ${editable ? `role="button" tabindex="0" data-profession data-character="${id}" data-record-index="${index}" aria-label="选择职业，${name || '暂无'}" aria-haspopup="dialog"` : ''}>${content}</span>`;
+  return `<span class="profession-field ${editable ? 'can-edit' : ''}" ${editable ? `role="button" tabindex="0" data-profession data-character="${id}" data-record-index="${index}" aria-label="选择兵种，${name || '暂无'}" aria-haspopup="dialog"` : ''}>${content}</span>`;
 }
 
 function currentProfession(item) {
@@ -53,8 +53,12 @@ function setupProfession(id) {
   return Object.hasOwn(state.draftProfessions || {}, id) ? state.draftProfessions[id] : currentProfession(state.roster.find(item => item.id === id));
 }
 
+function setupProfessionContent(id) {
+  const name=setupProfession(id);
+  return name ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png" alt="" draggable="false"><span class="game-text">${name}</span>` : '<span class="profession-placeholder">选择兵种</span>';
+}
 function setupProfessionButton(id) {
-  return `<button class="profession-setting${setupProfession(id) ? ' game-text' : ''}" data-profession data-setup-profession="${id}" aria-label="设置${char(id).name}职业" aria-haspopup="dialog">${setupProfession(id) || '选择职业'}</button>`;
+  return `<button class="profession-setting" data-profession data-setup-profession="${id}" aria-label="设置${char(id).name}职业" aria-haspopup="dialog">${setupProfessionContent(id)}</button>`;
 }
 
 function openProfessionPicker(anchor) {
@@ -76,9 +80,9 @@ function openProfessionPicker(anchor) {
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog profession-picker';
   dialog.setAttribute('aria-labelledby', 'profession-title');
-  const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${!mixed && selected === name}"><img src="assets/classes/${data.icons[name]}.png" alt="" loading="lazy"><span>${name}</span></button>`;
+  const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${!mixed && selected === name}"><span class="profession-icon"><img src="assets/classes/${data.icons[name]}.png" alt="" loading="lazy"></span><span class="profession-name">${name}</span></button>`;
   const group = (title, cells, base = false) => `<section class="profession-tier ${base ? 'profession-base' : ''}"><h3>${title}</h3>${cells.map(names => `<div class="profession-options">${names.map(option).join('')}</div>`).join('')}</section>`;
-  dialog.innerHTML = `<div class="profession-titlebar"><h2 id="profession-title">选择职业</h2></div><div class="profession-scroll"><div class="profession-table">${group('基础职业', [data.base], true)}${data.rows.map((row, t) => group(data.tiers[t], row)).join('')}</div></div><div class="profession-footer"><button data-class="">清除职业</button><button data-dismiss>关闭</button></div>`;
+  dialog.innerHTML = `<div class="profession-titlebar"><h2 id="profession-title">更改兵种</h2></div><div class="profession-scroll"><div class="profession-table">${group('基础职业', [data.base], true)}${data.rows.map((row, t) => group(data.tiers[t], row)).join('')}</div></div><div class="profession-footer"><button data-class="">清除职业</button><button data-dismiss>关闭</button></div>`;
   dialog.addEventListener('click', e => {
     const choice = e.target.closest('[data-class]');
     if (choice) {
@@ -86,8 +90,7 @@ function openProfessionPicker(anchor) {
         state.draftProfessions ||= {};
         setupIds.forEach(id => state.draftProfessions[id] = choice.dataset.class || null);
         app.querySelectorAll('[data-setup-profession]:not([data-setup-profession=""])').forEach(button => {
-          button.textContent = setupProfession(button.dataset.setupProfession) || '选择职业';
-          button.classList.toggle('game-text', !!setupProfession(button.dataset.setupProfession));
+          button.innerHTML = setupProfessionContent(button.dataset.setupProfession);
         });
         if (setupIds.length > 1) notify(`已为 ${setupIds.length} 位角色${choice.dataset.class ? '设置职业：' + choice.dataset.class : '清除职业'}`);
       } else {

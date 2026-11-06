@@ -7,7 +7,7 @@ function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; mul
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
 function selectionToolbar(withToggle = true) {
-  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span>${page === 'summary' ? '<button class="danger" data-action="delete-selected-characters" hidden>删除角色</button>' : ''}<div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置职业</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
+  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span><button class="danger" data-action="delete-selected-characters" hidden>删除角色</button><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置职业</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
 }
 function layoutCompactSelectionToolbar(toolbar) {
   if (!compactSelectionToolbar.matches) { toolbar.classList.remove('selection-single-row'); return; }
@@ -85,7 +85,8 @@ function refreshRowSelection() {
     check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
     const image = row.querySelector('img');
     const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
-    if (row.matches('.journal') && matchMedia('(min-width:1100px)').matches) check.style.top = '';
+    if (row.matches('.level-row') && matchMedia('(max-width:600px)').matches) check.style.top = '48px';
+    else if (row.matches('.journal') && matchMedia('(min-width:1100px)').matches) check.style.top = '';
     else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
   });
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
@@ -116,6 +117,7 @@ function refreshRowSelection() {
   });
   updateFloatingSelectionBar();
   if (page === 'summary') refreshRecordRails();
+  if (page === 'levels') refreshSetupExpectationSummaries();
 }
 function selectRow(id, event = {}) {
   const ids = rowIds(), additive = event.ctrlKey || event.metaKey;
@@ -590,9 +592,10 @@ let expectationTip = null, expectationTipTimer, expectationTipOwner = null;
 function hideExpectationTip() { clearTimeout(expectationTipTimer); expectationTip?.remove(); expectationTipOwner?.removeAttribute('aria-describedby'); expectationTipOwner=null; expectationTip=null; }
 function showExpectationTip(b) {
   hideExpectationTip();
-  const item=state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!item)return;
+  const setup=b.dataset.setupExpectation;
+  const item=setup?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!item)return;
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
-  expectationTip.innerHTML=b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
+  expectationTip.innerHTML=setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
   const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect();
   expectationTip.style.left=`${Math.max(12,Math.min(innerWidth-tip.width-12,r.left))}px`;
@@ -600,15 +603,20 @@ function showExpectationTip(b) {
   expectationTip.addEventListener('pointerleave',hideExpectationTip);
 }
 document.addEventListener('pointerover',e=>{
-  const b=e.target.closest('[data-expectation-detail]');
+  const b=e.target.closest('[data-expectation-detail],[data-setup-expectation]');
   if(!b||e.pointerType!=='mouse'||b.contains(e.relatedTarget))return;
   hideExpectationTip();
   expectationTipTimer=setTimeout(()=>showExpectationTip(b),250);
 });
-document.addEventListener('pointerout',e=>{if(e.target.closest('[data-expectation-detail]')){clearTimeout(expectationTipTimer);expectationTipTimer=setTimeout(()=>{if(!expectationTip?.matches(':hover'))hideExpectationTip();},180);}});
-document.addEventListener('scroll',hideExpectationTip,true);
+document.addEventListener('pointerout',e=>{
+  const owner=e.target.closest('[data-expectation-detail],[data-setup-expectation]');
+  if(!owner||owner.contains(e.relatedTarget)||expectationTip?.contains(e.relatedTarget))return;
+  clearTimeout(expectationTipTimer);
+  expectationTipTimer=setTimeout(()=>{if(!expectationTip?.matches(':hover')&&!expectationTipOwner?.matches(':hover'))hideExpectationTip();},180);
+});
+document.addEventListener('scroll',e=>{if(!expectationTip?.contains(e.target))hideExpectationTip();},true);
 window.addEventListener('resize',hideExpectationTip);
-document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-detail]')&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
+document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-detail],[data-setup-expectation]')&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
 document.addEventListener('focusout',e=>{if(e.target===expectationTipOwner)hideExpectationTip();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')hideExpectationTip();});
 

@@ -1,0 +1,1932 @@
+{
+  "source": "tests/WLQS/room/romfs/Layout/CommonMenu.arc.zst",
+  "sha256": "3d2db471d92ffa312d9f6608d69e99f1ab8cb09fd63fc47f3ba996382ddda0ab",
+  "native_geometry": {
+    "name_frame_width": 348,
+    "data_frame_width": 1380,
+    "frame_gap": 12,
+    "row_height": 60,
+    "row_pitch": 66,
+    "header_height": 34
+  },
+  "adaptation": "The app retains its own columns and controls. Header and row boundaries share one CSS grid, including the multi-select gutter. Narrow screens reflow cells.",
+  "frames": {
+    "Common_FrmMenuItem_Default_C": {
+      "size": [
+        2,
+        2
+      ],
+      "top_left_rgba": [
+        24,
+        45,
+        51,
+        255
+      ],
+      "colors": [
+        [
+          24,
+          45,
+          51,
+          255
+        ]
+      ]
+    },
+    "Common_FrmMenuItem_Default_TL": {
+      "size": [
+        8,
+        8
+      ],
+      "top_left_rgba": [
+        57,
+        75,
+        79,
+        255
+      ],
+      "colors": [
+        [
+          24,
+          44,
+          49,
+          255
+        ],
+        [
+          24,
+          45,
+          51,
+          255
+        ],
+        [
+          57,
+          75,
+          79,
+          255
+        ]
+      ]
+    }
+  },
+  "layouts": {
+    "blyt/Common_TroopMenu_MenuItem.bflyt": [
+      {
+        "type": "pan1",
+        "name": "RootPane",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Name",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "Frm",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          348.0,
+          60.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "IconClan",
+        "position": [
+          290.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          116.0,
+          60.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "Face",
+        "position": [
+          24.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          116.0,
+          60.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Txt",
+        "position": [
+          142.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          192.0,
+          35.0
+        ],
+        "font_size_xy": [
+          24.5,
+          35.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "SubInfo",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          4.0,
+          60.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "Overlay",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          348.0,
+          60.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_IconUnit",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0199999809265137,
+          1.0499999523162842
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "IconUnit",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          40.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Guest",
+        "position": [
+          34.0,
+          18.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "Bg_Guest",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          64.0,
+          20.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Guest",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          56.0,
+          20.0
+        ],
+        "font_size_xy": [
+          14.699999809265137,
+          21.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "IconNum",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          40.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Page",
+        "position": [
+          360.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "FrmSub",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1380.0,
+          60.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Page00",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Class",
+        "position": [
+          15.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ClassGroup",
+        "position": [
+          26.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          617.5999755859375,
+          88.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_HP",
+        "position": [
+          451.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_HPGroup",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          202.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_MagicNum",
+        "position": [
+          523.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_MagicNum",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          50.0,
+          35.0
+        ],
+        "font_size_xy": [
+          24.5,
+          35.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_MagicNumPercent",
+        "position": [
+          52.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          20.0,
+          31.5
+        ],
+        "font_size_xy": [
+          22.049999237060547,
+          31.5
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Lv",
+        "position": [
+          657.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Lv",
+        "position": [
+          34.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Gauge",
+        "position": [
+          153.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Next",
+        "position": [
+          -36.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          58.0,
+          28.0
+        ],
+        "font_size_xy": [
+          19.600000381469727,
+          28.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Exp_NumNext",
+        "position": [
+          6.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          40.0,
+          28.0
+        ],
+        "font_size_xy": [
+          19.600000381469727,
+          28.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ExpGauge",
+        "position": [
+          0.0,
+          -20.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          320.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Item",
+        "position": [
+          843.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemIcon",
+        "position": [
+          15.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          56.0,
+          40.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_ItemName",
+        "position": [
+          39.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          222.0,
+          35.0
+        ],
+        "font_size_xy": [
+          24.5,
+          35.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Deploy",
+        "position": [
+          1134.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "DeployIcon",
+        "position": [
+          15.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          30.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_DeployName",
+        "position": [
+          39.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          192.0,
+          35.0
+        ],
+        "font_size_xy": [
+          24.5,
+          35.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Page01",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem00",
+        "position": [
+          64.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem01",
+        "position": [
+          196.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem02",
+        "position": [
+          328.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem03",
+        "position": [
+          460.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem04",
+        "position": [
+          592.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem05",
+        "position": [
+          724.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem06",
+        "position": [
+          856.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MasteryInfoItem07",
+        "position": [
+          988.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          210.0,
+          84.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Move",
+        "position": [
+          1158.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Move",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Physique",
+        "position": [
+          1320.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Physique",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Page02_03",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status00",
+        "position": [
+          101.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status01",
+        "position": [
+          248.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status02",
+        "position": [
+          396.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status03",
+        "position": [
+          544.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status04",
+        "position": [
+          692.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status05",
+        "position": [
+          840.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status06",
+        "position": [
+          988.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status07",
+        "position": [
+          1136.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Status08",
+        "position": [
+          1310.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_TotalNum",
+        "position": [
+          1257.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_TotalNum",
+        "position": [
+          50.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          136.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "BorderVertical",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1380.0,
+          60.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "OverlaySub",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1380.0,
+          60.0
+        ]
+      }
+    ],
+    "blyt/Common_TroopMenu.bflyt": [
+      {
+        "type": "pan1",
+        "name": "RootPane",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "Alpha",
+        "position": [
+          0.0,
+          396.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "Wdw",
+        "position": [
+          0.0,
+          8.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1830.0,
+          852.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuTab",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3063.60009765625,
+          106.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Key",
+        "position": [
+          -870.0,
+          16.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          503.3999938964844,
+          42.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "N_Border",
+        "position": [
+          -870.0,
+          -48.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "Border",
+        "position": [
+          0.0,
+          -22.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1742.0,
+          6.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Txt",
+        "position": [
+          0.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          190.0,
+          32.0
+        ],
+        "font_size_xy": [
+          22.049999237060547,
+          31.5
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemMenu",
+        "position": [
+          360.0,
+          2.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          2922.0,
+          182.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem00",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem01",
+        "position": [
+          0.0,
+          -66.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem02",
+        "position": [
+          0.0,
+          -132.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem03",
+        "position": [
+          0.0,
+          -198.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem04",
+        "position": [
+          0.0,
+          -264.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem05",
+        "position": [
+          0.0,
+          -330.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem06",
+        "position": [
+          0.0,
+          -396.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem07",
+        "position": [
+          0.0,
+          -462.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem08",
+        "position": [
+          0.0,
+          -528.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem09",
+        "position": [
+          0.0,
+          -594.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem10",
+        "position": [
+          0.0,
+          -660.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem11",
+        "position": [
+          0.0,
+          -726.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          3496.0,
+          92.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ScrollBar",
+        "position": [
+          882.0,
+          -78.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          8.0,
+          1440.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Cursor",
+        "position": [
+          -893.0,
+          -69.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          114.0,
+          114.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Num",
+        "position": [
+          848.0,
+          -842.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          896.0,
+          80.0
+        ]
+      }
+    ],
+    "blyt/Common_TroopMenu_ItemName.bflyt": [
+      {
+        "type": "pan1",
+        "name": "RootPane",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "Frm",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          340.0,
+          34.0
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "IconTxt",
+        "position": [
+          -15.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          30.0
+        ]
+      },
+      {
+        "type": "txt1",
+        "name": "T_Txt",
+        "position": [
+          -86.4000015258789,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          174.0,
+          31.5
+        ],
+        "font_size_xy": [
+          22.049999237060547,
+          31.5
+        ]
+      },
+      {
+        "type": "pic1",
+        "name": "Icon",
+        "position": [
+          16.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          28.0,
+          28.0
+        ]
+      },
+      {
+        "type": "wnd1",
+        "name": "Overlay",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          340.0,
+          34.0
+        ]
+      }
+    ],
+    "blyt/Common_TroopMenu_ItemMenu.bflyt": [
+      {
+        "type": "pan1",
+        "name": "RootPane",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "type": "pan1",
+        "name": "MenuItemList",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          30.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_MenuItem00",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          2922.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_Cursor",
+        "position": [
+          339.0,
+          34.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          114.0,
+          114.0
+        ]
+      }
+    ],
+    "blyt/Common_TroopMenu_ItemMenuItem.bflyt": [
+      {
+        "type": "pan1",
+        "name": "RootPane",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName00",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName01",
+        "position": [
+          344.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName02",
+        "position": [
+          477.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName03",
+        "position": [
+          644.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName04",
+        "position": [
+          830.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName05",
+        "position": [
+          1121.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName06",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName07",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName08",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      },
+      {
+        "type": "prt1",
+        "name": "L_ItemName09",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0
+        ],
+        "size": [
+          680.0,
+          40.0
+        ]
+      }
+    ]
+  },
+  "dividers": {
+    "texture": "TroopMenu_MenuItem_BorderPage00^q",
+    "size": [
+      1380,
+      60
+    ],
+    "x_ranges": [
+      [
+        340,
+        343
+      ],
+      [
+        473,
+        476
+      ],
+      [
+        640,
+        643
+      ],
+      [
+        826,
+        829
+      ],
+      [
+        1117,
+        1120
+      ]
+    ],
+    "material_tint_rgba": [
+      30,
+      28,
+      19,
+      255
+    ],
+    "implementation": "Four-pixel strips within the gaps between header columns; opaque two-pixel core and antialiased edges. App places matching strips at the shared CSS gap centers."
+  },
+  "troop_portraits": "Native 116x60 exports and Face SRT/AssetTable sampling are recorded in ../portraits/before-part3/troop/manifest.json.",
+  "typography": {
+    "character_name": {
+      "source": "CommonMenu.arc.zst:Common_TroopMenu_MenuItem.bflyt/T_Txt",
+      "font_size_xy": [
+        24.5,
+        35
+      ],
+      "scale": [
+        1,
+        1
+      ]
+    },
+    "profession_name": {
+      "source": "Common.arc.zst:Common_UnitInfoClass.bflyt/T_Txt",
+      "font_size_xy": [
+        22.05,
+        31.5
+      ],
+      "scale": [
+        1,
+        1
+      ]
+    },
+    "table_heading": {
+      "source": "CommonMenu.arc.zst:Common_TroopMenu_ItemName.bflyt/T_Txt",
+      "font_size_xy": [
+        22.05,
+        31.5
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "frame_height": 34
+    },
+    "profession_icon": {
+      "source": "Common.arc.zst:Common_JobIcon_Small.bflyt/Icon00",
+      "size": [
+        50,
+        50
+      ]
+    },
+    "native_system_cn_metrics": {
+      "width": 49,
+      "height": 70
+    },
+    "web_conversion": "The converted outlines use native width 49 as one em. At font-size 24.5px, horizontal scale is 24.5/49 and vertical scale is 35/70: both 0.5. The profession scale is 0.45. Desktop uses 24.5px / 22.05px, with a 50px icon; smaller layouts preserve the 0.9 text-size ratio."
+  }
+}

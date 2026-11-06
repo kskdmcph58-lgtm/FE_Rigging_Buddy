@@ -1,0 +1,80 @@
+{
+  "source": "tests/WLQS/room/romfs/Layout",
+  "title": {
+    "layout": "Hub.arc.zst:Hub_SubTitle.bflyt/T_Title",
+    "font": "System.fcpx",
+    "font_size_xy": [
+      22.05,
+      31.5
+    ],
+    "web_font_size": 22.05,
+    "material_rgba": "#ffd9a5ff"
+  },
+  "selection": {
+    "layout": "Common.arc.zst:Common_UnitInfoFull_JobList.bflyt/BgEquip",
+    "size": [
+      56,
+      56
+    ],
+    "icon_size": [
+      64,
+      64
+    ],
+    "background_size": [
+      50,
+      50
+    ],
+    "texture": "Textures/Common.arc.zst:JobIcon_BgEquip^q",
+    "texture_size": [
+      66,
+      66
+    ],
+    "uv": [
+      0,
+      0,
+      2,
+      2
+    ],
+    "sampler": "0x06 mirrored wrapping; expanded to four mirrored quadrants",
+    "layer_order": [
+      "equipped background",
+      "original class icon"
+    ],
+    "asset": "profession-equipped.png",
+    "web_size": [
+      60,
+      60
+    ],
+    "adaptation": "Web selection backing enlarged from native 56 to 60 within 64 icon for a clearer rim at responsive sizes; sprite remains above backing."
+  },
+  "mobile": {
+    "title_size": 22.05,
+    "tier_size": 18,
+    "name_size": 16,
+    "icon_size": 50
+  },
+  "equipped_mark": {
+    "source": "Textures/Icon_System.arc.zst:IconEquip^q",
+    "texture_size": [
+      28,
+      28
+    ],
+    "layout": "Common.arc.zst:Common_JobIcon_Default.bflyt/IconEquip",
+    "pane_size": [
+      20,
+      20
+    ],
+    "pane_position": [
+      -20,
+      20
+    ],
+    "icon_size": [
+      64,
+      64
+    ],
+    "web_top_left_percent": 3.125,
+    "web_size_percent": 31.25,
+    "layer": "above icon, selected option only",
+    "asset": "profession-equipped-mark.png"
+  }
+}

@@ -1,0 +1,1737 @@
+{
+  "source": "Layout/CommonMenu.arc.zst:Common_TroopMenu_MenuItem.bflyt/Face",
+  "profile": {
+    "size": [
+      116,
+      60
+    ],
+    "tex_srt": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.800000011920929,
+        0.4099999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ]
+    ]
+  },
+  "count": 74,
+  "entries": [
+    {
+      "fid": "FID_アレキサンドラ",
+      "file": "assets/portraits/before-part3/troop/alexandra.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4449999928474426,
+          0.4309999942779541
+        ],
+        "clamped_center": [
+          0.4449999928474426,
+          0.4309999942779541
+        ],
+        "uv_rect": [
+          0.04499998688697815,
+          0.22599999606609344,
+          0.8450000286102295,
+          0.6359999775886536
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f109247c4cee6651b548967cc8546c939f52b4a6e53e8f19a18914d6768cdc1d"
+    },
+    {
+      "fid": "FID_アナトリア",
+      "file": "assets/portraits/before-part3/troop/anatolia.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.46399998664855957,
+          0.4399999976158142
+        ],
+        "clamped_center": [
+          0.46399998664855957,
+          0.4399999976158142
+        ],
+        "uv_rect": [
+          0.06399998068809509,
+          0.23499999940395355,
+          0.8639999628067017,
+          0.6449999809265137
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "33d6ae858bfd535144a86b7c85e9f52906ff50d0c93b0fc362d2aac81b24d531"
+    },
+    {
+      "fid": "FID_アンナ",
+      "file": "assets/portraits/before-part3/troop/anna.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4650000035762787,
+          0.42500001192092896
+        ],
+        "clamped_center": [
+          0.4650000035762787,
+          0.42500001192092896
+        ],
+        "uv_rect": [
+          0.06499999761581421,
+          0.2200000137090683,
+          0.8650000095367432,
+          0.6299999952316284
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "a4f2fe011251b971df9c3619fbdea88f8b18d3962e824aeebc0cc59f38a6c3c1"
+    },
+    {
+      "fid": "FID_アスワン",
+      "file": "assets/portraits/before-part3/troop/aswan.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4390000104904175,
+          0.42100000381469727
+        ],
+        "clamped_center": [
+          0.4390000104904175,
+          0.42100000381469727
+        ],
+        "uv_rect": [
+          0.039000004529953,
+          0.2160000056028366,
+          0.8389999866485596,
+          0.6259999871253967
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "32c89e46c13e0b15a3a4c904d5a4e67def1a132b2f664c8f514f451f69db781d"
+    },
+    {
+      "fid": "FID_アウロラ",
+      "file": "assets/portraits/before-part3/troop/aurora.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.45399999618530273,
+          0.44600000977516174
+        ],
+        "clamped_center": [
+          0.45399999618530273,
+          0.44600000977516174
+        ],
+        "uv_rect": [
+          0.05399999022483826,
+          0.2410000115633011,
+          0.8539999723434448,
+          0.6510000228881836
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f190a8fb9cbd7d825c12be33790a39ca33f60ca9d1f58cab849f7c48af3d412e"
+    },
+    {
+      "fid": "FID_ベンディッツ",
+      "file": "assets/portraits/before-part3/troop/benditz.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4300000071525574,
+          0.3529999852180481
+        ],
+        "clamped_center": [
+          0.4300000071525574,
+          0.3529999852180481
+        ],
+        "uv_rect": [
+          0.030000001192092896,
+          0.14799998700618744,
+          0.8300000429153442,
+          0.5579999685287476
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f19b7854ade8aa263f9d17b3fbd3daff96902ba37e856e461f299d561d89c008"
+    },
+    {
+      "fid": "FID_ベルトラン",
+      "file": "assets/portraits/before-part3/troop/bertrand.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.421999990940094,
+          0.41600000858306885
+        ],
+        "clamped_center": [
+          0.421999990940094,
+          0.41600000858306885
+        ],
+        "uv_rect": [
+          0.021999984979629517,
+          0.2110000103712082,
+          0.8220000267028809,
+          0.6209999918937683
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "6561b5aa8cab9aff7ee4332e608720f8e184f2eca8c53613a20c5e9d098ee3b2"
+    },
+    {
+      "fid": "FID_ボナパルテ",
+      "file": "assets/portraits/before-part3/troop/bonaventure.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4359999895095825,
+          0.39800000190734863
+        ],
+        "clamped_center": [
+          0.4359999895095825,
+          0.39800000190734863
+        ],
+        "uv_rect": [
+          0.03599998354911804,
+          0.19300000369548798,
+          0.8359999656677246,
+          0.6029999852180481
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "17d82478c82e72254f5cedcef7e7782a3a598d47504249587d4934c526c38474"
+    },
+    {
+      "fid": "FID_バッカニア",
+      "file": "assets/portraits/before-part3/troop/buccar.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4169999957084656,
+          0.44699999690055847
+        ],
+        "clamped_center": [
+          0.4169999957084656,
+          0.44699999690055847
+        ],
+        "uv_rect": [
+          0.0169999897480011,
+          0.24199999868869781,
+          0.8170000314712524,
+          0.6520000100135803
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "1f2527acbd3d655205dffe26f239cc7f6377a9ac52a77f9dd17df2bedd19616e"
+    },
+    {
+      "fid": "FID_カイ",
+      "file": "assets/portraits/before-part3/troop/cai.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.41600000858306885,
+          0.45399999618530273
+        ],
+        "clamped_center": [
+          0.41600000858306885,
+          0.45399999618530273
+        ],
+        "uv_rect": [
+          0.01600000262260437,
+          0.24899999797344208,
+          0.8159999847412109,
+          0.6589999794960022
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "a7155833007c8ac5d3b8e0461b7a20c3dafb32d8e92fa787d5c1679ee2d7213e"
+    },
+    {
+      "fid": "FID_カターニャ",
+      "file": "assets/portraits/before-part3/troop/catania.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.39399999380111694,
+          0.43700000643730164
+        ],
+        "clamped_center": [
+          0.4000000059604645,
+          0.43700000643730164
+        ],
+        "uv_rect": [
+          0.0,
+          0.23200000822544098,
+          0.800000011920929,
+          0.6420000195503235
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "b80024bf1d48a9718db0f151e46e578e0ed8fda295986cd79fb54c67b6416a35"
+    },
+    {
+      "fid": "FID_セントリオン",
+      "file": "assets/portraits/before-part3/troop/centurio.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4309999942779541,
+          0.3889999985694885
+        ],
+        "clamped_center": [
+          0.4309999942779541,
+          0.3889999985694885
+        ],
+        "uv_rect": [
+          0.030999988317489624,
+          0.18400000035762787,
+          0.8309999704360962,
+          0.593999981880188
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "2301ec9cf922730e9e83a2f1c57f4c5d915178eecec260f9e23ff6c0bd536108"
+    },
+    {
+      "fid": "FID_キリーク",
+      "file": "assets/portraits/before-part3/troop/creek.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4189999997615814,
+          0.3930000066757202
+        ],
+        "clamped_center": [
+          0.4189999997615814,
+          0.3930000066757202
+        ],
+        "uv_rect": [
+          0.018999993801116943,
+          0.18800000846385956,
+          0.8190000057220459,
+          0.5979999899864197
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f5421164ca964003720b3d291504085ff98f721b2087f9098a7c1e527b3055a4"
+    },
+    {
+      "fid": "FID_ダイトウ",
+      "file": "assets/portraits/before-part3/troop/dadao.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4350000023841858,
+          0.39399999380111694
+        ],
+        "clamped_center": [
+          0.4350000023841858,
+          0.39399999380111694
+        ],
+        "uv_rect": [
+          0.034999996423721313,
+          0.1889999955892563,
+          0.8350000381469727,
+          0.5989999771118164
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "cb537eed91383700075fd0a208c4f279d6ae70b98f6ff0a5ce2d3aa78b437e52"
+    },
+    {
+      "fid": "FID_ダンテ",
+      "file": "assets/portraits/before-part3/troop/dante.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4860000014305115,
+          0.43299999833106995
+        ],
+        "clamped_center": [
+          0.4860000014305115,
+          0.43299999833106995
+        ],
+        "uv_rect": [
+          0.085999995470047,
+          0.2280000001192093,
+          0.8860000371932983,
+          0.6380000114440918
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "0b657ce3b6ac5bd7d05b0b0e959694028c5bba28cba6b6a30fff57c61624936d"
+    },
+    {
+      "fid": "FID_ディエゴ",
+      "file": "assets/portraits/before-part3/troop/diego.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4819999933242798,
+          0.4429999887943268
+        ],
+        "clamped_center": [
+          0.4819999933242798,
+          0.4429999887943268
+        ],
+        "uv_rect": [
+          0.08199998736381531,
+          0.23799999058246613,
+          0.8819999694824219,
+          0.6480000019073486
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "b118158a1261877d699aae7407c4876a51f3cc4816e4f813afc6e73c2e0082e8"
+    },
+    {
+      "fid": "FID_ディートリヒ",
+      "file": "assets/portraits/before-part3/troop/dietrich.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.5289999842643738,
+          0.4359999895095825
+        ],
+        "clamped_center": [
+          0.5289999842643738,
+          0.4359999895095825
+        ],
+        "uv_rect": [
+          0.1289999783039093,
+          0.23099999129772186,
+          0.9290000200271606,
+          0.640999972820282
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "e9c269e97095ad6d9ec378e710776da5e27d1dbe65d1d3a61e462e0cf5543ae3"
+    },
+    {
+      "fid": "FID_エスメラルダ",
+      "file": "assets/portraits/before-part3/troop/esmeralda.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.414000004529953,
+          0.46799999475479126
+        ],
+        "clamped_center": [
+          0.414000004529953,
+          0.46799999475479126
+        ],
+        "uv_rect": [
+          0.013999998569488525,
+          0.2630000114440918,
+          0.8140000104904175,
+          0.6729999780654907
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "8e2ba554bce22558054946505d056abd9eb66149f538cb9c8a48dcc6b55fd413"
+    },
+    {
+      "fid": "FID_ファビオ",
+      "file": "assets/portraits/before-part3/troop/fabio.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43700000643730164,
+          0.38600000739097595
+        ],
+        "clamped_center": [
+          0.43700000643730164,
+          0.38600000739097595
+        ],
+        "uv_rect": [
+          0.03700000047683716,
+          0.1810000091791153,
+          0.8370000123977661,
+          0.5910000205039978
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "0a16dfc36715466c24f7ce25d36919f5f4fac880265ed4bf2890d376f69c1313"
+    },
+    {
+      "fid": "FID_ファティマ",
+      "file": "assets/portraits/before-part3/troop/fatima.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.46000000834465027,
+          0.44699999690055847
+        ],
+        "clamped_center": [
+          0.46000000834465027,
+          0.44699999690055847
+        ],
+        "uv_rect": [
+          0.06000000238418579,
+          0.24199999868869781,
+          0.8600000143051147,
+          0.6520000100135803
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "464afa29959155648ef969ae793481263d407d303c044c7f59dbb841024a6f40"
+    },
+    {
+      "fid": "FID_フィアナ",
+      "file": "assets/portraits/before-part3/troop/fianna.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.46000000834465027,
+          0.44699999690055847
+        ],
+        "clamped_center": [
+          0.46000000834465027,
+          0.44699999690055847
+        ],
+        "uv_rect": [
+          0.06000000238418579,
+          0.24199999868869781,
+          0.8600000143051147,
+          0.6520000100135803
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "3f8066cdaca6237d636568bb727faac55d68a902bca79c9080022f3576c11d26"
+    },
+    {
+      "fid": "FID_フォトナ",
+      "file": "assets/portraits/before-part3/troop/fortuna.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.47699999809265137
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.47699999809265137
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.2720000147819519,
+          0.8320000171661377,
+          0.6819999814033508
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "ab63eab50e432dfdf3d42a8fc4ed767ff55117ccd927fbacaf004ad7d47d44d4"
+    },
+    {
+      "fid": "FID_ゲイツ",
+      "file": "assets/portraits/before-part3/troop/gaitz.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43700000643730164,
+          0.4269999861717224
+        ],
+        "clamped_center": [
+          0.43700000643730164,
+          0.4269999861717224
+        ],
+        "uv_rect": [
+          0.03700000047683716,
+          0.22199998795986176,
+          0.8370000123977661,
+          0.6319999694824219
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "3efa7a25f14bd22e6b50688de91936a78216dd36e65f02be3d51805603fbcc1f"
+    },
+    {
+      "fid": "FID_ゴライアス",
+      "file": "assets/portraits/before-part3/troop/goliath.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.45100000500679016,
+          0.40700000524520874
+        ],
+        "clamped_center": [
+          0.45100000500679016,
+          0.40700000524520874
+        ],
+        "uv_rect": [
+          0.050999999046325684,
+          0.20200000703334808,
+          0.8510000109672546,
+          0.6119999885559082
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "68cf3db14c5d3a1c774927a9bdb11879fb41635f3aec0af615d1eeca315fcaab"
+    },
+    {
+      "fid": "FID_グザラン",
+      "file": "assets/portraits/before-part3/troop/guzran.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.3619999885559082
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.3619999885559082
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.15699999034404755,
+          0.8320000171661377,
+          0.5669999718666077
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "d0cc63c18293ed7235229e26f5f67a4901a603f4a137a35d3650d4aed8206c99"
+    },
+    {
+      "fid": "FID_ハルヴィン",
+      "file": "assets/portraits/before-part3/troop/halvin.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43799999356269836,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.43799999356269836,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.03799998760223389,
+          0.23600001633167267,
+          0.8379999995231628,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "18401cc33559f8543f55822841480d88804cbd93dd87d1f29fff7cbf4c39c159"
+    },
+    {
+      "fid": "FID_コウカ",
+      "file": "assets/portraits/before-part3/troop/hong-hua.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43700000643730164,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.43700000643730164,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.03700000047683716,
+          0.23600001633167267,
+          0.8370000123977661,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "26f0cfdb2e9ae825d93607af1e37e251ed106f9879a620aba74c32ade18b6702"
+    },
+    {
+      "fid": "FID_イリアナ",
+      "file": "assets/portraits/before-part3/troop/iliana.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.421999990940094,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.421999990940094,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.021999984979629517,
+          0.23600001633167267,
+          0.8220000267028809,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "720200f1eec4ad6d3d6a7df5caacd4e1ae330eb4034fc287d5709d2d1e2ae9d4"
+    },
+    {
+      "fid": "FID_イニオニ",
+      "file": "assets/portraits/before-part3/troop/inyoni.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4339999854564667,
+          0.42399999499320984
+        ],
+        "clamped_center": [
+          0.4339999854564667,
+          0.42399999499320984
+        ],
+        "uv_rect": [
+          0.0339999794960022,
+          0.21899999678134918,
+          0.8339999914169312,
+          0.6290000081062317
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "ffbb2cfe9d45913d2a0ec9449a005d78322569d51535b6b80cd70081e01f2ed7"
+    },
+    {
+      "fid": "FID_イオ",
+      "file": "assets/portraits/before-part3/troop/io.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.4020000100135803
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.4020000100135803
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.19700001180171967,
+          0.8320000171661377,
+          0.6069999933242798
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "bc287bc19fec703a0189ff5993fd4650d205dde024c8a82ed7d4f6a37760df74"
+    },
+    {
+      "fid": "FID_ジャスミン",
+      "file": "assets/portraits/before-part3/troop/jasmine.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4259999990463257,
+          0.4090000092983246
+        ],
+        "clamped_center": [
+          0.4259999990463257,
+          0.4090000092983246
+        ],
+        "uv_rect": [
+          0.025999993085861206,
+          0.20400001108646393,
+          0.8259999752044678,
+          0.6140000224113464
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "1247e436428320729e0432cb1409a6d651d722d15c537d75c5db403ebc1607d3"
+    },
+    {
+      "fid": "FID_ジェスター",
+      "file": "assets/portraits/before-part3/troop/jester.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4580000042915344,
+          0.4320000112056732
+        ],
+        "clamped_center": [
+          0.4580000042915344,
+          0.4320000112056732
+        ],
+        "uv_rect": [
+          0.057999998331069946,
+          0.22700001299381256,
+          0.8580000400543213,
+          0.6370000243186951
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "dbbf6895e8896f0b73a701a831989ea842c84c8e93589caf2fe67ba9df3a5559"
+    },
+    {
+      "fid": "FID_ジュラ",
+      "file": "assets/portraits/before-part3/troop/jurah.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.41100001335144043,
+          0.4090000092983246
+        ],
+        "clamped_center": [
+          0.41100001335144043,
+          0.4090000092983246
+        ],
+        "uv_rect": [
+          0.011000007390975952,
+          0.20400001108646393,
+          0.8109999895095825,
+          0.6140000224113464
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "7aad9eef1d7ccfbdd4c7805594fb5f0fa94e3e4f8e38dbdb1dedfd38a7a06cd4"
+    },
+    {
+      "fid": "FID_カーラ",
+      "file": "assets/portraits/before-part3/troop/kalla.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43299999833106995,
+          0.4429999887943268
+        ],
+        "clamped_center": [
+          0.43299999833106995,
+          0.4429999887943268
+        ],
+        "uv_rect": [
+          0.03299999237060547,
+          0.23799999058246613,
+          0.8330000042915344,
+          0.6480000019073486
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "6dca49243c6de66bbc827f38a83f6da25ce4c066175d698068fd2fb0207a3789"
+    },
+    {
+      "fid": "FID_キロイカ",
+      "file": "assets/portraits/before-part3/troop/kiroc.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4090000092983246,
+          0.39100000262260437
+        ],
+        "clamped_center": [
+          0.4090000092983246,
+          0.39100000262260437
+        ],
+        "uv_rect": [
+          0.009000003337860107,
+          0.1860000044107437,
+          0.8090000152587891,
+          0.5960000157356262
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "64c5e49d1d02d88be8185eb64bce8c13c1959772ac424e4d0495229565b2c5ad"
+    },
+    {
+      "fid": "FID_クラプカ",
+      "file": "assets/portraits/before-part3/troop/klapka.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.39500001072883606
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.39500001072883606
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.1900000125169754,
+          0.8320000171661377,
+          0.6000000238418579
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "60d18be179763cb23b96959299fbb93ba01457cce098ea880091430b2b167963"
+    },
+    {
+      "fid": "FID_レダ",
+      "file": "assets/portraits/before-part3/troop/leda.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43799999356269836,
+          0.45100000500679016
+        ],
+        "clamped_center": [
+          0.43799999356269836,
+          0.45100000500679016
+        ],
+        "uv_rect": [
+          0.03799998760223389,
+          0.2460000067949295,
+          0.8379999995231628,
+          0.656000018119812
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "584a23a6bc6d4fbc1d7705e0997f25737ca9c9b78ed5bc7b68f54915b446112a"
+    },
+    {
+      "fid": "FID_リリアン",
+      "file": "assets/portraits/before-part3/troop/lilian.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.3869999945163727,
+          0.43799999356269836
+        ],
+        "clamped_center": [
+          0.4000000059604645,
+          0.43799999356269836
+        ],
+        "uv_rect": [
+          0.0,
+          0.2329999953508377,
+          0.800000011920929,
+          0.6430000066757202
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f368105721b9a08bcd69f5d18078a796e64a82ee48080ba02108ec7f09dfc166"
+    },
+    {
+      "fid": "FID_ロレッタ",
+      "file": "assets/portraits/before-part3/troop/loretta.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.44999998807907104,
+          0.46299999952316284
+        ],
+        "clamped_center": [
+          0.44999998807907104,
+          0.46299999952316284
+        ],
+        "uv_rect": [
+          0.04999998211860657,
+          0.2580000162124634,
+          0.8500000238418579,
+          0.6679999828338623
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "28612ac5e5fc35296c576ce86b3d6eae83f74b7b90e4fb84048c92ddac14d060"
+    },
+    {
+      "fid": "FID_ルルディヤー",
+      "file": "assets/portraits/before-part3/troop/ludia.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.23600001633167267,
+          0.8320000171661377,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "73b3ccb25bc309047ee72445e2e6cea5d8e5ec8feb38a604b7b6a143b03f1eb2"
+    },
+    {
+      "fid": "FID_ライサンダー",
+      "file": "assets/portraits/before-part3/troop/lysander.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.44600000977516174,
+          0.4180000126361847
+        ],
+        "clamped_center": [
+          0.44600000977516174,
+          0.4180000126361847
+        ],
+        "uv_rect": [
+          0.046000003814697266,
+          0.21300001442432404,
+          0.8460000157356262,
+          0.6230000257492065
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "75fd2c3a20c425aa5ab90b65404cb56520c0b11abd5e43f6eef65030024340be"
+    },
+    {
+      "fid": "FID_マジーデ",
+      "file": "assets/portraits/before-part3/troop/majide.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.44699999690055847,
+          0.38100001215934753
+        ],
+        "clamped_center": [
+          0.44699999690055847,
+          0.38100001215934753
+        ],
+        "uv_rect": [
+          0.046999990940093994,
+          0.17600001394748688,
+          0.847000002861023,
+          0.5860000252723694
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "81bf87a4ffc70ad4e767d4f4ab2a5fb3ebf273e73a015bb0a1bd0f3531bb121a"
+    },
+    {
+      "fid": "FID_マーズ",
+      "file": "assets/portraits/before-part3/troop/mars.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4410000145435333,
+          0.39500001072883606
+        ],
+        "clamped_center": [
+          0.4410000145435333,
+          0.39500001072883606
+        ],
+        "uv_rect": [
+          0.04100000858306885,
+          0.1900000125169754,
+          0.8410000205039978,
+          0.6000000238418579
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "388cbf018610b123765d672d88b1df2d255f48ead925716be7fad74899674bcb"
+    },
+    {
+      "fid": "FID_マクシム",
+      "file": "assets/portraits/before-part3/troop/maxim.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4580000042915344,
+          0.4320000112056732
+        ],
+        "clamped_center": [
+          0.4580000042915344,
+          0.4320000112056732
+        ],
+        "uv_rect": [
+          0.057999998331069946,
+          0.22700001299381256,
+          0.8580000400543213,
+          0.6370000243186951
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "5b212f2fbbfd3d23629103e12fb4b20d5c64ff03d0fea2676e2b2b20e3b82f65"
+    },
+    {
+      "fid": "FID_ミカエラ",
+      "file": "assets/portraits/before-part3/troop/mikaela.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4300000071525574,
+          0.41999998688697815
+        ],
+        "clamped_center": [
+          0.4300000071525574,
+          0.41999998688697815
+        ],
+        "uv_rect": [
+          0.030000001192092896,
+          0.2149999886751175,
+          0.8300000429153442,
+          0.625
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "eb875cff3af4c85352fc019efa3493860506a5112f869bfb3e6c07275672b8df"
+    },
+    {
+      "fid": "FID_ムウ",
+      "file": "assets/portraits/before-part3/troop/mu.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4399999976158142,
+          0.44999998807907104
+        ],
+        "clamped_center": [
+          0.4399999976158142,
+          0.44999998807907104
+        ],
+        "uv_rect": [
+          0.03999999165534973,
+          0.2449999898672104,
+          0.8400000333786011,
+          0.6549999713897705
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "e952a1cc476ec3b8055857149a042a82bb28fadb1e2721b79deba8f2104f9fdc"
+    },
+    {
+      "fid": "FID_ネイサン",
+      "file": "assets/portraits/before-part3/troop/nathan.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4729999899864197,
+          0.41999998688697815
+        ],
+        "clamped_center": [
+          0.4729999899864197,
+          0.41999998688697815
+        ],
+        "uv_rect": [
+          0.0729999840259552,
+          0.2149999886751175,
+          0.8730000257492065,
+          0.625
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "3797029010888b5f1d44133cdf339b7d2b61b67a818458ef1980fddfa5a2adc8"
+    },
+    {
+      "fid": "FID_ナジャ",
+      "file": "assets/portraits/before-part3/troop/nezha.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4440000057220459,
+          0.43799999356269836
+        ],
+        "clamped_center": [
+          0.4440000057220459,
+          0.43799999356269836
+        ],
+        "uv_rect": [
+          0.04399999976158142,
+          0.2329999953508377,
+          0.843999981880188,
+          0.6430000066757202
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "9cd97158add9f4db5bddb29c30b979d228c01be508436a49157cbbb2a8efdd31"
+    },
+    {
+      "fid": "FID_ニネ",
+      "file": "assets/portraits/before-part3/troop/ninae.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4189999997615814,
+          0.4650000035762787
+        ],
+        "clamped_center": [
+          0.4189999997615814,
+          0.4650000035762787
+        ],
+        "uv_rect": [
+          0.018999993801116943,
+          0.25999999046325684,
+          0.8190000057220459,
+          0.6700000166893005
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "09a4bd6c5fe09b9946c8546f6ea3803582dbc3e9e2c912e1315b0ac0978debb0"
+    },
+    {
+      "fid": "FID_ノクチュラ",
+      "file": "assets/portraits/before-part3/troop/noctula.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.46399998664855957,
+          0.4350000023841858
+        ],
+        "clamped_center": [
+          0.46399998664855957,
+          0.4350000023841858
+        ],
+        "uv_rect": [
+          0.06399998068809509,
+          0.23000000417232513,
+          0.8639999628067017,
+          0.6399999856948853
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "1dd943fe71bfab841e196668e5b9d82b5f8c180c8f29170e40cd49340efcd721"
+    },
+    {
+      "fid": "FID_ヌッツォ",
+      "file": "assets/portraits/before-part3/troop/nuzzuo.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4429999887943268,
+          0.4169999957084656
+        ],
+        "clamped_center": [
+          0.4429999887943268,
+          0.4169999957084656
+        ],
+        "uv_rect": [
+          0.042999982833862305,
+          0.21199999749660492,
+          0.8429999947547913,
+          0.621999979019165
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f28f9780ab1966ec43bcd598ad3126464b4186c06b420a9e7709324a8a0900f8"
+    },
+    {
+      "fid": "FID_ヌディーヌ",
+      "file": "assets/portraits/before-part3/troop/nydine.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.44600000977516174,
+          0.42399999499320984
+        ],
+        "clamped_center": [
+          0.44600000977516174,
+          0.42399999499320984
+        ],
+        "uv_rect": [
+          0.046000003814697266,
+          0.21899999678134918,
+          0.8460000157356262,
+          0.6290000081062317
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "000a8c9b87b88dd6fc2dcbdd4e8bd90d063a643ab5337a7c8aff03e526be755d"
+    },
+    {
+      "fid": "FID_オリンピア",
+      "file": "assets/portraits/before-part3/troop/olympia.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4880000054836273,
+          0.4449999928474426
+        ],
+        "clamped_center": [
+          0.4880000054836273,
+          0.4449999928474426
+        ],
+        "uv_rect": [
+          0.08799999952316284,
+          0.23999999463558197,
+          0.8880000114440918,
+          0.6499999761581421
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "b6f6b46d3873b7212b2b977d801d89161efdc47b3fd70043409ad480492f1f50"
+    },
+    {
+      "fid": "FID_オルヘル",
+      "file": "assets/portraits/before-part3/troop/orchel.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4740000069141388,
+          0.43700000643730164
+        ],
+        "clamped_center": [
+          0.4740000069141388,
+          0.43700000643730164
+        ],
+        "uv_rect": [
+          0.07400000095367432,
+          0.23200000822544098,
+          0.8740000128746033,
+          0.6420000195503235
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "2886c50f9256705be68a941d89a70248e3ebf45e6592de2e781b3d756744ccce"
+    },
+    {
+      "fid": "FID_ペペ",
+      "file": "assets/portraits/before-part3/troop/peppe.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4359999895095825,
+          0.4320000112056732
+        ],
+        "clamped_center": [
+          0.4359999895095825,
+          0.4320000112056732
+        ],
+        "uv_rect": [
+          0.03599998354911804,
+          0.22700001299381256,
+          0.8359999656677246,
+          0.6370000243186951
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "8325cb834f98cecd5fc1f2fc2db5b98bf776df5e0abedd032bc4169f2c7c4963"
+    },
+    {
+      "fid": "FID_ピーテル",
+      "file": "assets/portraits/before-part3/troop/peter.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4569999873638153,
+          0.47099998593330383
+        ],
+        "clamped_center": [
+          0.4569999873638153,
+          0.47099998593330383
+        ],
+        "uv_rect": [
+          0.05699998140335083,
+          0.265999972820282,
+          0.8569999933242798,
+          0.6759999990463257
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "f2a7844928c1867d20470ead108f6dc4aa6ed77139254399a4f60c1325ffcbed"
+    },
+    {
+      "fid": "FID_ラクシャ",
+      "file": "assets/portraits/before-part3/troop/raksha.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4350000023841858,
+          0.4129999876022339
+        ],
+        "clamped_center": [
+          0.4350000023841858,
+          0.4129999876022339
+        ],
+        "uv_rect": [
+          0.034999996423721313,
+          0.20799998939037323,
+          0.8350000381469727,
+          0.6179999709129333
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "66682b4786cd1e7980582e8df17869c5cd246d75e9862c58a1e90984227200c6"
+    },
+    {
+      "fid": "FID_セテス",
+      "file": "assets/portraits/before-part3/troop/seteth.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4269999861717224,
+          0.421999990940094
+        ],
+        "clamped_center": [
+          0.4269999861717224,
+          0.421999990940094
+        ],
+        "uv_rect": [
+          0.026999980211257935,
+          0.21699999272823334,
+          0.8270000219345093,
+          0.6269999742507935
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "58b5c538f0ab1dea77dd735b3d81388f8d9c34a1d7ac498049c791db904b978d"
+    },
+    {
+      "fid": "FID_サラン",
+      "file": "assets/portraits/before-part3/troop/sha-lan.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.45100000500679016,
+          0.4399999976158142
+        ],
+        "clamped_center": [
+          0.45100000500679016,
+          0.4399999976158142
+        ],
+        "uv_rect": [
+          0.050999999046325684,
+          0.23499999940395355,
+          0.8510000109672546,
+          0.6449999809265137
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "defbec9ec3d9bd1be1fccc7d0d64ec63d18d405aa82890ca114341dde52ece79"
+    },
+    {
+      "fid": "FID_シモン",
+      "file": "assets/portraits/before-part3/troop/simon.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4000000059604645,
+          0.41499999165534973
+        ],
+        "clamped_center": [
+          0.4000000059604645,
+          0.41499999165534973
+        ],
+        "uv_rect": [
+          0.0,
+          0.20999999344348907,
+          0.800000011920929,
+          0.6200000047683716
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "41a3dc5b29ba5ff9a33d8b7c2e2347a411759af00f66def811c04e6f3b8847e4"
+    },
+    {
+      "fid": "FID_シロッコ",
+      "file": "assets/portraits/before-part3/troop/sirocco.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4309999942779541,
+          0.42899999022483826
+        ],
+        "clamped_center": [
+          0.4309999942779541,
+          0.42899999022483826
+        ],
+        "uv_rect": [
+          0.030999988317489624,
+          0.2239999920129776,
+          0.8309999704360962,
+          0.6340000033378601
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "4b6bc848b54b9c8404043e72a50a57bfc4b388670128890816e4efdca2d0c692"
+    },
+    {
+      "fid": "FID_スミルノス",
+      "file": "assets/portraits/before-part3/troop/smyrnos.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4320000112056732,
+          0.39899998903274536
+        ],
+        "clamped_center": [
+          0.4320000112056732,
+          0.39899998903274536
+        ],
+        "uv_rect": [
+          0.03200000524520874,
+          0.1939999908208847,
+          0.8320000171661377,
+          0.6039999723434448
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "66dce5505f789ff13ca8266968067477dd89c0c72b161cf36043e278f3060a19"
+    },
+    {
+      "fid": "FID_ソフィア",
+      "file": "assets/portraits/before-part3/troop/sofia.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43700000643730164,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.43700000643730164,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.03700000047683716,
+          0.23600001633167267,
+          0.8370000123977661,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "9e3fae57ebafd768cb8327632e5d912142c1df17b4ccd1a87ba0febbce2cef9c"
+    },
+    {
+      "fid": "FID_大ソティス",
+      "file": "assets/portraits/before-part3/troop/sothis.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4359999895095825,
+          0.4320000112056732
+        ],
+        "clamped_center": [
+          0.4359999895095825,
+          0.4320000112056732
+        ],
+        "uv_rect": [
+          0.03599998354911804,
+          0.22700001299381256,
+          0.8359999656677246,
+          0.6370000243186951
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "8e027712195409f160ef06b35e86924cad038ed4396bb7f5e5a712c539ec94d2"
+    },
+    {
+      "fid": "FID_タホウニア",
+      "file": "assets/portraits/before-part3/troop/tahonia.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.45100000500679016,
+          0.4169999957084656
+        ],
+        "clamped_center": [
+          0.45100000500679016,
+          0.4169999957084656
+        ],
+        "uv_rect": [
+          0.050999999046325684,
+          0.21199999749660492,
+          0.8510000109672546,
+          0.621999979019165
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "367f3bc3348f9f7b070c656cd65886a7e84a5669e0b453df26e7416a9bd7d21b"
+    },
+    {
+      "fid": "FID_タリムーン",
+      "file": "assets/portraits/before-part3/troop/talimun.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43799999356269836,
+          0.3869999945163727
+        ],
+        "clamped_center": [
+          0.43799999356269836,
+          0.3869999945163727
+        ],
+        "uv_rect": [
+          0.03799998760223389,
+          0.18199999630451202,
+          0.8379999995231628,
+          0.5920000076293945
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "befbce0272101bfe5a2b1022cea7f6b7b0f08e03c946eaec600c6c5d1390da99"
+    },
+    {
+      "fid": "FID_セオドラ",
+      "file": "assets/portraits/before-part3/troop/theodora.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.42899999022483826,
+          0.4300000071525574
+        ],
+        "clamped_center": [
+          0.42899999022483826,
+          0.4300000071525574
+        ],
+        "uv_rect": [
+          0.02899998426437378,
+          0.22500000894069672,
+          0.8289999961853027,
+          0.6349999904632568
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "03c28960235e0ac68e72b58f64a179688b03097b315cd289e61eebaa35dc35ca"
+    },
+    {
+      "fid": "FID_ティアラ",
+      "file": "assets/portraits/before-part3/troop/tialla.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.42899999022483826,
+          0.4569999873638153
+        ],
+        "clamped_center": [
+          0.42899999022483826,
+          0.4569999873638153
+        ],
+        "uv_rect": [
+          0.02899998426437378,
+          0.25199997425079346,
+          0.8289999961853027,
+          0.6620000004768372
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "c19e8815afaed088e92dc14eddedef0e69658ea87bc7c4057bcd9141a9dc37b6"
+    },
+    {
+      "fid": "FID_トビヤス",
+      "file": "assets/portraits/before-part3/troop/tobias.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4860000014305115,
+          0.39500001072883606
+        ],
+        "clamped_center": [
+          0.4860000014305115,
+          0.39500001072883606
+        ],
+        "uv_rect": [
+          0.085999995470047,
+          0.1900000125169754,
+          0.8860000371932983,
+          0.6000000238418579
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "c5b7bc237fdfaf1394673d375de1960c422ecbe9eda673a3951e4ef7434d42d2"
+    },
+    {
+      "fid": "FID_トロイア",
+      "file": "assets/portraits/before-part3/troop/troy.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.46299999952316284,
+          0.43299999833106995
+        ],
+        "clamped_center": [
+          0.46299999952316284,
+          0.43299999833106995
+        ],
+        "uv_rect": [
+          0.06299999356269836,
+          0.2280000001192093,
+          0.8630000352859497,
+          0.6380000114440918
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "4b3d534a10e8aadf14750eae477d33cf958925a40e56c5ef7fb8afefc49015a7"
+    },
+    {
+      "fid": "FID_ウルタンド",
+      "file": "assets/portraits/before-part3/troop/ultand.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43299999833106995,
+          0.41499999165534973
+        ],
+        "clamped_center": [
+          0.43299999833106995,
+          0.41499999165534973
+        ],
+        "uv_rect": [
+          0.03299999237060547,
+          0.20999999344348907,
+          0.8330000042915344,
+          0.6200000047683716
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "fdb2148db2f24f343628bc752eedb5de623f32c26cde3a7e30c96ad337b9f014"
+    },
+    {
+      "fid": "FID_ウーシュラ",
+      "file": "assets/portraits/before-part3/troop/ursula.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4519999921321869,
+          0.4410000145435333
+        ],
+        "clamped_center": [
+          0.4519999921321869,
+          0.4410000145435333
+        ],
+        "uv_rect": [
+          0.05199998617172241,
+          0.23600001633167267,
+          0.8519999980926514,
+          0.6460000276565552
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "54d0100f8088327bbcd8711cfd658a7ff767e4b83c8ba752a77edc03d28646b1"
+    },
+    {
+      "fid": "FID_ヨーカイ",
+      "file": "assets/portraits/before-part3/troop/yang-jie.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.43299999833106995,
+          0.36399999260902405
+        ],
+        "clamped_center": [
+          0.43299999833106995,
+          0.36399999260902405
+        ],
+        "uv_rect": [
+          0.03299999237060547,
+          0.1589999943971634,
+          0.8330000042915344,
+          0.5690000057220459
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "037fe19d77ef46175d256c4c44917b2fa9665c90fd78dc4fbc4a384fd021929a"
+    },
+    {
+      "fid": "FID_ザーコネ",
+      "file": "assets/portraits/before-part3/troop/zarcone.png",
+      "window": {
+        "center_type": "EyeLevel",
+        "selected_center": [
+          0.4180000126361847,
+          0.41999998688697815
+        ],
+        "clamped_center": [
+          0.4180000126361847,
+          0.41999998688697815
+        ],
+        "uv_rect": [
+          0.018000006675720215,
+          0.2149999886751175,
+          0.8180000185966492,
+          0.625
+        ],
+        "native_function": "main+0x1874de0"
+      },
+      "sha256": "87ea0225ccfca0d63e05823ae7f2be23597cdf576c9ce64ce06ffd0914fefb7c"
+    }
+  ]
+}
