@@ -187,7 +187,10 @@ function portrait(c, kind = 'small', sizes = '56px') {
   const revision = document.querySelector('meta[name="app-version"]')?.content;
   const versioned = path => /^[a-f0-9]{40}$/i.test(revision || '') ? `${path}?v=${revision}` : path;
   if (kind === 'narrow') {
-    return `<img draggable="false" src="${versioned(c.image.replace('/grid/', '/troop/'))}" alt="" loading="lazy" decoding="async">`;
+    const path = c.image.replace('/grid/', '/troop/');
+    const variants = c.image.includes('/grid/')
+      ? ` srcset="${[1, 2, 3].map(scale => `${versioned(scale === 1 ? path : path.replace('/troop/', `/troop/${scale}x/`))} ${scale}x`).join(', ')}"` : '';
+    return `<img draggable="false" src="${versioned(path)}"${variants} alt="" loading="lazy" decoding="async">`;
   }
   if (kind === 'small' && c.image.includes('/grid/')) {
     const variant = size => versioned(c.image.replace('/grid/', `/small/${size}/`));
@@ -225,9 +228,8 @@ function render() {
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${part3Switch()}${visibleRoster().length ? '<button data-action="summary">返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${part3Switch()}${visibleRoster().length ? '<button data-action="summary">返回</button>' : `${storyRoster().some(item => item.deleted) ? '<button data-action="undo-delete">撤回删除</button>' : ''}<button class="import-zone" data-action="import">恢复备份</button>`}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
   document.querySelector('#search').value = query;
-  if (!visibleRoster().length && storyRoster().some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
   const searchInput = app.querySelector('#search');
   searchInput.name = 'rigging-buddy-character-search';
   searchInput.type = 'search';
@@ -403,7 +405,7 @@ function renderLevels() {
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
       <div class="setup-character">${portrait(c,'narrow')}<strong>${c.name}</strong></div>
       <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
-      ${setupProfessionButton(id)}${setupRideButton(id)}${setupExpectationButton(id)}</div>`;}).join('')}
+      <div class="setup-profession-cell">${setupProfessionButton(id)}${setupRideButton(id)}</div>${setupExpectationButton(id)}</div>`;}).join('')}
     </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
   setupSummaryObserver?.disconnect();
   app.querySelectorAll('[data-setup-expectation]').forEach(button=>setupSummaryObserver?.observe(button));
@@ -999,3 +1001,86 @@ app.addEventListener('change', e => {
 });
 window.addEventListener('pagehide',saveLocalState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});
+
+// One controller for the document lifetime; nested lists/dialogs keep their own scrolling.
+(() => {
+  const header = document.querySelector('body>header');
+  const media = UI_MEDIA.compactSelection;
+  let previousY = 0, travel = 0, pull = null, lastWheel = -Infinity, wheelTravel = 0;
+  const position = () => Math.max(0, Math.min(window.scrollY,
+    Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
+  const reset = () => {
+    previousY = position();
+    travel = 0;
+    pull = null;
+    wheelTravel = 0;
+    header.classList.remove('is-scroll-hidden');
+  };
+  const resize = () => {
+    reset();
+    header.style.setProperty('--page-header-height', `${header.offsetHeight}px`);
+  };
+  const onScroll = () => {
+    const y = position(), delta = y - previousY;
+    previousY = y;
+    if (!media.matches || header.contains(document.activeElement) ||
+        !header.getClientRects().length || document.querySelector('dialog[open]')) {
+      reset();
+      return;
+    }
+    if (!delta) return;
+    // Accumulate only in one direction; ignore rubber-band overscroll at either edge.
+    travel = Math.sign(travel) === Math.sign(delta) ? travel + delta : delta;
+    if (!header.classList.contains('is-scroll-hidden') && travel >= 12) {
+      header.classList.add('is-scroll-hidden');
+      travel = 0;
+    }
+  };
+  const canPull = event => media.matches && position() === 0 &&
+    header.classList.contains('is-scroll-hidden') && !document.querySelector('dialog[open]') &&
+    !event.composedPath().some(node => node instanceof HTMLElement && node !== document.body &&
+      node !== document.documentElement && node.scrollHeight > node.clientHeight &&
+      /auto|scroll/.test(getComputedStyle(node).overflowY));
+  const onTouchStart = event => {
+    const touch = event.touches[0];
+    pull = event.touches.length === 1 && canPull(event)
+      ? { id: touch.identifier, x: touch.clientX, y: touch.clientY } : null;
+  };
+  const onTouchMove = event => {
+    if (!pull) return;
+    const touch = [...event.touches].find(item => item.identifier === pull.id);
+    if (!touch || event.touches.length !== 1 || position() > 0) { pull = null; return; }
+    const dx = touch.clientX - pull.x, dy = touch.clientY - pull.y;
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) { pull = null; return; }
+    if (dy >= 100) reset();
+  };
+  const endPull = () => { pull = null; };
+  const onWheel = event => {
+    const now = performance.now(), newGesture = now - lastWheel > 200;
+    lastWheel = now;
+    if (newGesture) wheelTravel = canPull(event) ? 0 : -Infinity;
+    if (!canPull(event) || event.deltaY >= 0) { wheelTravel = -Infinity; return; }
+    wheelTravel -= event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
+    if (wheelTravel >= 100) reset();
+  };
+  // Suspend on pagehide and restore on pageshow, including back/forward cache restores.
+  const start = () => { resize(); window.addEventListener('scroll', onScroll, { passive: true }); };
+  window.addEventListener('pagehide', () => window.removeEventListener('scroll', onScroll));
+  window.addEventListener('pageshow', start);
+  window.addEventListener('blur', reset);
+  media.addEventListener('change', resize);
+  let layoutWidth = window.innerWidth;
+  window.addEventListener('resize', () => {
+    // Mobile browser bars and the software keyboard change height while scrolling.
+    if (layoutWidth === window.innerWidth) return;
+    layoutWidth = window.innerWidth;
+    resize();
+  });
+  header.addEventListener('focusin', reset);
+  window.addEventListener('touchstart', onTouchStart, { passive: true });
+  window.addEventListener('touchmove', onTouchMove, { passive: true });
+  window.addEventListener('touchend', endPull, { passive: true });
+  window.addEventListener('touchcancel', endPull, { passive: true });
+  window.addEventListener('wheel', onWheel, { passive: true });
+  start();
+})();
