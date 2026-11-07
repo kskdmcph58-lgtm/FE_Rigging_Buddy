@@ -170,8 +170,18 @@ function clearLevelError(input) {
 let noticeTimer;
 function notify(text) {
   clearTimeout(noticeTimer);
-  document.querySelector('#notice').textContent = text;
-  if (text) noticeTimer = setTimeout(() => document.querySelector('#notice').textContent = '', 4000);
+  const notice = document.querySelector('#notice');
+  notice.classList.remove('is-leaving');
+  notice.textContent = text;
+  if (text) dismissNoticeAfter(4000);
+}
+function dismissNoticeAfter(delay) {
+  const notice = document.querySelector('#notice');
+  noticeTimer = setTimeout(() => {
+    if (!motionAllowed()) { notice.replaceChildren(); return; }
+    notice.classList.add('is-leaving');
+    noticeTimer = setTimeout(() => { notice.classList.remove('is-leaving'); notice.replaceChildren(); }, MOTION.medium);
+  }, delay);
 }
 function char(id) { return characters.find(c => c.id === id); }
 function backupFilename() {
@@ -209,7 +219,16 @@ function portrait(c, kind = 'small', sizes = '56px') {
   }
   return `<img draggable="false" src="${versioned(c.image)}" alt="" loading="lazy" decoding="async">`;
 }
+let renderedPage = null;
+function fadeInPage() {
+  if (!motionAllowed()) return;
+  app.getAnimations().forEach(animation => { if (animation.id === 'page-in') animation.cancel(); });
+  // Opacity only: a transform on #app would re-anchor the floating selection bar.
+  app.animate({ opacity: [0, 1] }, { id: 'page-in', duration: MOTION.medium, easing: 'ease-out' });
+}
 function render() {
+  const pageChanged = renderedPage !== null && renderedPage !== page;
+  renderedPage = page;
   applyStoryPhase();
   try { sessionStorage.setItem(LOCAL_PAGE_KEY,page==='record'?'summary':page); } catch { /* Navigation memory is optional. */ }
   hideExpectationTip();
@@ -226,6 +245,7 @@ function render() {
   app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); });
   refreshRowSelection();
   scheduleLocalSave();
+  if (pageChanged) fadeInPage();
 }
 function renderSelect() {
   app.innerHTML =
@@ -294,7 +314,7 @@ function editSetupLevel(cell) {
   const input=cell.querySelector('input');setupLevelEdit={cell,input,ids,batch};input.focus();input.select();
 }
 function openSetupLevelDialog() {
-  if(!finishSetupLevel()||document.querySelector('.setup-level-dialog'))return;
+  if(!finishSetupLevel()||document.querySelector('.setup-level-dialog[open]'))return;
   const ids=[...state.selection];if(!ids.length)return;
   const values=ids.map(id=>String(state.initialLevels[id]??''));
   const shared=values.every(value=>value===values[0])?values[0]:'';
@@ -311,7 +331,7 @@ function openSetupLevelDialog() {
     ids.filter(id=>state.selection.includes(id)).forEach(id=>{state.initialLevels[id]=input.value;const cell=app.querySelector(`[data-setup-level="${id}"]`);if(cell)paintSetupLevel(cell);});
     clearRowSelection();refreshRowSelection();scheduleLocalSave();dialog.close();
   };
-  dialog.addEventListener('close',()=>{dialog.remove();app.querySelector('[data-action="batch"]')?.focus({preventScroll:true});},{once:true});
+  dialog.addEventListener('close',()=>{retireDialog(dialog);app.querySelector('[data-action="batch"]')?.focus({preventScroll:true});},{once:true});
   document.body.append(dialog);dialog.showModal();dialog.querySelector('input').focus();dialog.querySelector('input').select();
 }
 function setupExpectationRule(id) { return state.draftExpectations?.[id] || null; }
@@ -444,7 +464,7 @@ function moveRail(rail, target, duration = 120) {
   stopRail(rail);
   target = Math.max(0, Math.min(target, rail.scrollWidth - rail.clientWidth));
   const from = rail.scrollLeft, status = railState(rail);
-  if (!duration || Math.abs(target - from) < 1 || matchMedia('(prefers-reduced-motion:reduce)').matches) {
+  if (!duration || Math.abs(target - from) < 1 || !motionAllowed()) {
     rail.scrollLeft = target; return;
   }
   const start = performance.now();
@@ -500,7 +520,7 @@ function finishRecordRail(rail, duration = 120) {
   stopRail(rail);
   expandedJournals.delete(rail.closest('.journal').dataset.sortId);
   renderSummary();
-  if (!duration || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if (!duration || !motionAllowed()) return;
   // Leaving rail mode resets scrollLeft in layout. Animate from the old visual
   // positions so the return to the grid has the same motion as a normal scroll.
   chips.forEach((chip, index) => {
@@ -510,13 +530,13 @@ function finishRecordRail(rail, duration = 120) {
       chip.animate([
         { transformOrigin: 'top left', transform: `translate(${x}px,${y}px) scaleX(${previous.width / next.width})` },
         { transformOrigin: 'top left', transform: 'none' }
-      ], { duration, easing: 'cubic-bezier(.16,1,.3,1)' });
+      ], { duration, easing: MOTION.ease });
     }
   });
   const nextHeight = rail.getBoundingClientRect().height;
   if (Math.abs(height - nextHeight) > 1) rail.animate([
     { height: `${height}px` }, { height: `${nextHeight}px` }
-  ], { duration, easing: 'cubic-bezier(.16,1,.3,1)' });
+  ], { duration, easing: MOTION.ease });
 }
 app.addEventListener('pointerout', event => {
   if (event.pointerType !== 'mouse' || !desktopRecords.matches) return;
@@ -549,18 +569,18 @@ function setJournalExpanded(journal, expanded, animate = true) {
   const nextHeight = rail.getBoundingClientRect().height;
   // Short lists keep the same height: animate the cards back from their
   // scrolled positions so revealing hidden history still has a visible motion.
-  if (slideOpen && animate && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+  if (slideOpen && animate && motionAllowed()) {
     chips.forEach((chip, index) => {
       const next = chip.getBoundingClientRect(), previous = previousPositions[index];
       const x = previous.left - next.left, y = previous.top - next.top;
       if (Math.abs(x) > 1 || Math.abs(y) > 1) chip.animate([
         { transform: `translate(${x}px,${y}px)` }, { transform: 'translate(0,0)' }
-      ], { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+      ], { duration: 120, easing: MOTION.ease });
     });
   }
-  if (animate && !matchMedia('(prefers-reduced-motion:reduce)').matches && Math.abs(nextHeight - previousHeight) > 1) {
+  if (animate && motionAllowed() && Math.abs(nextHeight - previousHeight) > 1) {
     rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], {
-      duration: 130, easing: 'cubic-bezier(.16,1,.3,1)'
+      duration: 130, easing: MOTION.ease
     });
   }
 }
@@ -596,7 +616,7 @@ function refreshRecordRails() {
 }
 function bounceRailEdge(rail, direction) {
   stopRail(rail);
-  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if (!motionAllowed()) return;
   const status = railState(rail);
   const distance = -direction * parseFloat(rail.style.getPropertyValue('--chip-width')) / 2;
   status.edgeDirection = direction;
@@ -816,7 +836,7 @@ function confirmRecordDeletion(question = '是否删除这条记录？', actionL
     dialog.querySelector('.danger').textContent = actionLabel;
     dialog.addEventListener('close', () => {
       const confirmed = dialog.returnValue === 'delete';
-      dialog.remove();
+      retireDialog(dialog);
       resolve(confirmed);
     }, { once: true });
     document.body.append(dialog);
@@ -1115,7 +1135,7 @@ app.addEventListener('click', async e => {
       });
       rowSelection.clear(); selectionAnchor = null;
       if (!state.selection.length) page = 'select';
-      render(); return;
+      animateListChange(render); return;
     }
     const items = visibleRoster().filter(item => rowSelection.has(item.id));
     if (!items.length || !await confirmRecordDeletion(`是否删除选中的 ${items.length} 位人物？`)) return;
@@ -1124,7 +1144,7 @@ app.addEventListener('click', async e => {
     state.selection = state.selection.filter(id => !ids.has(id));
     ids.forEach(id => { delete state.initialLevels[id]; editingCharacters.delete(id); expandedJournals.delete(id); });
     rowSelection.clear(); selectionAnchor = null;
-    rememberListPosition(); returnToSummary(); return;
+    rememberListPosition(); animateListChange(returnToSummary); return;
   }
   if (b.dataset.action === 'batch-profession') { openProfessionPicker(b); return; }
   if (b.dataset.action === 'batch-expectation') { if (rowSelection.size) openExpectationEditor(rowIds().filter(id => rowSelection.has(id))); return; }
@@ -1170,6 +1190,8 @@ app.addEventListener('click', async e => {
       }
       status.retiring = desktopRecords.matches && !compactRecords(item) && b.closest('.journal').matches('.has-record-rail:not(.records-expanded)');
       returnToSummary();
+      const overlay = motionAllowed() && app.querySelector(`.record-chip[data-edit="${item.id}"][data-index="${index}"] .record-overlay`);
+      if (overlay) overlay.animate({ opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
       return;
     }
     const savedKind = rideKind(record.profession);
@@ -1213,7 +1235,7 @@ app.addEventListener('click', async e => {
     if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) return;
     if (!await confirmRecordDeletion('是否清空所有已跳过记录？', '清空')) return;
     softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
-    rememberListPosition(); returnToSummary(); return;
+    rememberListPosition(); animateListChange(returnToSummary); return;
   }
   if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部人物和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
@@ -1223,7 +1245,7 @@ app.addEventListener('click', async e => {
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));
     editingCharacters.clear(); activeRecord = null;
-    rememberListPosition(); returnToSummary();
+    rememberListPosition(); animateListChange(returnToSummary);
   }
   if (action === 'batch') { openSetupLevelDialog(); return; }
   if (action === 'create') {
@@ -1353,6 +1375,7 @@ function moveCard(id, targetId, after = false) {
   const targetIndex = remaining.findIndex(x => getId(x) === targetId);
   remaining.splice(targetIndex + (after ? 1 : 0), 0, ...moved);
   if (remaining.every((item, index) => getId(item) === getId(list[index]))) return;
+  const before = captureList(false), dropped = mouseSort || touchSort ? ids : [];
   list.splice(0, list.length, ...remaining);
   const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);
   const anchor = after ? targetCard.nextSibling : targetCard;
@@ -1367,6 +1390,7 @@ function moveCard(id, targetId, after = false) {
   });
   if (multiSelectMode) clearRowSelection();
   refreshRowSelection();
+  playListChange(before, { chips: false, settleIds: dropped });
 }
 // Sorting uses pointer/touch gestures only. Native DnD remains for backup files.
 app.addEventListener('dragstart', e => { e.preventDefault(); });
@@ -1477,7 +1501,7 @@ app.addEventListener('change', e => {
   // Most pages rebuild the control, so hand keyboard users back the new one.
   segment.querySelector('input:checked').focus({ preventScroll: true });
   // The rebuilt control starts at its final state, so a CSS transition would never run.
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!motionAllowed()) return;
   segment.animate({ transform: on ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
     { duration: 200, easing: 'ease', pseudoElement: '::before' });
 });

@@ -1,4 +1,79 @@
 /* Selection, expectation editing and reversible deletion. Loaded before app.js. */
+// Motion timings. styles.css mirrors them as --motion-* and --ease-standard.
+const MOTION = { fast: 100, medium: 120, base: 160, ease: 'cubic-bezier(.16,1,.3,1)' };
+function motionAllowed() { return !matchMedia('(prefers-reduced-motion:reduce)').matches; }
+// The dialog's result is already delivered; it stays only for its CSS fade and ignores input.
+function retireDialog(dialog) {
+  if (motionAllowed()) setTimeout(() => dialog.remove(), MOTION.fast + 40);
+  else dialog.remove();
+}
+function captureList(withChips = true) {
+  const entries = new Map();
+  app.querySelectorAll('[data-sort-id]').forEach(row => {
+    const rowRect = row.getBoundingClientRect();
+    entries.set(`row:${row.dataset.sortId}`, { node: row, rect: rowRect });
+    if (withChips) row.querySelectorAll('.record-chip').forEach(chip => {
+      entries.set(`chip:${chip.dataset.edit}:${chip.dataset.index}`, { node: chip, rect: chip.getBoundingClientRect(), rowRect, rowKey: `row:${row.dataset.sortId}`, railRect: chip.closest('.records').getBoundingClientRect() });
+    });
+    row.getAnimations().forEach(animation => { if (animation.id === 'list-change') animation.cancel(); });
+    if (withChips) row.querySelectorAll('.record-chip').forEach(chip => chip.getAnimations().forEach(animation => { if (animation.id === 'list-change') animation.cancel(); }));
+  });
+  return entries;
+}
+function listRectVisible(rect) { return rect.bottom > 0 && rect.top < innerHeight; }
+function fadeOutRemoved(entry, host) {
+  const ghost = entry.node.cloneNode(true);
+  // A plain visual copy: nothing in it can be found, focused or clicked.
+  ['data-sort-id', 'data-edit', 'data-index', 'tabindex', 'aria-label'].forEach(name => ghost.removeAttribute(name));
+  ghost.setAttribute('aria-hidden', 'true'); ghost.inert = true; ghost.classList.add('list-ghost');
+  ghost.style.left = `${entry.rect.left}px`; ghost.style.top = `${entry.rect.top}px`;
+  ghost.style.width = `${entry.rect.width}px`; ghost.style.height = `${entry.rect.height}px`;
+  host.append(ghost);
+  ghost.animate({ opacity: [1, 0] }, { duration: MOTION.base, easing: 'ease-out', fill: 'forwards' }).onfinish = () => ghost.remove();
+}
+// Rows and record cards glide from where they were; arrivals fade in and departures fade out.
+function playListChange(before, { chips = true, settleIds = [] } = {}) {
+  if (!motionAllowed()) return;
+  const after = captureList(chips);
+  const options = { id: 'list-change', duration: MOTION.base, easing: MOTION.ease };
+  after.forEach((entry, key) => {
+    const old = before.get(key);
+    if (!old) {
+      // A new card inside a new row arrives with that row.
+      const arrivesAlone = !entry.rowKey || before.has(entry.rowKey);
+      if (arrivesAlone && listRectVisible(entry.rect)) entry.node.animate({ opacity: [0, 1] }, options);
+      return;
+    }
+    if (!entry.rowKey && settleIds.includes(key.slice(4))) {
+      // The drag preview already showed the journey; the dropped row only settles in place.
+      entry.node.animate({ opacity: [.35, 1] }, options);
+      return;
+    }
+    // Card offsets are relative to the row, which carries its own glide.
+    const x = old.rect.left - entry.rect.left - (entry.rowKey ? old.rowRect.left - entry.rowRect.left : 0);
+    const y = old.rect.top - entry.rect.top - (entry.rowKey ? old.rowRect.top - entry.rowRect.top : 0);
+    if ((Math.abs(x) > 1 || Math.abs(y) > 1) && (listRectVisible(old.rect) || listRectVisible(entry.rect))) {
+      entry.node.animate({ transform: [`translate(${x}px,${y}px)`, 'none'] }, options);
+    }
+  });
+  const host = app.querySelector('.journals') || after.values().next().value?.node.parentElement;
+  if (!host) return;
+  before.forEach((entry, key) => {
+    if (after.has(key) || !listRectVisible(entry.rect)) return;
+    // A departing row already carries its cards, and a card scrolled partly out of its rail would overflow.
+    if (entry.rowKey) {
+      const rail = entry.railRect;
+      if (!after.has(entry.rowKey) || entry.rect.left < rail.left - 1 || entry.rect.right > rail.right + 1) return;
+    }
+    fadeOutRemoved(entry, host);
+  });
+}
+function animateListChange(change) {
+  if (!motionAllowed()) { change(); return; }
+  const from = renderedPage, before = captureList();
+  change();
+  if (renderedPage === from) playListChange(before);
+}
 const rowSelection = new Set();
 let selectionPage = '', selectionAnchor = null, multiSelectMode = false;
 const compactSelectionToolbar = matchMedia('(max-width:600px), (max-width:1100px) and (pointer:coarse)');
@@ -44,12 +119,12 @@ function updateFloatingSelectionBar() {
       layoutCompactSelectionToolbar(toolbar);
       anchor.style.height = `${toolbar.offsetHeight}px`;
       anchor.style.setProperty('--selection-bar-height', `${toolbar.offsetHeight + 16}px`);
-      if (!wasFloating && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+      if (!wasFloating && motionAllowed()) {
         toolbar.animate([{ transform: 'translateY(calc(-100% - 8px))' }, { transform: 'translateY(0)' }],
-          { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+          { duration: MOTION.medium, easing: MOTION.ease });
         anchor.querySelector('.selection-toolbar-backdrop').animate(
           [{ transform: 'translateY(-100%)' }, { transform: 'translateY(0)' }],
-          { duration: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+          { duration: MOTION.medium, easing: MOTION.ease });
       }
     } else {
       anchor.classList.remove('is-floating'); anchor.style.height = '';
@@ -268,7 +343,7 @@ function showUndoNotice(count) {
   const notice = document.querySelector('#notice');
   notice.textContent = `已删除 ${count} 项 `;
   const button = document.createElement('button'); button.textContent = '撤回'; button.onclick = undoDelete;
-  notice.append(button); noticeTimer = setTimeout(() => notice.replaceChildren(), 8000);
+  notice.append(button); dismissNoticeAfter(8000);
 }
 function undoDelete() {
   const deleted = storyRoster().flatMap(item => [item, ...item.records]).filter(o => o.deleted);
@@ -277,7 +352,7 @@ function undoDelete() {
   const batch = latest.deletionBatch;
   deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { delete o.deleted; delete o.deletedAt; delete o.deletionBatch; });
   state.selection = state.selection.filter(id => !visibleRoster().some(item => item.id === id));
-  page = 'summary'; activeRecord = null; render(); notify('');
+  page = 'summary'; activeRecord = null; animateListChange(render); notify('');
 }
 
 function choiceDialog(question, choices, description = '') {
@@ -290,7 +365,7 @@ function choiceDialog(question, choices, description = '') {
     if (description) dialog.setAttribute('aria-describedby',`${titleId}-description`);
     dialog.addEventListener('close', () => {
       const value = dialog.returnValue === 'apply' ? dialog.querySelector('input[name="choice"]:checked')?.value : 'cancel';
-      dialog.remove(); resolve(value || 'cancel');
+      retireDialog(dialog); resolve(value || 'cancel');
     }, { once:true });
     document.body.append(dialog); dialog.showModal();
   });
@@ -315,7 +390,7 @@ function openRecordExpectationDetails() {
   dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2><button data-close>关闭</button></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
   dialog.querySelector('[data-edit-expectation]').onclick=()=>{const id=activeRecord.id;dialog.close();openExpectationEditor([id]);};
-  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
   document.body.append(dialog);dialog.showModal();
 }
 function applyDraftRating(d) {
@@ -362,7 +437,7 @@ function openExpectationDetails(id) {
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';
   dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2><button data-close aria-label="关闭">关闭</button></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
-  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
   dialog.querySelector('[data-edit-expectation]').onclick=()=>{dialog.close();openExpectationEditor([id]);};
   document.body.append(dialog);dialog.showModal();
@@ -585,7 +660,7 @@ function openExpectationEditor(ids) {
     } else return;
     dialog.querySelector('.editor-error').textContent='';draw();
   });
-  dialog.addEventListener('close',()=>{closeStyledSelect();dialog.remove();},{once:true});
+  dialog.addEventListener('close',()=>{closeStyledSelect();retireDialog(dialog);},{once:true});
   document.body.append(dialog);draw();dialog.showModal();
 }
 

@@ -154,7 +154,7 @@ function refreshSetupRide(id) {
 }
 
 function openRidePicker(anchor) {
-  if (document.querySelector('.ride-picker')) return;
+  if (document.querySelector('.ride-picker[open]')) return;
   hideExpectationTip();
   const setupId = anchor.dataset.setupRide || null;
   const draft = setupId ? null : activeRecord;
@@ -204,7 +204,7 @@ function openRidePicker(anchor) {
     }
   });
   dialog.addEventListener('close', () => {
-    dialog.remove();
+    retireDialog(dialog);
     const visible = [...app.querySelectorAll(setupId ? `[data-setup-ride="${setupId}"]` : '[data-ride]')].find(button => button.checkVisibility());
     (anchor.isConnected ? anchor : visible)?.focus({ preventScroll: true });
   }, { once: true });
@@ -219,7 +219,7 @@ function setupProfessionButton(id) {
 }
 
 function openProfessionPicker(anchor) {
-  if (document.querySelector('.profession-picker')) return;
+  if (document.querySelector('.profession-picker[open]')) return;
   const setup = page === 'levels' && (anchor.hasAttribute('data-setup-profession') || anchor.dataset.action === 'batch-profession');
   let setupIds = [];
   if (setup) {
@@ -277,7 +277,7 @@ function openProfessionPicker(anchor) {
     }
   });
   dialog.addEventListener('close', () => {
-    dialog.remove();
+    retireDialog(dialog);
     const target = anchor.isConnected ? anchor : item ? app.querySelector(`[data-character="${id}"][data-record-index="${anchor.dataset.recordIndex}"]`) : app.querySelector('.stat-heading [data-profession]');
     target?.focus({ preventScroll: true });
   }, { once: true });
