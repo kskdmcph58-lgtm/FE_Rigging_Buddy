@@ -2,12 +2,14 @@ window.CHARACTERS = [
   {
     "id": "c001",
     "name": "伊修玛尔",
+    "part3Only": true,
     "image": "assets/portraits/eshmel.png",
     "englishName": "Eshmel"
   },
   {
     "id": "c002",
     "name": "红花",
+    "part3Only": true,
     "image": "assets/portraits/before-part3/grid/hong-hua.png",
     "englishName": "Hong Hua",
     "part3": {
@@ -17,6 +19,7 @@ window.CHARACTERS = [
   {
     "id": "c003",
     "name": "特洛伊亚",
+    "part3Only": true,
     "image": "assets/portraits/before-part3/grid/troy.png",
     "englishName": "Troy"
   },

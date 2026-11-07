@@ -93,11 +93,14 @@ let appliedPart3 = null;
 // shown. Their saved data stays untouched, so old saves and backups keep loading.
 function inStory(c) { return !c.removed && (state.part3 === true || !c.part3Only); }
 function storyCharacters() { return characters.filter(inStory); }
+function part3Switch() {
+  const on = state.part3 === true;
+  return `<div class="part3-segment" role="radiogroup" aria-label="剧情范围"><label title="不显示第3部的人物和兵种"><input id="part3-off" type="radio" name="part3" value="off" ${on ? '' : 'checked'}><span>第1-2部</span></label><label title="显示第3部的人物和兵种"><input id="part3-on" type="radio" name="part3" value="on" ${on ? 'checked' : ''}><span>第3部</span></label></div>`;
+}
 function applyStoryPhase() {
   const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;
   if (phaseChanged) {
     appliedPart3 = part3;
-    document.querySelector('#part3-switch').checked = part3;
     characters.forEach(c => Object.assign(c, c.defaultLook, part3 ? c.part3 : null));
     searchIndex = storyCharacters().map(c => ({
       character: c,
@@ -219,12 +222,14 @@ function render() {
   if (page === 'levels') renderLevels();
   if (page === 'summary') renderSummary();
   if (page === 'record') renderRecord();
+  // The summary reconciles in place, where a checked attribute alone would not move a used checkbox.
+  app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); });
   refreshRowSelection();
   scheduleLocalSave();
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${visibleRoster().length ? '<button data-action="summary">返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${part3Switch()}${visibleRoster().length ? '<button data-action="summary">返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
   document.querySelector('#search').value = query;
   if (!visibleRoster().length && storyRoster().some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
   const searchInput = app.querySelector('#search');
@@ -396,7 +401,7 @@ window.addEventListener('resize',refreshSetupExpectationSummaries);
 function renderLevels() {
   setupLevelEdit=null;
   app.innerHTML=`<section class="levels">
-    <div class="toolbar setup-toolbar"><button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置兵种</button>${selectionToolbar()}</div>
+    <div class="toolbar setup-toolbar">${part3Switch()}<button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置兵种</button>${selectionToolbar()}</div>
     <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
@@ -660,7 +665,7 @@ function renderSummary() {
   const canUndo = storyRoster().some(item => item.deleted || item.records.some(record => record.deleted));
   const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.skipped));
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>人物</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>人物</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div>${part3Switch()}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       const displayLevels = M.displayLevels(item);
@@ -1418,7 +1423,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (mouseSort || touchSort || document.activeElement?.matches('input:not(#part3-switch)') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
+  if (mouseSort || touchSort || document.activeElement?.matches('input:not([name="part3"])') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
@@ -1462,6 +1467,19 @@ function restoreAfterAppUpdate() {
 restoreLocalState();
 restoreAfterAppUpdate();
 render();
-document.querySelector('#part3-switch').addEventListener('change', e => { state.part3 = e.target.checked; render(); });
+app.addEventListener('change', e => {
+  if (e.target.name !== 'part3') return;
+  const on = e.target.value === 'on';
+  state.part3 = on;
+  render();
+  const segment = app.querySelector('.part3-segment');
+  if (!segment) return;
+  // Most pages rebuild the control, so hand keyboard users back the new one.
+  segment.querySelector('input:checked').focus({ preventScroll: true });
+  // The rebuilt control starts at its final state, so a CSS transition would never run.
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  segment.animate({ transform: on ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
+    { duration: 200, easing: 'ease', pseudoElement: '::before' });
+});
 window.addEventListener('pagehide',saveLocalState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});

@@ -147,23 +147,84 @@ header {
   letter-spacing: 3px;
   margin-top: 8px;
 }
-.story-switch {
-  display: flex;
+/* Part 3 segmented control: equal segments in the same outline and height as the
+   buttons beside it, with a raised block marking the chosen side. */
+.part3-segment {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   flex-shrink: 0;
+  width: 150px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid var(--control-line);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.part3-segment::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  border-radius: 7px;
+  background: var(--surface-floating);
+}
+.part3-segment:has(#part3-on:checked)::before {
+  transform: translateX(100%);
+}
+.part3-segment label {
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  color: var(--text);
-  font: 14px var(--font-ui);
+  justify-content: center;
+  line-height: 20px;
   white-space: nowrap;
+  color: var(--muted);
   cursor: pointer;
 }
-.story-switch input {
-  width: 18px;
-  height: 18px;
+.part3-segment label:has(input:checked) {
+  color: var(--text);
+}
+.part3-segment input {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
-  accent-color: var(--gold);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0;
   cursor: pointer;
+}
+.part3-segment input:focus-visible {
+  outline: none;
+}
+html[data-input-mode="keyboard"] .part3-segment:has(input:focus-visible) {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+@media (hover:hover) and (pointer:fine) {
+  .part3-segment:hover {
+    border-color: var(--gold);
+  }
+  .part3-segment label:hover {
+    color: var(--text);
+  }
+}
+@media(max-width:600px) {
+  .part3-segment {
+    font-size: 12px;
+  }
+  /* 44px tap height, as the buttons on these rows have. */
+  .part3-segment input {
+    inset: -6px 0;
+    height: calc(100% + 12px);
+  }
 }
 .save-status {
   font-size: 12px;
@@ -2400,7 +2461,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
   main.summary-page {
     max-width: 1760px;
   }
-  body:has(main.summary-page)>header {
+  body>header {
     height: 78px;
     padding-inline: max(24px,calc((100% - 1712px)/2));
   }
@@ -4089,4 +4150,63 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .select-page .character i {
     right: 4px;
   }
+}
+
+/* Part 3 control placement: one spot per width that multi-select's actions never
+   reach, so it does not move between states. No row is positioned, so left resolves
+   against the viewport, and being out of flow it never moves a button. */
+@media(min-width:1280px) {
+  .toolbar>.part3-segment,.summary-top>.part3-segment {
+    position: absolute;
+  }
+  /* Rows differ in height and alignment: these line all three up with the level page. */
+  .select-page>.toolbar>.part3-segment {
+    left: 360px;
+    translate: 0 -2.5px;
+  }
+  .summary-top>.part3-segment {
+    left: 240px;
+    translate: 0 -10px;
+  }
+  /* Multi-select's first action starts at 50% - 275px on this page. */
+  .setup-toolbar>.part3-segment {
+    left: min(240px,calc(50% - 445px));
+  }
+}
+/* Wide enough for one spot that clears the search box and both multi-select bars. */
+@media(min-width:1680px) {
+  .select-page>.toolbar>.part3-segment,
+  .summary-top>.part3-segment,
+  .setup-toolbar>.part3-segment {
+    left: calc(50% - 470px);
+  }
+}
+/* No room beside the buttons here: it keeps its own centred line above them.
+   The side margins fill that line, so nothing else can share it. */
+@media(max-width:1279px) {
+  .toolbar,.select-page>.toolbar,.summary-top {
+    flex-wrap: wrap;
+  }
+  .toolbar>.part3-segment,.summary-top>.part3-segment {
+    order: -2;
+    margin-inline: calc(50% - 75px);
+  }
+  /* The level page's uneven side padding would push it off the other pages' centre. */
+  .setup-toolbar>.part3-segment {
+    translate: -18px 0;
+  }
+}
+@media(max-width:600px) {
+  .setup-toolbar>.part3-segment {
+    translate: -2px 0;
+  }
+}
+/* Controls act on press; dragging or double-clicking one must not highlight its text. */
+button,summary,[role="button"],[role="option"],.part3-segment,.choice-option,dialog {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input,textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
