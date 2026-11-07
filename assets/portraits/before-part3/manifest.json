@@ -436,7 +436,9 @@
         "USfr": "Aurora"
       },
       "englishName": "Aurora",
-      "characterIds": [],
+      "characterIds": [
+        "c077"
+      ],
       "grid": "assets/portraits/before-part3/grid/aurora.png",
       "narrow": "assets/portraits/before-part3/narrow/aurora.png",
       "dimensions": {
@@ -3316,7 +3318,9 @@
         "USfr": "Jurah"
       },
       "englishName": "Jurah",
-      "characterIds": [],
+      "characterIds": [
+        "c074"
+      ],
       "grid": "assets/portraits/before-part3/grid/jurah.png",
       "narrow": "assets/portraits/before-part3/narrow/jurah.png",
       "dimensions": {
@@ -6299,7 +6303,9 @@
         "USfr": "Smyrnos"
       },
       "englishName": "Smyrnos",
-      "characterIds": [],
+      "characterIds": [
+        "c075"
+      ],
       "grid": "assets/portraits/before-part3/grid/smyrnos.png",
       "narrow": "assets/portraits/before-part3/narrow/smyrnos.png",
       "dimensions": {

@@ -79,6 +79,27 @@ window.RiggingModel = (() => {
       validRule(range.rule); last = range.from;
     }
   }
+  function validRide(ride, kind) {
+    const rides = window.RIDES.byId;
+    if (!ride || typeof ride !== 'object' || typeof ride.id !== 'string' || !Object.hasOwn(rides, ride.id) || (kind && rides[ride.id].kind !== kind) || !Number.isInteger(ride.level) || ride.level < 1 || ride.level > 5) throw Error('配属不正确');
+    return true;
+  }
+  function rideMapValid(map, characterIds) {
+    if (map === undefined) return;
+    if (!map || typeof map !== 'object' || Array.isArray(map)) throw Error('配属不正确');
+    for (const [id, rides] of Object.entries(map)) {
+      if (!characterIds.includes(id) || !rides || typeof rides !== 'object' || Array.isArray(rides)) throw Error('配属不正确');
+      for (const [kind, ride] of Object.entries(rides)) {
+        if (!window.RIDES.kinds.includes(kind)) throw Error('配属不正确');
+        if (ride !== null) validRide(ride, kind);
+      }
+    }
+  }
+  // Saved data keeps the class name it was written with, so older spellings are corrected on the way in.
+  const renamedClasses = Object.freeze({ '骑甲驼兵': '骑甲鸵兵' });
+  function renameClass(object, key) {
+    if (Object.hasOwn(renamedClasses, object[key])) object[key] = renamedClasses[object[key]];
+  }
   function migrate(input, characterIds) {
     if (!input || ![1, 2].includes(input.version ?? 1) || !Array.isArray(input.roster)) throw Error('备份格式不正确');
     const data = copy(input), old = (data.version ?? 1) === 1;
@@ -91,10 +112,11 @@ window.RiggingModel = (() => {
       if (object.deletionOrder !== undefined && (!Number.isSafeInteger(object.deletionOrder) || object.deletionOrder < 0)) throw Error('删除顺序不正确');
     }
     for (const item of data.roster) {
-      if (!item || !characterIds.includes(item.id) || ids.has(item.id) || (item.initialLevel !== null && (!Number.isSafeInteger(item.initialLevel) || item.initialLevel < 1 || item.initialLevel > 99)) || !Array.isArray(item.records)) throw Error('角色数据不正确');
+      if (!item || !characterIds.includes(item.id) || ids.has(item.id) || (item.initialLevel !== null && (!Number.isSafeInteger(item.initialLevel) || item.initialLevel < 1 || item.initialLevel > 99)) || !Array.isArray(item.records)) throw Error('人物数据不正确');
       metadata(item);
-      if (item.initialProfession !== undefined && item.initialProfession !== null && !window.PROFESSIONS.names.includes(item.initialProfession)) throw Error('初始职业不正确');
-      if (item.pendingProfession !== undefined && item.pendingProfession !== null && !window.PROFESSIONS.names.includes(item.pendingProfession)) throw Error('待记录职业不正确');
+      renameClass(item, 'initialProfession'); renameClass(item, 'pendingProfession');
+      if (item.initialProfession !== undefined && item.initialProfession !== null && !window.PROFESSIONS.names.includes(item.initialProfession)) throw Error('初始兵种不正确');
+      if (item.pendingProfession !== undefined && item.pendingProfession !== null && !window.PROFESSIONS.names.includes(item.pendingProfession)) throw Error('待记录兵种不正确');
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
       ids.add(item.id); rangesValid(item.expectations);
@@ -110,7 +132,9 @@ window.RiggingModel = (() => {
           r.seq = last + 1; r.id = uid(); r.ratingSource = 'legacy';
         }
         if (!Number.isSafeInteger(r.seq) || r.seq <= last || r.seq > limits.seq || typeof r.id !== 'string' || !r.id || r.id.length > 128 || recordIds.has(r.id)) throw Error('记录序号或 ID 不正确');
+        renameClass(r, 'profession');
         if (r.profession !== undefined && r.profession !== null && !window.PROFESSIONS.names.includes(r.profession)) throw Error('Invalid profession');
+        if (r.ride !== undefined) validRide(r.ride);
         metadata(r);
         if (r.ratingSource !== undefined && !['auto', 'manual', 'legacy'].includes(r.ratingSource)) throw Error('评价来源不正确');
         r.ratingSource ||= 'legacy';
@@ -118,25 +142,30 @@ window.RiggingModel = (() => {
         delete r.level; last = r.seq; recordIds.add(r.id);
       }
     }
-    if (data.selection !== undefined && (!Array.isArray(data.selection) || new Set(data.selection).size !== data.selection.length || data.selection.some(id => !characterIds.includes(id) || data.roster.some(r => r.id === id && !r.deleted)))) throw Error('角色选择不正确');
+    if (data.selection !== undefined && (!Array.isArray(data.selection) || new Set(data.selection).size !== data.selection.length || data.selection.some(id => !characterIds.includes(id) || data.roster.some(r => r.id === id && !r.deleted)))) throw Error('人物选择不正确');
     if (data.initialLevels !== undefined && (!data.initialLevels || typeof data.initialLevels !== 'object' || Array.isArray(data.initialLevels))) throw Error('初始等级不正确');
     for (const [id, value] of Object.entries(data.initialLevels || {})) {
       // Incomplete text is a setup draft; keep it editable after reopening.
       if (!characterIds.includes(id) || !(typeof value === 'string' && value.length <= 80 || Number.isInteger(value) && value >= 1 && value <= 99)) throw Error('初始等级不正确');
     }
+    if (data.part3 !== undefined && typeof data.part3 !== 'boolean') throw Error('第3部开关不正确');
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
     if (data.deletionCounter !== undefined && (!Number.isSafeInteger(data.deletionCounter) || data.deletionCounter < 0)) throw Error('删除顺序不正确');
-    if (data.draftProfessions !== undefined) {
-      if (!data.draftProfessions || typeof data.draftProfessions !== 'object' || Array.isArray(data.draftProfessions)) throw Error('待设置职业不正确');
-      for (const [id, value] of Object.entries(data.draftProfessions)) {
-        if (!characterIds.includes(id) || (value !== null && !window.PROFESSIONS.names.includes(value))) throw Error('待设置职业不正确');
+    for (const drafts of [data.draftProfessions, data.draftStoryClasses]) {
+      if (drafts === undefined) continue;
+      if (!drafts || typeof drafts !== 'object' || Array.isArray(drafts)) throw Error('待设置兵种不正确');
+      for (const id of Object.keys(drafts)) {
+        renameClass(drafts, id);
+        if (!characterIds.includes(id) || (drafts[id] !== null && !window.PROFESSIONS.names.includes(drafts[id]))) throw Error('待设置兵种不正确');
       }
     }
+    rideMapValid(data.draftRides, characterIds);
+    rideMapValid(data.rideMemory, characterIds);
     if (data.draftExpectations !== undefined) {
       if (!data.draftExpectations || typeof data.draftExpectations !== 'object' || Array.isArray(data.draftExpectations)) throw Error('待设置期望不正确');
-      for (const [id, rule] of Object.entries(data.draftExpectations)) { if (!characterIds.includes(id)) throw Error('未知角色'); validRule(rule); }
+      for (const [id, rule] of Object.entries(data.draftExpectations)) { if (!characterIds.includes(id)) throw Error('未知人物'); validRule(rule); }
     }
     return { ...data, version: 2, selection: data.selection || [], initialLevels: data.initialLevels || {} };
   }
-  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, ruleAt, validRule, ruleSize, evaluate, setRule, migrate };
+  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate };
 })();

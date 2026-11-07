@@ -1,0 +1,5409 @@
+{
+  "story": "part3",
+  "expression": "default",
+  "count": 50,
+  "description": "Part 3 default faces, plus roster members who had no portrait. Shown only when the Part 3 switch is on.",
+  "sourceLayout": "Same native per-face crop as before-part3: each window comes from that face's own AssetTable record.",
+  "entries": [
+    {
+      "fid": "FID_アレキサンドラ３部",
+      "pid": "PID_アレキサンドラ",
+      "characterId": "c054",
+      "messageLabel": "MPID_Alexandra",
+      "names": {
+        "CNzh": "亚历珊德拉",
+        "EUde": "Alexandra",
+        "EUen": "Alexandra",
+        "EUes": "Alexandra",
+        "EUfr": "Alexandra",
+        "EUit": "Alexandra",
+        "JPja": "アレキサンドラ",
+        "KRko": "알렉산드라",
+        "TWzh": "亞歷珊德拉",
+        "USen": "Alexandra",
+        "USes": "Alexandra",
+        "USfr": "Alexandra"
+      },
+      "englishName": "Alexandra",
+      "voice": "Ale0",
+      "faceCode": "099Later5y",
+      "position": {
+        "EyeLevelX": 0.47200000286102295,
+        "EyeLevelY": 0.4269999861717224,
+        "EyeCenterX": 0.46700000762939453,
+        "EyeCenterY": 0.4180000126361847,
+        "FaceCenterX": 0.47600001096725464,
+        "FaceCenterY": 0.4259999990463257
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.47600001096725464,
+            0.4259999990463257
+          ],
+          "clamped_center": [
+            0.47600001096725464,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.011000007390975952,
+            0.0,
+            0.9409999847412109,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.47200000286102295,
+            0.4269999861717224
+          ],
+          "clamped_center": [
+            0.47200000286102295,
+            0.4269999861717224
+          ],
+          "uv_rect": [
+            0.07199999690055847,
+            0.28200000524520874,
+            0.871999979019165,
+            0.5719999670982361
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.47200000286102295,
+            0.4269999861717224
+          ],
+          "clamped_center": [
+            0.47200000286102295,
+            0.4269999861717224
+          ],
+          "uv_rect": [
+            0.07199999690055847,
+            0.22199998795986176,
+            0.871999979019165,
+            0.6319999694824219
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/alexandra.png",
+        "narrow": "assets/portraits/part3/narrow/alexandra.png",
+        "troop": "assets/portraits/part3/troop/alexandra.png",
+        "small/56": "assets/portraits/part3/small/56/alexandra.png",
+        "small/112": "assets/portraits/part3/small/112/alexandra.png",
+        "small/168": "assets/portraits/part3/small/168/alexandra.png"
+      },
+      "sha256": {
+        "grid": "874ac36676e74856df57cbca3d9c54c7099c056d62625c0a61d4f2011ade6ced",
+        "narrow": "34241148e3d934c45ec8d3b693216d61ea0b01de50cdabac387e4935477487ba",
+        "troop": "b46844f801cc99056f7dce864ba7342c29c738c8620925bca3dc50dde57c7eb4",
+        "small/56": "4b2e57387a2aa58638c325cf8ebda5562d736e29bf36ab455dce8ab72d853e2d",
+        "small/112": "dbe8a08169a400e938108fbafe086e548e2d50b884c7bf89f8f43037a369898f",
+        "small/168": "8ce3939c2e611e2a9859eb32683312384153f8f88c1372446161f946a4fd5bdd"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_アナトリア３部",
+      "pid": "PID_アナトリア",
+      "characterId": "c037",
+      "messageLabel": "MPID_Anhatolyah",
+      "names": {
+        "CNzh": "爱娜特莉亚",
+        "EUde": "Anatolia",
+        "EUen": "Anatolia",
+        "EUes": "Anatolia",
+        "EUfr": "Anatolia",
+        "EUit": "Anatolia",
+        "JPja": "アナトリア",
+        "KRko": "아나톨리아",
+        "TWzh": "愛娜特莉亞",
+        "USen": "Anatolia",
+        "USes": "Anatolia",
+        "USfr": "Anatolia"
+      },
+      "englishName": "Anatolia",
+      "voice": "Anh1",
+      "faceCode": "024Later5y",
+      "position": {
+        "EyeLevelX": 0.4729999899864197,
+        "EyeLevelY": 0.43299999833106995,
+        "EyeCenterX": 0.5099999904632568,
+        "EyeCenterY": 0.43299999833106995,
+        "FaceCenterX": 0.49399998784065247,
+        "FaceCenterY": 0.43299999833106995
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.49399998784065247,
+            0.43299999833106995
+          ],
+          "clamped_center": [
+            0.49399998784065247,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.02899998426437378,
+            0.0,
+            0.9589999914169312,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4729999899864197,
+            0.43299999833106995
+          ],
+          "clamped_center": [
+            0.4729999899864197,
+            0.43299999833106995
+          ],
+          "uv_rect": [
+            0.0729999840259552,
+            0.2879999876022339,
+            0.8730000257492065,
+            0.578000009059906
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4729999899864197,
+            0.43299999833106995
+          ],
+          "clamped_center": [
+            0.4729999899864197,
+            0.43299999833106995
+          ],
+          "uv_rect": [
+            0.0729999840259552,
+            0.2280000001192093,
+            0.8730000257492065,
+            0.6380000114440918
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/anatolia.png",
+        "narrow": "assets/portraits/part3/narrow/anatolia.png",
+        "troop": "assets/portraits/part3/troop/anatolia.png",
+        "small/56": "assets/portraits/part3/small/56/anatolia.png",
+        "small/112": "assets/portraits/part3/small/112/anatolia.png",
+        "small/168": "assets/portraits/part3/small/168/anatolia.png"
+      },
+      "sha256": {
+        "grid": "796ebebacb611a17dcf5606fe5c59b6117a4871d8c091e9108d306a95099f310",
+        "narrow": "481ec98f8036391d768de16ae6a96f35f16829dff2ff80fcefc372e6e4a47e72",
+        "troop": "38faac4b896d3248a7126162e820d73f77e8a1ea4b41636579f43cdc5f8b9b42",
+        "small/56": "d9f974a3acfa7f552b07857054e67884b3f5d5a458fe01db5849240e2ac62b0f",
+        "small/112": "c66d1682d7a4ed2cf812a17cca64c89383d5a2513ed2d8ffc876befa96c285d2",
+        "small/168": "79a76a29493c014b709099801a7ecac1aba024484e2e0df8a4f06b5d2a7d6110"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ベルトラン３部",
+      "pid": "PID_ベルトラン",
+      "characterId": "c022",
+      "messageLabel": "MPID_Beltran",
+      "names": {
+        "CNzh": "贝特兰",
+        "EUde": "Bertrand",
+        "EUen": "Bertrand",
+        "EUes": "Bertrand",
+        "EUfr": "Bertrand",
+        "EUit": "Bertrand",
+        "JPja": "ベルトラン",
+        "KRko": "베르트랑",
+        "TWzh": "貝特蘭",
+        "USen": "Bertrand",
+        "USes": "Bertrand",
+        "USfr": "Bertrand"
+      },
+      "englishName": "Bertrand",
+      "voice": "Bel1",
+      "faceCode": "018Later5y",
+      "position": {
+        "EyeLevelX": 0.4189999997615814,
+        "EyeLevelY": 0.42100000381469727,
+        "EyeCenterX": 0.503000020980835,
+        "EyeCenterY": 0.41200000047683716,
+        "FaceCenterX": 0.4699999988079071,
+        "FaceCenterY": 0.4169999957084656
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4699999988079071,
+            0.4169999957084656
+          ],
+          "clamped_center": [
+            0.4699999988079071,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.004999995231628418,
+            0.0,
+            0.9350000023841858,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4189999997615814,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.4189999997615814,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.018999993801116943,
+            0.2760000228881836,
+            0.8190000057220459,
+            0.5659999847412109
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4189999997615814,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.4189999997615814,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.018999993801116943,
+            0.2160000056028366,
+            0.8190000057220459,
+            0.6259999871253967
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/bertrand.png",
+        "narrow": "assets/portraits/part3/narrow/bertrand.png",
+        "troop": "assets/portraits/part3/troop/bertrand.png",
+        "small/56": "assets/portraits/part3/small/56/bertrand.png",
+        "small/112": "assets/portraits/part3/small/112/bertrand.png",
+        "small/168": "assets/portraits/part3/small/168/bertrand.png"
+      },
+      "sha256": {
+        "grid": "925223b5848ed88721d52a9bb01e5cf688122564d52a458a53096a1444cda242",
+        "narrow": "f3f83e4c5b7b6b0d0b481210ad517a9bb3a1736d11b411424d797538ac80c12f",
+        "troop": "41676002d96f78ffd127be3f713334e97ca1e3f9e1d54c4b5e79cacfa379709f",
+        "small/56": "397919286676680f01bca5ff16dcb34d0f12e22f2d4d26f244ba5a25820e0f80",
+        "small/112": "8c1d69c6b0baea151dee51ed6f70fea43b549e7f83b3f244a1c8358c1dae520a",
+        "small/168": "4bf19d57171f014ba8054384fce36ed9def9eb3f243ff31be872f9b72acbc0a9"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ボナパルテ３部",
+      "pid": "PID_ボナパルテ",
+      "characterId": "c013",
+      "messageLabel": "MPID_Bonaparte",
+      "names": {
+        "CNzh": "波拿帕尔特",
+        "EUde": "Bonaventure",
+        "EUen": "Bonaventure",
+        "EUes": "Bonaventure",
+        "EUfr": "Bonaventure",
+        "EUit": "Bonaventure",
+        "JPja": "ボナパルテ",
+        "KRko": "보나파르트",
+        "TWzh": "波拿帕爾特",
+        "USen": "Bonaventure",
+        "USes": "Bonaventure",
+        "USfr": "Bonaventure"
+      },
+      "englishName": "Bonaventure",
+      "voice": "Bon0",
+      "faceCode": "042Later5y",
+      "position": {
+        "EyeLevelX": 0.41999998688697815,
+        "EyeLevelY": 0.3919999897480011,
+        "EyeCenterX": 0.38199999928474426,
+        "EyeCenterY": 0.38499999046325684,
+        "FaceCenterX": 0.41100001335144043,
+        "FaceCenterY": 0.3880000114440918
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.41100001335144043,
+            0.3880000114440918
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41999998688697815,
+            0.3919999897480011
+          ],
+          "clamped_center": [
+            0.41999998688697815,
+            0.3919999897480011
+          ],
+          "uv_rect": [
+            0.019999980926513672,
+            0.24699999392032623,
+            0.8199999928474426,
+            0.5370000004768372
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41999998688697815,
+            0.3919999897480011
+          ],
+          "clamped_center": [
+            0.41999998688697815,
+            0.3919999897480011
+          ],
+          "uv_rect": [
+            0.019999980926513672,
+            0.18699999153614044,
+            0.8199999928474426,
+            0.597000002861023
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/bonaventure.png",
+        "narrow": "assets/portraits/part3/narrow/bonaventure.png",
+        "troop": "assets/portraits/part3/troop/bonaventure.png",
+        "small/56": "assets/portraits/part3/small/56/bonaventure.png",
+        "small/112": "assets/portraits/part3/small/112/bonaventure.png",
+        "small/168": "assets/portraits/part3/small/168/bonaventure.png"
+      },
+      "sha256": {
+        "grid": "48097b113a6416cc0ac954eed2c1b75e31486ee7e09ffbe71b1c5823483ca56b",
+        "narrow": "fc913738bf2ebca2f2d7fd5fd443045b71d7ff32fe6fb9b1320640746047d93c",
+        "troop": "c4ba67ec047669e4ce5a67170f39baf0a04c14376c955f8b19269cca61422143",
+        "small/56": "56dff7cb0f95d115d6cf3aadde21a1c84719e15aeebb310c379864440801ebc0",
+        "small/112": "e16457b7ddc1881e7db40b002392b554ac149a9ba1f0344ec1d7d582192fc87b",
+        "small/168": "7323b1d02c6edf2797bba25172b61b2eb1229d090d96eea9989f094d67877bdf"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_バッカニア３部",
+      "pid": "PID_バッカニア",
+      "characterId": "c018",
+      "messageLabel": "MPID_Buccaneer",
+      "names": {
+        "CNzh": "巴卡尼亚",
+        "EUde": "Buccar",
+        "EUen": "Buccar",
+        "EUes": "Buccar",
+        "EUfr": "Buccar",
+        "EUit": "Buccar",
+        "JPja": "バッカニア",
+        "KRko": "버커니어",
+        "TWzh": "巴卡尼亞",
+        "USen": "Buccar",
+        "USes": "Buccar",
+        "USfr": "Buccar"
+      },
+      "englishName": "Buccar",
+      "voice": "Buc0",
+      "faceCode": "046Later5y",
+      "position": {
+        "EyeLevelX": 0.453000009059906,
+        "EyeLevelY": 0.38100001215934753,
+        "EyeCenterX": 0.527999997138977,
+        "EyeCenterY": 0.38999998569488525,
+        "FaceCenterX": 0.453000009059906,
+        "FaceCenterY": 0.38100001215934753
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.453000009059906,
+            0.38100001215934753
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.453000009059906,
+            0.38100001215934753
+          ],
+          "clamped_center": [
+            0.453000009059906,
+            0.38100001215934753
+          ],
+          "uv_rect": [
+            0.05300000309944153,
+            0.23600001633167267,
+            0.8530000448226929,
+            0.5260000228881836
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.453000009059906,
+            0.38100001215934753
+          ],
+          "clamped_center": [
+            0.453000009059906,
+            0.38100001215934753
+          ],
+          "uv_rect": [
+            0.05300000309944153,
+            0.17600001394748688,
+            0.8530000448226929,
+            0.5860000252723694
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/buccar.png",
+        "narrow": "assets/portraits/part3/narrow/buccar.png",
+        "troop": "assets/portraits/part3/troop/buccar.png",
+        "small/56": "assets/portraits/part3/small/56/buccar.png",
+        "small/112": "assets/portraits/part3/small/112/buccar.png",
+        "small/168": "assets/portraits/part3/small/168/buccar.png"
+      },
+      "sha256": {
+        "grid": "94012366200e1dd151bdf4eeaf215b8c4b9b2fcc6eaa92fea9f38e7d11d50bea",
+        "narrow": "93106e6627fc1abf7c88cff67d2a61db3957c914f9930e856faa898cf628838e",
+        "troop": "1eab841c67f6491a3567828ae868af64501dba16950b6fd6fd2954e3d9dea716",
+        "small/56": "03221a137e9b54518ebd35f6b561bc825550d9c61566df1d6078deaf9c4c1713",
+        "small/112": "331b14f1b6e27d0da55e05e420379bb03b149ad540c7c937a4f50366aac69a3c",
+        "small/168": "100d2ebba3547d48eba2639919b5112a8663e969d3b5116240253beacf825968"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_カイ３部",
+      "pid": "PID_カイ",
+      "characterId": "c004",
+      "messageLabel": "MPID_Kai",
+      "names": {
+        "CNzh": "凯伊",
+        "EUde": "Cai",
+        "EUen": "Cai",
+        "EUes": "Cai",
+        "EUfr": "Cai",
+        "EUit": "Cai",
+        "JPja": "カイ",
+        "KRko": "카이",
+        "TWzh": "凱伊",
+        "USen": "Cai",
+        "USes": "Cai",
+        "USfr": "Cai"
+      },
+      "englishName": "Cai",
+      "voice": "Kai1",
+      "faceCode": "017Later5y",
+      "position": {
+        "EyeLevelX": 0.42899999022483826,
+        "EyeLevelY": 0.4300000071525574,
+        "EyeCenterX": 0.3970000147819519,
+        "EyeCenterY": 0.421999990940094,
+        "FaceCenterX": 0.41100001335144043,
+        "FaceCenterY": 0.4300000071525574
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.41100001335144043,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "uv_rect": [
+            0.02899998426437378,
+            0.2850000262260437,
+            0.8289999961853027,
+            0.574999988079071
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "uv_rect": [
+            0.02899998426437378,
+            0.22500000894069672,
+            0.8289999961853027,
+            0.6349999904632568
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/cai.png",
+        "narrow": "assets/portraits/part3/narrow/cai.png",
+        "troop": "assets/portraits/part3/troop/cai.png",
+        "small/56": "assets/portraits/part3/small/56/cai.png",
+        "small/112": "assets/portraits/part3/small/112/cai.png",
+        "small/168": "assets/portraits/part3/small/168/cai.png"
+      },
+      "sha256": {
+        "grid": "1a07193a808edc51999ac6fa773efbb802dfb3e330f9bcb8b357a8354692a101",
+        "narrow": "884059e3e9406ae73139b91accf2c89f2e67873aa41404aaefd8feb4d440f53a",
+        "troop": "ec5fe03f5d818a39f52ea6071cdadfca9d697d45af192aa6353959ae371c66d2",
+        "small/56": "4195abb32b20f1f2b58242fadfb4a4bf6e74bb6c60246a43374867b6ed517f5a",
+        "small/112": "c46f31082f8baced623e24021e1b2f8b814de9807248b839d07a4c7ea0b92689",
+        "small/168": "eb70611443335efc55b5a8fd11a90113e40161936c38703b8802534314f51361"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_カターニャ３部",
+      "pid": "PID_カターニャ",
+      "characterId": "c042",
+      "messageLabel": "MPID_Catania",
+      "names": {
+        "CNzh": "卡塔妮雅",
+        "EUde": "Catania",
+        "EUen": "Catania",
+        "EUes": "Catania",
+        "EUfr": "Catania",
+        "EUit": "Catania",
+        "JPja": "カターニャ",
+        "KRko": "카타냐",
+        "TWzh": "卡塔妮雅",
+        "USen": "Catania",
+        "USes": "Catania",
+        "USfr": "Catania"
+      },
+      "englishName": "Catania",
+      "voice": "Cat0",
+      "faceCode": "092Later5y",
+      "position": {
+        "EyeLevelX": 0.41499999165534973,
+        "EyeLevelY": 0.460999995470047,
+        "EyeCenterX": 0.375,
+        "EyeCenterY": 0.4519999921321869,
+        "FaceCenterX": 0.3970000147819519,
+        "FaceCenterY": 0.460999995470047
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3970000147819519,
+            0.460999995470047
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.460999995470047
+          ],
+          "uv_rect": [
+            0.0,
+            0.025999993085861206,
+            0.9300000071525574,
+            0.8960000276565552
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.460999995470047
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.460999995470047
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.31599998474121094,
+            0.8149999976158142,
+            0.6060000061988831
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.460999995470047
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.460999995470047
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.25599998235702515,
+            0.8149999976158142,
+            0.6660000085830688
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/catania.png",
+        "narrow": "assets/portraits/part3/narrow/catania.png",
+        "troop": "assets/portraits/part3/troop/catania.png",
+        "small/56": "assets/portraits/part3/small/56/catania.png",
+        "small/112": "assets/portraits/part3/small/112/catania.png",
+        "small/168": "assets/portraits/part3/small/168/catania.png"
+      },
+      "sha256": {
+        "grid": "ea8eb9585e0822e66c9c96ef89e5ae02a5e7810e1f3b3ac1405ca60604e97676",
+        "narrow": "31eaaa1e2df88342ca9a654e9042f603fdfdb880fe91be1ac20aa0003374d58f",
+        "troop": "361b1a0c6a2b265d0c94cc8250fde3f38fd298a188c433f05830af099e724318",
+        "small/56": "b259b379d33c17c6faf676636b30a8e591c515153217d2de493dec29f15cb3e6",
+        "small/112": "eb9b22a00272bc9938fe3210db6fe21f319eb3d6caf76a5aab0afcb0724ce732",
+        "small/168": "bb37a423d0056ea2e3ef56dc15ea1c8ba5b79b8ae13d50a4ed3c02bf6d34fc84"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_クレオブロス",
+      "pid": "PID_クレオブロス",
+      "characterId": "c071",
+      "messageLabel": "MPID_Cleobulus",
+      "names": {
+        "CNzh": "克雷欧布洛斯",
+        "EUde": "Cleobulus",
+        "EUen": "Cleobulus",
+        "EUes": "Cleobulus",
+        "EUfr": "Cleobulus",
+        "EUit": "Cleobulus",
+        "JPja": "クレオブロス",
+        "KRko": "클레오불루스",
+        "TWzh": "克雷歐布洛斯",
+        "USen": "Cleobulus",
+        "USes": "Cleobulus",
+        "USfr": "Cleobulus"
+      },
+      "englishName": "Cleobulus",
+      "voice": "Cle0",
+      "faceCode": "100",
+      "position": {
+        "EyeLevelX": 0.4519999921321869,
+        "EyeLevelY": 0.40400001406669617,
+        "EyeCenterX": 0.4519999921321869,
+        "EyeCenterY": 0.40700000524520874,
+        "FaceCenterX": 0.42899999022483826,
+        "FaceCenterY": 0.4000000059604645
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.42899999022483826,
+            0.4000000059604645
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4519999921321869,
+            0.40400001406669617
+          ],
+          "clamped_center": [
+            0.4519999921321869,
+            0.40400001406669617
+          ],
+          "uv_rect": [
+            0.05199998617172241,
+            0.2590000033378601,
+            0.8519999980926514,
+            0.5490000247955322
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4519999921321869,
+            0.40400001406669617
+          ],
+          "clamped_center": [
+            0.4519999921321869,
+            0.40400001406669617
+          ],
+          "uv_rect": [
+            0.05199998617172241,
+            0.1990000158548355,
+            0.8519999980926514,
+            0.609000027179718
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/cleobulus.png",
+        "narrow": "assets/portraits/part3/narrow/cleobulus.png",
+        "troop": "assets/portraits/part3/troop/cleobulus.png",
+        "small/56": "assets/portraits/part3/small/56/cleobulus.png",
+        "small/112": "assets/portraits/part3/small/112/cleobulus.png",
+        "small/168": "assets/portraits/part3/small/168/cleobulus.png"
+      },
+      "sha256": {
+        "grid": "f5c6bdb3a76eed99df32535627fa44307feeb460c16cde64e99bf3e61c8af38b",
+        "narrow": "406b3fe6c46fdde3d5c29a472ae1a6b4a87a6371afade27af00d9064a674db26",
+        "troop": "cc57518d6ac67dc0617476ab9c83a581d61b23aa6ece9ac005a28c253a5a35fa",
+        "small/56": "3236f32fc4c4bb4b27d4f79b2139bef706d84db6462fe57d0adf70530328759a",
+        "small/112": "ec93d2572e888f3f6a914b7a2834f34c1116e75bec74caeb34af9905fb322ecf",
+        "small/168": "9e7fe5f52ce210addd6e1367394ec8c37f14e08ad5f5fac89bb6e8a5de6044f6"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_クレール",
+      "pid": "PID_クレール",
+      "characterId": "c076",
+      "messageLabel": "MPID_Clair",
+      "names": {
+        "CNzh": "柯雷尔",
+        "EUde": "Credna",
+        "EUen": "Credna",
+        "EUes": "Credna",
+        "EUfr": "Credna",
+        "EUit": "Credna",
+        "JPja": "クレール",
+        "KRko": "크레르",
+        "TWzh": "柯雷爾",
+        "USen": "Credna",
+        "USes": "Credna",
+        "USfr": "Credna"
+      },
+      "englishName": "Credna",
+      "voice": "Cla0",
+      "faceCode": "006",
+      "position": {
+        "EyeLevelX": 0.41600000858306885,
+        "EyeLevelY": 0.42100000381469727,
+        "EyeCenterX": 0.3490000069141388,
+        "EyeCenterY": 0.4180000126361847,
+        "FaceCenterX": 0.40400001406669617,
+        "FaceCenterY": 0.42100000381469727
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.40400001406669617,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41600000858306885,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.41600000858306885,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.01600000262260437,
+            0.2760000228881836,
+            0.8159999847412109,
+            0.5659999847412109
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41600000858306885,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.41600000858306885,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.01600000262260437,
+            0.2160000056028366,
+            0.8159999847412109,
+            0.6259999871253967
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/credna.png",
+        "narrow": "assets/portraits/part3/narrow/credna.png",
+        "troop": "assets/portraits/part3/troop/credna.png",
+        "small/56": "assets/portraits/part3/small/56/credna.png",
+        "small/112": "assets/portraits/part3/small/112/credna.png",
+        "small/168": "assets/portraits/part3/small/168/credna.png"
+      },
+      "sha256": {
+        "grid": "a53fef93bdc672f4eb0752b4f6ee2bc4177820279627e34353c58ff391af4036",
+        "narrow": "de88c6d2ed9235d2977f6d5d89837d80bb42602aae349a3959defaa3cfe3e89d",
+        "troop": "5ac4f7c883b3280f24b17b5c15a4b04b1a0b59188a060ada558150f64875367b",
+        "small/56": "08808eadfce66d2007605f10e21ef659f05e7bbe5e4f0f0b3ccb9a2f9565577b",
+        "small/112": "6f99a66c609ea1829ecf9cd32364c3e944bc31c62e832ecafdb8ea424ad1342b",
+        "small/168": "c7a8b20b7fd8e5ad4c4dbbabdfd46b63348df0e567f97692686cc9cf30b150a6"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ダイトウ３部",
+      "pid": "PID_ダイトウ",
+      "characterId": "c040",
+      "messageLabel": "MPID_Daitoh",
+      "names": {
+        "CNzh": "大刀",
+        "EUde": "Dadao",
+        "EUen": "Dadao",
+        "EUes": "Dadao",
+        "EUfr": "Dadao",
+        "EUit": "Dadao",
+        "JPja": "ダイトウ",
+        "KRko": "대도",
+        "TWzh": "大刀",
+        "USen": "Dadao",
+        "USes": "Dadao",
+        "USfr": "Dadao"
+      },
+      "englishName": "Dadao",
+      "voice": "Dai0",
+      "faceCode": "053Later5y",
+      "position": {
+        "EyeLevelX": 0.41499999165534973,
+        "EyeLevelY": 0.3959999978542328,
+        "EyeCenterX": 0.38999998569488525,
+        "EyeCenterY": 0.3930000066757202,
+        "FaceCenterX": 0.4020000100135803,
+        "FaceCenterY": 0.3959999978542328
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4020000100135803,
+            0.3959999978542328
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.3959999978542328
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.3959999978542328
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.25099998712539673,
+            0.8149999976158142,
+            0.5410000085830688
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.3959999978542328
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.3959999978542328
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.19099999964237213,
+            0.8149999976158142,
+            0.6010000109672546
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/dadao.png",
+        "narrow": "assets/portraits/part3/narrow/dadao.png",
+        "troop": "assets/portraits/part3/troop/dadao.png",
+        "small/56": "assets/portraits/part3/small/56/dadao.png",
+        "small/112": "assets/portraits/part3/small/112/dadao.png",
+        "small/168": "assets/portraits/part3/small/168/dadao.png"
+      },
+      "sha256": {
+        "grid": "a33e6547550b52f446509ecbdc1d54b513b5c7ec8c6573276e0211fe1e13516d",
+        "narrow": "b42a490ef4033157bfb81d5ac33de069c4a6d1453e2640a6a8e0e934d981541d",
+        "troop": "c142cafac2e522ecd46393c1af8467103183641720520a5771d76a0a65101e14",
+        "small/56": "c588367522c2e5ecb1623959e1556dc2eb6976076f7b6152aff11eb6ef49d6c8",
+        "small/112": "d9d6ce5573817c16f776af79adfb8b281222633af0f90464faaac0ade2aa5782",
+        "small/168": "c2a4a099d0c60476d4d722459a7aecddf5295178ec22e700854224e350c278c6"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ダンテ３部",
+      "pid": "PID_ダンテ",
+      "characterId": "c026",
+      "messageLabel": "MPID_Dante",
+      "names": {
+        "CNzh": "丹提",
+        "EUde": "Dante",
+        "EUen": "Dante",
+        "EUes": "Dante",
+        "EUfr": "Dante",
+        "EUit": "Dante",
+        "JPja": "ダンテ",
+        "KRko": "단테",
+        "TWzh": "丹提",
+        "USen": "Dante",
+        "USes": "Dante",
+        "USfr": "Dante"
+      },
+      "englishName": "Dante",
+      "voice": "Dan0",
+      "faceCode": "031Later5y",
+      "position": {
+        "EyeLevelX": 0.4740000069141388,
+        "EyeLevelY": 0.4269999861717224,
+        "EyeCenterX": 0.4690000116825104,
+        "EyeCenterY": 0.4230000078678131,
+        "FaceCenterX": 0.4740000069141388,
+        "FaceCenterY": 0.4269999861717224
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4740000069141388,
+            0.4269999861717224
+          ],
+          "clamped_center": [
+            0.4740000069141388,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.009000003337860107,
+            0.0,
+            0.9390000104904175,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4740000069141388,
+            0.4269999861717224
+          ],
+          "clamped_center": [
+            0.4740000069141388,
+            0.4269999861717224
+          ],
+          "uv_rect": [
+            0.07400000095367432,
+            0.28200000524520874,
+            0.8740000128746033,
+            0.5719999670982361
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4740000069141388,
+            0.4269999861717224
+          ],
+          "clamped_center": [
+            0.4740000069141388,
+            0.4269999861717224
+          ],
+          "uv_rect": [
+            0.07400000095367432,
+            0.22199998795986176,
+            0.8740000128746033,
+            0.6319999694824219
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/dante.png",
+        "narrow": "assets/portraits/part3/narrow/dante.png",
+        "troop": "assets/portraits/part3/troop/dante.png",
+        "small/56": "assets/portraits/part3/small/56/dante.png",
+        "small/112": "assets/portraits/part3/small/112/dante.png",
+        "small/168": "assets/portraits/part3/small/168/dante.png"
+      },
+      "sha256": {
+        "grid": "27c2523b299756d9e19f04f9213bc5a0993324c3167e88778241dfa5367e1805",
+        "narrow": "2960ee11c534f115fcee58bc14f9cbdb98f251757a5e857e75c34b662a763378",
+        "troop": "2ac83249d8c3605877c34e7cda5a46ba69ab60c4edc2fd4a3466e6303aff6c6f",
+        "small/56": "9e595a0f79264c723952b98b3b64117c07ede63d68d835b7c263309b0992e59e",
+        "small/112": "0f7858ab53794f75590017c9457beabdedf4adc612ba9785f872608f6fb65046",
+        "small/168": "7fb551d00f8df86f9d90a68b5743a40a97bccf5ca44fd0c077959321bf3275e8"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ディエゴ３部",
+      "pid": "PID_ディエゴ",
+      "characterId": "c028",
+      "messageLabel": "MPID_Diego",
+      "names": {
+        "CNzh": "迪雅各",
+        "EUde": "Diego",
+        "EUen": "Diego",
+        "EUes": "Diego",
+        "EUfr": "Diego",
+        "EUit": "Diego",
+        "JPja": "ディエゴ",
+        "KRko": "디에고",
+        "TWzh": "迪雅各",
+        "USen": "Diego",
+        "USes": "Diego",
+        "USfr": "Diego"
+      },
+      "englishName": "Diego",
+      "voice": "Die1",
+      "faceCode": "038Later5y",
+      "position": {
+        "EyeLevelX": 0.4300000071525574,
+        "EyeLevelY": 0.4350000023841858,
+        "EyeCenterX": 0.3569999933242798,
+        "EyeCenterY": 0.42899999022483826,
+        "FaceCenterX": 0.4050000011920929,
+        "FaceCenterY": 0.4339999854564667
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4050000011920929,
+            0.4339999854564667
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.4350000023841858
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.2900000214576721,
+            0.8300000429153442,
+            0.5799999833106995
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.4350000023841858
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.23000000417232513,
+            0.8300000429153442,
+            0.6399999856948853
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/diego.png",
+        "narrow": "assets/portraits/part3/narrow/diego.png",
+        "troop": "assets/portraits/part3/troop/diego.png",
+        "small/56": "assets/portraits/part3/small/56/diego.png",
+        "small/112": "assets/portraits/part3/small/112/diego.png",
+        "small/168": "assets/portraits/part3/small/168/diego.png"
+      },
+      "sha256": {
+        "grid": "0c02363f9f48cec26ea4405b263147e62ae34659bb255233e108dddcd0dda2be",
+        "narrow": "3b1342526919ff846711e9cb0288a6f8d40c05412d494b5fa1f71e6e0518bb81",
+        "troop": "67949bf5b1c2457112aae70876c330b8ee7e9c42693b34ff36d54cdafdca8250",
+        "small/56": "2732807b8a1cc4d91fbebbc4e42560ffdcb7fe3727842bafe76ba9d8fbd3aab9",
+        "small/112": "d39437a9f7229cd129abe7ae700c5ab657623b76832c5772002a1a915ca4c21f",
+        "small/168": "10e0813e149c617334158ba06407543119e9fc6f901bdcfc8643b280366eb972"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ディートリヒ３部",
+      "pid": "PID_ディートリヒ",
+      "characterId": "c008",
+      "messageLabel": "MPID_Ditlih",
+      "names": {
+        "CNzh": "迪托利希",
+        "EUde": "Dietrich",
+        "EUen": "Dietrich",
+        "EUes": "Dietrich",
+        "EUfr": "Dietrich",
+        "EUit": "Dietrich",
+        "JPja": "ディートリヒ",
+        "KRko": "디트리히",
+        "TWzh": "迪托利希",
+        "USen": "Dietrich",
+        "USes": "Dietrich",
+        "USfr": "Dietrich"
+      },
+      "englishName": "Dietrich",
+      "voice": "Dit1",
+      "faceCode": "019Later5y",
+      "position": {
+        "EyeLevelX": 0.4490000009536743,
+        "EyeLevelY": 0.41600000858306885,
+        "EyeCenterX": 0.4690000116825104,
+        "EyeCenterY": 0.41200000047683716,
+        "FaceCenterX": 0.4560000002384186,
+        "FaceCenterY": 0.41600000858306885
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4560000002384186,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4490000009536743,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4490000009536743,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.04899999499320984,
+            0.2710000276565552,
+            0.8489999771118164,
+            0.5609999895095825
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4490000009536743,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4490000009536743,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.04899999499320984,
+            0.2110000103712082,
+            0.8489999771118164,
+            0.6209999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/dietrich.png",
+        "narrow": "assets/portraits/part3/narrow/dietrich.png",
+        "troop": "assets/portraits/part3/troop/dietrich.png",
+        "small/56": "assets/portraits/part3/small/56/dietrich.png",
+        "small/112": "assets/portraits/part3/small/112/dietrich.png",
+        "small/168": "assets/portraits/part3/small/168/dietrich.png"
+      },
+      "sha256": {
+        "grid": "a17af8d1e61cb43cba1359521abcb87fe6ea20c15c7b473cb8a81fa08ab004bd",
+        "narrow": "14b993c6e5d3e50044ed2cd7201ce4d2c973469ea267c9e8de791d91feee1f3f",
+        "troop": "cdce528daf73c99a89cb089a25ab30107467e0d2ad50b8048f453534bc1c54d9",
+        "small/56": "426770de611d87958df40f764a6b5db4632d222674e1a5daa35b3ee8d40ff731",
+        "small/112": "39b951b2131a27fb049e46d17e20f103efa7ab13cf5d9722e81f8092707255aa",
+        "small/168": "9314f0c3ddb7ee24cc5ad561695e3a47baa44f762cd34cd425a6e7fee522bff4"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_エスメラルダ３部",
+      "pid": "PID_エスメラルダ",
+      "characterId": "c010",
+      "messageLabel": "MPID_Esmeralda",
+      "names": {
+        "CNzh": "艾丝梅拉尔达",
+        "EUde": "Esmeralda",
+        "EUen": "Esmeralda",
+        "EUes": "Esmeralda",
+        "EUfr": "Esmeralda",
+        "EUit": "Esmeralda",
+        "JPja": "エスメラルダ",
+        "KRko": "에스메랄다",
+        "TWzh": "艾絲梅拉爾達",
+        "USen": "Esmeralda",
+        "USes": "Esmeralda",
+        "USfr": "Esmeralda"
+      },
+      "englishName": "Esmeralda",
+      "voice": "Esm0",
+      "faceCode": "033Later5y",
+      "position": {
+        "EyeLevelX": 0.4259999990463257,
+        "EyeLevelY": 0.4359999895095825,
+        "EyeCenterX": 0.531000018119812,
+        "EyeCenterY": 0.42500001192092896,
+        "FaceCenterX": 0.4880000054836273,
+        "FaceCenterY": 0.4359999895095825
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4880000054836273,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4880000054836273,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.023000001907348633,
+            0.0009999871253967285,
+            0.953000009059906,
+            0.8709999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4259999990463257,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4259999990463257,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.025999993085861206,
+            0.29100000858306885,
+            0.8259999752044678,
+            0.5809999704360962
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4259999990463257,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4259999990463257,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.025999993085861206,
+            0.23099999129772186,
+            0.8259999752044678,
+            0.640999972820282
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/esmeralda.png",
+        "narrow": "assets/portraits/part3/narrow/esmeralda.png",
+        "troop": "assets/portraits/part3/troop/esmeralda.png",
+        "small/56": "assets/portraits/part3/small/56/esmeralda.png",
+        "small/112": "assets/portraits/part3/small/112/esmeralda.png",
+        "small/168": "assets/portraits/part3/small/168/esmeralda.png"
+      },
+      "sha256": {
+        "grid": "388a1bfb1aaa0a5641203c81b4cdc3f2fcb522635c87825c678f76ecded70c5e",
+        "narrow": "66002602674baff54c874ffc43f7216404d7fcecf48eb3b596eb19cf29677bcc",
+        "troop": "707940f2c861481156fe0a142f3db43ac263af60b19c00c7d5c71bb99b3ca1e9",
+        "small/56": "cdddfa7eabd4e45a4b569f2e0768b58c9a161c97f3caf5ecbb8d3e1abeb3b25e",
+        "small/112": "0fb92c8ea6c7121da8257239e7ab75a4437b9eedbaa25df6d3530c84f879ed39",
+        "small/168": "8b1746f2be735d6d8883bf585a5f99b0f2ab78f8c4d0f63b84f6971667f1f72e"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ファビオ３部",
+      "pid": "PID_ファビオ",
+      "characterId": "c009",
+      "messageLabel": "MPID_Fabio",
+      "names": {
+        "CNzh": "法毕欧",
+        "EUde": "Fabio",
+        "EUen": "Fabio",
+        "EUes": "Fabio",
+        "EUfr": "Fabio",
+        "EUit": "Fabio",
+        "JPja": "ファビオ",
+        "KRko": "파비오",
+        "TWzh": "法畢歐",
+        "USen": "Fabio",
+        "USes": "Fabio",
+        "USfr": "Fabio"
+      },
+      "englishName": "Fabio",
+      "voice": "Fab1",
+      "faceCode": "032",
+      "position": {
+        "EyeLevelX": 0.43700000643730164,
+        "EyeLevelY": 0.38600000739097595,
+        "EyeCenterX": 0.35899999737739563,
+        "EyeCenterY": 0.37400001287460327,
+        "FaceCenterX": 0.4090000092983246,
+        "FaceCenterY": 0.38600000739097595
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4090000092983246,
+            0.38600000739097595
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43700000643730164,
+            0.38600000739097595
+          ],
+          "clamped_center": [
+            0.43700000643730164,
+            0.38600000739097595
+          ],
+          "uv_rect": [
+            0.03700000047683716,
+            0.2410000115633011,
+            0.8370000123977661,
+            0.531000018119812
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43700000643730164,
+            0.38600000739097595
+          ],
+          "clamped_center": [
+            0.43700000643730164,
+            0.38600000739097595
+          ],
+          "uv_rect": [
+            0.03700000047683716,
+            0.1810000091791153,
+            0.8370000123977661,
+            0.5910000205039978
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/fabio.png",
+        "narrow": "assets/portraits/part3/narrow/fabio.png",
+        "troop": "assets/portraits/part3/troop/fabio.png",
+        "small/56": "assets/portraits/part3/small/56/fabio.png",
+        "small/112": "assets/portraits/part3/small/112/fabio.png",
+        "small/168": "assets/portraits/part3/small/168/fabio.png"
+      },
+      "sha256": {
+        "grid": "4f51ef797339ddbe0261db8ef6444ad7f355518a7d36cff9c052cc817bbc946c",
+        "narrow": "2d6c6fc223888835deadec752017dab741641694f4958b2a3cb75bc28a8d63e8",
+        "troop": "0a16dfc36715466c24f7ce25d36919f5f4fac880265ed4bf2890d376f69c1313",
+        "small/56": "83a6af137161de3cf832ba29cfdce2e2637305bb15ff4b3ca53b704a734bf40b",
+        "small/112": "02b20600931d4536f0cf9bbda1a335e628e830428a737bdf5fa77f8547cf85df",
+        "small/168": "abf2bf98eb81c7d33938748a04e9ca3f350c15ef48f07a20f2dbc94010e97bcd"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_フィアナ３部",
+      "pid": "PID_フィアナ",
+      "characterId": "c036",
+      "messageLabel": "MPID_Fianna",
+      "names": {
+        "CNzh": "绯亚娜",
+        "EUde": "Fianna",
+        "EUen": "Fianna",
+        "EUes": "Fianna",
+        "EUfr": "Fianna",
+        "EUit": "Fianna",
+        "JPja": "フィアナ",
+        "KRko": "피아나",
+        "TWzh": "緋亞娜",
+        "USen": "Fianna",
+        "USes": "Fianna",
+        "USfr": "Fianna"
+      },
+      "englishName": "Fianna",
+      "voice": "Fia0",
+      "faceCode": "037Later5y",
+      "position": {
+        "EyeLevelX": 0.43799999356269836,
+        "EyeLevelY": 0.4359999895095825,
+        "EyeCenterX": 0.5339999794960022,
+        "EyeCenterY": 0.4339999854564667,
+        "FaceCenterX": 0.45399999618530273,
+        "FaceCenterY": 0.4359999895095825
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.45399999618530273,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.0,
+            0.0009999871253967285,
+            0.9300000071525574,
+            0.8709999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43799999356269836,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.43799999356269836,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.03799998760223389,
+            0.29100000858306885,
+            0.8379999995231628,
+            0.5809999704360962
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43799999356269836,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.43799999356269836,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.03799998760223389,
+            0.23099999129772186,
+            0.8379999995231628,
+            0.640999972820282
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/fianna.png",
+        "narrow": "assets/portraits/part3/narrow/fianna.png",
+        "troop": "assets/portraits/part3/troop/fianna.png",
+        "small/56": "assets/portraits/part3/small/56/fianna.png",
+        "small/112": "assets/portraits/part3/small/112/fianna.png",
+        "small/168": "assets/portraits/part3/small/168/fianna.png"
+      },
+      "sha256": {
+        "grid": "5981d2891e5013ce4bed0456da0b34539bcdb7e94d03dd0bc8b97832b9153e86",
+        "narrow": "c6a486766d708cbaf6795e419f42aedc0f174974b1368acc736c0f2b0ba14234",
+        "troop": "71a2a8d5fa9ec72574b2e397f0a3551f0974d288460fa601694c8c455ec47249",
+        "small/56": "24e636b78e41cec559a52ad24ff56a507182e7ec97a7720a265bac4c91fb80e4",
+        "small/112": "8e3e17f1643b55ec16fe96c6b6f53c76c86118ce8b749f3e0ad8c2187e1ca1e0",
+        "small/168": "c108cb8e2e8fe39b136a4626f5c6d24786bb1a507c5e0f30676b1e56d8762fc4"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ゲイツ３部",
+      "pid": "PID_ゲイツ",
+      "characterId": "c023",
+      "messageLabel": "MPID_Gates",
+      "names": {
+        "CNzh": "盖茨",
+        "EUde": "Gaitz",
+        "EUen": "Gaitz",
+        "EUes": "Gaitz",
+        "EUfr": "Gaitz",
+        "EUit": "Gaitz",
+        "JPja": "ゲイツ",
+        "KRko": "게이츠",
+        "TWzh": "蓋茨",
+        "USen": "Gaitz",
+        "USes": "Gaitz",
+        "USfr": "Gaitz"
+      },
+      "englishName": "Gaitz",
+      "voice": "Gat0",
+      "faceCode": "030Later5y",
+      "position": {
+        "EyeLevelX": 0.41499999165534973,
+        "EyeLevelY": 0.4129999876022339,
+        "EyeCenterX": 0.46299999952316284,
+        "EyeCenterY": 0.40400001406669617,
+        "FaceCenterX": 0.41499999165534973,
+        "FaceCenterY": 0.4129999876022339
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.41499999165534973,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.4129999876022339
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.2680000066757202,
+            0.8149999976158142,
+            0.5579999685287476
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41499999165534973,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.41499999165534973,
+            0.4129999876022339
+          ],
+          "uv_rect": [
+            0.014999985694885254,
+            0.20799998939037323,
+            0.8149999976158142,
+            0.6179999709129333
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/gaitz.png",
+        "narrow": "assets/portraits/part3/narrow/gaitz.png",
+        "troop": "assets/portraits/part3/troop/gaitz.png",
+        "small/56": "assets/portraits/part3/small/56/gaitz.png",
+        "small/112": "assets/portraits/part3/small/112/gaitz.png",
+        "small/168": "assets/portraits/part3/small/168/gaitz.png"
+      },
+      "sha256": {
+        "grid": "f444508e5f59e515fd042844831bddefa3d2307016df60f1e4bd742d422f1efc",
+        "narrow": "f31fa1856337bf3218f9e6cd825409cfda5543e1daffa7c927b9e6a9502cc738",
+        "troop": "87d6addf2b71b5d79b75975cf40954c81e4d7f0a926703c734d0e3cdce67f5e6",
+        "small/56": "1b3bb7c79d871f2ce0a8243d0663c345a90e6bb946257fcf7ee2eeee86bbf973",
+        "small/112": "4bf9a5d8be8792364b6804bd01df36ae194a63f27f0a2960a96eaa95a9209d87",
+        "small/168": "98f199024a45f8bee0923ce8170d9cf04d7b39a68ba60958d38d8e529d193108"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_グルジン仮面無し",
+      "pid": "PID_グラディウス",
+      "characterId": "c073",
+      "messageLabel": "MPID_Gradius",
+      "names": {
+        "CNzh": "古拉迪乌斯",
+        "EUde": "Gladius",
+        "EUen": "Gladius",
+        "EUes": "Gladius",
+        "EUfr": "Gladius",
+        "EUit": "Gladius",
+        "JPja": "グラディウス",
+        "KRko": "그라디우스",
+        "TWzh": "古拉迪烏斯",
+        "USen": "Gladius",
+        "USes": "Gladius",
+        "USfr": "Gladius"
+      },
+      "englishName": "Gladius",
+      "voice": "Gra0",
+      "faceCode": "119_MaskOff",
+      "position": {
+        "EyeLevelX": 0.40400001406669617,
+        "EyeLevelY": 0.3930000066757202,
+        "EyeCenterX": 0.23199999332427979,
+        "EyeCenterY": 0.42100000381469727,
+        "FaceCenterX": -1.0,
+        "FaceCenterY": -1.0
+      },
+      "windows": {
+        "grid": {
+          "center_type": "EyeCenter",
+          "selected_center": [
+            0.23199999332427979,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.40400001406669617,
+            0.3930000066757202
+          ],
+          "clamped_center": [
+            0.40400001406669617,
+            0.3930000066757202
+          ],
+          "uv_rect": [
+            0.0040000081062316895,
+            0.24800001084804535,
+            0.8040000200271606,
+            0.5379999876022339
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.40400001406669617,
+            0.3930000066757202
+          ],
+          "clamped_center": [
+            0.40400001406669617,
+            0.3930000066757202
+          ],
+          "uv_rect": [
+            0.0040000081062316895,
+            0.18800000846385956,
+            0.8040000200271606,
+            0.5979999899864197
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/gladius.png",
+        "narrow": "assets/portraits/part3/narrow/gladius.png",
+        "troop": "assets/portraits/part3/troop/gladius.png",
+        "small/56": "assets/portraits/part3/small/56/gladius.png",
+        "small/112": "assets/portraits/part3/small/112/gladius.png",
+        "small/168": "assets/portraits/part3/small/168/gladius.png"
+      },
+      "sha256": {
+        "grid": "9e3d8f2adee1e6912dad83d35d322be431d6872258072a15dfd0a21f4888b197",
+        "narrow": "ac76efbd285a872d26f7a1fc93403f8272eee6ee47b15c910413ad9a370eb596",
+        "troop": "6da97e5bb3c3ded7666fd0ea442e2ac78900b32059eff1d38d493c2e933c2153",
+        "small/56": "a96300de8a616d85fe15bd7b4a8d358dd58227c14e153fbf73eae81175382e81",
+        "small/112": "05ff3efc2ee299707ab193719444fa90e0b84e445472bba63d6bc2e189b5991e",
+        "small/168": "5cb8e78f5aeb44b1b9b7a75129ec89d4794d41ec19952d6cf6ee52606e018c04"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ゴライアス３部",
+      "pid": "PID_ゴライアス",
+      "characterId": "c024",
+      "messageLabel": "MPID_Goliath",
+      "names": {
+        "CNzh": "哥莱亚斯",
+        "EUde": "Goliath",
+        "EUen": "Goliath",
+        "EUes": "Goliath",
+        "EUfr": "Goliath",
+        "EUit": "Goliath",
+        "JPja": "ゴライアス",
+        "KRko": "골라이어스",
+        "TWzh": "哥萊亞斯",
+        "USen": "Goliath",
+        "USes": "Goliath",
+        "USfr": "Goliath"
+      },
+      "englishName": "Goliath",
+      "voice": "Gol0",
+      "faceCode": "029Later5y",
+      "position": {
+        "EyeLevelX": 0.4300000071525574,
+        "EyeLevelY": 0.40400001406669617,
+        "EyeCenterX": 0.39500001072883606,
+        "EyeCenterY": 0.37299999594688416,
+        "FaceCenterX": 0.4169999957084656,
+        "FaceCenterY": 0.37599998712539673
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4169999957084656,
+            0.37599998712539673
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.40400001406669617
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.40400001406669617
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.2590000033378601,
+            0.8300000429153442,
+            0.5490000247955322
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.40400001406669617
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.40400001406669617
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.1990000158548355,
+            0.8300000429153442,
+            0.609000027179718
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/goliath.png",
+        "narrow": "assets/portraits/part3/narrow/goliath.png",
+        "troop": "assets/portraits/part3/troop/goliath.png",
+        "small/56": "assets/portraits/part3/small/56/goliath.png",
+        "small/112": "assets/portraits/part3/small/112/goliath.png",
+        "small/168": "assets/portraits/part3/small/168/goliath.png"
+      },
+      "sha256": {
+        "grid": "a946ada5c7452b6d8f7c109dfac400de98e55dba40075b125f75a5cb23124361",
+        "narrow": "836c56e085e5e631bbed61d27a35306c6564d5e4834bac257fc33b26c1088896",
+        "troop": "51a3d4b2df66fc961e842eaec97e1fac213de7938cf50faa5badff3d225bf8d7",
+        "small/56": "e32bfd7842f7f4a2ee1e2878fbc50e67928fe2717c0b59952fa9639d5268b6b1",
+        "small/112": "af18584fac1f1aed514144d32ee31990f1aaba15690fee4f2f4a042da99fc57c",
+        "small/168": "ed0dd944e5e9d22ee5338d470ca2f95e7ef4d648f992525dd87d432cee964680"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ハルヴィン３部",
+      "pid": "PID_ハルヴィン",
+      "characterId": "c041",
+      "messageLabel": "MPID_Halvin",
+      "names": {
+        "CNzh": "哈尔温",
+        "EUde": "Halvin",
+        "EUen": "Halvin",
+        "EUes": "Halvin",
+        "EUfr": "Halvin",
+        "EUit": "Halvin",
+        "JPja": "ハルヴィン",
+        "KRko": "하르빈",
+        "TWzh": "哈爾溫",
+        "USen": "Halvin",
+        "USes": "Halvin",
+        "USfr": "Halvin"
+      },
+      "englishName": "Halvin",
+      "voice": "Hal0",
+      "faceCode": "054Later5y",
+      "position": {
+        "EyeLevelX": 0.42899999022483826,
+        "EyeLevelY": 0.4300000071525574,
+        "EyeCenterX": 0.3880000114440918,
+        "EyeCenterY": 0.4320000112056732,
+        "FaceCenterX": 0.4099999964237213,
+        "FaceCenterY": 0.4300000071525574
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4099999964237213,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "uv_rect": [
+            0.02899998426437378,
+            0.2850000262260437,
+            0.8289999961853027,
+            0.574999988079071
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "clamped_center": [
+            0.42899999022483826,
+            0.4300000071525574
+          ],
+          "uv_rect": [
+            0.02899998426437378,
+            0.22500000894069672,
+            0.8289999961853027,
+            0.6349999904632568
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/halvin.png",
+        "narrow": "assets/portraits/part3/narrow/halvin.png",
+        "troop": "assets/portraits/part3/troop/halvin.png",
+        "small/56": "assets/portraits/part3/small/56/halvin.png",
+        "small/112": "assets/portraits/part3/small/112/halvin.png",
+        "small/168": "assets/portraits/part3/small/168/halvin.png"
+      },
+      "sha256": {
+        "grid": "9a069d1870954c2f60bbe2d387c1ff1e8a429424c782b7534dca5a18a42bd0e8",
+        "narrow": "97471253e1e97d145bd4308186c0f902bb30c626005248e6bce4217360dfaf77",
+        "troop": "ac0be515bcc35a278fb8d89fe307de6c45fd3646f851880df4f44bff117becf4",
+        "small/56": "d04365092d5cc69341feedfe5357e30d640e46c9454aa55146345c335ea529dd",
+        "small/112": "bfbb1ea0526d2f49c692d2d01b8fbf470d69fe8359358697bf740e30676352f1",
+        "small/168": "cf57ab768c277123d4ec1c88cc9aed73b02845b81a5e0e7eed7aeaff73d9533b"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_コウカ３部",
+      "pid": "PID_コウカ",
+      "characterId": "c002",
+      "messageLabel": "MPID_Kouka",
+      "names": {
+        "CNzh": "红花",
+        "EUde": "Hong Hua",
+        "EUen": "Hong Hua",
+        "EUes": "Hong Hua",
+        "EUfr": "Hong Hua",
+        "EUit": "Hong Hua",
+        "JPja": "コウカ",
+        "KRko": "홍화",
+        "TWzh": "紅花",
+        "USen": "Hong Hua",
+        "USes": "Hong Hua",
+        "USfr": "Hong Hua"
+      },
+      "englishName": "Hong Hua",
+      "voice": "Kou1",
+      "faceCode": "107",
+      "position": {
+        "EyeLevelX": 0.43700000643730164,
+        "EyeLevelY": 0.4410000145435333,
+        "EyeCenterX": 0.37299999594688416,
+        "EyeCenterY": 0.44200000166893005,
+        "FaceCenterX": 0.4050000011920929,
+        "FaceCenterY": 0.4440000057220459
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4050000011920929,
+            0.4440000057220459
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4440000057220459
+          ],
+          "uv_rect": [
+            0.0,
+            0.009000003337860107,
+            0.9300000071525574,
+            0.8790000081062317
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43700000643730164,
+            0.4410000145435333
+          ],
+          "clamped_center": [
+            0.43700000643730164,
+            0.4410000145435333
+          ],
+          "uv_rect": [
+            0.03700000047683716,
+            0.29600000381469727,
+            0.8370000123977661,
+            0.5860000252723694
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43700000643730164,
+            0.4410000145435333
+          ],
+          "clamped_center": [
+            0.43700000643730164,
+            0.4410000145435333
+          ],
+          "uv_rect": [
+            0.03700000047683716,
+            0.23600001633167267,
+            0.8370000123977661,
+            0.6460000276565552
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/hong-hua.png",
+        "narrow": "assets/portraits/part3/narrow/hong-hua.png",
+        "troop": "assets/portraits/part3/troop/hong-hua.png",
+        "small/56": "assets/portraits/part3/small/56/hong-hua.png",
+        "small/112": "assets/portraits/part3/small/112/hong-hua.png",
+        "small/168": "assets/portraits/part3/small/168/hong-hua.png"
+      },
+      "sha256": {
+        "grid": "3dc3a18e59f6f7ac9525ee492d7c30d2d40a381b51095eb944df2adebb0e3b79",
+        "narrow": "ac464f7008655cd0c9416886b7523ef3227bf2ceae46e4d433c4c0938f77f642",
+        "troop": "26f0cfdb2e9ae825d93607af1e37e251ed106f9879a620aba74c32ade18b6702",
+        "small/56": "6665f7e3fe8c43810d643d15dd7c594eac835846f384c3d08c5892e38657afef",
+        "small/112": "1f13fdf71241dbbf6be736458e7a2ddc70a6042beeb7993f27870940ddb8fec9",
+        "small/168": "1659884444511e7fdf7328d5e2cdb24897ed0b600839e858cc5974844dcef4a4"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_イニオニ３部",
+      "pid": "PID_イニオニ",
+      "characterId": "c057",
+      "messageLabel": "MPID_Inioni",
+      "names": {
+        "CNzh": "易尼奥尼",
+        "EUde": "Inyoni",
+        "EUen": "Inyoni",
+        "EUes": "Inyoni",
+        "EUfr": "Inyoni",
+        "EUit": "Inyoni",
+        "JPja": "イニオニ",
+        "KRko": "이니오니",
+        "TWzh": "易尼奧尼",
+        "USen": "Inyoni",
+        "USes": "Inyoni",
+        "USfr": "Inyoni"
+      },
+      "englishName": "Inyoni",
+      "voice": "Ini0",
+      "faceCode": "097Later5y",
+      "position": {
+        "EyeLevelX": 0.41600000858306885,
+        "EyeLevelY": 0.4129999876022339,
+        "EyeCenterX": 0.46299999952316284,
+        "EyeCenterY": 0.4189999997615814,
+        "FaceCenterX": 0.4169999957084656,
+        "FaceCenterY": 0.4129999876022339
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4169999957084656,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41600000858306885,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.41600000858306885,
+            0.4129999876022339
+          ],
+          "uv_rect": [
+            0.01600000262260437,
+            0.2680000066757202,
+            0.8159999847412109,
+            0.5579999685287476
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41600000858306885,
+            0.4129999876022339
+          ],
+          "clamped_center": [
+            0.41600000858306885,
+            0.4129999876022339
+          ],
+          "uv_rect": [
+            0.01600000262260437,
+            0.20799998939037323,
+            0.8159999847412109,
+            0.6179999709129333
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/inyoni.png",
+        "narrow": "assets/portraits/part3/narrow/inyoni.png",
+        "troop": "assets/portraits/part3/troop/inyoni.png",
+        "small/56": "assets/portraits/part3/small/56/inyoni.png",
+        "small/112": "assets/portraits/part3/small/112/inyoni.png",
+        "small/168": "assets/portraits/part3/small/168/inyoni.png"
+      },
+      "sha256": {
+        "grid": "5b57f6c0e425c55ac44cc7f36342f19d9335b1c0b516f842672cea46eba07bfb",
+        "narrow": "08ca0fdbc97308b657565037299c4863709b9ea232b85757be4722e036d5dee5",
+        "troop": "34156caa5fd925f4b2f01b1b449f950657f8d2f9b6961e135cc88d19a23c9956",
+        "small/56": "d3a4ffe62ebec23965e63c1c453b201c15e0af1890c2fbe427539dc70a5c1e5d",
+        "small/112": "142188d5e41ca34f27d8ef326fc897c1ba3299a7ee3185c7d6a1306b3c2e1a0e",
+        "small/168": "411f76e6d1663195297eca00ddd1123ff9b44db29cc5d86906ae0a49e933e1e7"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_イオ３部",
+      "pid": "PID_イオ",
+      "characterId": "c044",
+      "messageLabel": "MPID_Io",
+      "names": {
+        "CNzh": "伊欧",
+        "EUde": "Io",
+        "EUen": "Io",
+        "EUes": "Io",
+        "EUfr": "Io",
+        "EUit": "Io",
+        "JPja": "イオ",
+        "KRko": "이오",
+        "TWzh": "伊歐",
+        "USen": "Io",
+        "USes": "Io",
+        "USfr": "Io"
+      },
+      "englishName": "Io",
+      "voice": "Iio0",
+      "faceCode": "088Later5y",
+      "position": {
+        "EyeLevelX": 0.4320000112056732,
+        "EyeLevelY": 0.4189999997615814,
+        "EyeCenterX": 0.39899998903274536,
+        "EyeCenterY": 0.4129999876022339,
+        "FaceCenterX": 0.4339999854564667,
+        "FaceCenterY": 0.4189999997615814
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4339999854564667,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4320000112056732,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.4320000112056732,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.03200000524520874,
+            0.27399998903274536,
+            0.8320000171661377,
+            0.5640000104904175
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4320000112056732,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.4320000112056732,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.03200000524520874,
+            0.21400000154972076,
+            0.8320000171661377,
+            0.6240000128746033
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/io.png",
+        "narrow": "assets/portraits/part3/narrow/io.png",
+        "troop": "assets/portraits/part3/troop/io.png",
+        "small/56": "assets/portraits/part3/small/56/io.png",
+        "small/112": "assets/portraits/part3/small/112/io.png",
+        "small/168": "assets/portraits/part3/small/168/io.png"
+      },
+      "sha256": {
+        "grid": "bf7a1431b545a457d0cf36d107719211404baa4ebeefaaba065cc6d9c57cc28a",
+        "narrow": "e408ea7c0cdeca7cca83ed580d5492b8c5a7e2f9774488aebd042f850903750a",
+        "troop": "1b6c13ed9e70a27c7c8892c7e1ece8cacca2da0584b58fbbc882e4b9aea0c516",
+        "small/56": "15f66550ecd818c2d927020fb965ddd379fd60a2cf570ad285fce966de50f79b",
+        "small/112": "a0132b6903ce9e47e3e7227541a5a27fd8e3ba021a1828c4acdaf7a4967faf2d",
+        "small/168": "d6de2d29372182729091624bcaf38ec2efcfae9fe5a154713e15a8cd1a5793b2"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_レダ３部",
+      "pid": "PID_レダ",
+      "characterId": "c017",
+      "messageLabel": "MPID_Leda",
+      "names": {
+        "CNzh": "蕾达",
+        "EUde": "Leda",
+        "EUen": "Leda",
+        "EUes": "Leda",
+        "EUfr": "Leda",
+        "EUit": "Leda",
+        "JPja": "レダ",
+        "KRko": "레다",
+        "TWzh": "蕾達",
+        "USen": "Leda",
+        "USes": "Leda",
+        "USfr": "Leda"
+      },
+      "englishName": "Leda",
+      "voice": "Led1",
+      "faceCode": "023Later5y",
+      "position": {
+        "EyeLevelX": 0.4320000112056732,
+        "EyeLevelY": 0.4350000023841858,
+        "EyeCenterX": 0.42899999022483826,
+        "EyeCenterY": 0.41600000858306885,
+        "FaceCenterX": 0.4320000112056732,
+        "FaceCenterY": 0.4350000023841858
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4320000112056732,
+            0.4350000023841858
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4320000112056732,
+            0.4350000023841858
+          ],
+          "clamped_center": [
+            0.4320000112056732,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.03200000524520874,
+            0.2900000214576721,
+            0.8320000171661377,
+            0.5799999833106995
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4320000112056732,
+            0.4350000023841858
+          ],
+          "clamped_center": [
+            0.4320000112056732,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.03200000524520874,
+            0.23000000417232513,
+            0.8320000171661377,
+            0.6399999856948853
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/leda.png",
+        "narrow": "assets/portraits/part3/narrow/leda.png",
+        "troop": "assets/portraits/part3/troop/leda.png",
+        "small/56": "assets/portraits/part3/small/56/leda.png",
+        "small/112": "assets/portraits/part3/small/112/leda.png",
+        "small/168": "assets/portraits/part3/small/168/leda.png"
+      },
+      "sha256": {
+        "grid": "3bb52d3f32b02f39b809a5e8c20669f1305c201fac813f3da1599edfd5806416",
+        "narrow": "2d8ecc7143ac185cbb907996599130e68a3115118cac2495ee428765b7e8c4e0",
+        "troop": "4e7d07187a6699cd2c31e7e4db9e22a73f9d1f11cbd99bc32ae0fb1e915e5c28",
+        "small/56": "de81fb15d96b118197836037fd7c8de715deed54c9ee4fd4a7dd5ae8dff89fc2",
+        "small/112": "b469f1a4d01527653a2b5ff1d6e946f7bb9d96b078ba68059c91e491f46b2845",
+        "small/168": "d7d9b639256e64f23bcfa4f0bd90c81e0ae7a6697ddf6b2fb9413b383aecdd2f"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_リリアン３部",
+      "pid": "PID_リリアン",
+      "characterId": "c015",
+      "messageLabel": "MPID_Lillian",
+      "names": {
+        "CNzh": "莉利安",
+        "EUde": "Lilian",
+        "EUen": "Lilian",
+        "EUes": "Lilian",
+        "EUfr": "Lilian",
+        "EUit": "Lilian",
+        "JPja": "リリアン",
+        "KRko": "릴리안",
+        "TWzh": "莉利安",
+        "USen": "Lilian",
+        "USes": "Lilian",
+        "USfr": "Lilian"
+      },
+      "englishName": "Lilian",
+      "voice": "Lil1",
+      "faceCode": "044Later5y",
+      "position": {
+        "EyeLevelX": 0.4339999854564667,
+        "EyeLevelY": 0.45899999141693115,
+        "EyeCenterX": 0.49799999594688416,
+        "EyeCenterY": 0.44200000166893005,
+        "FaceCenterX": 0.46000000834465027,
+        "FaceCenterY": 0.44600000977516174
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.46000000834465027,
+            0.44600000977516174
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.44600000977516174
+          ],
+          "uv_rect": [
+            0.0,
+            0.011000007390975952,
+            0.9300000071525574,
+            0.8810000419616699
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.45899999141693115
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.45899999141693115
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.3140000104904175,
+            0.8339999914169312,
+            0.6039999723434448
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.45899999141693115
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.45899999141693115
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.2540000081062317,
+            0.8339999914169312,
+            0.6639999747276306
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/lilian.png",
+        "narrow": "assets/portraits/part3/narrow/lilian.png",
+        "troop": "assets/portraits/part3/troop/lilian.png",
+        "small/56": "assets/portraits/part3/small/56/lilian.png",
+        "small/112": "assets/portraits/part3/small/112/lilian.png",
+        "small/168": "assets/portraits/part3/small/168/lilian.png"
+      },
+      "sha256": {
+        "grid": "7415cd67392ffbcd167fa0e5c606369b7c36af21a4e0c23349ac36a4a4f2ad37",
+        "narrow": "3f8ee499ff3ef18d4be312441b451b363aa9bf1f15269eb94b1e6640cff3d364",
+        "troop": "53b2d7af6a0ef66b45fa8e81c349e88e8e7961cca0d0adff5627970ac66f1e9f",
+        "small/56": "349e08c154a2074adba1147f20bd45f5340f80f55fa57bcc13922493b6b72827",
+        "small/112": "bbd2984c921d0d5b483e6c6422da75acb0f44bb3b58779720becda861085f31d",
+        "small/168": "11d8208ee9c51d53dbf28f513723506672a2aaecc6fb8349335555ad42c60549"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ロレッタ３部",
+      "pid": "PID_ロレッタ",
+      "characterId": "c029",
+      "messageLabel": "MPID_Loretta",
+      "names": {
+        "CNzh": "罗蕾塔",
+        "EUde": "Loretta",
+        "EUen": "Loretta",
+        "EUes": "Loretta",
+        "EUfr": "Loretta",
+        "EUit": "Loretta",
+        "JPja": "ロレッタ",
+        "KRko": "로레타",
+        "TWzh": "羅蕾塔",
+        "USen": "Loretta",
+        "USes": "Loretta",
+        "USfr": "Loretta"
+      },
+      "englishName": "Loretta",
+      "voice": "Lor1",
+      "faceCode": "039Later5y",
+      "position": {
+        "EyeLevelX": 0.4230000078678131,
+        "EyeLevelY": 0.4569999873638153,
+        "EyeCenterX": 0.36399999260902405,
+        "EyeCenterY": 0.4490000009536743,
+        "FaceCenterX": 0.4129999876022339,
+        "FaceCenterY": 0.45399999618530273
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4129999876022339,
+            0.45399999618530273
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.45399999618530273
+          ],
+          "uv_rect": [
+            0.0,
+            0.018999993801116943,
+            0.9300000071525574,
+            0.8889999985694885
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4230000078678131,
+            0.4569999873638153
+          ],
+          "clamped_center": [
+            0.4230000078678131,
+            0.4569999873638153
+          ],
+          "uv_rect": [
+            0.023000001907348633,
+            0.31199997663497925,
+            0.8230000138282776,
+            0.6019999980926514
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4230000078678131,
+            0.4569999873638153
+          ],
+          "clamped_center": [
+            0.4230000078678131,
+            0.4569999873638153
+          ],
+          "uv_rect": [
+            0.023000001907348633,
+            0.25199997425079346,
+            0.8230000138282776,
+            0.6620000004768372
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/loretta.png",
+        "narrow": "assets/portraits/part3/narrow/loretta.png",
+        "troop": "assets/portraits/part3/troop/loretta.png",
+        "small/56": "assets/portraits/part3/small/56/loretta.png",
+        "small/112": "assets/portraits/part3/small/112/loretta.png",
+        "small/168": "assets/portraits/part3/small/168/loretta.png"
+      },
+      "sha256": {
+        "grid": "bdf91ca9353efd72d38ea254a1cabb45d4fa9fefca2d1761e8f7847af8d6c1ac",
+        "narrow": "29eb32a19fec07cb1eebf92519b3a68150cb59c95b396a25554510a4b186691c",
+        "troop": "bc993c901f23d99b053a6ecd072846fb7a7f0f1c3d3315aa6a7bb65c501eba2f",
+        "small/56": "30227accb1dd64b0ccff4b4cec93da6f67ab1c20c811d8c88defc7c0f5c97831",
+        "small/112": "2f92e44712b42999aa980110bb97f820ec5c8fbdf1f2053504d79bcd45a6a280",
+        "small/168": "f14e3eb72347e07c6187362b6229dd2f5faf5099e7a56ad873a1be6d0d4b3636"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ルルディヤー３部",
+      "pid": "PID_ルルディヤー",
+      "characterId": "c035",
+      "messageLabel": "MPID_Lourdija",
+      "names": {
+        "CNzh": "露露蒂雅",
+        "EUde": "Ludia",
+        "EUen": "Ludia",
+        "EUes": "Ludia",
+        "EUfr": "Ludia",
+        "EUit": "Ludia",
+        "JPja": "ルルディヤー",
+        "KRko": "루루디아",
+        "TWzh": "露露蒂雅",
+        "USen": "Ludia",
+        "USes": "Ludia",
+        "USfr": "Ludia"
+      },
+      "englishName": "Ludia",
+      "voice": "Lou0",
+      "faceCode": "036Later5y",
+      "position": {
+        "EyeLevelX": 0.4359999895095825,
+        "EyeLevelY": 0.44600000977516174,
+        "EyeCenterX": 0.421999990940094,
+        "EyeCenterY": 0.4449999928474426,
+        "FaceCenterX": 0.4339999854564667,
+        "FaceCenterY": 0.44600000977516174
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4339999854564667,
+            0.44600000977516174
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.44600000977516174
+          ],
+          "uv_rect": [
+            0.0,
+            0.011000007390975952,
+            0.9300000071525574,
+            0.8810000419616699
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4359999895095825,
+            0.44600000977516174
+          ],
+          "clamped_center": [
+            0.4359999895095825,
+            0.44600000977516174
+          ],
+          "uv_rect": [
+            0.03599998354911804,
+            0.3009999990463257,
+            0.8359999656677246,
+            0.5910000205039978
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4359999895095825,
+            0.44600000977516174
+          ],
+          "clamped_center": [
+            0.4359999895095825,
+            0.44600000977516174
+          ],
+          "uv_rect": [
+            0.03599998354911804,
+            0.2410000115633011,
+            0.8359999656677246,
+            0.6510000228881836
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/ludia.png",
+        "narrow": "assets/portraits/part3/narrow/ludia.png",
+        "troop": "assets/portraits/part3/troop/ludia.png",
+        "small/56": "assets/portraits/part3/small/56/ludia.png",
+        "small/112": "assets/portraits/part3/small/112/ludia.png",
+        "small/168": "assets/portraits/part3/small/168/ludia.png"
+      },
+      "sha256": {
+        "grid": "975416e20994cb983d518a8fad1918a805464355721508613dfed6b088606d9a",
+        "narrow": "f0250d98cf1863cccbb4e63719fc25b527f31127b39a4724be8c1449f5332a87",
+        "troop": "730c65742819f2f8670f8c74b0b92898c4f2a3cf787470c4afc3b75277750467",
+        "small/56": "17620578cda92371de484cc05354ee290c20d7c662943dc70e3fad761f28526c",
+        "small/112": "2b23cb1d1c2f999ebae11e15cc07798f9e05cc5d77582b3483a893b23cec6cc5",
+        "small/168": "8b69bdc810cc4ce433f9114d99c80c398e1c218c3edff5afbb6ea5cea3c7c850"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ライサンダー３部",
+      "pid": "PID_ライサンダー",
+      "characterId": "c016",
+      "messageLabel": "MPID_Lysander",
+      "names": {
+        "CNzh": "莱桑达",
+        "EUde": "Lysander",
+        "EUen": "Lysander",
+        "EUes": "Lysander",
+        "EUfr": "Lysander",
+        "EUit": "Lysander",
+        "JPja": "ライサンダー",
+        "KRko": "라이선더",
+        "TWzh": "萊桑達",
+        "USen": "Lysander",
+        "USes": "Lysander",
+        "USfr": "Lysander"
+      },
+      "englishName": "Lysander",
+      "voice": "Lys1",
+      "faceCode": "045Later5y",
+      "position": {
+        "EyeLevelX": 0.4300000071525574,
+        "EyeLevelY": 0.41600000858306885,
+        "EyeCenterX": 0.5199999809265137,
+        "EyeCenterY": 0.41999998688697815,
+        "FaceCenterX": 0.4569999873638153,
+        "FaceCenterY": 0.41600000858306885
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4569999873638153,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.2710000276565552,
+            0.8300000429153442,
+            0.5609999895095825
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4300000071525574,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4300000071525574,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.030000001192092896,
+            0.2110000103712082,
+            0.8300000429153442,
+            0.6209999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/lysander.png",
+        "narrow": "assets/portraits/part3/narrow/lysander.png",
+        "troop": "assets/portraits/part3/troop/lysander.png",
+        "small/56": "assets/portraits/part3/small/56/lysander.png",
+        "small/112": "assets/portraits/part3/small/112/lysander.png",
+        "small/168": "assets/portraits/part3/small/168/lysander.png"
+      },
+      "sha256": {
+        "grid": "2fa50ed35f10ea6588767579517ca21add5c2cd5e69fe9844de3ebdad968045d",
+        "narrow": "a0e464f4fa8250ed75d8a160b9b9cdc2dac84f09b50f0a16e10dc9badb226874",
+        "troop": "50b0ace182212909c6dd747858ccb21257a409a3492847f3e2424f3a430ca5ec",
+        "small/56": "ff38cdbf211e3dd2a27132fb5412b4739c5e6928246d6850f13c50656b108bee",
+        "small/112": "1b8bd8caaabf1dc07fe829fc2c51463de8e84ebc39c37fb42245e65cdc87c873",
+        "small/168": "d95033177911dca843eea63af1cf6f184d73752569eec59bfffb0912329b2d6b"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_マクシム３部",
+      "pid": "PID_マクシム",
+      "characterId": "c025",
+      "messageLabel": "MPID_Maxim",
+      "names": {
+        "CNzh": "马克西姆",
+        "EUde": "Maxim",
+        "EUen": "Maxim",
+        "EUes": "Maxim",
+        "EUfr": "Maxim",
+        "EUit": "Maxim",
+        "JPja": "マクシム",
+        "KRko": "맥심",
+        "TWzh": "馬克西姆",
+        "USen": "Maxim",
+        "USes": "Maxim",
+        "USfr": "Maxim"
+      },
+      "englishName": "Maxim",
+      "voice": "Max1",
+      "faceCode": "028Later5y",
+      "position": {
+        "EyeLevelX": 0.4390000104904175,
+        "EyeLevelY": 0.41999998688697815,
+        "EyeCenterX": 0.3700000047683716,
+        "EyeCenterY": 0.42399999499320984,
+        "FaceCenterX": 0.41200000047683716,
+        "FaceCenterY": 0.41999998688697815
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.41200000047683716,
+            0.41999998688697815
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4390000104904175,
+            0.41999998688697815
+          ],
+          "clamped_center": [
+            0.4390000104904175,
+            0.41999998688697815
+          ],
+          "uv_rect": [
+            0.039000004529953,
+            0.2749999761581421,
+            0.8389999866485596,
+            0.5649999976158142
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4390000104904175,
+            0.41999998688697815
+          ],
+          "clamped_center": [
+            0.4390000104904175,
+            0.41999998688697815
+          ],
+          "uv_rect": [
+            0.039000004529953,
+            0.2149999886751175,
+            0.8389999866485596,
+            0.625
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/maxim.png",
+        "narrow": "assets/portraits/part3/narrow/maxim.png",
+        "troop": "assets/portraits/part3/troop/maxim.png",
+        "small/56": "assets/portraits/part3/small/56/maxim.png",
+        "small/112": "assets/portraits/part3/small/112/maxim.png",
+        "small/168": "assets/portraits/part3/small/168/maxim.png"
+      },
+      "sha256": {
+        "grid": "ab9a55748c4f5a8181674b724f758d5e16b1d8af50510732068a68d0028c93e6",
+        "narrow": "7cacbc286f2ed61edaca938f5d432271d7f9aa5653c05fb7d9ee0219d317db9b",
+        "troop": "9d1ad7bb9de2fe9160d45b72ec64d8a1436937862366f0d0445679e3922b02e3",
+        "small/56": "081b0426f9532cada900b1c2a88b7b095a7c19e04da86e357b6fea7eb23f9dfd",
+        "small/112": "963d5309fba334e137ea497368f962de3d89eeecff5cfb0cb32f73fb272de1b9",
+        "small/168": "d09a4c13706d4c6a1c04aa7dc22a0be9642e263bd5499f6aa51c410e92fec4e4"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ミカエラ３部",
+      "pid": "PID_ミカエラ",
+      "characterId": "c011",
+      "messageLabel": "MPID_Michaela",
+      "names": {
+        "CNzh": "米迦艾拉",
+        "EUde": "Mikaela",
+        "EUen": "Mikaela",
+        "EUes": "Mikaela",
+        "EUfr": "Mikaela",
+        "EUit": "Mikaela",
+        "JPja": "ミカエラ",
+        "KRko": "미카엘라",
+        "TWzh": "米迦艾拉",
+        "USen": "Mikaela",
+        "USes": "Mikaela",
+        "USfr": "Mikaela"
+      },
+      "englishName": "Mikaela",
+      "voice": "Mic0",
+      "faceCode": "049Later5y",
+      "position": {
+        "EyeLevelX": 0.42500001192092896,
+        "EyeLevelY": 0.4189999997615814,
+        "EyeCenterX": 0.4009999930858612,
+        "EyeCenterY": 0.421999990940094,
+        "FaceCenterX": 0.41100001335144043,
+        "FaceCenterY": 0.4189999997615814
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.41100001335144043,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42500001192092896,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.42500001192092896,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.025000005960464478,
+            0.27399998903274536,
+            0.8250000476837158,
+            0.5640000104904175
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42500001192092896,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.42500001192092896,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.025000005960464478,
+            0.21400000154972076,
+            0.8250000476837158,
+            0.6240000128746033
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/mikaela.png",
+        "narrow": "assets/portraits/part3/narrow/mikaela.png",
+        "troop": "assets/portraits/part3/troop/mikaela.png",
+        "small/56": "assets/portraits/part3/small/56/mikaela.png",
+        "small/112": "assets/portraits/part3/small/112/mikaela.png",
+        "small/168": "assets/portraits/part3/small/168/mikaela.png"
+      },
+      "sha256": {
+        "grid": "fabfc43fb7c838a8969a2a9981a6f6c9e9f5d7e87f48f741e23d7e97d0d878bf",
+        "narrow": "8c19e046c9c414096c38349ca1c603079dfce1fc48c4f4eb7427340600122c42",
+        "troop": "233f65122c6aedf5b58c83c771be6e1b801623f163383235ea54604fd963de53",
+        "small/56": "ba836908ee680888b38adeaff9ffd3cd8e0e9d4f976ac2ac42bbf65bc00383ea",
+        "small/112": "a0e42cad428f6a7ccfc01c7f0621756d770b4b03904ca8d244a2740dcde71b0c",
+        "small/168": "88e97e536b3cdcf5da4a70989d6f3a565a2bb9db0901a02a37fa008cbc5de3b6"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ムウ３部",
+      "pid": "PID_ムウ",
+      "characterId": "c020",
+      "messageLabel": "MPID_Moo",
+      "names": {
+        "CNzh": "穆",
+        "EUde": "Mu",
+        "EUen": "Mu",
+        "EUes": "Mu",
+        "EUfr": "Mu",
+        "EUit": "Mu",
+        "JPja": "ムウ",
+        "KRko": "무우",
+        "TWzh": "穆",
+        "USen": "Mu",
+        "USes": "Mu",
+        "USfr": "Mu"
+      },
+      "englishName": "Mu",
+      "voice": "Moo1",
+      "faceCode": "048Later5y",
+      "position": {
+        "EyeLevelX": 0.4339999854564667,
+        "EyeLevelY": 0.4320000112056732,
+        "EyeCenterX": 0.4359999895095825,
+        "EyeCenterY": 0.4300000071525574,
+        "FaceCenterX": 0.4339999854564667,
+        "FaceCenterY": 0.4320000112056732
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4339999854564667,
+            0.4320000112056732
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.4320000112056732
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.4320000112056732
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.28700000047683716,
+            0.8339999914169312,
+            0.5770000219345093
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.4320000112056732
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.4320000112056732
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.22700001299381256,
+            0.8339999914169312,
+            0.6370000243186951
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/mu.png",
+        "narrow": "assets/portraits/part3/narrow/mu.png",
+        "troop": "assets/portraits/part3/troop/mu.png",
+        "small/56": "assets/portraits/part3/small/56/mu.png",
+        "small/112": "assets/portraits/part3/small/112/mu.png",
+        "small/168": "assets/portraits/part3/small/168/mu.png"
+      },
+      "sha256": {
+        "grid": "42524723fa8944311db64115547b02f63feae9e5d378f0f573ba1ba8e0ada700",
+        "narrow": "659b20c9662ed4bb3e1562c3786856e9d02752ae96e2066926acccbb1b3c28f6",
+        "troop": "11ac715d6ea84c24c0df710bfe524e34bdeb10c108ba7d0b84de110114afac2e",
+        "small/56": "2fef78b8a218e7a6e5c59944d47829d67b0c43bcfd01bed463611684723570fc",
+        "small/112": "d561166d94c54c8bb7dc8c4f6817f6bad20aec334e50203a6180941d6c914fda",
+        "small/168": "7652f7b43e8e08fa2af70de5c66185db75e43722f9c25ba093a01bee05e76c9f"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ミュソン",
+      "pid": "PID_ミュソン",
+      "characterId": "c072",
+      "messageLabel": "MPID_Myson",
+      "names": {
+        "CNzh": "谬森",
+        "EUde": "Myson",
+        "EUen": "Myson",
+        "EUes": "Myson",
+        "EUfr": "Myson",
+        "EUit": "Myson",
+        "JPja": "ミュソン",
+        "KRko": "뮈손",
+        "TWzh": "謬森",
+        "USen": "Myson",
+        "USes": "Myson",
+        "USfr": "Myson"
+      },
+      "englishName": "Myson",
+      "voice": "Mys0",
+      "faceCode": "101",
+      "position": {
+        "EyeLevelX": 0.4440000057220459,
+        "EyeLevelY": 0.41600000858306885,
+        "EyeCenterX": 0.5189999938011169,
+        "EyeCenterY": 0.41100001335144043,
+        "FaceCenterX": 0.43299999833106995,
+        "FaceCenterY": 0.41200000047683716
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.43299999833106995,
+            0.41200000047683716
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4440000057220459,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4440000057220459,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.04399999976158142,
+            0.2710000276565552,
+            0.843999981880188,
+            0.5609999895095825
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4440000057220459,
+            0.41600000858306885
+          ],
+          "clamped_center": [
+            0.4440000057220459,
+            0.41600000858306885
+          ],
+          "uv_rect": [
+            0.04399999976158142,
+            0.2110000103712082,
+            0.843999981880188,
+            0.6209999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/myson.png",
+        "narrow": "assets/portraits/part3/narrow/myson.png",
+        "troop": "assets/portraits/part3/troop/myson.png",
+        "small/56": "assets/portraits/part3/small/56/myson.png",
+        "small/112": "assets/portraits/part3/small/112/myson.png",
+        "small/168": "assets/portraits/part3/small/168/myson.png"
+      },
+      "sha256": {
+        "grid": "2a5eaa7120e0a979393de1e6ecd1b0f9257a6b17f9cd752e729e337912b1232a",
+        "narrow": "7fb9f10510cfd6a4798abc72eca9954698fa4febe32a6209087f6e275862eaae",
+        "troop": "1604b9166b2e1e029ab8e5097026199edf437c61443dfeedadd5c1194b404b14",
+        "small/56": "400df5b4fe3e86cdbf9bdb024874c15ea7ca11cf7cb8b871ace5512670af8c04",
+        "small/112": "f943faa75e840c3d859a210af41a92b37676a37ec73da09873f73d4c8c6527b1",
+        "small/168": "e05b545a5ac563907b6e9ab6d19f7f29df193cc2b93d1493fc0b34df91c07816"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ナジャ３部",
+      "pid": "PID_ナジャ",
+      "characterId": "c039",
+      "messageLabel": "MPID_Nazha",
+      "names": {
+        "CNzh": "哪吒",
+        "EUde": "Nezha",
+        "EUen": "Nezha",
+        "EUes": "Nezha",
+        "EUfr": "Nezha",
+        "EUit": "Nezha",
+        "JPja": "ナジャ",
+        "KRko": "나타",
+        "TWzh": "哪吒",
+        "USen": "Nezha",
+        "USes": "Nezha",
+        "USfr": "Nezha"
+      },
+      "englishName": "Nezha",
+      "voice": "Naz0",
+      "faceCode": "051Later5y",
+      "position": {
+        "EyeLevelX": 0.421999990940094,
+        "EyeLevelY": 0.4000000059604645,
+        "EyeCenterX": 0.3370000123977661,
+        "EyeCenterY": 0.4230000078678131,
+        "FaceCenterX": 0.3919999897480011,
+        "FaceCenterY": 0.40700000524520874
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3919999897480011,
+            0.40700000524520874
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.421999990940094,
+            0.4000000059604645
+          ],
+          "clamped_center": [
+            0.421999990940094,
+            0.4000000059604645
+          ],
+          "uv_rect": [
+            0.021999984979629517,
+            0.2549999952316284,
+            0.8220000267028809,
+            0.5450000166893005
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.421999990940094,
+            0.4000000059604645
+          ],
+          "clamped_center": [
+            0.421999990940094,
+            0.4000000059604645
+          ],
+          "uv_rect": [
+            0.021999984979629517,
+            0.19500000774860382,
+            0.8220000267028809,
+            0.6050000190734863
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/nezha.png",
+        "narrow": "assets/portraits/part3/narrow/nezha.png",
+        "troop": "assets/portraits/part3/troop/nezha.png",
+        "small/56": "assets/portraits/part3/small/56/nezha.png",
+        "small/112": "assets/portraits/part3/small/112/nezha.png",
+        "small/168": "assets/portraits/part3/small/168/nezha.png"
+      },
+      "sha256": {
+        "grid": "d594b3d8962fa9e6ae5b1b2ef8f45ac137aec3da54746b72e99bc72473e5f8a5",
+        "narrow": "4e02d8e54bbd910c69ebda3723d7ff730531da54ed39554758148a18a2076e52",
+        "troop": "02a0d28573a45cf080f2c57589c444fb974625b014435efb498dc12e37a4a064",
+        "small/56": "5c6d12e529358fdc0d93004d508589bbb4e210e40b8412dc4970dfbb4b1bbdef",
+        "small/112": "c32aa34411aa7d88a59a0b0c4139621b9303bf0b9b0d33bafa54ab0a2418fc55",
+        "small/168": "1fdcdc79d5f46f4e342c1770dba1aab115e3a95ccfdfc0df7d59bccc5eaa35fc"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ノクチュラ３部",
+      "pid": "PID_ノクチュラ",
+      "characterId": "c048",
+      "messageLabel": "MPID_Noctura",
+      "names": {
+        "CNzh": "诺克裘拉",
+        "EUde": "Noctula",
+        "EUen": "Noctula",
+        "EUes": "Noctula",
+        "EUfr": "Noctula",
+        "EUit": "Noctula",
+        "JPja": "ノクチュラ",
+        "KRko": "녹투라",
+        "TWzh": "諾克裘拉",
+        "USen": "Noctula",
+        "USes": "Noctula",
+        "USfr": "Noctula"
+      },
+      "englishName": "Noctula",
+      "voice": "Noc0",
+      "faceCode": "090Later5y",
+      "position": {
+        "EyeLevelX": 0.4359999895095825,
+        "EyeLevelY": 0.4449999928474426,
+        "EyeCenterX": 0.4169999957084656,
+        "EyeCenterY": 0.4410000145435333,
+        "FaceCenterX": 0.4359999895095825,
+        "FaceCenterY": 0.4449999928474426
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4359999895095825,
+            0.4449999928474426
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4449999928474426
+          ],
+          "uv_rect": [
+            0.0,
+            0.009999990463256836,
+            0.9300000071525574,
+            0.8799999952316284
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4359999895095825,
+            0.4449999928474426
+          ],
+          "clamped_center": [
+            0.4359999895095825,
+            0.4449999928474426
+          ],
+          "uv_rect": [
+            0.03599998354911804,
+            0.30000001192092896,
+            0.8359999656677246,
+            0.5899999737739563
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4359999895095825,
+            0.4449999928474426
+          ],
+          "clamped_center": [
+            0.4359999895095825,
+            0.4449999928474426
+          ],
+          "uv_rect": [
+            0.03599998354911804,
+            0.23999999463558197,
+            0.8359999656677246,
+            0.6499999761581421
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/noctula.png",
+        "narrow": "assets/portraits/part3/narrow/noctula.png",
+        "troop": "assets/portraits/part3/troop/noctula.png",
+        "small/56": "assets/portraits/part3/small/56/noctula.png",
+        "small/112": "assets/portraits/part3/small/112/noctula.png",
+        "small/168": "assets/portraits/part3/small/168/noctula.png"
+      },
+      "sha256": {
+        "grid": "5de4922ac513d83dcae1e577a0d016fb73db35ab9d2ecdde35a358598c26d0f9",
+        "narrow": "0d812553b43790e91bbb2aec2e2737400724087a9bb94baf0f18112b7ce31459",
+        "troop": "388c6a5aa42366c8f8f37a2a9c3563ceb90cacdd178639d18f39deda3e119581",
+        "small/56": "ac25e1cc445f7399b234ba06147431f663f2143bfa91446544a26809110d1de2",
+        "small/112": "7598edfedf33ca24c12e4b612dc85307252c03b80149a9d1debc89678f1493e3",
+        "small/168": "4876d08d51affc2c76ddacd02de59dd72913ad6754cac8eadad7fe31a0b4a78d"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ヌディーヌ３部",
+      "pid": "PID_ヌディーヌ",
+      "characterId": "c043",
+      "messageLabel": "MPID_Nedine",
+      "names": {
+        "CNzh": "努蒂奴",
+        "EUde": "Nydine",
+        "EUen": "Nydine",
+        "EUes": "Nydine",
+        "EUfr": "Nydine",
+        "EUit": "Nydine",
+        "JPja": "ヌディーヌ",
+        "KRko": "누디누",
+        "TWzh": "努蒂奴",
+        "USen": "Nydine",
+        "USes": "Nydine",
+        "USfr": "Nydine"
+      },
+      "englishName": "Nydine",
+      "voice": "Ned0",
+      "faceCode": "093Later5y",
+      "position": {
+        "EyeLevelX": 0.4339999854564667,
+        "EyeLevelY": 0.44200000166893005,
+        "EyeCenterX": 0.4560000002384186,
+        "EyeCenterY": 0.43299999833106995,
+        "FaceCenterX": 0.421999990940094,
+        "FaceCenterY": 0.44200000166893005
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.421999990940094,
+            0.44200000166893005
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.44200000166893005
+          ],
+          "uv_rect": [
+            0.0,
+            0.006999999284744263,
+            0.9300000071525574,
+            0.8769999742507935
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.44200000166893005
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.44200000166893005
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.296999990940094,
+            0.8339999914169312,
+            0.5870000123977661
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4339999854564667,
+            0.44200000166893005
+          ],
+          "clamped_center": [
+            0.4339999854564667,
+            0.44200000166893005
+          ],
+          "uv_rect": [
+            0.0339999794960022,
+            0.2370000034570694,
+            0.8339999914169312,
+            0.6470000147819519
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/nydine.png",
+        "narrow": "assets/portraits/part3/narrow/nydine.png",
+        "troop": "assets/portraits/part3/troop/nydine.png",
+        "small/56": "assets/portraits/part3/small/56/nydine.png",
+        "small/112": "assets/portraits/part3/small/112/nydine.png",
+        "small/168": "assets/portraits/part3/small/168/nydine.png"
+      },
+      "sha256": {
+        "grid": "3ae001759c8dca34e03936b6c5f38ef61760f279bfcb41e835d8d9575cfe7495",
+        "narrow": "67f1a552bccb5291ece3e44a1f5f3f508914018c41188c4e856c01bd896aa265",
+        "troop": "1a9ade83e092defdc6285e0aa1380e5b671ebd33a88e9d82ebc63797415b88d8",
+        "small/56": "1800a30935b58ec373aea8deb3a31e36a3e2e9111236c2c6777eb3a6763bf0bd",
+        "small/112": "846d595344cf809efca800b9a3accee9ac0cff4b25c860fe4042515bff1c8bd8",
+        "small/168": "21ae47ccd2d324e8f26f3fb0222c80a3cc2b8e87da5ce72a85264b88e47fc107"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_オリンピア３部",
+      "pid": "PID_オリンピア",
+      "characterId": "c021",
+      "messageLabel": "MPID_Olympia",
+      "names": {
+        "CNzh": "奥琳琵娅",
+        "EUde": "Olympia",
+        "EUen": "Olympia",
+        "EUes": "Olympia",
+        "EUfr": "Olympia",
+        "EUit": "Olympia",
+        "JPja": "オリンピア",
+        "KRko": "올림피아",
+        "TWzh": "奧琳琵婭",
+        "USen": "Olympia",
+        "USes": "Olympia",
+        "USfr": "Olympia"
+      },
+      "englishName": "Olympia",
+      "voice": "Oly0",
+      "faceCode": "050Later5y",
+      "position": {
+        "EyeLevelX": 0.44600000977516174,
+        "EyeLevelY": 0.43700000643730164,
+        "EyeCenterX": 0.4819999933242798,
+        "EyeCenterY": 0.4350000023841858,
+        "FaceCenterX": 0.4779999852180481,
+        "FaceCenterY": 0.43700000643730164
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4779999852180481,
+            0.43700000643730164
+          ],
+          "clamped_center": [
+            0.4779999852180481,
+            0.43700000643730164
+          ],
+          "uv_rect": [
+            0.01299998164176941,
+            0.0020000040531158447,
+            0.9429999589920044,
+            0.871999979019165
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44600000977516174,
+            0.43700000643730164
+          ],
+          "clamped_center": [
+            0.44600000977516174,
+            0.43700000643730164
+          ],
+          "uv_rect": [
+            0.046000003814697266,
+            0.2919999957084656,
+            0.8460000157356262,
+            0.5820000171661377
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44600000977516174,
+            0.43700000643730164
+          ],
+          "clamped_center": [
+            0.44600000977516174,
+            0.43700000643730164
+          ],
+          "uv_rect": [
+            0.046000003814697266,
+            0.23200000822544098,
+            0.8460000157356262,
+            0.6420000195503235
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/olympia.png",
+        "narrow": "assets/portraits/part3/narrow/olympia.png",
+        "troop": "assets/portraits/part3/troop/olympia.png",
+        "small/56": "assets/portraits/part3/small/56/olympia.png",
+        "small/112": "assets/portraits/part3/small/112/olympia.png",
+        "small/168": "assets/portraits/part3/small/168/olympia.png"
+      },
+      "sha256": {
+        "grid": "d27044b13ed1ed5c04b731dd532eddd4cc3e047cf9e1568f837482dbc79bf911",
+        "narrow": "41cf0bb0a53a352fea2609e2f071e4193518be644ae5203e3d79f9a0ba01974b",
+        "troop": "9a6eabefa6720d58af819468a7e9d15381dbb3c9da8fef19bb512e7b40d47a3d",
+        "small/56": "cf02e717e8071bda0b4f3bf3880cd281f73db4d0a463564667ddb07462a9d495",
+        "small/112": "6c3d4d419dbb9ff9346fb0cf8defc6d48b97cb2a0ea1f81d10f56b004984b558",
+        "small/168": "7030db1d64bc1d0104cf038c39e343e8de52852d4a9660ec18c1b6d9593547ac"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_オルヘル３部",
+      "pid": "PID_オルヘル",
+      "characterId": "c027",
+      "messageLabel": "MPID_Orhel",
+      "names": {
+        "CNzh": "欧露赫露",
+        "EUde": "Orchel",
+        "EUen": "Orchel",
+        "EUes": "Orchel",
+        "EUfr": "Orchel",
+        "EUit": "Orchel",
+        "JPja": "オルヘル",
+        "KRko": "오르헬",
+        "TWzh": "歐露赫露",
+        "USen": "Orchel",
+        "USes": "Orchel",
+        "USfr": "Orchel"
+      },
+      "englishName": "Orchel",
+      "voice": "Orh1",
+      "faceCode": "021Later5y",
+      "position": {
+        "EyeLevelX": 0.4410000145435333,
+        "EyeLevelY": 0.43799999356269836,
+        "EyeCenterX": 0.43299999833106995,
+        "EyeCenterY": 0.43700000643730164,
+        "FaceCenterX": 0.4490000009536743,
+        "FaceCenterY": 0.4429999887943268
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4490000009536743,
+            0.4429999887943268
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4429999887943268
+          ],
+          "uv_rect": [
+            0.0,
+            0.007999986410140991,
+            0.9300000071525574,
+            0.878000020980835
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4410000145435333,
+            0.43799999356269836
+          ],
+          "clamped_center": [
+            0.4410000145435333,
+            0.43799999356269836
+          ],
+          "uv_rect": [
+            0.04100000858306885,
+            0.2929999828338623,
+            0.8410000205039978,
+            0.5830000042915344
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4410000145435333,
+            0.43799999356269836
+          ],
+          "clamped_center": [
+            0.4410000145435333,
+            0.43799999356269836
+          ],
+          "uv_rect": [
+            0.04100000858306885,
+            0.2329999953508377,
+            0.8410000205039978,
+            0.6430000066757202
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/orchel.png",
+        "narrow": "assets/portraits/part3/narrow/orchel.png",
+        "troop": "assets/portraits/part3/troop/orchel.png",
+        "small/56": "assets/portraits/part3/small/56/orchel.png",
+        "small/112": "assets/portraits/part3/small/112/orchel.png",
+        "small/168": "assets/portraits/part3/small/168/orchel.png"
+      },
+      "sha256": {
+        "grid": "26d0e391216461c81adf19118643d9f161e407b35934f764719de39827aee78c",
+        "narrow": "5692e7079448210cd8c31170deddcd6b55511b2e7330361140fc8d1136987cc0",
+        "troop": "ca6b4a5e87d267fbc789bbafa40e4703badd76da4e2fb19278b9b2d8620afa8d",
+        "small/56": "ac3124dfce9be445610c4c0ba40682b0878e8de77c4dc54c83fe557257abc2e7",
+        "small/112": "e2019c814aff85599341ee75e168c674f7af6fe95d13739c92eb8aef4436a999",
+        "small/168": "145d159719a6eb993558e82538b988ed2c96fe86040c6f20a53aaef53a43bfb4"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ペペ３部",
+      "pid": "PID_ペペ",
+      "characterId": "c051",
+      "messageLabel": "MPID_Pepe",
+      "names": {
+        "CNzh": "佩佩",
+        "EUde": "Peppe",
+        "EUen": "Peppe",
+        "EUes": "Peppe",
+        "EUfr": "Peppe",
+        "EUit": "Peppe",
+        "JPja": "ペペ",
+        "KRko": "페페",
+        "TWzh": "佩佩",
+        "USen": "Peppe",
+        "USes": "Peppe",
+        "USfr": "Peppe"
+      },
+      "englishName": "Peppe",
+      "voice": "Pep0",
+      "faceCode": "089Later5y",
+      "position": {
+        "EyeLevelX": 0.42399999499320984,
+        "EyeLevelY": 0.40299999713897705,
+        "EyeCenterX": 0.3529999852180481,
+        "EyeCenterY": 0.4230000078678131,
+        "FaceCenterX": 0.4059999883174896,
+        "FaceCenterY": 0.4090000092983246
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4059999883174896,
+            0.4090000092983246
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42399999499320984,
+            0.40299999713897705
+          ],
+          "clamped_center": [
+            0.42399999499320984,
+            0.40299999713897705
+          ],
+          "uv_rect": [
+            0.02399998903274536,
+            0.2580000162124634,
+            0.8240000009536743,
+            0.5479999780654907
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42399999499320984,
+            0.40299999713897705
+          ],
+          "clamped_center": [
+            0.42399999499320984,
+            0.40299999713897705
+          ],
+          "uv_rect": [
+            0.02399998903274536,
+            0.1979999989271164,
+            0.8240000009536743,
+            0.6079999804496765
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/peppe.png",
+        "narrow": "assets/portraits/part3/narrow/peppe.png",
+        "troop": "assets/portraits/part3/troop/peppe.png",
+        "small/56": "assets/portraits/part3/small/56/peppe.png",
+        "small/112": "assets/portraits/part3/small/112/peppe.png",
+        "small/168": "assets/portraits/part3/small/168/peppe.png"
+      },
+      "sha256": {
+        "grid": "55780947a26318374685272c7e09da9e33e40430a6243522b199a2968e780712",
+        "narrow": "e8b6cd89cd5731faf1a91db4229bdc646bcc698f59a82fdda99f9810b29e462c",
+        "troop": "67011942a7b19c7dcf491fd92099f988d4688e07e4515096fc873932784fe3a9",
+        "small/56": "da86674c46287a7c4e7b5ffe58f2bb5d77d9064b58f5c9e11966b4d53d8ff631",
+        "small/112": "1a953f83a4e692e678d1e0ff13f825f54f4ee428ef741b25f10f619ce0deda33",
+        "small/168": "abe21a79e51a328daee13091017b28874f01583b22b4c9079da7a252c977cea3"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ピーテル３部",
+      "pid": "PID_ピーテル",
+      "characterId": "c006",
+      "messageLabel": "MPID_Peter",
+      "names": {
+        "CNzh": "皮特鲁",
+        "EUde": "Peter",
+        "EUen": "Peter",
+        "EUes": "Peter",
+        "EUfr": "Peter",
+        "EUit": "Peter",
+        "JPja": "ピーテル",
+        "KRko": "피터르",
+        "TWzh": "皮特魯",
+        "USen": "Peter",
+        "USes": "Peter",
+        "USfr": "Peter"
+      },
+      "englishName": "Peter",
+      "voice": "Pet1",
+      "faceCode": "026Later5y",
+      "position": {
+        "EyeLevelX": 0.44200000166893005,
+        "EyeLevelY": 0.4359999895095825,
+        "EyeCenterX": 0.5,
+        "EyeCenterY": 0.43700000643730164,
+        "FaceCenterX": 0.48500001430511475,
+        "FaceCenterY": 0.4359999895095825
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.48500001430511475,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.48500001430511475,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.02000001072883606,
+            0.0009999871253967285,
+            0.9500000476837158,
+            0.8709999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44200000166893005,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.44200000166893005,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.041999995708465576,
+            0.29100000858306885,
+            0.8420000076293945,
+            0.5809999704360962
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44200000166893005,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.44200000166893005,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.041999995708465576,
+            0.23099999129772186,
+            0.8420000076293945,
+            0.640999972820282
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/peter.png",
+        "narrow": "assets/portraits/part3/narrow/peter.png",
+        "troop": "assets/portraits/part3/troop/peter.png",
+        "small/56": "assets/portraits/part3/small/56/peter.png",
+        "small/112": "assets/portraits/part3/small/112/peter.png",
+        "small/168": "assets/portraits/part3/small/168/peter.png"
+      },
+      "sha256": {
+        "grid": "a63e141295cfa03de9f0a34b740b5add5dc5d162c74666353147d77ce491ded1",
+        "narrow": "18519c994ba90010415730afafdfddbc25d9e899d05bf1132f13a00eda977c2a",
+        "troop": "6dd0538c5e6d054381093d7b2c720b279149bc2a12b94b421e9be414191cd8eb",
+        "small/56": "74af1c050c0e2da31786ab5968a0fb06fd5868e4a32a89d1b94b8a6ce04cfa05",
+        "small/112": "e20f41604fd8cbe1dae931c1e7d7ecfca044e8c2efc327488f1810a340730ce5",
+        "small/168": "a184ae10d6b9d3c09167b1d51e3f23f333f356053fc0a043269208a4912cc693"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_セテス３部",
+      "pid": "PID_セテス",
+      "characterId": "c030",
+      "messageLabel": "MPID_Seteth",
+      "names": {
+        "CNzh": "西提司",
+        "EUde": "Seteth",
+        "EUen": "Seteth",
+        "EUes": "Seteth",
+        "EUfr": "Seteth",
+        "EUit": "Seteth",
+        "JPja": "セテス",
+        "KRko": "세테스",
+        "TWzh": "西提司",
+        "USen": "Seteth",
+        "USes": "Seteth",
+        "USfr": "Seteth"
+      },
+      "englishName": "Seteth",
+      "voice": "Set0",
+      "faceCode": "040",
+      "position": {
+        "EyeLevelX": 0.4269999861717224,
+        "EyeLevelY": 0.421999990940094,
+        "EyeCenterX": 0.4020000100135803,
+        "EyeCenterY": 0.41999998688697815,
+        "FaceCenterX": 0.4300000071525574,
+        "FaceCenterY": 0.421999990940094
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4300000071525574,
+            0.421999990940094
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4269999861717224,
+            0.421999990940094
+          ],
+          "clamped_center": [
+            0.4269999861717224,
+            0.421999990940094
+          ],
+          "uv_rect": [
+            0.026999980211257935,
+            0.2770000100135803,
+            0.8270000219345093,
+            0.5669999718666077
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4269999861717224,
+            0.421999990940094
+          ],
+          "clamped_center": [
+            0.4269999861717224,
+            0.421999990940094
+          ],
+          "uv_rect": [
+            0.026999980211257935,
+            0.21699999272823334,
+            0.8270000219345093,
+            0.6269999742507935
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/seteth.png",
+        "narrow": "assets/portraits/part3/narrow/seteth.png",
+        "troop": "assets/portraits/part3/troop/seteth.png",
+        "small/56": "assets/portraits/part3/small/56/seteth.png",
+        "small/112": "assets/portraits/part3/small/112/seteth.png",
+        "small/168": "assets/portraits/part3/small/168/seteth.png"
+      },
+      "sha256": {
+        "grid": "b96857781815ed6c133f097afd0d65c81869fc6f632775d59594d51008f3d2b9",
+        "narrow": "e48e059d669cbba87fb90336e70939a95d18021bf5995f7dec666dc9bdc0bb4b",
+        "troop": "5dde27250660620ae599a9b63548a507161ec39f9cc52cd5f66aebb603c7c850",
+        "small/56": "1de955e28aa651313ab7cc98c7111152d786e0181907c16c015aae55b74e118c",
+        "small/112": "df9abaafbb036b1677c35e2eef3ffaa08654ef70ee9769a5bda77fd7e049c79b",
+        "small/168": "1d3c823415a2ba28464e4a09598e36c92c03cebcb4edfe8a37f64dedf960c6ad"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_サラン３部",
+      "pid": "PID_サラン",
+      "characterId": "c038",
+      "messageLabel": "MPID_Sarang",
+      "names": {
+        "CNzh": "沙兰",
+        "EUde": "Sha Lan",
+        "EUen": "Sha Lan",
+        "EUes": "Sha Lan",
+        "EUfr": "Sha Lan",
+        "EUit": "Sha Lan",
+        "JPja": "サラン",
+        "KRko": "사란",
+        "TWzh": "沙蘭",
+        "USen": "Sha Lan",
+        "USes": "Sha Lan",
+        "USfr": "Sha Lan"
+      },
+      "englishName": "Sha Lan",
+      "voice": "Sar0",
+      "faceCode": "052Later5y",
+      "position": {
+        "EyeLevelX": 0.4090000092983246,
+        "EyeLevelY": 0.42899999022483826,
+        "EyeCenterX": 0.3370000123977661,
+        "EyeCenterY": 0.4259999990463257,
+        "FaceCenterX": 0.3709999918937683,
+        "FaceCenterY": 0.4339999854564667
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3709999918937683,
+            0.4339999854564667
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4090000092983246,
+            0.42899999022483826
+          ],
+          "clamped_center": [
+            0.4090000092983246,
+            0.42899999022483826
+          ],
+          "uv_rect": [
+            0.009000003337860107,
+            0.2839999794960022,
+            0.8090000152587891,
+            0.5740000009536743
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4090000092983246,
+            0.42899999022483826
+          ],
+          "clamped_center": [
+            0.4090000092983246,
+            0.42899999022483826
+          ],
+          "uv_rect": [
+            0.009000003337860107,
+            0.2239999920129776,
+            0.8090000152587891,
+            0.6340000033378601
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/sha-lan.png",
+        "narrow": "assets/portraits/part3/narrow/sha-lan.png",
+        "troop": "assets/portraits/part3/troop/sha-lan.png",
+        "small/56": "assets/portraits/part3/small/56/sha-lan.png",
+        "small/112": "assets/portraits/part3/small/112/sha-lan.png",
+        "small/168": "assets/portraits/part3/small/168/sha-lan.png"
+      },
+      "sha256": {
+        "grid": "88787c0211126b278e1dfa9cc2917f5574bfb1539705aef21854535ddc779946",
+        "narrow": "e3030e76d1a10332118225f01facb0ea43edd8283d460f93176c652f19cc62f0",
+        "troop": "1e95e6de7bbae33e9526986d929ddcc8a0a1c6a1f58cffc87aa17bbbaac0fa50",
+        "small/56": "10e2ac7ede364a39e0e01a212af910b703e7a45579a3aac4f7fc982185a7a617",
+        "small/112": "9c4a75fd969ed1695ee2c8f3bba6cf232618a1cfb92900f9af958e859ddbf579",
+        "small/168": "25ea39dba638b504cd8e17f6234b96d301ec8dc80b22b732842cce9f3eda74b1"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_シモン３部",
+      "pid": "PID_シモン",
+      "characterId": "c034",
+      "messageLabel": "MPID_Simon",
+      "names": {
+        "CNzh": "希蒙",
+        "EUde": "Simon",
+        "EUen": "Simon",
+        "EUes": "Simon",
+        "EUfr": "Simon",
+        "EUit": "Simon",
+        "JPja": "シモン",
+        "KRko": "시몬",
+        "TWzh": "希蒙",
+        "USen": "Simon",
+        "USes": "Simon",
+        "USfr": "Simon"
+      },
+      "englishName": "Simon",
+      "voice": "Sim0",
+      "faceCode": "035Later5y",
+      "position": {
+        "EyeLevelX": 0.4429999887943268,
+        "EyeLevelY": 0.40799999237060547,
+        "EyeCenterX": 0.5070000290870667,
+        "EyeCenterY": 0.39899998903274536,
+        "FaceCenterX": 0.453000009059906,
+        "FaceCenterY": 0.37700000405311584
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.453000009059906,
+            0.37700000405311584
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4429999887943268,
+            0.40799999237060547
+          ],
+          "clamped_center": [
+            0.4429999887943268,
+            0.40799999237060547
+          ],
+          "uv_rect": [
+            0.042999982833862305,
+            0.2630000114440918,
+            0.8429999947547913,
+            0.5529999732971191
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4429999887943268,
+            0.40799999237060547
+          ],
+          "clamped_center": [
+            0.4429999887943268,
+            0.40799999237060547
+          ],
+          "uv_rect": [
+            0.042999982833862305,
+            0.2029999941587448,
+            0.8429999947547913,
+            0.6129999756813049
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/simon.png",
+        "narrow": "assets/portraits/part3/narrow/simon.png",
+        "troop": "assets/portraits/part3/troop/simon.png",
+        "small/56": "assets/portraits/part3/small/56/simon.png",
+        "small/112": "assets/portraits/part3/small/112/simon.png",
+        "small/168": "assets/portraits/part3/small/168/simon.png"
+      },
+      "sha256": {
+        "grid": "08748035da318eb5e901208b254ad788e3ca73cdf4bc6f0693fd7924c4299fd2",
+        "narrow": "6217ccd092bbe02b37294d3fa1eaafe4d93c9ed8bd7f4338917ac0a7f24fb149",
+        "troop": "a4885a935d7f68c212859b76f7ce7fd7417b24a7c27538df7cda593a9c63ae33",
+        "small/56": "899a9bb624e1340324ffee1be469139af1909414b1a135c58c63ad70aac1578a",
+        "small/112": "3945d3cac1560d116bdf00f02a6ebfe71511d401852a34bd7750c9e7903e61d5",
+        "small/168": "403555844b26b52ed0f854c30010e7251788b00d4ea4b4943a093c5cc0220296"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_シロッコ３部",
+      "pid": "PID_シロッコ",
+      "characterId": "c019",
+      "messageLabel": "MPID_Scirocco",
+      "names": {
+        "CNzh": "西洛可",
+        "EUde": "Sirocco",
+        "EUen": "Sirocco",
+        "EUes": "Sirocco",
+        "EUfr": "Sirocco",
+        "EUit": "Sirocco",
+        "JPja": "シロッコ",
+        "KRko": "시로코",
+        "TWzh": "西洛可",
+        "USen": "Sirocco",
+        "USes": "Sirocco",
+        "USfr": "Sirocco"
+      },
+      "englishName": "Sirocco",
+      "voice": "Sci0",
+      "faceCode": "047Later5y",
+      "position": {
+        "EyeLevelX": 0.42100000381469727,
+        "EyeLevelY": 0.41200000047683716,
+        "EyeCenterX": 0.3840000033378601,
+        "EyeCenterY": 0.4099999964237213,
+        "FaceCenterX": 0.4320000112056732,
+        "FaceCenterY": 0.41200000047683716
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4320000112056732,
+            0.41200000047683716
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42100000381469727,
+            0.41200000047683716
+          ],
+          "clamped_center": [
+            0.42100000381469727,
+            0.41200000047683716
+          ],
+          "uv_rect": [
+            0.020999997854232788,
+            0.2670000195503235,
+            0.8209999799728394,
+            0.5569999814033508
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.42100000381469727,
+            0.41200000047683716
+          ],
+          "clamped_center": [
+            0.42100000381469727,
+            0.41200000047683716
+          ],
+          "uv_rect": [
+            0.020999997854232788,
+            0.2070000022649765,
+            0.8209999799728394,
+            0.6169999837875366
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/sirocco.png",
+        "narrow": "assets/portraits/part3/narrow/sirocco.png",
+        "troop": "assets/portraits/part3/troop/sirocco.png",
+        "small/56": "assets/portraits/part3/small/56/sirocco.png",
+        "small/112": "assets/portraits/part3/small/112/sirocco.png",
+        "small/168": "assets/portraits/part3/small/168/sirocco.png"
+      },
+      "sha256": {
+        "grid": "433b994b640a824c55c358335164c35f3d09d5ac1aca4a492c91ae2bfb0dee20",
+        "narrow": "ac63ff883fa3667eba6344a40c09efba2ac3947bc362f29b5bd8c83d612b8df0",
+        "troop": "5a0798bff6faa1191961710b96d8e4b1bd0425b7e9025ae1571cc8af8d48ea19",
+        "small/56": "b7ba63adf6cbb2fad3813627394ad10cc2e121e10837f7be8155dba6a9c3e9bb",
+        "small/112": "fcdc9269b8845d673f8e4c927e9176f6cf755a0e38e2b8647fb4aac6e4037a82",
+        "small/168": "98ed5b71c80faf99f8e21636c62f3b9142e876265fc0e7c096566d70f912fc71"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ソフィア３部",
+      "pid": "PID_ソフィア",
+      "characterId": "c050",
+      "messageLabel": "MPID_Sophia",
+      "names": {
+        "CNzh": "索绯雅",
+        "EUde": "Sofia",
+        "EUen": "Sofia",
+        "EUes": "Sofia",
+        "EUfr": "Sofia",
+        "EUit": "Sofia",
+        "JPja": "ソフィア",
+        "KRko": "소피아",
+        "TWzh": "索緋雅",
+        "USen": "Sofia",
+        "USes": "Sofia",
+        "USfr": "Sofia"
+      },
+      "englishName": "Sofia",
+      "voice": "Sop0",
+      "faceCode": "091Later5y",
+      "position": {
+        "EyeLevelX": 0.4169999957084656,
+        "EyeLevelY": 0.4339999854564667,
+        "EyeCenterX": 0.3889999985694885,
+        "EyeCenterY": 0.42899999022483826,
+        "FaceCenterX": 0.4169999957084656,
+        "FaceCenterY": 0.4339999854564667
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4169999957084656,
+            0.4339999854564667
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4169999957084656,
+            0.4339999854564667
+          ],
+          "clamped_center": [
+            0.4169999957084656,
+            0.4339999854564667
+          ],
+          "uv_rect": [
+            0.0169999897480011,
+            0.2889999747276306,
+            0.8170000314712524,
+            0.5789999961853027
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4169999957084656,
+            0.4339999854564667
+          ],
+          "clamped_center": [
+            0.4169999957084656,
+            0.4339999854564667
+          ],
+          "uv_rect": [
+            0.0169999897480011,
+            0.22899998724460602,
+            0.8170000314712524,
+            0.6389999985694885
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/sofia.png",
+        "narrow": "assets/portraits/part3/narrow/sofia.png",
+        "troop": "assets/portraits/part3/troop/sofia.png",
+        "small/56": "assets/portraits/part3/small/56/sofia.png",
+        "small/112": "assets/portraits/part3/small/112/sofia.png",
+        "small/168": "assets/portraits/part3/small/168/sofia.png"
+      },
+      "sha256": {
+        "grid": "6f8549a98eca7ea458903eed73bba27235bd444d6ea014bb77b078d5cda94bc2",
+        "narrow": "e3a76030cf0c15923a959e9a273829dc13c5dcfc4af97aa1c76a9f265bd01520",
+        "troop": "079930af1b7e8770116f0ec6c7d1d969b204726ffd436fc926d8ab8bbfb11c82",
+        "small/56": "dfe5c29fda546b7036011ac3b6bfec5e5994e26c272ddd811311571cd481b2be",
+        "small/112": "df929cb01cc3411675597d75af919ac847f4502ec8ad16a9db9977747cb37c3e",
+        "small/168": "0d7441677628b6f59ed90b2bf18452724d7f199f8087879afe0c8bece7acb0f6"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_タリムーン３部",
+      "pid": "PID_タリムーン",
+      "characterId": "c032",
+      "messageLabel": "MPID_Talimun",
+      "names": {
+        "CNzh": "谭利穆恩",
+        "EUde": "Talimun",
+        "EUen": "Talimun",
+        "EUes": "Talimun",
+        "EUfr": "Talimun",
+        "EUit": "Talimun",
+        "JPja": "タリムーン",
+        "KRko": "타리문",
+        "TWzh": "譚利穆恩",
+        "USen": "Talimun",
+        "USes": "Talimun",
+        "USfr": "Talimun"
+      },
+      "englishName": "Talimun",
+      "voice": "Tal1",
+      "faceCode": "020Later5y",
+      "position": {
+        "EyeLevelX": 0.453000009059906,
+        "EyeLevelY": 0.3880000114440918,
+        "EyeCenterX": 0.382999986410141,
+        "EyeCenterY": 0.3970000147819519,
+        "FaceCenterX": 0.3970000147819519,
+        "FaceCenterY": 0.39899998903274536
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3970000147819519,
+            0.39899998903274536
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.453000009059906,
+            0.3880000114440918
+          ],
+          "clamped_center": [
+            0.453000009059906,
+            0.3880000114440918
+          ],
+          "uv_rect": [
+            0.05300000309944153,
+            0.24300001561641693,
+            0.8530000448226929,
+            0.5329999923706055
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.453000009059906,
+            0.3880000114440918
+          ],
+          "clamped_center": [
+            0.453000009059906,
+            0.3880000114440918
+          ],
+          "uv_rect": [
+            0.05300000309944153,
+            0.18300001323223114,
+            0.8530000448226929,
+            0.5929999947547913
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/talimun.png",
+        "narrow": "assets/portraits/part3/narrow/talimun.png",
+        "troop": "assets/portraits/part3/troop/talimun.png",
+        "small/56": "assets/portraits/part3/small/56/talimun.png",
+        "small/112": "assets/portraits/part3/small/112/talimun.png",
+        "small/168": "assets/portraits/part3/small/168/talimun.png"
+      },
+      "sha256": {
+        "grid": "8672006a92183d5e9b98865847356b2fa3996c5d26b7633dc31eb6691df9c86b",
+        "narrow": "0bc16b6fc447cca6938b68c44c7bc8e9de60cf6d161cdd6bcf7fd6e77d9d9165",
+        "troop": "5fe3490b69c57da8c053b4dd01801b55cd4d0096178840223f0de8969adf5947",
+        "small/56": "ef0eeb7f1bfc4c90fb22a436b7c880047c31804b42497ed46eb00f9f58fe6391",
+        "small/112": "902b790f64d37d2838d3574fa2aea15c4124f111e48ddc2ac685e1d316db3155",
+        "small/168": "294c717d2e6ee9dbdf382ea6608b3b523905b321ba0cb8365f27844959e44153"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_セオドラ３部",
+      "pid": "PID_セオドラ",
+      "characterId": "c012",
+      "messageLabel": "MPID_Seodola",
+      "names": {
+        "CNzh": "赛奥朵拉",
+        "EUde": "Theodora",
+        "EUen": "Theodora",
+        "EUes": "Theodora",
+        "EUfr": "Theodora",
+        "EUit": "Theodora",
+        "JPja": "セオドラ",
+        "KRko": "세오도라",
+        "TWzh": "賽奧朵拉",
+        "USen": "Theodora",
+        "USes": "Theodora",
+        "USfr": "Theodora"
+      },
+      "englishName": "Theodora",
+      "voice": "Seo1",
+      "faceCode": "022Later5y",
+      "position": {
+        "EyeLevelX": 0.4410000145435333,
+        "EyeLevelY": 0.41999998688697815,
+        "EyeCenterX": 0.4189999997615814,
+        "EyeCenterY": 0.4090000092983246,
+        "FaceCenterX": 0.4269999861717224,
+        "FaceCenterY": 0.42500001192092896
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4269999861717224,
+            0.42500001192092896
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4410000145435333,
+            0.41999998688697815
+          ],
+          "clamped_center": [
+            0.4410000145435333,
+            0.41999998688697815
+          ],
+          "uv_rect": [
+            0.04100000858306885,
+            0.2749999761581421,
+            0.8410000205039978,
+            0.5649999976158142
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4410000145435333,
+            0.41999998688697815
+          ],
+          "clamped_center": [
+            0.4410000145435333,
+            0.41999998688697815
+          ],
+          "uv_rect": [
+            0.04100000858306885,
+            0.2149999886751175,
+            0.8410000205039978,
+            0.625
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/theodora.png",
+        "narrow": "assets/portraits/part3/narrow/theodora.png",
+        "troop": "assets/portraits/part3/troop/theodora.png",
+        "small/56": "assets/portraits/part3/small/56/theodora.png",
+        "small/112": "assets/portraits/part3/small/112/theodora.png",
+        "small/168": "assets/portraits/part3/small/168/theodora.png"
+      },
+      "sha256": {
+        "grid": "c95e6d08a0ea22ca7c86b380c99c31d645c1b50359f77dbcd1fa9040513ebaa2",
+        "narrow": "8d195dae4aaa784d1b618d9aa636ba28b05dbe5f1deb374cb46a5586f06e4cbb",
+        "troop": "218beea309f778d6e8d6ea4aead8d2a1d60617b554846c7a97f910ad76a33475",
+        "small/56": "0378da0a0446549527dd7a0ff1397d571e060d70d15f7633fcbae7b2dbd68013",
+        "small/112": "24406d38c13700f88cffd97a535913e6421d6855e84e7ed03dd45fc3bfad11f5",
+        "small/168": "8e3da2f091d8f74ae7a9d8bcba21c539b9fb8352951671cc86fba94612f809dc"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ティアラ３部",
+      "pid": "PID_ティアラ",
+      "characterId": "c005",
+      "messageLabel": "MPID_Tiara",
+      "names": {
+        "CNzh": "媞雅拉",
+        "EUde": "Tialla",
+        "EUen": "Tialla",
+        "EUes": "Tialla",
+        "EUfr": "Tialla",
+        "EUit": "Tialla",
+        "JPja": "ティアラ",
+        "KRko": "티아라",
+        "TWzh": "媞雅拉",
+        "USen": "Tialla",
+        "USes": "Tialla",
+        "USfr": "Tialla"
+      },
+      "englishName": "Tialla",
+      "voice": "Tia1",
+      "faceCode": "025Later5y",
+      "position": {
+        "EyeLevelX": 0.4690000116825104,
+        "EyeLevelY": 0.45399999618530273,
+        "EyeCenterX": 0.503000020980835,
+        "EyeCenterY": 0.4339999854564667,
+        "FaceCenterX": 0.4819999933242798,
+        "FaceCenterY": 0.45399999618530273
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4819999933242798,
+            0.45399999618530273
+          ],
+          "clamped_center": [
+            0.4819999933242798,
+            0.45399999618530273
+          ],
+          "uv_rect": [
+            0.0169999897480011,
+            0.018999993801116943,
+            0.9470000267028809,
+            0.8889999985694885
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4690000116825104,
+            0.45399999618530273
+          ],
+          "clamped_center": [
+            0.4690000116825104,
+            0.45399999618530273
+          ],
+          "uv_rect": [
+            0.0690000057220459,
+            0.30900001525878906,
+            0.8690000176429749,
+            0.5989999771118164
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4690000116825104,
+            0.45399999618530273
+          ],
+          "clamped_center": [
+            0.4690000116825104,
+            0.45399999618530273
+          ],
+          "uv_rect": [
+            0.0690000057220459,
+            0.24899999797344208,
+            0.8690000176429749,
+            0.6589999794960022
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/tialla.png",
+        "narrow": "assets/portraits/part3/narrow/tialla.png",
+        "troop": "assets/portraits/part3/troop/tialla.png",
+        "small/56": "assets/portraits/part3/small/56/tialla.png",
+        "small/112": "assets/portraits/part3/small/112/tialla.png",
+        "small/168": "assets/portraits/part3/small/168/tialla.png"
+      },
+      "sha256": {
+        "grid": "ea11e9e94cfb05a1f940adf3458104ab90819bdfdfd50eec99c7cfe185d1b897",
+        "narrow": "092d0ee04f866b130bf64930e913a171406597cb908ea8f400186736431104e2",
+        "troop": "ed82c2e5dfd516c40d52c59180aabcace50b6cbc7b216021b244f262cd533d3b",
+        "small/56": "956496a3ad58b2526c8d634933958298780720019faa7cb8d6560c538ecca77e",
+        "small/112": "c647c9488c2c5d88cca8936114f32b4dc2bc7c71a706371af70b03090d6bc854",
+        "small/168": "bc2c04168648e2be3ccfcf271a8a002a03a990ddddbe40dad5853bb6c5935823"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_トビヤス３部",
+      "pid": "PID_トビヤス",
+      "characterId": "c014",
+      "messageLabel": "MPID_Tobias",
+      "names": {
+        "CNzh": "托比亚斯",
+        "EUde": "Tobias",
+        "EUen": "Tobias",
+        "EUes": "Tobias",
+        "EUfr": "Tobias",
+        "EUit": "Tobias",
+        "JPja": "トビヤス",
+        "KRko": "토비아스",
+        "TWzh": "托比亞斯",
+        "USen": "Tobias",
+        "USes": "Tobias",
+        "USfr": "Tobias"
+      },
+      "englishName": "Tobias",
+      "voice": "Tob1",
+      "faceCode": "043Later5y",
+      "position": {
+        "EyeLevelX": 0.44200000166893005,
+        "EyeLevelY": 0.39100000262260437,
+        "EyeCenterX": 0.4009999930858612,
+        "EyeCenterY": 0.3790000081062317,
+        "FaceCenterX": 0.4339999854564667,
+        "FaceCenterY": 0.39100000262260437
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.4339999854564667,
+            0.39100000262260437
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44200000166893005,
+            0.39100000262260437
+          ],
+          "clamped_center": [
+            0.44200000166893005,
+            0.39100000262260437
+          ],
+          "uv_rect": [
+            0.041999995708465576,
+            0.2460000067949295,
+            0.8420000076293945,
+            0.5360000133514404
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.44200000166893005,
+            0.39100000262260437
+          ],
+          "clamped_center": [
+            0.44200000166893005,
+            0.39100000262260437
+          ],
+          "uv_rect": [
+            0.041999995708465576,
+            0.1860000044107437,
+            0.8420000076293945,
+            0.5960000157356262
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/tobias.png",
+        "narrow": "assets/portraits/part3/narrow/tobias.png",
+        "troop": "assets/portraits/part3/troop/tobias.png",
+        "small/56": "assets/portraits/part3/small/56/tobias.png",
+        "small/112": "assets/portraits/part3/small/112/tobias.png",
+        "small/168": "assets/portraits/part3/small/168/tobias.png"
+      },
+      "sha256": {
+        "grid": "39998ba03337779226a428d24461acd8e048563de8e547d300c1c5804920e910",
+        "narrow": "65e4b0e8fe3844ca007a424256d3c01921e8834a46e95d5af1c26acc1a40b8e8",
+        "troop": "ed64f3cac8767e3ea8a4cc45c9f99f03a07c000493ac7f0a17b7c91d70d34384",
+        "small/56": "b51534c2e957cca058eebeaab2b42e104a8ade1cc03188d7d1269ea15822b528",
+        "small/112": "bc770e9f3b171ce2be7f6c4e6e14d3f3b4a171cab8061734a194cd3b5fee0c84",
+        "small/168": "597914c571f4aced601654a4e3e0b73d13282344b6e198767fdf82faf5bde9a7"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ウルタンド３部",
+      "pid": "PID_ウルタンド",
+      "characterId": "c007",
+      "messageLabel": "MPID_Hurtando",
+      "names": {
+        "CNzh": "乌尔坦德",
+        "EUde": "Ultand",
+        "EUen": "Ultand",
+        "EUes": "Ultand",
+        "EUfr": "Ultand",
+        "EUit": "Ultand",
+        "JPja": "ウルタンド",
+        "KRko": "울턴드",
+        "TWzh": "烏爾坦德",
+        "USen": "Ultand",
+        "USes": "Ultand",
+        "USfr": "Ultand"
+      },
+      "englishName": "Ultand",
+      "voice": "Hur1",
+      "faceCode": "027Later5y",
+      "position": {
+        "EyeLevelX": 0.4580000042915344,
+        "EyeLevelY": 0.4359999895095825,
+        "EyeCenterX": 0.4690000116825104,
+        "EyeCenterY": 0.4410000145435333,
+        "FaceCenterX": 0.46000000834465027,
+        "FaceCenterY": 0.4359999895095825
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.46000000834465027,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.0,
+            0.0009999871253967285,
+            0.9300000071525574,
+            0.8709999918937683
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4580000042915344,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4580000042915344,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.057999998331069946,
+            0.29100000858306885,
+            0.8580000400543213,
+            0.5809999704360962
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.4580000042915344,
+            0.4359999895095825
+          ],
+          "clamped_center": [
+            0.4580000042915344,
+            0.4359999895095825
+          ],
+          "uv_rect": [
+            0.057999998331069946,
+            0.23099999129772186,
+            0.8580000400543213,
+            0.640999972820282
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/ultand.png",
+        "narrow": "assets/portraits/part3/narrow/ultand.png",
+        "troop": "assets/portraits/part3/troop/ultand.png",
+        "small/56": "assets/portraits/part3/small/56/ultand.png",
+        "small/112": "assets/portraits/part3/small/112/ultand.png",
+        "small/168": "assets/portraits/part3/small/168/ultand.png"
+      },
+      "sha256": {
+        "grid": "02c7a81c4168d916ced734750f03fed48e2af24ebd67e38cc43f714112911830",
+        "narrow": "fc50733059287150516f6a8128e84fabadfd8aa776797a43d9c45635371fe07d",
+        "troop": "97b99eafb120d431650c4cef932d6312cea0329f0e777a8bdfc6d7efb5defb3f",
+        "small/56": "802b0e6e089d474a44acec966afd9f9893f4f2a3946e269b4dca8ea15bebb475",
+        "small/112": "5ba1b7d11833761c6bf59bcc3597d60f3447e4e7cf712dc7e8bced524bcc6e80",
+        "small/168": "de1a73785f6ba74678659d3518638b810c567ebfde46cb74b7b75d4e822b667a"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    },
+    {
+      "fid": "FID_ウーシュラ３部",
+      "pid": "PID_ウーシュラ",
+      "characterId": "c033",
+      "messageLabel": "MPID_Ursula",
+      "names": {
+        "CNzh": "乌修拉",
+        "EUde": "Ursula",
+        "EUen": "Ursula",
+        "EUes": "Ursula",
+        "EUfr": "Ursula",
+        "EUit": "Ursula",
+        "JPja": "ウーシュラ",
+        "KRko": "우술라",
+        "TWzh": "烏修拉",
+        "USen": "Ursula",
+        "USes": "Ursula",
+        "USfr": "Ursula"
+      },
+      "englishName": "Ursula",
+      "voice": "Urs0",
+      "faceCode": "034Later5y",
+      "position": {
+        "EyeLevelX": 0.41999998688697815,
+        "EyeLevelY": 0.4009999930858612,
+        "EyeCenterX": 0.33500000834465027,
+        "EyeCenterY": 0.3930000066757202,
+        "FaceCenterX": 0.3700000047683716,
+        "FaceCenterY": 0.3880000114440918
+      },
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3700000047683716,
+            0.3880000114440918
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41999998688697815,
+            0.4009999930858612
+          ],
+          "clamped_center": [
+            0.41999998688697815,
+            0.4009999930858612
+          ],
+          "uv_rect": [
+            0.019999980926513672,
+            0.25599998235702515,
+            0.8199999928474426,
+            0.5460000038146973
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.41999998688697815,
+            0.4009999930858612
+          ],
+          "clamped_center": [
+            0.41999998688697815,
+            0.4009999930858612
+          ],
+          "uv_rect": [
+            0.019999980926513672,
+            0.19599999487400055,
+            0.8199999928474426,
+            0.6060000061988831
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "files": {
+        "grid": "assets/portraits/part3/grid/ursula.png",
+        "narrow": "assets/portraits/part3/narrow/ursula.png",
+        "troop": "assets/portraits/part3/troop/ursula.png",
+        "small/56": "assets/portraits/part3/small/56/ursula.png",
+        "small/112": "assets/portraits/part3/small/112/ursula.png",
+        "small/168": "assets/portraits/part3/small/168/ursula.png"
+      },
+      "sha256": {
+        "grid": "dd09e8a905c8b046246a83e47040671cddfc111f83a7d577c59fe38cec0744a4",
+        "narrow": "8636370630113416a2b0ce41b0627eca4b96783df531f13f366d64aae199e53b",
+        "troop": "e7fa22edff46eeea66d798ff5b5b5ca0d8448bc029c6bcf931e724e050d7438b",
+        "small/56": "81cdd7a846ba224a57992b52179687dcbbab8fb10c44b9d6375827bbd5dabc5d",
+        "small/112": "b8c985c8ef3140e85d41d4b34d325496b71d3eb1f32b9c1c33769b1e1411372c",
+        "small/168": "cd0b10e43a488f09f97b58cc2fea73f051388cc49c221f7548524c8102d4f159"
+      },
+      "source": {
+        "archive": "Layout/Textures/Face1.arc.zst",
+        "story": "part3",
+        "expression": "default"
+      }
+    }
+  ]
+}

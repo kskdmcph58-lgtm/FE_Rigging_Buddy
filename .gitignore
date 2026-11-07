@@ -12,3 +12,4 @@ scripts/
 /test_support.py
 /verify-*.cjs
 assets/portraits/before-part3/README.txt
+/.vscode

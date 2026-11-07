@@ -53,14 +53,19 @@
   --red: #efa39c;
   font-family: var(--font-ui);
   color: var(--text);
-  background: var(--bg);
+  /* On the root so it also fills the scrollbar gutter; repeat-x carries the wash
+     across that strip. The noise tile dithers the 8-bit steps that would
+     otherwise show as bands, and its mean sits near --bg so it adds no lift. */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.5 0 0 0 -.63 1.5 0 0 0 -.63 1.5 0 0 0 -.63 0 0 0 0 .03'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,#172a2b 0,#152628 25%,#121f22 55%,var(--bg) 80%) repeat-x 0 0/100% 100vh,
+    var(--bg);
 }
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  background: radial-gradient(ellipse at 85% 5%,#28403b80,transparent 48%);
   min-height: 100vh;
 }
 button,input {
@@ -141,6 +146,24 @@ header {
   font: 11px var(--font-ui);
   letter-spacing: 3px;
   margin-top: 8px;
+}
+.story-switch {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text);
+  font: 14px var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.story-switch input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--gold);
+  cursor: pointer;
 }
 .save-status {
   font-size: 12px;
@@ -1323,7 +1346,7 @@ main.has-bottom-bar {
   }
 }
 @media(max-width:600px) {
-  .record-layout>.hero,.desktop-stat-title {
+  .record-layout>.hero {
     display: none;
   }
 }
@@ -2954,7 +2977,7 @@ body.marquee-selecting,body.marquee-selecting * {
    Default_C and Default_TL textures provide these exact fill/border colors.
    Both header and body use the SAME columns, gaps and selection gutter. */
 .levels-page .levels {
-  --setup-columns: 300px 240px 120px minmax(160px,1fr);
+  --setup-columns: 300px 260px 120px minmax(160px,1fr);
   --setup-name-size: 24.5px;
   --setup-class-size: 22.05px;
   --setup-icon-size: 50px;
@@ -3124,7 +3147,7 @@ main.levels-page { padding-left:60px; padding-right:24px; }
 }
 @media(min-width:851px) and (max-width:1099px) {
   .levels-page .levels {
-    --setup-columns:260px 180px 120px minmax(160px,1fr);
+    --setup-columns:260px 200px 120px minmax(160px,1fr);
     --setup-gap:6px;
   }
 }
@@ -3608,8 +3631,7 @@ html[data-input-mode="touch"] button.expectation-link {
     max-width: 600px;
     margin-inline: auto;
   }
-  .record-page .record-layout>.hero,
-  .record-page .desktop-stat-title {
+  .record-page .record-layout>.hero {
     display: none;
   }
   .record-page .stat-heading .record-character {
@@ -3792,12 +3814,81 @@ html[data-input-mode="touch"] button.expectation-link {
 @media(min-width:601px) and (pointer:fine), (min-width:1101px) {
   .stat-heading>.profession-field.can-edit { order:0; margin:0; padding:0; min-height:48px; max-width:none; gap:10px; color:var(--text); font:24px/1.3 var(--font-display); }
   .stat-heading>.profession-field img { order:0; width:48px; height:48px; border-radius:5px; }
-  .stat-heading>.desktop-stat-title { order:1; margin-left:auto; font-size:18px; letter-spacing:1px; }
-  .stat-heading>.heading-growth { order:2; margin-left:0; }
+  .stat-heading>.heading-ride { order:1; }
+  .stat-heading>.heading-growth { order:2; margin-left:auto; }
 }
-@media(min-width:601px) and (max-width:800px) and (pointer:fine) {
+@media(min-width:601px) and (max-width:1000px) and (pointer:fine) {
+  /* Two steady rows, so changing the mount never moves the class. */
   .stat-heading { flex-wrap:wrap; }
-  .stat-heading>.profession-field.can-edit { flex-basis:100%; justify-content:flex-start; }
+  .stat-heading:has(>.heading-ride:not(:empty))>.profession-field.can-edit { flex-basis:100%; justify-content:flex-start; }
+}
+/* Mounts: the heading has room on desktop; phones use the row beside the expectation link. */
+.ride-slot:empty,.note-ride { display:none; }
+.ride-field { display:inline-flex; align-items:center; gap:8px; min-width:0; min-height:48px; padding:0 8px; border:0; border-radius:6px; background:transparent; color:var(--text); white-space:nowrap; }
+.ride-field .game-text { font-size:20px; line-height:1.3; }
+.ride-field .ride-none { font-size:16px; color:var(--muted); }
+/* These controls signal hover through their text and hearts, never a background fill. */
+.ride-field:hover:not(:disabled),.setup-ride:hover:not(:disabled),.ride-picker .ride-choice:hover:not(:disabled),.ride-picker .ride-hearts button:hover:not(:disabled) { background:transparent; border-color:transparent; }
+.ride-field:hover .ride-none { color:var(--text); }
+.ride-field:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:contain; }
+.ride-icon.no-ride { opacity:.4; }
+.ride-level { display:block; flex:none; width:36px; height:36px; object-fit:contain; }
+@media(min-width:601px) and (max-width:1000px) and (pointer:fine) {
+  .ride-field { gap:4px; padding:0 2px; }
+  .ride-field .game-text { font-size:15px; }
+  .ride-field .ride-icon,.ride-field .ride-level { width:26px; height:26px; }
+}
+@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  .heading-ride { display:none; }
+  .rating-rule-note:has(.note-ride:not(:empty)) { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .note-ride:not(:empty) { display:block; min-width:0; margin-block:-6px; }
+  .note-ride .ride-field { position:relative; min-height:32px; padding:0 2px; gap:4px; }
+  .note-ride .ride-field::after { content:''; position:absolute; inset:-6px 0; }
+  .note-ride .ride-icon { width:24px; height:24px; }
+  .note-ride .ride-level { width:24px; height:24px; }
+  .note-ride .game-text { font-size:15px; }
+  .note-ride .ride-none { font-size:13px; }
+}
+/* Setup rows: an icon inside the class cell, with the details on hover. */
+.setup-ride { display:flex; align-items:center; justify-content:center; position:relative; width:36px; min-width:0; height:36px; min-height:0; padding:0; border:0; border-radius:4px; background:transparent; }
+.setup-ride[hidden] { display:none; }
+.setup-ride .ride-icon { width:100%; height:100%; }
+.setup-ride:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+.levels-page .level-row>.setup-ride { grid-column:2; grid-row:1; justify-self:end; align-self:center; margin-right:10px; }
+.levels-page .level-row:has(>.setup-ride:not([hidden]))>.profession-setting { padding-right:50px; }
+@media(min-width:601px) and (max-width:1099px) {
+  .levels-page .level-row>.setup-ride { width:28px; height:28px; margin-right:6px; }
+  .levels-page .level-row:has(>.setup-ride:not([hidden]))>.profession-setting { padding-right:36px; }
+}
+@media(max-width:600px) {
+  .levels-page .level-row>.setup-ride { align-self:end; width:24px; height:24px; margin:0 4px 6px 0; }
+  .levels-page .level-row>.setup-ride::after { content:''; position:absolute; inset:-8px -4px -6px; }
+  .levels-page .level-row:has(>.setup-ride:not([hidden]))>.profession-setting { padding-right:32px; }
+}
+.app-dialog.ride-picker { position:fixed; inset:0; margin:auto; width:min(600px,calc(100vw - 24px)); max-width:none; max-height:calc(100dvh - 32px); padding:0; border-radius:12px; overflow:hidden; }
+.ride-picker[open] { display:flex; flex-direction:column; }
+.ride-titlebar { display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:12px 28px 12px 20px; flex:none; border-bottom:1px solid var(--control-line); }
+.ride-titlebar h2 { margin:0; font:400 22.05px/1.4 var(--font-game); color:#ffd9a5; letter-spacing:0; }
+.ride-titlebar .game-text { font-size:16px; color:var(--muted); }
+.ride-list { display:flex; flex-direction:column; gap:4px; min-height:0; padding:8px 16px; overflow:auto; overscroll-behavior:contain; }
+.ride-row { display:flex; flex:none; align-items:center; justify-content:space-between; gap:8px; min-height:52px; padding:0 8px; border:1px solid transparent; border-radius:8px; cursor:pointer; }
+.ride-row.chosen { border-color:var(--gold); background:#ffd9a514; }
+.ride-picker .ride-choice { display:flex; align-items:center; gap:10px; flex:1; min-width:0; min-height:44px; padding:0; border:0; background:transparent; color:var(--text); text-align:left; }
+.ride-choice .game-text { font-size:18px; line-height:1.3; white-space:nowrap; }
+.ride-choice:focus-visible,.ride-hearts button:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+.ride-hearts { display:flex; flex:none; }
+.ride-picker .ride-hearts button { display:grid; place-items:center; width:44px; min-width:0; min-height:44px; padding:0; border:0; background:transparent; }
+.ride-hearts img { display:block; width:42px; height:42px; object-fit:contain; filter:grayscale(1) brightness(.75); opacity:.4; }
+.ride-hearts .lit img { filter:none; opacity:1; }
+@media(hover:hover) and (pointer:fine) { .ride-hearts button:not(.lit):hover img { filter:none; opacity:.7; } }
+@media(max-width:520px) {
+  .ride-titlebar { padding:10px 16px; }
+  .ride-list { padding:8px; }
+  .ride-row { flex-wrap:wrap; gap:0; padding:2px 8px; }
+  .ride-picker .ride-choice { flex-basis:100%; }
+  .ride-hearts { flex:1; justify-content:space-between; }
+  .ride-picker .ride-hearts button { flex:1; width:auto; }
 }
 /* Use the same centered surface and controls as the existing app dialogs. */
 .app-dialog.profession-picker {

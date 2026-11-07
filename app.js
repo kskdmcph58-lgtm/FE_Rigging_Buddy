@@ -84,11 +84,38 @@ function normalizeSearch(text) {
 function phonetic(text) {
   return normalizeSearch(window.pinyinPro.pinyin(text, { toneType: 'none', type: 'array' }).join(''));
 }
-const searchIndex = characters.map(c => ({
-  character: c,
-  keys: [normalizeSearch(c.name), normalizeSearch(c.englishName), phonetic(c.name),
-    normalizeSearch(window.pinyinPro.pinyin(c.name, { pattern: 'first', toneType: 'none', type: 'array' }).join(''))]
-}));
+let searchIndex = [];
+// Catalog rows hold the default look; a row's `part3` values apply only while the
+// Part 3 switch is on, so names and portraits never reveal Part 3 by default.
+characters.forEach(c => { c.defaultLook = { name: c.name, englishName: c.englishName, image: c.image }; });
+let appliedPart3 = null;
+// People outside the current phase, and people removed from the roster, are never
+// shown. Their saved data stays untouched, so old saves and backups keep loading.
+function inStory(c) { return !c.removed && (state.part3 === true || !c.part3Only); }
+function storyCharacters() { return characters.filter(inStory); }
+function applyStoryPhase() {
+  const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;
+  if (phaseChanged) {
+    appliedPart3 = part3;
+    document.querySelector('#part3-switch').checked = part3;
+    characters.forEach(c => Object.assign(c, c.defaultLook, part3 ? c.part3 : null));
+    searchIndex = storyCharacters().map(c => ({
+      character: c,
+      keys: [normalizeSearch(c.name), normalizeSearch(c.englishName), phonetic(c.name),
+        normalizeSearch(window.pinyinPro.pinyin(c.name, { pattern: 'first', toneType: 'none', type: 'array' }).join(''))]
+    }));
+  }
+  // A pending pick is not saved data, so it can simply be dropped.
+  if (state.selection.some(id => !inStory(char(id)))) {
+    state.selection = state.selection.filter(id => inStory(char(id)));
+    if (page === 'levels' && !state.selection.length) page = 'select';
+  }
+  restoreStoryClasses();
+  if (phaseChanged) {
+    if (page === 'record' && !inStory(char(activeRecord.id))) { activeRecord = null; page = 'summary'; }
+    if (page === 'summary' && !visibleRoster().length) page = state.selection.length ? 'levels' : 'select';
+  }
+}
 function searchCharacters(text) {
   const key = normalizeSearch(text.trim()), sound = phonetic(text.trim());
   return searchIndex.filter(entry => entry.keys.some(value => value.includes(key) || (sound && value.includes(sound)))).map(entry => entry.character);
@@ -109,7 +136,8 @@ const editingCharacters = new Set();
 function nextLevel(item) { return M.nextLevel(item); }
 // A skipped attempt previews the level it attempted, but never advances it.
 function recordDisplayLevel(item, record) { return M.level(item, record) + (record.skipped ? 1 : 0); }
-function visibleRoster() { return state.roster.filter(item => !item.deleted); }
+function storyRoster() { return state.roster.filter(item => inStory(char(item.id))); }
+function visibleRoster() { return storyRoster().filter(item => !item.deleted); }
 function validate(data) { return M.migrate(data, characters.map(c => c.id)); }
 function levelLabel(item, level) { return item.initialLevel === null ? `LV +${level}` : `LV ${level}`; }
 function upgradeLevelLabel(item, level) { return item.initialLevel === null ? `+${level}` : String(level); }
@@ -172,13 +200,14 @@ function portrait(c, kind = 'small', sizes = '56px') {
   if (kind === 'narrow') {
     return `<img draggable="false" src="${versioned(c.image.replace('/grid/', '/troop/'))}" alt="" loading="lazy" decoding="async">`;
   }
-  if (kind === 'small' && c.image.startsWith('assets/portraits/before-part3/grid/')) {
+  if (kind === 'small' && c.image.includes('/grid/')) {
     const variant = size => versioned(c.image.replace('/grid/', `/small/${size}/`));
     return `<img draggable="false" src="${variant(56)}" srcset="${[56, 112, 168].map(size => `${variant(size)} ${size}w`).join(', ')}" sizes="${sizes}" alt="" loading="lazy" decoding="async">`;
   }
   return `<img draggable="false" src="${versioned(c.image)}" alt="" loading="lazy" decoding="async">`;
 }
 function render() {
+  applyStoryPhase();
   try { sessionStorage.setItem(LOCAL_PAGE_KEY,page==='record'?'summary':page); } catch { /* Navigation memory is optional. */ }
   hideExpectationTip();
   app.classList.toggle('summary-page', page === 'summary');
@@ -195,15 +224,15 @@ function render() {
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索角色姓名"></label>${visibleRoster().length ? '<button data-action="summary">返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${visibleRoster().length ? '<button data-action="summary">返回</button>' : '<button class="import-zone" data-action="import">恢复备份</button>'}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
   document.querySelector('#search').value = query;
-  if (!visibleRoster().length && state.roster.some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
+  if (!visibleRoster().length && storyRoster().some(item => item.deleted)) app.querySelector('.toolbar').insertAdjacentHTML('afterend', '<div class="selection-toolbar"><button data-action="undo-delete">撤回删除</button></div>');
   const searchInput = app.querySelector('#search');
   searchInput.name = 'rigging-buddy-character-search';
   searchInput.type = 'search';
   searchInput.autocomplete = 'off';
   searchInput.spellcheck = false;
-  searchInput.setAttribute('aria-label', '搜索角色姓名、拼音或首字母');
+  searchInput.setAttribute('aria-label', '搜索人物名字、拼音或首字母');
   const searchBox = document.createElement('div');
   searchBox.className = 'search-box';
   const searchLabel = searchInput.parentElement;
@@ -215,7 +244,7 @@ function renderSelect() {
 function renderCards() {
   const list = searchCharacters(query);
   const grid = document.querySelector('#character-grid');
-  if (!grid.children.length) grid.innerHTML = characters.map(c => {
+  if (!grid.children.length) grid.innerHTML = storyCharacters().map(c => {
     const existing = visibleRoster().some(r => r.id === c.id), selected = state.selection.includes(c.id);
     return `<button class="character ${selected ? 'selected' : ''}" data-character="${c.id}" aria-pressed="${selected}" ${existing ? 'disabled' : ''}><span class="portrait-frame">${portrait(c, 'grid')}<span class="character-name">${c.name}</span><span class="character-quill" aria-hidden="true"></span></span>${existing ? '<i>已添加</i>' : state.roster.some(item => item.id === c.id && item.deleted) ? '<i>可恢复</i>' : ''}</button>`;
   }).join('') + '<p class="empty" hidden>没有找到这个名字，换个关键词试试。</p>';
@@ -225,7 +254,7 @@ function renderCards() {
   updateSelectionCount();
 }
 function updateSelectionCount() {
-  document.querySelector('#selected-count').textContent = `已选 ${state.selection.length} 位角色`;
+  document.querySelector('#selected-count').textContent = `已选 ${state.selection.length} 位人物`;
   document.querySelector('#choose-next').disabled = !state.selection.length;
 }
 
@@ -266,7 +295,7 @@ function openSetupLevelDialog() {
   const shared=values.every(value=>value===values[0])?values[0]:'';
   const dialog=document.createElement('dialog');dialog.className='app-dialog setup-level-dialog';
   dialog.setAttribute('aria-labelledby','setup-level-dialog-title');
-  dialog.innerHTML=`<header><h2 id="setup-level-dialog-title">全部设置等级</h2></header><form novalidate><div class="setup-level-dialog-body"><input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input value="${escapeValue(shared)}" placeholder="暂无" aria-label="当前等级" aria-describedby="setup-level-dialog-help"><p id="setup-level-dialog-help">范围为 1–99</p></div><footer><button type="button" data-cancel>取消</button><button type="submit" class="primary">确认</button></footer></form>`;
+  dialog.innerHTML=`<header><h2 id="setup-level-dialog-title">全部设置等级</h2></header><form novalidate><div class="setup-level-dialog-body"><input id="batch-level" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input value="${escapeValue(shared)}" placeholder="暂无" aria-label="当前等级" aria-describedby="setup-level-dialog-help"><p id="setup-level-dialog-help">范围为 1–99</p></div><footer><button type="button" data-cancel>取消</button><button type="submit" class="primary">确定</button></footer></form>`;
   dialog.querySelector('[data-cancel]').onclick=()=>dialog.close();
   dialog.querySelector('input').addEventListener('input',e=>{
     clearLevelError(e.target);e.target.removeAttribute('aria-invalid');
@@ -367,13 +396,13 @@ window.addEventListener('resize',refreshSetupExpectationSummaries);
 function renderLevels() {
   setupLevelEdit=null;
   app.innerHTML=`<section class="levels">
-    <div class="toolbar setup-toolbar"><button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置职业</button>${selectionToolbar()}</div>
-    <div class="table-head"><span class="setup-name-heading">角色</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
+    <div class="toolbar setup-toolbar"><button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置兵种</button>${selectionToolbar()}</div>
+    <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
       <div class="setup-character">${portrait(c,'narrow')}<strong>${c.name}</strong></div>
       <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
-      ${setupProfessionButton(id)}${setupExpectationButton(id)}</div>`;}).join('')}
+      ${setupProfessionButton(id)}${setupRideButton(id)}${setupExpectationButton(id)}</div>`;}).join('')}
     </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
   setupSummaryObserver?.disconnect();
   app.querySelectorAll('[data-setup-expectation]').forEach(button=>setupSummaryObserver?.observe(button));
@@ -628,10 +657,10 @@ window.addEventListener('resize', refreshRecordRails);
 function renderSummary() {
   const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
   const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && !x.skipped && !x.ratingPending).length, 0);
-  const canUndo = state.roster.some(item => item.deleted || item.records.some(record => record.deleted));
+  const canUndo = storyRoster().some(item => item.deleted || item.records.some(record => record.deleted));
   const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.skipped));
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>小队成员</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加角色</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>人物</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div><div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const editing = editingCharacters.has(c.id);
       const displayLevels = M.displayLevels(item);
@@ -641,7 +670,7 @@ function renderSummary() {
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
         <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.skipped ? '已跳过，' : r.upgraded ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${professionMarkup(r.profession, editing, c.id, recordIndex)}<span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
-    }).join('') || '<div class="panel empty">添加角色</div>'}</div>`;
+    }).join('') || '<div class="panel empty">添加人物</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');
     template.innerHTML = markup;
@@ -738,7 +767,7 @@ function renderRecord() {
   const editing = d.editIndex !== undefined;
   const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel"><div class="stat-heading"><h2 class="desktop-stat-title">本次属性提升</h2><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}</div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></section></div>`;
+    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><div class="ride-slot note-ride"></div></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></section></div>`;
   if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
   updateRecordControls();
 }
@@ -747,6 +776,7 @@ function updateRecordControls() {
   const d = activeRecord;
   const profession = app.querySelector('.stat-heading .profession-field');
   if (profession) profession.outerHTML = professionMarkup(d.profession, true);
+  app.querySelectorAll('.ride-slot').forEach(slot => { slot.innerHTML = recordRideMarkup(d); });
   app.querySelectorAll('[data-stat]').forEach(button => {
     const selected = d.stats.includes(button.dataset.stat);
     button.classList.toggle('active', selected);
@@ -803,13 +833,20 @@ function saveRecord(next) {
   const d = activeRecord;
   if (!d || d.happy === null) return;
   const item = state.roster.find(r => r.id === d.id);
+  const kind = rideKind(d.profession), ride = kind && d.ride ? { ...d.ride } : null;
+  const usedRides = kind ? { ...d.rides, [kind]: ride } : d.rides;
   if (d.editIndex === undefined && (M.nextSeq(item) > M.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= M.limits.records)) {
     notify('记录已达上限，请导出备份'); return;
   }
   if (d.editIndex !== undefined) {
-    item.records[d.editIndex] = { ...item.records[d.editIndex], profession: d.profession || null, stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
+    // Correcting older history must not change what the next new record starts from.
+    if (item.records[d.editIndex] === M.live(item).at(-1)) rememberRides(d.id, usedRides);
+    const saved = { ...item.records[d.editIndex], profession: d.profession || null, stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
+    if (ride) saved.ride = ride; else delete saved.ride;
+    item.records[d.editIndex] = saved;
   } else {
-    item.records.push({ id: M.uid(), seq: M.nextSeq(item), profession: d.profession || null, stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', createdAt: new Date().toISOString() });
+    rememberRides(d.id, usedRides);
+    item.records.push({ id: M.uid(), seq: M.nextSeq(item), profession: d.profession || null, ...(ride ? { ride } : {}), stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', createdAt: new Date().toISOString() });
   }
   const id = d.id;
   if (d.editIndex === undefined) delete item.pendingProfession;
@@ -1042,6 +1079,8 @@ document.addEventListener('keydown', e => {
 app.addEventListener('click', async e => {
   const profession = e.target.closest('[data-profession]');
   if (profession) { e.preventDefault(); e.stopPropagation(); openProfessionPicker(profession); return; }
+  const mount = e.target.closest('[data-ride],[data-setup-ride]');
+  if (mount) { e.preventDefault(); e.stopPropagation(); openRidePicker(mount); return; }
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   if (b.dataset.expandRecords) {
@@ -1059,12 +1098,14 @@ app.addEventListener('click', async e => {
   if (b.dataset.action === 'delete-selected-characters') {
     if (page === 'levels') {
       const ids = state.selection.filter(id => rowSelection.has(id));
-      if (!ids.length || !await confirmRecordDeletion(`是否从待添加列表中删除选中的 ${ids.length} 位角色？`)) return;
+      if (!ids.length || !await confirmRecordDeletion(`是否从待添加列表中删除选中的 ${ids.length} 位人物？`)) return;
       const removed = new Set(ids);
       state.selection = state.selection.filter(id => !removed.has(id));
       ids.forEach(id => {
         delete state.initialLevels[id];
         if (state.draftProfessions) delete state.draftProfessions[id];
+        if (state.draftRides) delete state.draftRides[id];
+        if (state.draftStoryClasses) delete state.draftStoryClasses[id];
         if (state.draftExpectations) delete state.draftExpectations[id];
       });
       rowSelection.clear(); selectionAnchor = null;
@@ -1072,7 +1113,7 @@ app.addEventListener('click', async e => {
       render(); return;
     }
     const items = visibleRoster().filter(item => rowSelection.has(item.id));
-    if (!items.length || !await confirmRecordDeletion(`是否删除选中的 ${items.length} 位角色？`)) return;
+    if (!items.length || !await confirmRecordDeletion(`是否删除选中的 ${items.length} 位人物？`)) return;
     softDelete(items);
     const ids = new Set(items.map(item => item.id));
     state.selection = state.selection.filter(id => !ids.has(id));
@@ -1126,7 +1167,9 @@ app.addEventListener('click', async e => {
       returnToSummary();
       return;
     }
-    activeRecord = { id: b.dataset.edit, editIndex: index, profession: record.profession || null, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
+    const savedKind = rideKind(record.profession);
+    const savedRide = savedKind && window.RIDES.byId[record.ride?.id]?.kind === savedKind ? { ...record.ride } : null;
+    activeRecord = { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
      page = 'record'; render(); window.scrollTo(0, 0);
   }
   if (b.dataset.toggleEdit) {
@@ -1167,11 +1210,11 @@ app.addEventListener('click', async e => {
     softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
     rememberListPosition(); returnToSummary(); return;
   }
-  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部角色和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
+  if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部人物和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
+  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));
     editingCharacters.clear(); activeRecord = null;
@@ -1186,7 +1229,9 @@ app.addEventListener('click', async e => {
       const value = String(state.initialLevels[id] ?? ''), existing = state.roster.find(item => item.id === id);
       const item = existing || { id, records: [] };
       item.initialLevel = value === '' ? null : Number(value);
-      item.initialProfession = setupProfession(id);
+      // A hidden Part 3 starting class waits for the switch, unless another class was chosen.
+      if (!existing || classAvailable(item.initialProfession) || Object.hasOwn(state.draftProfessions || {}, id)) item.initialProfession = setupProfession(id);
+      rememberRides(id, state.draftRides?.[id]);
       if (existing && Object.hasOwn(state.draftProfessions || {}, id)) item.pendingProfession = item.initialProfession;
       delete item.deleted; delete item.deletedAt; delete item.deletionBatch;
       if (state.draftExpectations && Object.hasOwn(state.draftExpectations, id)) M.setRule(item, M.nextSeq(item), state.draftExpectations[id], false);
@@ -1194,6 +1239,8 @@ app.addEventListener('click', async e => {
     });
     state.draftExpectations = {};
     state.draftProfessions = {};
+    state.draftRides = {};
+    state.draftStoryClasses = {};
     state.selection = []; state.initialLevels = {};  page = 'summary'; render();
   }
   if (action === 'next' || action === 'finish') saveRecord(action === 'next');
@@ -1230,6 +1277,7 @@ async function importFile(file) {
     render();
   } catch {
     ({ state, page, activeRecord, query, selectionAnchor, selectionPage, multiSelectMode } = previous);
+    applyStoryPhase();
     editingCharacters.clear(); previous.editing.forEach(id => editingCharacters.add(id));
     rowSelection.clear(); previous.selected.forEach(id => rowSelection.add(id));
     app.replaceChildren(...previous.nodes); app.className = previous.className;
@@ -1370,7 +1418,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (mouseSort || touchSort || document.activeElement?.matches('input') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
+  if (mouseSort || touchSort || document.activeElement?.matches('input:not(#part3-switch)') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
@@ -1397,6 +1445,10 @@ function restoreAfterAppUpdate() {
       if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return;
       if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return;
       d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
+      M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
+      // Snapshots from before mounts existed have neither field.
+      d.ride ??= null; d.rides ??= {};
+      if (d.ride !== null) M.validRide(d.ride, rideKind(d.profession));
     }
     state = trackState(saved.state);
     page = saved.page;
@@ -1410,5 +1462,6 @@ function restoreAfterAppUpdate() {
 restoreLocalState();
 restoreAfterAppUpdate();
 render();
+document.querySelector('#part3-switch').addEventListener('change', e => { state.part3 = e.target.checked; render(); });
 window.addEventListener('pagehide',saveLocalState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});

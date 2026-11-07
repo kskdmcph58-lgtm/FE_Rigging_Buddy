@@ -7,7 +7,7 @@ function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; mul
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
 function selectionToolbar(withToggle = true) {
-  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span><button class="danger" data-action="delete-selected-characters" hidden>删除角色</button><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置职业</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
+  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span><button class="danger" data-action="delete-selected-characters" hidden>删除人物</button><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置兵种</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
 }
 function layoutCompactSelectionToolbar(toolbar) {
   if (!compactSelectionToolbar.matches) { toolbar.classList.remove('selection-single-row'); return; }
@@ -151,7 +151,7 @@ function markMoving(id) {
   app.querySelectorAll('[data-sort-id]').forEach(row => row.classList.toggle('dragging', ids.includes(row.dataset.sortId)));
   let badge = document.querySelector('#drag-count');
   if (!badge) { badge = document.createElement('div'); badge.id = 'drag-count'; badge.setAttribute('role','status'); document.body.append(badge); }
-  badge.textContent = `移动 ${ids.length} 位角色`;
+  badge.textContent = `移动 ${ids.length} 位人物`;
 }
 function positionDragPreview(x, y) {
   const preview = document.querySelector('#drag-preview'); if (!preview) return;
@@ -271,7 +271,7 @@ function showUndoNotice(count) {
   notice.append(button); noticeTimer = setTimeout(() => notice.replaceChildren(), 8000);
 }
 function undoDelete() {
-  const deleted = state.roster.flatMap(item => [item, ...item.records]).filter(o => o.deleted);
+  const deleted = storyRoster().flatMap(item => [item, ...item.records]).filter(o => o.deleted);
   const latest = deleted.reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
   if (!latest) return;
   const batch = latest.deletionBatch;
@@ -301,7 +301,8 @@ function draftRule(d) {
 }
 function newRecordDraft(id) {
   const item = state.roster.find(i => i.id === id);
-  return { id, profession: currentProfession(item), stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
+  const profession = currentProfession(item);
+  return { id, profession, ride: rememberedRide(id, rideKind(profession)), rides: {}, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
 }
 function recordExpectationMarkup() {
   const rule = draftRule(activeRecord);
@@ -484,7 +485,7 @@ function openExpectationEditor(ids) {
   rule = M.copy(mixed ? null : rules[0]);
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';
   dialog.setAttribute('aria-labelledby','expectation-editor-title');
-  dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位角色`}</p></div><button data-close>返回</button></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些角色的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button class="primary" data-save-rule>保存期望</button></footer>`;
+  dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`}</p></div><button data-close>返回</button></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button class="primary" data-save-rule>保存期望</button></footer>`;
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }
   function replace(path, value) {
     if (!path) { rule=value; return; }
@@ -592,10 +593,10 @@ let expectationTip = null, expectationTipTimer, expectationTipOwner = null;
 function hideExpectationTip() { clearTimeout(expectationTipTimer); expectationTip?.remove(); expectationTipOwner?.removeAttribute('aria-describedby'); expectationTipOwner=null; expectationTip=null; }
 function showExpectationTip(b) {
   hideExpectationTip();
-  const setup=b.dataset.setupExpectation;
-  const item=setup?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!item)return;
+  const setup=b.dataset.setupExpectation, rideOwner=b.dataset.setupRide;
+  const item=setup||rideOwner?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!rideOwner&&!item)return;
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
-  expectationTip.innerHTML=setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
+  expectationTip.innerHTML=rideOwner ? `<p class="rule-default">${rideText(setupRide(rideOwner))}</p>` : setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
   const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect();
   expectationTip.style.left=`${Math.max(12,Math.min(innerWidth-tip.width-12,r.left))}px`;
@@ -603,20 +604,20 @@ function showExpectationTip(b) {
   expectationTip.addEventListener('pointerleave',hideExpectationTip);
 }
 document.addEventListener('pointerover',e=>{
-  const b=e.target.closest('[data-expectation-detail],[data-setup-expectation]');
+  const b=e.target.closest('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]');
   if(!b||e.pointerType!=='mouse'||b.contains(e.relatedTarget))return;
   hideExpectationTip();
   expectationTipTimer=setTimeout(()=>showExpectationTip(b),250);
 });
 document.addEventListener('pointerout',e=>{
-  const owner=e.target.closest('[data-expectation-detail],[data-setup-expectation]');
+  const owner=e.target.closest('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]');
   if(!owner||owner.contains(e.relatedTarget)||expectationTip?.contains(e.relatedTarget))return;
   clearTimeout(expectationTipTimer);
   expectationTipTimer=setTimeout(()=>{if(!expectationTip?.matches(':hover')&&!expectationTipOwner?.matches(':hover'))hideExpectationTip();},180);
 });
 document.addEventListener('scroll',e=>{if(!expectationTip?.contains(e.target))hideExpectationTip();},true);
 window.addEventListener('resize',hideExpectationTip);
-document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-detail],[data-setup-expectation]')&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
+document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]')&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
 document.addEventListener('focusout',e=>{if(e.target===expectationTipOwner)hideExpectationTip();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')hideExpectationTip();});
 
