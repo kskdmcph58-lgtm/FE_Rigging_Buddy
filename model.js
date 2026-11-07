@@ -19,6 +19,23 @@ window.RiggingModel = (() => {
     });
   }
   const nextLevel = item => (item.initialLevel ?? 0) + live(item).filter(r => !r.skipped).length + 1;
+  // A person cannot leave Part 3, so everything after a Part 3 level-up marked 已升级 is Part 3.
+  // Parallel to live(item). part3Only people always count as Part 3.
+  function recordParts(item, part3Only = false) {
+    let locked = part3Only;
+    return live(item).map(record => {
+      const part3 = locked || record.part3 === true;
+      if (part3 && record.upgraded) locked = true;
+      return part3;
+    });
+  }
+  // What seed recovery reads. Skipped and upgraded marks change neither the order nor the level,
+  // so this level differs from displayLevels: it is the level before each consecutive level-up.
+  function seedChain(item, part3Only = false) {
+    if (item.initialLevel === null || item.initialLevel === undefined) return null;
+    const parts = recordParts(item, part3Only);
+    return live(item).map((record, index) => ({ record, level: item.initialLevel + index, part3: parts[index] }));
+  }
   function ruleAt(item, seq) {
     let rule = null;
     for (const range of item.expectations || []) { if (range.from > seq) break; rule = range.rule; }
@@ -124,8 +141,9 @@ window.RiggingModel = (() => {
       let last = 0, legacyLevel = (item.initialLevel ?? 0) + 1;
       for (const r of item.records) {
         if (!r || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !stats.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
-        for (const key of ['skipped', 'upgraded', 'deleted']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
+        for (const key of ['skipped', 'upgraded', 'deleted', 'part3']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
         if (r.skipped && r.upgraded) throw Error('记录状态冲突');
+        if (r.plus2 !== undefined && (!Array.isArray(r.plus2) || new Set(r.plus2).size !== r.plus2.length || r.plus2.some(s => !r.stats.includes(s)))) throw Error('升级记录不正确');
         if (old) {
           if (r.level !== legacyLevel) throw Error('旧记录等级不正确');
           if (!r.skipped) legacyLevel++;
@@ -167,5 +185,5 @@ window.RiggingModel = (() => {
     }
     return { ...data, version: 2, selection: data.selection || [], initialLevels: data.initialLevels || {} };
   }
-  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate };
+  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate };
 })();

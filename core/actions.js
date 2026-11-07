@@ -54,22 +54,28 @@ window.RiggingActions = (() => {
     if (draft.editIndex === undefined && (model.nextSeq(item) > model.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= model.limits.records)) {
       return { saved: false, reason: 'limit' };
     }
+    // A +2 can only belong to a stat that rose, so a stats edit also drops a stale one.
+    const plus2 = (draft.plus2 ?? (draft.editIndex !== undefined ? item.records[draft.editIndex].plus2 : null) ?? []).filter(stat => draft.stats.includes(stat));
     if (draft.editIndex !== undefined) {
       // Editing earlier history does not affect the next record's ride selection.
       if (item.records[draft.editIndex] === model.live(item).at(-1)) rememberRides(state, draft.id, usedRides);
       const saved = { ...item.records[draft.editIndex], profession: draft.profession || null, stats: [...draft.stats], happy: draft.happy, ratingSource: draft.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
       if (ride) saved.ride = ride; else delete saved.ride;
+      if (plus2.length) saved.plus2 = plus2; else delete saved.plus2;
       item.records[draft.editIndex] = saved;
     } else {
       rememberRides(state, draft.id, usedRides);
-      item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: draft.profession || null, ...(ride ? { ride } : {}), stats: [...draft.stats], happy: draft.happy, ratingSource: draft.ratingSource || 'auto', createdAt: new Date().toISOString() });
+      // Only the switch writes the label. A lock from an earlier 已升级 stays derived, so removing that mark undoes it.
+      item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: draft.profession || null, ...(ride ? { ride } : {}), stats: [...draft.stats], ...(plus2.length ? { plus2 } : {}), ...(state.part3 === true ? { part3: true } : {}), happy: draft.happy, ratingSource: draft.ratingSource || 'auto', createdAt: new Date().toISOString() });
     }
     if (draft.editIndex === undefined) delete item.pendingProfession;
     return { saved: true, item };
   }
 
-  function cycleRecordStatus(record) {
+  function cycleRecordStatus(record, item) {
     if (record.skipped) {
+      // A 已升级 made while locked counts as a Part 3 mark of its own, and survives removing the earlier one.
+      if (item && model.recordParts(item)[model.live(item).indexOf(record)]) record.part3 = true;
       record.skipped = false;
       record.upgraded = true;
     } else if (record.upgraded) {

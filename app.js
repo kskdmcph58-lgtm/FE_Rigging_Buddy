@@ -4,6 +4,7 @@ const characters = window.CHARACTERS;
 const M = window.RiggingModel;
 const LOCAL_STATE_KEY = `rigging-buddy:save:${new URL('.', location.href).pathname}`;
 const LOCAL_PAGE_KEY = `${LOCAL_STATE_KEY}:page`;
+const RECORD_DRAFT_KEY = `${LOCAL_STATE_KEY}:record-draft`;
 const trackedObjects = new WeakMap();
 let localSaveTimer, storageReady = false, storageBlocked = false, storageWarning = false, lastLocalSave = null;
 let storageIssue = '';
@@ -69,9 +70,14 @@ let appliedPart3 = null;
 // shown. Their saved data stays untouched, so old saves and backups keep loading.
 function inStory(c) { return !c.removed && (state.part3 === true || !c.part3Only); }
 function storyCharacters() { return characters.filter(inStory); }
+// Going back to 第1-2部 would empty a list of Part 3 people, so it waits for the pages that add people.
+function part3Locked() {
+  const people = state.roster.filter(item => !item.deleted && !char(item.id).removed);
+  return page === 'summary' && state.part3 === true && people.length > 0 && people.every(item => char(item.id).part3Only);
+}
 function part3Switch() {
-  const on = state.part3 === true;
-  return `<div class="part3-segment" role="radiogroup" aria-label="剧情范围"><label title="不显示第3部的人物和兵种"><input id="part3-off" type="radio" name="part3" value="off" ${on ? '' : 'checked'}><span>第1-2部</span></label><label title="显示第3部的人物和兵种"><input id="part3-on" type="radio" name="part3" value="on" ${on ? 'checked' : ''}><span>第3部</span></label></div>`;
+  const on = state.part3 === true, locked = part3Locked();
+  return `<div class="part3-segment" role="radiogroup" aria-label="剧情范围"><label title="${locked ? '列表里都是第3部人物，添加人物时才能切换' : '不显示第3部的人物和兵种'}"><input id="part3-off" type="radio" name="part3" value="off" ${on ? '' : 'checked'} ${locked ? 'disabled' : ''}><span>第1-2部</span></label><label title="显示第3部的人物和兵种"><input id="part3-on" type="radio" name="part3" value="on" ${on ? 'checked' : ''}><span>第3部</span></label></div>`;
 }
 function applyStoryPhase() {
   const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;
@@ -210,6 +216,7 @@ function render() {
   renderedPage = page;
   applyStoryPhase();
   try { sessionStorage.setItem(LOCAL_PAGE_KEY,page==='record'?'summary':page); } catch { /* Navigation memory is optional. */ }
+  rememberRecordDraft();
   hideExpectationTip();
   app.classList.toggle('summary-page', page === 'summary');
   app.classList.toggle('select-page', page === 'select');
@@ -221,7 +228,7 @@ function render() {
   if (page === 'summary') renderSummary();
   if (page === 'record') renderRecord();
   // The summary reconciles in place, where a checked attribute alone would not move a used checkbox.
-  app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); });
+  app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); input.disabled = input.value === 'off' && part3Locked(); });
   refreshRowSelection();
   scheduleLocalSave();
   if (pageChanged) fadeInPage();
@@ -737,6 +744,7 @@ app.addEventListener('click', async e => {
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
+  if (['reset', 'reset-list'].includes(action)) clearRecordDraft();
   if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));
@@ -812,6 +820,7 @@ async function importFile(file) {
   }
   storageReady = previous.ready;
   clearDrag();
+  clearRecordDraft();
   // Choosing a backup explicitly replaces this site's saved state, including a
   // corrupt save or a prior tab conflict. A write failure stays visible.
   saveLocalState(true);
@@ -936,6 +945,58 @@ app.addEventListener('keydown', e => {
   const id = e.target.dataset.sortId; moveCard(id, target.dataset.sortId, e.key === 'ArrowDown');
   app.querySelector(`[data-sort-id="${id}"]`).focus({ preventScroll: true });
 });
+function checkRecordDraft(d, data) {
+  const item = data.roster.find(r => r.id === d?.id);
+  if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return false;
+  if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return false;
+  d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
+  M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
+  // Snapshots from before mounts existed have neither field.
+  d.ride ??= null; d.rides ??= {};
+  if (d.ride !== null) M.validRide(d.ride, rideKind(d.profession));
+  return true;
+}
+// One unsaved upgrade input, outside the save and backups. `open` means the page was
+// still showing it, so a reload returns there; otherwise it waits for that row to reopen.
+let heldRecordDraft = null;
+try { heldRecordDraft = JSON.parse(localStorage.getItem(RECORD_DRAFT_KEY) || 'null'); } catch { /* Optional storage. */ }
+function writeRecordDraft() {
+  try {
+    if (heldRecordDraft) localStorage.setItem(RECORD_DRAFT_KEY, JSON.stringify(heldRecordDraft));
+    else localStorage.removeItem(RECORD_DRAFT_KEY);
+  } catch { /* The input still lives in this page. */ }
+}
+function rememberRecordDraft() {
+  if (page === 'record' && activeRecord) {
+    const item = state.roster.find(r => r.id === activeRecord.id);
+    heldRecordDraft = { open: true, draft: activeRecord, base: window.RiggingActions.currentProfession(state, item) };
+  } else if (heldRecordDraft?.open) heldRecordDraft = { ...heldRecordDraft, open: false };
+  else return;
+  writeRecordDraft();
+}
+function clearRecordDraft() { heldRecordDraft = null; writeRecordDraft(); }
+function takeRecordDraft(id, editIndex) {
+  const held = heldRecordDraft;
+  if (held?.draft?.id !== id || held.draft.editIndex !== editIndex) return null;
+  try {
+    const draft = M.copy(held.draft), item = state.roster.find(r => r.id === id);
+    if (!checkRecordDraft(draft, state) || item.deleted || !inStory(char(id)) || item.records[editIndex]?.deleted) return null;
+    if (editIndex === undefined) {
+      // Changes made on the list while this waited win over what it remembered.
+      if (window.RiggingActions.currentProfession(state, item) !== held.base) {
+        const fresh = newRecordDraft(id);
+        draft.profession = fresh.profession; draft.ride = fresh.ride; delete draft.storyClass;
+      }
+      if (draft.ratingSource === 'auto') applyDraftRating(draft);
+    }
+    return draft;
+  } catch { return null; }
+}
+function restoreRecordPage() {
+  if (activeRecord || !heldRecordDraft?.open) return;
+  const draft = takeRecordDraft(heldRecordDraft.draft?.id, heldRecordDraft.draft?.editIndex);
+  if (draft) { activeRecord = draft; page = 'record'; }
+}
 // Only used for a same-tab deployment update; existing localStorage is untouched.
 function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
@@ -963,16 +1024,7 @@ function restoreAfterAppUpdate() {
     saved.state = validate(saved.state);
     if (!['select', 'levels', 'summary', 'record'].includes(saved.page) || typeof saved.query !== 'string' || !Array.isArray(saved.editingCharacters)) return;
     const d = saved.activeRecord;
-    if (saved.page === 'record') {
-      const item = saved.state.roster.find(r => r.id === d?.id);
-      if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return;
-      if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return;
-      d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
-      M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
-      // Snapshots from before mounts existed have neither field.
-      d.ride ??= null; d.rides ??= {};
-      if (d.ride !== null) M.validRide(d.ride, rideKind(d.profession));
-    }
+    if (saved.page === 'record' && !checkRecordDraft(d, saved.state)) return;
     state = trackState(saved.state);
     page = saved.page;
     query = saved.query;
@@ -984,6 +1036,7 @@ function restoreAfterAppUpdate() {
 }
 restoreLocalState();
 restoreAfterAppUpdate();
+restoreRecordPage();
 render();
 app.addEventListener('change', e => {
   if (e.target.name !== 'part3') return;

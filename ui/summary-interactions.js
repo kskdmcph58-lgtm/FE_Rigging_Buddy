@@ -5,7 +5,7 @@ function start(id) {
   recordReturnPosition = desktopRecords.matches
     ? { id, position: step ? rail.scrollLeft / step : 0 }
     : null;
-  activeRecord = newRecordDraft(id);
+  activeRecord = takeRecordDraft(id) || newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
 }
 function rememberListPosition() {
@@ -50,7 +50,7 @@ function openSummaryRecord(b) {
     status.autoPending = true;
     // Every status click renews this row's countdown, including skipped -> upgraded.
     status.signature = '';
-    window.RiggingActions.cycleRecordStatus(record);
+    window.RiggingActions.cycleRecordStatus(record, item);
     status.retiring = desktopRecords.matches && !compactRecords(item) && b.closest('.journal').matches('.has-record-rail:not(.records-expanded)');
     returnToSummary();
     const overlay = motionAllowed() && app.querySelector(`.record-chip[data-edit="${item.id}"][data-index="${index}"] .record-overlay`);
@@ -59,6 +59,6 @@ function openSummaryRecord(b) {
   }
   const savedKind = rideKind(record.profession);
   const savedRide = savedKind && window.RIDES.byId[record.ride?.id]?.kind === savedKind ? { ...record.ride } : null;
-  activeRecord = { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
+  activeRecord = takeRecordDraft(b.dataset.edit, index) || { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
    page = 'record'; render(); window.scrollTo(0, 0);
 }

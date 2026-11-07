@@ -33,6 +33,7 @@ async function deleteRecord() {
   softDelete([item.records[d.editIndex]]);
   if (!M.live(item).length) editingCharacters.delete(item.id);
   activeRecord = null;
+  clearRecordDraft();
   returnToSummary();
 }
 function saveRecord(next) {
@@ -54,6 +55,7 @@ function saveRecord(next) {
     hideExpectationTip();
     updateRecordControls();
   } else {
+    clearRecordDraft();
     returnToSummary();
   }
 

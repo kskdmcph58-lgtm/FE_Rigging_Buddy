@@ -29,6 +29,7 @@ function updateRecordControls() {
   app.querySelector('[data-action="finish"]').disabled = d.happy === null;
   const next = app.querySelector('[data-action="next"]');
   if (next) next.disabled = d.happy === null;
+  rememberRecordDraft();
 }
 function updateRecordLevel(item) {
   const level = nextLevel(item);

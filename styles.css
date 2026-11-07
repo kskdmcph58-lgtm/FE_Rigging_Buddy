@@ -143,6 +143,11 @@ header {
 .part3-segment label:has(input:checked) {
   color: var(--text);
 }
+.part3-segment label:has(input:disabled),
+.part3-segment input:disabled {
+  opacity: .5;
+  cursor: default;
+}
 .part3-segment input {
   -webkit-appearance: none;
   appearance: none;
@@ -168,7 +173,7 @@ html[data-input-mode="keyboard"] .part3-segment:has(input:focus-visible) {
   .part3-segment:hover {
     border-color: var(--gold);
   }
-  .part3-segment label:hover {
+  .part3-segment label:has(input:not(:disabled)):hover {
     color: var(--text);
   }
 }
