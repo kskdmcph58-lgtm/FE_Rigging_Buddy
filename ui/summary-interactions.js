@@ -1,5 +1,10 @@
 /* Summary navigation/history controls; mutations use shared actions. */
 function start(id) {
+  // Records already on the list may be enough, so stay here unless the search needs another one.
+  if (seedCanStart(state.roster.find(r => r.id === id))) runSeedSearch(id, true);
+  else openNewRecord(id);
+}
+function openNewRecord(id) {
   const rail = app.querySelector(`.journal[data-sort-id="${id}"] .records`);
   const step = rail && railState(rail).step;
   recordReturnPosition = desktopRecords.matches
@@ -7,9 +12,6 @@ function start(id) {
     : null;
   activeRecord = takeRecordDraft(id) || newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
-  // Records already on the list may be enough without another level-up.
-  const item = state.roster.find(r => r.id === id);
-  if (seedCanStart(item)) runSeedSearch(id);
 }
 function rememberListPosition() {
   state.summaryScroll = Math.max(0, window.scrollY);

@@ -2,6 +2,9 @@
    app.js registers these once, in the original order/phase/options.
    WeakMap owns node-local state; delayed callbacks retain their isConnected guards. */
 const expandedJournals = new Set();
+// How many forecast rows each person's list has asked for. Display only, never saved.
+const forecastLengths = new Map();
+const FORECAST_BATCH = 30;
 let recordReturnPosition = null;
 const recordRails = new WeakMap();
 const desktopRecords = UI_MEDIA.desktopRecordRail;
@@ -38,11 +41,9 @@ function moveRail(rail, target, duration = 120) {
   status.frame = requestAnimationFrame(tick);
 }
 function defaultRailPosition(rail) {
-  const chips = [...rail.querySelectorAll('.record-chip')];
-  // With a forecast, the rail opens on what comes next rather than on history.
-  let processed = Math.max(0, chips.findIndex(chip => chip.matches('.queue-row')));
-  while (processed < chips.length && chips[processed].matches('.upgraded,.skipped')) processed++;
-  return Math.max(0, processed - 1) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
+  // The last marked card sits at the left edge; with no marks the rail starts at the beginning.
+  const marks = [...rail.querySelectorAll('.record-chip')].map(chip => chip.matches('.upgraded,.skipped'));
+  return Math.max(0, marks.lastIndexOf(true)) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
 }
 function autoPositionRail(rail, duration = 120) {
   const status = railState(rail);
@@ -100,6 +101,30 @@ function finishRecordRail(rail, duration = 120) {
     { height: `${height}px` }, { height: `${nextHeight}px` }
   ], { duration, easing: MOTION.ease });
 }
+// A large height change needs a gentler curve than the standard one, which covers most of it in one frame.
+const EXPAND_MOTION = { duration: 200, easing: 'cubic-bezier(.3,0,.2,1)' };
+function visibleCards(rail) {
+  const box = rail.getBoundingClientRect();
+  return [...rail.querySelectorAll('.record-chip')].filter(chip => {
+    const card = chip.getBoundingClientRect();
+    return card.right > box.left + 1 && card.left < box.right - 1 && card.bottom > box.top + 1 && card.top < box.bottom - 1;
+  });
+}
+// The rail folds into rows: every card starts where it sat on the rail, so each row moves as one.
+// Rows further down share the second row's sideways distance, so they all arrive together.
+function animateOpeningCards(rail, anchorIndex, anchorBefore) {
+  const cards = [...rail.querySelectorAll('.record-chip')];
+  const columns = Number(rail.style.getPropertyValue('--record-columns'));
+  const step = parseFloat(rail.style.getPropertyValue('--chip-width')) + 10;
+  const anchorRow = Math.floor(anchorIndex / columns);
+  visibleCards(rail).forEach(chip => {
+    const index = cards.indexOf(chip), next = chip.getBoundingClientRect();
+    const rows = Math.min(Math.floor(index / columns) - anchorRow, 1);
+    const x = anchorBefore.left + (index - anchorIndex) * step - next.left;
+    const sideways = x - (Math.floor(index / columns) - anchorRow - rows) * columns * step;
+    chip.animate([{ transform: `translate(${sideways}px,${anchorBefore.top - next.top}px)` }, { transform: 'none' }], EXPAND_MOTION);
+  });
+}
 function setJournalExpanded(journal, expanded, animate = true) {
   const rail = journal.querySelector('.records');
   railState(rail).autoPending = false;
@@ -110,6 +135,11 @@ function setJournalExpanded(journal, expanded, animate = true) {
   const chips = [...rail.querySelectorAll('.record-chip')];
   const slideOpen = expanded && !journal.classList.contains('records-expanded') && chips.length <= 5;
   const previousPositions = slideOpen ? chips.map(chip => chip.getBoundingClientRect()) : [];
+  // On wide screens the card at the rail's left edge keeps its place: its row becomes the top row.
+  const anchoring = expanded && UI_MEDIA.wideRecordRow.matches && !journal.classList.contains('records-expanded');
+  const anchorChip = anchoring ? visibleCards(rail)[0] : null;
+  const anchorIndex = chips.indexOf(anchorChip);
+  const anchorBefore = anchorChip?.getBoundingClientRect();
   stopRail(rail);
   rail.getAnimations().forEach(animation => animation.cancel());
   chips.forEach(chip => chip.getAnimations().forEach(animation => animation.cancel()));
@@ -117,7 +147,14 @@ function setJournalExpanded(journal, expanded, animate = true) {
   journal.classList.toggle('records-expanded', expanded);
   const button = journal.querySelector('[data-expand-records]');
   if (button) { button.textContent = expanded ? '收起' : '展开'; button.setAttribute('aria-expanded', String(expanded)); }
-  if (expanded) rail.scrollLeft = 0;
+  if (expanded) {
+    rail.scrollLeft = 0; rail.scrollTop = 0;
+    if (anchoring) {
+      const topRow = Math.floor(Math.max(0, anchorIndex) / Number(rail.style.getPropertyValue('--record-columns')));
+      fillExpandedForecast(rail, topRow);
+      rail.scrollTop = chips[Math.max(0, anchorIndex)].getBoundingClientRect().top - rail.getBoundingClientRect().top;
+    }
+  }
   else moveRail(rail, defaultRailPosition(rail));
   const nextHeight = rail.getBoundingClientRect().height;
   // Short lists keep the same height: animate the cards back from their
@@ -131,11 +168,54 @@ function setJournalExpanded(journal, expanded, animate = true) {
       ], { duration: 120, easing: MOTION.ease });
     });
   }
+  if (anchorChip && animate && motionAllowed()) animateOpeningCards(rail, anchorIndex, anchorBefore);
   if (animate && motionAllowed() && Math.abs(nextHeight - previousHeight) > 1) {
-    rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], {
+    rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], anchoring ? EXPAND_MOTION : {
       duration: 130, easing: MOTION.ease
-    });
+    }).onfinish = () => scheduleForecastCheck(rail);
   }
+  scheduleForecastCheck(rail);
+}
+// Keeps forecast rows ready past the visible edge: two widths along a rail, one height when expanded.
+function extendForecast(rail) {
+  const journal = rail.closest('.journal'), status = railState(rail);
+  if (!UI_MEDIA.wideRecordRow.matches || page !== 'summary' || !journal?.classList.contains('has-record-rail')) return;
+  if (rail.getAnimations().length) return;
+  const rows = rail.querySelectorAll('.queue-row'), id = journal.dataset.sortId;
+  // Fewer rows than requested means the sequence ended at the level cap.
+  if (!rows.length || rows.length < (forecastLengths.get(id) || 0)) return;
+  let ahead;
+  if (journal.classList.contains('records-expanded')) {
+    // The opening animation is still short at this point, so measure against the final height.
+    const height = parseFloat(getComputedStyle(rail).maxHeight);
+    ahead = (rail.scrollHeight - rail.scrollTop - height) / height;
+  } else {
+    const box = rail.getBoundingClientRect(), last = rows[rows.length - 1].getBoundingClientRect();
+    ahead = (last.right - box.right) / box.width / 2;
+  }
+  if (ahead >= 1) return;
+  forecastLengths.set(id, rows.length + FORECAST_BATCH);
+  status.extending = true;
+  renderSummary();
+  refreshRecordRails();
+}
+// Opening needs only five rows from the anchor; the rest follow once the animation has finished.
+function fillExpandedForecast(rail, topRow) {
+  const rows = rail.querySelectorAll('.queue-row'), status = railState(rail);
+  const missing = Number(rail.style.getPropertyValue('--record-columns')) * (topRow + 5) - rail.querySelectorAll('.record-chip').length;
+  if (!rows.length || missing <= 0) return;
+  forecastLengths.set(rail.closest('.journal').dataset.sortId, rows.length + missing);
+  status.extending = true;
+  renderSummary();
+  refreshRecordRails();
+}
+function scheduleForecastCheck(rail) {
+  const status = railState(rail);
+  if (status.forecastFrame) return;
+  status.forecastFrame = requestAnimationFrame(() => {
+    status.forecastFrame = 0;
+    if (rail.isConnected) extendForecast(rail);
+  });
 }
 function refreshRecordRails() {
   app.querySelectorAll('.journal').forEach(journal => {
@@ -150,21 +230,31 @@ function refreshRecordRails() {
       stopRail(rail); rail.scrollLeft = 0; status.signature = ''; return;
     }
     const width = rail.clientWidth;
-    const columns = Math.max(1, Math.min(5, Math.floor((width + 10) / 190)));
-    const step = (width - (columns - 1) * 10) / columns + 10;
+    const [maxColumns, minStep] = UI_MEDIA.wideRecordRow.matches ? [6, 150] : [5, 190];
+    const columns = Math.max(1, Math.min(maxColumns, Math.floor((width + 10) / minStep)));
+    const exactWidth = (width - (columns - 1) * 10) / columns;
+    // scrollLeft rounds to whole pixels, so a fractional step would clip the first card's border.
+    const step = (UI_MEDIA.wideRecordRow.matches ? Math.floor(exactWidth) : exactWidth) + 10;
     const previousPosition = status.step ? rail.scrollLeft / status.step : 0;
     rail.style.setProperty('--chip-width', `${step - 10}px`);
     rail.style.setProperty('--record-columns', columns);
     const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.queue ? 'q' : ''}${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
-    if (status.signature !== signature) {
+    // Rows appearing because the engine finished loading are not a change the user made.
+    const seedReady = window.RiggingSeed.ready();
+    const seedJustLoaded = seedReady && status.seedReady === false;
+    status.seedReady = seedReady;
+    // Rows added past the edge must not move the list the user is reading.
+    if (status.extending) { status.signature = signature; status.extending = false; }
+    if (status.signature !== signature || seedJustLoaded) {
       status.signature = signature;
-      if (!journal.classList.contains('records-expanded')) autoPositionRail(rail, first ? 0 : 120);
+      if (!journal.classList.contains('records-expanded')) autoPositionRail(rail, first || seedJustLoaded ? 0 : 120);
     } else if (status.step !== step && !journal.classList.contains('records-expanded')) {
       // Selection adds a checkbox column. Keep the same reviewed card when
       // its width changes, instead of resetting the user's browsing position.
       moveRail(rail, previousPosition * step, 0);
     }
     status.step = step;
+    scheduleForecastCheck(rail);
   });
 }
 function bounceRailEdge(rail, direction) {
@@ -228,6 +318,7 @@ function onRecordRailWheel(event) {
 
 function onRecordRailScroll(event) {
   const rail = event.target;
+  if (rail.matches?.('.has-record-rail .records')) scheduleForecastCheck(rail);
   if (!desktopRecords.matches || !rail.matches?.('.has-record-rail:not(.records-expanded) .records')) return;
   const status = railState(rail);
   if (status.frame || status.autoUntil > performance.now()) return;
@@ -241,6 +332,7 @@ function onRecordRailPointerDown(event) {
 
 function onSummaryOutsideClick(event) {
   if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil) return;
+  if (event.target.closest('.part3-segment')) return;
   app.querySelectorAll('.has-record-rail').forEach(journal => {
     if (!journal.contains(event.target)) setJournalExpanded(journal, false);
   });

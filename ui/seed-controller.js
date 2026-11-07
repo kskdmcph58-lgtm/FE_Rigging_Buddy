@@ -25,12 +25,13 @@ function loadSeedEngine() {
   if (window.RiggingSeed.ready()) return;
   window.RiggingSeed.load(seedVersion()).then(() => { if (page === 'summary' || page === 'record') render(); }).catch(() => {});
 }
-function runSeedSearch(id) {
+function runSeedSearch(id, opensRecord = false) {
   if (seedPending.has(id)) return;
   seedPending.add(id);
-  seedSearches = seedSearches.then(() => searchSeed(id)).finally(() => seedPending.delete(id));
+  loadSeedEngine();
+  seedSearches = seedSearches.then(() => searchSeed(id, opensRecord)).finally(() => seedPending.delete(id));
 }
-async function searchSeed(id) {
+async function searchSeed(id, opensRecord = false) {
   const item = state.roster.find(r => r.id === id), c = char(id);
   if (!item || item.deleted) return;
   const rework = Boolean(item.seed);
@@ -58,6 +59,8 @@ async function searchSeed(id) {
     else if (result.status === 'none') showSeedMessage(id, `没有找到匹配的种子，从第 ${result.row + 1} 条开始对不上。${before}`);
     else if (result.status === 'ambiguous') showSeedMessage(id, rework ? `还有 ${result.count} 个候选种子，再修正一条通常就能确定。${before}` : `还有 ${result.count} 个候选种子，再记一条通常就能确定。`);
     else showSeedMessage(id);
+    // These two need another level-up, unless the user has already moved on.
+    if (opensRecord && page === 'summary' && (result.status === 'short' || result.status === 'ambiguous')) openNewRecord(id);
   } catch (error) {
     showSeedMessage(id, `反推失败：${error?.message || '未知错误'}。${before}`);
   }

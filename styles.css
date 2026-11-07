@@ -509,6 +509,9 @@ input {
   margin-top: 6px;
   color: var(--muted);
 }
+.queue-exam-rate {
+  display: none;
+}
 .seed-status {
   grid-column: 1 / -1;
   margin: 0;
@@ -1076,9 +1079,6 @@ button.danger {
 }
 .record-chip .record-overlay {
   border-radius: inherit;
-}
-.record-chip.editable {
-  border-style: dashed;
 }
 .edit-pencil {
   position: absolute;
@@ -2547,11 +2547,75 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
   .summary-page .journal .records {
     grid-column: 2;
     grid-row: 1;
-    grid-template-columns: repeat(auto-fill,minmax(max(180px,calc((100% - 40px)/5)),1fr));
+    grid-template-columns: repeat(auto-fill,minmax(max(140px,calc((100% - 50px)/6)),1fr));
     gap: 10px;
   }
   .summary-page .record-chip {
     padding: 12px;
+  }
+  /* Five rows of 144px cards with 10px gaps; the rest scrolls inside, without a scrollbar. */
+  .summary-page .journal.has-record-rail.records-expanded .records {
+    max-height: 760px;
+    overflow: hidden auto;
+    /* The opening animation sets a fixed height, which would otherwise squash these rows. */
+    grid-auto-rows: max-content;
+    scrollbar-width: none;
+  }
+  .summary-page .journal.has-record-rail.records-expanded .records::-webkit-scrollbar {
+    display: none;
+  }
+  /* Same split as the game's exam list: number font for digits, system font for the small %. */
+  /* Out of flow, so a forecast stays exactly as tall as a saved record. */
+  .summary-page .record-chip .queue-exam {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    margin: 0;
+    color: inherit;
+  }
+  .summary-page .queue-exam-compact {
+    display: none;
+  }
+  .summary-page .queue-exam-rate {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-items: end;
+    align-items: baseline;
+    font-family: var(--font-game);
+  }
+  /* The label sits over the digits only; the % hangs in its own column. */
+  .summary-page .queue-exam-label {
+    grid-area: 1 / 1;
+    font-size: 12px;
+    line-height: 16px;
+    opacity: .85;
+  }
+  /* Stats stay clear of the rate; on narrow cards they may wrap to a third line. */
+  .summary-page .record-chip.queue-row>p {
+    padding-right: 50px;
+  }
+  .summary-page .record-chip.queue-row .stat-line {
+    flex-wrap: wrap;
+  }
+  .summary-page .queue-exam-rate b {
+    grid-area: 2 / 1;
+    font: 400 26px/1 var(--font-number);
+  }
+  .summary-page .queue-exam-percent {
+    grid-area: 2 / 2;
+    margin-left: 2px;
+    font-size: 12px;
+  }
+  @media(max-width:1849px) {
+    /* Tighter spacing makes room for that third line at the same card height. */
+    .summary-page .record-chip>strong {
+      margin-top: 8px;
+      line-height: 28px;
+    }
+    .summary-page .record-chip p {
+      min-height: 61.6px;
+      padding-top: 4px;
+    }
   }
   .summary-page .journal:has(.initial-level-form) {
     grid-template-columns: 176px minmax(0,1fr) 90px;

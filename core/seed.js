@@ -75,7 +75,8 @@ window.RiggingSeed = (() => {
     return (marked.length ? Math.max(...marked) + 1 : 0) + QUEUE_SIZE;
   };
 
-  function queueRows(state, item, c) {
+  // minRows lets a view ask for more of the fixed sequence; nothing about it is stored.
+  function queueRows(state, item, c, minRows = 0) {
     if (!ready() || !item.seed || !eligible(item, c)) return [];
     const live = model.live(item), parts = model.recordParts(item, c.part3Only === true);
     let locked = c.part3Only === true || live.some((record, i) => parts[i] && record.upgraded);
@@ -83,7 +84,8 @@ window.RiggingSeed = (() => {
     let profession = actions.currentProfession(state, item);
     let ride = actions.rememberedRide(state, item.id, actions.rideKind(profession));
     const rows = [], first = item.initialLevel + live.length;
-    for (let n = 0, total = rowCount(item); n < total && first + n < MAX_LEVEL; n++) {
+    // Skipped rows use a seed step without gaining a level, so the cap follows the displayed level.
+    for (let n = 0, total = Math.max(rowCount(item), minRows); n < total && rowDisplayLevel(item, n) <= MAX_LEVEL; n++) {
       const saved = item.seed.rows?.[n] || {};
       if (Object.hasOwn(saved, 'profession')) {
         profession = saved.profession;
@@ -117,7 +119,7 @@ window.RiggingSeed = (() => {
   }
   // Same order as saved records. A mark holds the part it was made in, so the switch cannot move it.
   function cycleRowStatus(state, item, c, index) {
-    const row = queueRows(state, item, c)[index], saved = savedRow(item, index);
+    const row = queueRows(state, item, c, index + 1)[index], saved = savedRow(item, index);
     if (saved.skipped) {
       delete saved.skipped; saved.upgraded = true; saved.part3 = row.part3;
     } else if (saved.upgraded) {
@@ -129,20 +131,20 @@ window.RiggingSeed = (() => {
   }
 
   function rowDraft(state, item, c, index) {
-    const row = queueRows(state, item, c)[index];
+    const row = queueRows(state, item, c, index + 1)[index];
     if (!row) return null;
     const kind = actions.rideKind(row.profession);
     return { id: item.id, queueIndex: index, profession: row.profession, ride: row.ride, rides: kind ? { [kind]: row.ride } : {}, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}), happy: row.happy, ratingSource: row.ratingSource };
   }
   // What this row gives with the draft's class, for the stats shown while it is uncorrected.
   function draftPrediction(state, item, c, draft) {
-    const rows = queueRows(state, item, c), row = rows[draft.queueIndex];
+    const rows = queueRows(state, item, c, draft.queueIndex + 1), row = rows[draft.queueIndex];
     if (!row) return null;
     const event = eventOf(c, { ...row, profession: draft.profession, ride: draft.ride });
     return event ? statsOf(engine.simulateLevel(row.seed, event).gains) : null;
   }
   function saveRow(state, item, c, draft) {
-    const index = draft.queueIndex, rows = queueRows(state, item, c), row = rows[index];
+    const index = draft.queueIndex, rows = queueRows(state, item, c, index + 1), row = rows[index];
     if (!row) return false;
     const before = index ? rows[index - 1] : { profession: actions.currentProfession(state, item), ride: actions.rememberedRide(state, item.id, actions.rideKind(actions.currentProfession(state, item))) };
     const saved = savedRow(item, index), same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);

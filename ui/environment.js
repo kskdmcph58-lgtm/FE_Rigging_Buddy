@@ -6,5 +6,6 @@ const UI_MEDIA = Object.freeze({
   narrowLayout: matchMedia('(max-width:600px)'),
   wideJournalSelection: matchMedia('(min-width:1100px)'),
   desktopRecordRail: matchMedia('(min-width:601px)'),
+  wideRecordRow: matchMedia('(min-width:1100px)'),
   coarseInput: matchMedia('(pointer:coarse)')
 });
