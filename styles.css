@@ -4056,6 +4056,11 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   box-shadow: none;
   color: var(--text);
   align-items: flex-start;
+  -webkit-tap-highlight-color: transparent;
+}
+/* The meal frame is the card's whole look, so a tap must not tint the button box behind it. */
+.select-page .character.touch-pressed:not(:disabled) {
+  background: transparent;
 }
 .select-page .character .portrait-frame {
   position: relative;
