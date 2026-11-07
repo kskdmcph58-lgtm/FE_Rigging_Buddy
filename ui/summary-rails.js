@@ -331,9 +331,12 @@ function onRecordRailPointerDown(event) {
 }
 
 function onSummaryOutsideClick(event) {
-  if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil) return;
+  // A dialog opened from a card is still part of that card's work, not a click elsewhere.
+  if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil || event.target.closest('dialog,.expectation-tip')) return;
   if (event.target.closest('.part3-segment')) return;
   app.querySelectorAll('.has-record-rail').forEach(journal => {
     if (!journal.contains(event.target)) setJournalExpanded(journal, false);
   });
 }
+// Class fields are clickable on wide screens only, so crossing the width redraws the cards.
+UI_MEDIA.wideRecordRow.addEventListener('change', () => { if (page === 'summary') renderSummary(); });

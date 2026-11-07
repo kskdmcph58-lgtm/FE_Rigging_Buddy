@@ -77,7 +77,7 @@ function animateListChange(change) {
 const rowSelection = new Set();
 let selectionPage = '', selectionAnchor = null, multiSelectMode = false;
 const compactSelectionToolbar = UI_MEDIA.compactSelection;
-const defaultRuleText = '默认：0–3 点不满意，4 点手动选择，5–9 点满意。';
+const defaultRuleText = '默认：0–3 点不满意，4–9 点满意。';
 function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; multiSelectMode = false; }
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
@@ -375,7 +375,7 @@ function openRecordExpectationDetails() {
   hideExpectationTip();
   const dialog=document.createElement('dialog');dialog.className='app-dialog expectation-dialog';
   dialog.setAttribute('aria-labelledby','record-expectation-title');
-  dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2><button data-close>关闭</button></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
   dialog.querySelector('[data-edit-expectation]').onclick=()=>{const id=activeRecord.id;dialog.close();openExpectationEditor([id]);};
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
@@ -422,7 +422,7 @@ function openExpectationDetails(id) {
   const item = state.roster.find(r => r.id === id);
   if (!item.expectations?.length) { openExpectationEditor([id]); return; }
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';
-  dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2><button data-close aria-label="关闭">关闭</button></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
@@ -467,8 +467,7 @@ async function saveExpectations(ids, rule) {
       {value:'future',label:'仅今后的记录',description:'从下一条记录起使用新规则，历史规则和评价不变。'},
       {value:'history',label:protectedRecords.length ? `包含历史，保留${protectedLabel}` : '包含历史记录',description:historyDescription},
       ...(conflicts.length ? [{value:'replace',label:'包含历史，重算全部评价',description:`历史和今后记录均使用新规则；所有历史评价重算，其中 ${conflicts.length} 条${sourceLabel(conflicts)}将改变。`}] : [])
-    ], '将保存当前属性期望。请选择是否将新规则同时用于已有记录。' +
-      (rule === null && records.some(record => record.stats.length === 4 && (record.ratingSource === 'auto' || conflicts.includes(record))) ? '重算后的 4 点记录将变为待评价。' : ''));
+    ], '将保存当前属性期望。请选择是否将新规则同时用于已有记录。');
     if (!['future','history','replace'].includes(answer)) return false;
     scope = answer === 'future' ? 'future' : 'history';
     overwrite = answer === 'replace';
@@ -538,7 +537,7 @@ function openExpectationEditor(ids) {
   rule = M.copy(mixed ? null : rules[0]);
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';
   dialog.setAttribute('aria-labelledby','expectation-editor-title');
-  dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`}</p></div><button data-close>返回</button></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button class="primary" data-save-rule>保存期望</button></footer>`;
+  dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`}</p></div></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button data-close autofocus>返回</button><button class="primary" data-save-rule>保存期望</button></footer>`;
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }
   function replace(path, value) {
     if (!path) { rule=value; return; }
@@ -643,35 +642,41 @@ function openExpectationEditor(ids) {
 }
 
 let expectationTip = null, expectationTipTimer, expectationTipOwner = null;
+const TIP_OWNERS = '[data-expectation-detail],[data-setup-expectation],[data-setup-ride],.record-chip [data-profession]';
 function hideExpectationTip() { clearTimeout(expectationTipTimer); expectationTip?.remove(); expectationTipOwner?.removeAttribute('aria-describedby'); expectationTipOwner=null; expectationTip=null; }
 function showExpectationTip(b) {
   hideExpectationTip();
-  const setup=b.dataset.setupExpectation, rideOwner=b.dataset.setupRide;
-  const item=setup||rideOwner?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!rideOwner&&!item)return;
+  const setup=b.dataset.setupExpectation, rideOwner=b.dataset.setupRide, classOwner=b.matches('.record-chip [data-profession]');
+  const item=setup||rideOwner||classOwner?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!rideOwner&&!classOwner&&!item)return;
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
-  expectationTip.innerHTML=rideOwner ? `<p class="rule-default">${rideText(setupRide(rideOwner))}</p>` : setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
+  expectationTip.innerHTML=classOwner ? cardClassTip(b) : rideOwner ? `<p class="rule-default">${rideText(setupRide(rideOwner))}</p>` : setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
   const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect();
   expectationTip.style.left=`${Math.max(12,Math.min(innerWidth-tip.width-12,r.left))}px`;
   expectationTip.style.top=`${Math.max(12,Math.min(innerHeight-tip.height-12,r.bottom+8))}px`;
   expectationTip.addEventListener('pointerleave',hideExpectationTip);
+  if(classOwner) expectationTip.addEventListener('click',e=>{
+    const row=e.target.closest('[data-tip-step]');
+    if(row) openCardClass(b,row.dataset.tipStep);
+  });
 }
 document.addEventListener('pointerover',e=>{
-  const b=e.target.closest('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]');
+  const b=e.target.closest(TIP_OWNERS);
   if(!b||e.pointerType!=='mouse'||b.contains(e.relatedTarget))return;
   hideExpectationTip();
   expectationTipTimer=setTimeout(()=>showExpectationTip(b),250);
 });
 document.addEventListener('pointerout',e=>{
-  const owner=e.target.closest('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]');
+  const owner=e.target.closest(TIP_OWNERS);
   if(!owner||owner.contains(e.relatedTarget)||expectationTip?.contains(e.relatedTarget))return;
   clearTimeout(expectationTipTimer);
   expectationTipTimer=setTimeout(()=>{if(!expectationTip?.matches(':hover')&&!expectationTipOwner?.matches(':hover'))hideExpectationTip();},180);
 });
 document.addEventListener('scroll',e=>{if(!expectationTip?.contains(e.target))hideExpectationTip();},true);
 window.addEventListener('resize',hideExpectationTip);
-document.addEventListener('focusin',e=>{if(e.target.matches('[data-expectation-detail],[data-setup-expectation],[data-setup-ride]')&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
-document.addEventListener('focusout',e=>{if(e.target===expectationTipOwner)hideExpectationTip();});
+document.addEventListener('focusin',e=>{if(e.target.matches(TIP_OWNERS)&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
+// Focus moving into the tip (a click on one of its rows) keeps it until that click lands.
+document.addEventListener('focusout',e=>{if(e.target===expectationTipOwner&&!expectationTip?.contains(e.relatedTarget))hideExpectationTip();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')hideExpectationTip();});
 
 document.addEventListener('keydown',e=>{

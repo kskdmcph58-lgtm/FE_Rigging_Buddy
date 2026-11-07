@@ -69,7 +69,8 @@ window.RiggingModel = (() => {
     return { nodes, depth };
   }
   function evaluate(rule, raised) {
-    if (!rule) return raised.length === 4 ? null : raised.length >= 5;
+    // The default always decides: 4 points and up is satisfied.
+    if (!rule) return raised.length >= 4;
     if (rule.type === 'stat') return raised.includes(rule.stat);
     if (rule.type === 'not') return !evaluate(rule.child, raised);
     if (rule.type === 'all') return rule.children.every(n => evaluate(n, raised));
@@ -158,7 +159,7 @@ window.RiggingModel = (() => {
       let last = 0, legacyLevel = (item.initialLevel ?? 0) + 1;
       for (const r of item.records) {
         if (!r || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !stats.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
-        for (const key of ['skipped', 'upgraded', 'deleted', 'part3', 'calculated', 'corrected']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
+        for (const key of ['skipped', 'upgraded', 'deleted', 'part3', 'calculated', 'corrected', 'anchor']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
         if (r.skipped && r.upgraded) throw Error('记录状态冲突');
         if (r.plus2 !== undefined && (!Array.isArray(r.plus2) || new Set(r.plus2).size !== r.plus2.length || r.plus2.some(s => !r.stats.includes(s)))) throw Error('升级记录不正确');
         if (old) {
@@ -174,6 +175,14 @@ window.RiggingModel = (() => {
         if (r.ratingSource !== undefined && !['auto', 'manual', 'legacy'].includes(r.ratingSource)) throw Error('评价来源不正确');
         r.ratingSource ||= 'legacy';
         if (r.ratingPending !== undefined && typeof r.ratingPending !== 'boolean') throw Error('待评价标记不正确');
+        if (r.seedInput !== undefined) {
+          const s = r.seedInput, list = v => Array.isArray(v) && new Set(v).size === v.length && v.every(x => stats.includes(x));
+          if (!s || typeof s !== 'object' || !r.corrected || !list(s.stats) || !list(s.plus2) || (s.ride !== null && !validRide(s.ride)) || (s.calculated !== undefined && s.calculated !== true)) throw Error('反推原始输入不正确');
+          if (s.profession !== null) { renameClass(s, 'profession'); if (!window.PROFESSIONS.names.includes(s.profession)) throw Error('Invalid profession'); }
+        }
+        // Only the old default left a record waiting (4 points); the default now counts that as satisfied.
+        if (r.ratingPending) r.happy = true;
+        delete r.ratingPending;
         delete r.level; last = r.seq; recordIds.add(r.id);
       }
     }

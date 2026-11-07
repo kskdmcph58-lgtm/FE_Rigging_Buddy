@@ -117,6 +117,16 @@ window.RiggingSeed = (() => {
     item.seed.rows ||= {};
     return item.seed.rows[index] ||= {};
   }
+  // A forecast row's rating, flipped from its card. Flipping back to what the rule says stores nothing.
+  function toggleRowHappy(state, item, c, index) {
+    const row = queueRows(state, item, c, index + 1)[index];
+    if (!row) return false;
+    const next = row.happy !== true;
+    delete savedRow(item, index).happy;
+    prune(item, index);
+    if (queueRows(state, item, c, index + 1)[index].happy !== next) savedRow(item, index).happy = next;
+    return true;
+  }
   // Same order as saved records. A mark holds the part it was made in, so the switch cannot move it.
   function cycleRowStatus(state, item, c, index) {
     const row = queueRows(state, item, c, index + 1)[index], saved = savedRow(item, index);
@@ -164,6 +174,28 @@ window.RiggingSeed = (() => {
     return true;
   }
 
+  /* Changes a forecast row's class from its card. Later rows inherit it, up to their own change;
+     "once" gives the next row back the class it had. Results follow, and it is not a correction. */
+  function applyRowClass(state, item, c, index, choice, scope) {
+    const rows = queueRows(state, item, c, index + 2), row = rows[index], next = rows[index + 1];
+    if (!row) return false;
+    const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+    const write = (at, profession, ride, before) => {
+      const saved = savedRow(item, at), kind = actions.rideKind(profession);
+      const inherited = same(profession, before.profession) ? before.ride : actions.rememberedRide(state, item.id, kind);
+      if (same(profession, before.profession)) delete saved.profession; else saved.profession = profession;
+      if (same(ride, inherited)) delete saved.ride; else saved.ride = ride;
+      prune(item, at);
+    };
+    const first = actions.currentProfession(state, item);
+    const before = index ? rows[index - 1] : { profession: first, ride: actions.rememberedRide(state, item.id, actions.rideKind(first)) };
+    const kind = actions.rideKind(choice.profession), ride = kind && choice.ride ? { ...choice.ride } : null;
+    write(index, choice.profession, ride, before);
+    if (scope === 'once' && next) write(index + 1, next.profession, next.ride, { profession: choice.profession, ride });
+    if (scope === 'later' && kind) actions.rememberRides(state, item.id, { [kind]: ride });
+    return true;
+  }
+
   // The newest row the user changed; only a change to what rose can contradict the seed.
   function correctionTarget(item) {
     const rows = Object.entries(item.seed?.rows || {}).filter(([, row]) => row.stats !== undefined).map(([index]) => Number(index));
@@ -206,7 +238,7 @@ window.RiggingSeed = (() => {
       if (result.status === 'class') return result;
       if (result.status === 'impossible') return { status: 'none', row: entries.length - size + result.impossible.index, target };
       if (!result.complete) return { status: 'cancelled' };
-      if (result.candidates.length === 1) return { status: 'found', next: result.candidates[0], target, key };
+      if (result.candidates.length === 1) return { status: 'found', next: result.candidates[0], target, key, size };
       if (!result.candidates.length) {
         let shortest = size;
         for (let smaller = size - 1; smaller >= 2 && size === MIN_RECORDS; smaller--) {
@@ -261,7 +293,11 @@ window.RiggingSeed = (() => {
       }
       item.seed = { value: seed, ...(item.seed?.rows ? { rows: item.seed.rows } : {}) };
     }
-    for (const record of item.records) delete record.corrected;
+    for (const record of item.records) { delete record.corrected; delete record.seedInput; delete record.anchor; }
+    // The window the seed was found from: the records that pin it down. Every branch above ends that
+    // window at the newest record, except a corrected record further back.
+    const live = model.live(item), end = target?.record ? live.indexOf(target.record) : live.length - 1;
+    if (found.size && end >= 0) for (const record of live.slice(Math.max(0, end - found.size + 1), end + 1)) record.anchor = true;
     return { applied: true };
   }
 
@@ -277,6 +313,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

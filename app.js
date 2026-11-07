@@ -644,6 +644,8 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.action-menu[open]').forEach(menu => { menu.open = false; menu.querySelector('summary').focus(); });
 });
 app.addEventListener('click', async e => {
+  const rating = e.target.closest('[data-card-rating]');
+  if (rating) { e.preventDefault(); e.stopPropagation(); toggleCardRating(rating); return; }
   const profession = e.target.closest('[data-profession]');
   if (profession) { e.preventDefault(); e.stopPropagation(); openProfessionPicker(profession); return; }
   const mount = e.target.closest('[data-ride],[data-setup-ride]');

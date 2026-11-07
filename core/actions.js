@@ -30,6 +30,57 @@ window.RiggingActions = (() => {
     state.rideMemory[id] = { ...state.rideMemory[id], ...model.copy(rides) };
   }
 
+  /* What the seed was found from. A corrected record keeps it in seedInput, so putting the inputs
+     back clears the correction and 重新反推 goes dark again. */
+  const seedInput = r => ({ profession: r.profession || null, ride: r.ride || null, stats: [...r.stats].sort(), plus2: [...(r.plus2 || [])].sort() });
+  function trackSeedInput(item, before, after) {
+    if (!item.seed) return;
+    // Corrected before this was kept: the original is unknown, so it stays corrected.
+    if (before.corrected && !before.seedInput) { after.corrected = true; delete after.calculated; return; }
+    const original = before.seedInput || { ...seedInput(before), ...(before.calculated ? { calculated: true } : {}) };
+    const { calculated, ...inputs } = original;
+    if (JSON.stringify(seedInput(after)) === JSON.stringify(inputs)) {
+      delete after.corrected; delete after.seedInput;
+      if (calculated) after.calculated = true;
+    } else {
+      after.corrected = true; after.seedInput = original; delete after.calculated;
+    }
+  }
+
+  /* Changes a saved record's class from its card. "later" follows the unbroken run of identical
+     records after it; a different class further on is a separate change and stays. */
+  function applyRecordClass(state, item, record, choice, scope) {
+    const live = model.live(item), same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+    const before = { profession: record.profession ?? null, ride: record.ride ?? null };
+    const nextClass = currentProfession(state, item), nextKind = rideKind(nextClass), nextRide = rememberedRide(state, item.id, nextKind);
+    const kind = rideKind(choice.profession), ride = kind && choice.ride ? { ...choice.ride } : null;
+    const targets = [record];
+    if (scope === 'later') {
+      for (const later of live.slice(live.indexOf(record) + 1)) {
+        if (!same(later.profession, before.profession) || !same(later.ride, before.ride)) break;
+        targets.push(later);
+      }
+    }
+    const reachesEnd = targets.at(-1) === live.at(-1);
+    for (const target of targets) {
+      const before = { ...target };
+      target.profession = choice.profession ?? null;
+      if (ride) target.ride = { ...ride }; else delete target.ride;
+      target.updatedAt = new Date().toISOString();
+      // Same as editing the record: a changed input is what 重新反推 searches back from.
+      trackSeedInput(item, before, target);
+    }
+    if (!reachesEnd) return;
+    if (scope === 'later') {
+      if (item.pendingProfession === before.profession) delete item.pendingProfession;
+      if (kind) rememberRides(state, item.id, { [kind]: ride });
+    } else {
+      // "This one only" on the newest record: what comes next keeps the class it would have had.
+      if (nextClass && !Object.hasOwn(item, 'pendingProfession')) item.pendingProfession = nextClass;
+      if (nextKind) rememberRides(state, item.id, { [nextKind]: nextRide });
+    }
+  }
+
   function draftRule(state, draft) {
     const item = state.roster.find(i => i.id === draft.id);
     return model.ruleAt(item, draft.editIndex === undefined ? model.nextSeq(item) + (draft.queueIndex || 0) : item.records[draft.editIndex].seq);
@@ -63,8 +114,7 @@ window.RiggingActions = (() => {
       if (ride) saved.ride = ride; else delete saved.ride;
       if (plus2.length) saved.plus2 = plus2; else delete saved.plus2;
       // After recovery, a changed input is what 重新反推 searches back from.
-      const inputs = r => JSON.stringify([r.profession || null, r.ride || null, [...r.stats].sort(), [...(r.plus2 || [])].sort()]);
-      if (item.seed && inputs(saved) !== inputs(item.records[draft.editIndex])) { saved.corrected = true; delete saved.calculated; }
+      trackSeedInput(item, item.records[draft.editIndex], saved);
       item.records[draft.editIndex] = saved;
     } else {
       rememberRides(state, draft.id, usedRides);
@@ -120,14 +170,14 @@ window.RiggingActions = (() => {
       if (includeHistory) for (const record of model.live(item)) {
         const result = model.evaluate(rule, record.stats);
         if (record.ratingSource !== 'auto' && !overwrite) continue;
-        record.ratingPending = result === null;
-        if (result !== null) record.happy = result;
+        if (result === null) record.ratingPending = true;
+        else { delete record.ratingPending; record.happy = result; }
         record.ratingSource = 'auto';
       }
     }
   }
 
-  return { classAvailable, currentProfession, rideKind, rememberedRide, rememberRides,
+  return { classAvailable, currentProfession, rideKind, rememberedRide, rememberRides, applyRecordClass,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

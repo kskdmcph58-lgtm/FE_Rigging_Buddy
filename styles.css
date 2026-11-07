@@ -2606,6 +2606,29 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     margin-left: 2px;
     font-size: 12px;
   }
+  /* Anchor records carry their mark where a forecast carries its pass rate, in the card's own colour. */
+  .summary-page .record-chip .anchor-mark {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: grid;
+    justify-items: end;
+    gap: 2px;
+    font: 12px/16px var(--font-game);
+  }
+  .summary-page .anchor-mark>span {
+    opacity: .85;
+  }
+  .summary-page .anchor-mark>svg {
+    width: 24px;
+    height: 24px;
+  }
+  .summary-page .record-chip.anchor>p {
+    padding-right: 50px;
+  }
+  .summary-page .record-chip.anchor .stat-line {
+    flex-wrap: wrap;
+  }
   @media(max-width:1849px) {
     /* Tighter spacing makes room for that third line at the same card height. */
     .summary-page .record-chip>strong {
@@ -2902,12 +2925,15 @@ body.marquee-selecting,body.marquee-selecting * {
   flex: none;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   width: 100%;
   padding: 16px 24px;
   margin: 0;
   background: var(--surface-raised);
+}
+.expectation-dialog [data-reset-rule] {
+  margin-right: auto;
 }
 .expectation-body {
   padding: 20px 24px;
@@ -3044,9 +3070,108 @@ body.marquee-selecting,body.marquee-selecting * {
   font-size: 13px;
 }
 @media(min-width:601px) {
-  .expectation-tip:has(>.rule-default:only-child) {
+  .expectation-tip:has(>.rule-default:only-child),
+  .expectation-tip:has(>.class-tip) {
     width: max-content;
   }
+}
+.expectation-tip:has(>.class-tip) {
+  padding: 10px 12px;
+}
+.class-tip {
+  display: grid;
+  gap: 8px;
+}
+.class-scope-dialog {
+  width: min(400px,calc(100% - 32px));
+}
+.class-scope-dialog h2 {
+  padding: 24px 24px 16px;
+  font-size: 16px;
+  line-height: 24px;
+}
+.class-scope-dialog form {
+  margin: 0;
+}
+.class-scope-options {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+  padding: 0 24px;
+}
+.class-scope-dialog .class-scope-option {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 18px 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: var(--surface-input);
+  color: var(--text);
+  font: 14px/20px var(--font-ui);
+}
+.class-scope-reach {
+  display: flex;
+  gap: 4px;
+}
+.class-scope-reach i {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--control-line);
+  border-radius: 3px;
+}
+.class-scope-reach i.lit {
+  border-color: var(--gold);
+  background: var(--gold);
+}
+.class-scope-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px 20px;
+}
+@media(hover:hover) and (pointer:fine) {
+  .class-scope-dialog .class-scope-option:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: #d8c3940d;
+    color: var(--stat-active-text);
+  }
+}
+.class-scope-dialog .class-scope-option:active:not(:disabled) {
+  border-color: var(--gold);
+  background: #d8c3941a;
+}
+.class-tip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 14px/1.2 var(--font-game);
+  white-space: nowrap;
+}
+button.class-tip-row {
+  min-height: 0;
+  margin: -4px -6px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+@media(hover:hover) and (pointer:fine) {
+  button.class-tip-row:hover:not(:disabled) {
+    background: transparent;
+    color: var(--gold);
+  }
+}
+.class-tip-row>img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex: none;
+}
+.class-tip-row>.ride-level {
+  width: auto;
+  height: 26px;
 }
 @media(max-width:600px) {
   .selection-toolbar {
@@ -3967,6 +4092,23 @@ html[data-input-mode="touch"] button.expectation-link {
 .record-chip>div>.profession-field>span { display:block; font-size:inherit; overflow:hidden; text-overflow:ellipsis; }
 .record-chip>div>.profession-field img { width:20px; height:20px; }
 .record-chip>div>.profession-field.can-edit { position:relative; z-index:4; }
+.record-chip>div>.rating-toggle { position:relative; z-index:4; cursor:pointer; border-radius:4px; }
+/* A marked card's overlay covers its rating, as it did before the rating was clickable. */
+.record-chip.skipped>div>.rating-toggle,.record-chip.upgraded>div>.rating-toggle { z-index:auto; }
+.record-chip .rating-word { display:inline-grid; justify-items:end; }
+.record-chip .rating-word>span, .record-chip .rating-word::after { grid-area:1/1; }
+.record-chip .rating-word>span { display:inline-flex; align-items:center; }
+.record-chip .rating-word .rating-icon { margin:0 0 0 4px; }
+/* Room for the icon (14px and its 4px gap) beside the longer word. */
+.record-chip .rating-word::after { content:'不满意'; visibility:hidden; padding-left:18px; }
+.record-chip>div>.rating-toggle::before { content:''; position:absolute; inset:-6px -6px; }
+.record-chip>div>.rating-toggle:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+@media(hover:hover) and (pointer:fine) {
+  .record-chip>div>.rating-toggle:hover { filter:brightness(1.3); }
+}
+@media(min-width:1100px) {
+  .record-chip>div>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
+}
 .record-chip .record-overlay { pointer-events:none; }
 .record-chip.upgraded>div>.profession-field,.record-chip.skipped>div>.profession-field { visibility:visible; position:relative; z-index:auto; }
 .record-chip.upgraded>div>.profession-field { color:#82765c; }
@@ -4088,7 +4230,8 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
 html[data-input-mode="mouse"] .profession-option:hover .profession-icon::before,
 html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-icon::before { opacity:1; }
 .profession-picker .profession-option:focus-visible { outline:none; }
-.profession-footer { display:flex; justify-content:space-between; gap:12px; padding:10px 20px; flex:none; border-top:1px solid var(--control-line); }
+.profession-footer { display:flex; justify-content:flex-end; gap:12px; padding:10px 20px; flex:none; border-top:1px solid var(--control-line); }
+.profession-footer [data-class=""] { margin-right:auto; }
 @media(min-width:601px) and (max-height:800px) {
   .profession-titlebar,.profession-footer { padding-block:6px; }
   .profession-scroll { padding-block:4px; }
