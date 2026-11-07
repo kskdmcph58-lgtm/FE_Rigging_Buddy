@@ -1,66 +1,7 @@
-/* Shared tokens, component rules, responsive layouts and interaction states.
-   Keep responsive overrides next to their related rules when making changes. */
-@font-face {
-  font-family: "WLQS System CN";
-  src: url("assets/fonts/wlqs-system-cn.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "WLQS Number";
-  src: url("assets/fonts/wlqs-number.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  unicode-range: U+002B,U+002D,U+0030-0039;
-}
-@font-face {
-  font-family: "WLQS Level Up";
-  src: url("assets/fonts/wlqs-level-up.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  unicode-range: U+0020,U+002B,U+002D-002E,U+0030-0039,U+0041-005A,U+0061-007A;
-}
-:root {
-  --font-ui: "Segoe UI","Microsoft YaHei",sans-serif;
-  --font-display: Georgia,"SimSun",serif;
-  --font-game: "WLQS System CN","Microsoft YaHei",serif;
-  --font-number: "WLQS Number","WLQS System CN","Segoe UI",sans-serif;
-  --font-level-up: "WLQS Level Up","WLQS System CN",Georgia,serif;
-  --surface-raised: #223332;
-  --surface-dialog: #1d3031;
-  --surface-field: #192c2d;
-  --surface-input: #102224;
-  --control-line: #53605a;
-  --overlay-line: #60716a;
-  --surface-floating: #34443f;
-  --surface-hover: #314543;
-  --on-accent: #172626;
-  --accent-hover: #ecdbb5;
-  --surface-danger: #452f30;
-  --danger-fill: #793c38;
-  --on-danger: #ffe5df;
-  color-scheme: dark;
-  --bg: #101e20;
-  --panel: #192b2d;
-  --line: #334747;
-  --gold: #d8c394;
-  --text: #f4efdf;
-  --muted: #98aaa6;
-  --green: #8fd1ab;
-  --red: #efa39c;
-  font-family: var(--font-ui);
-  color: var(--text);
-  /* On the root so it also fills the scrollbar gutter; repeat-x carries the wash
-     across that strip. The noise tile dithers the 8-bit steps that would
-     otherwise show as bands, and its mean sits near --bg so it adds no lift. */
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.5 0 0 0 -.63 1.5 0 0 0 -.63 1.5 0 0 0 -.63 0 0 0 0 .03'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(180deg,#172a2b 0,#152628 25%,#121f22 55%,var(--bg) 80%) repeat-x 0 0/100% 100vh,
-    var(--bg);
-}
+/* Shared components and page layouts.
+   theme.css loads before this file; motion.css loads after it.
+   Base upgrade controls are grouped below; responsive and state overrides retain
+   their existing order. See the local docs for the cascade audit. */
 * {
   box-sizing: border-box;
 }
@@ -91,7 +32,7 @@ button {
   border: 1px solid var(--control-line);
   background: transparent;
   color: var(--text);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   padding: 12px 18px;
 }
 @media (hover:hover) and (pointer:fine) {
@@ -156,7 +97,7 @@ header {
   grid-template-columns: 1fr 1fr;
   flex-shrink: 0;
   width: 150px;
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 0;
   border: 1px solid var(--control-line);
   border-radius: 8px;
@@ -264,7 +205,7 @@ main {
   gap: 8px;
 }
 #storage-status button {
-  min-height: 44px;
+  min-height: var(--touch-target-min);
   padding: 8px 12px;
   font-size: 13px;
 }
@@ -480,6 +421,9 @@ input {
 .journal-head {
   display: flex;
   align-items: center;
+  min-width: 0;
+  gap: 12px;
+  padding-left: 0;
 }
 .journal-head p {
   color: var(--muted);
@@ -546,6 +490,7 @@ input {
   font-size: 12px;
   margin-bottom: 28px;
 }
+/* Upgrade page: game content and high-frequency recording controls. */
 .record-layout {
   grid-template-columns: 340px 1fr;
   gap: 28px;
@@ -612,6 +557,7 @@ input {
   align-items: center;
   border-bottom: 1px solid #8a7c53;
   padding-bottom: 20px;
+  gap: 12px;
 }
 .stat-heading h2 {
   font-family: "SimSun",serif;
@@ -621,9 +567,12 @@ input {
 .stat-heading>span {
   color: var(--gold);
   font: 21px var(--font-display);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .stats {
   display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 0 24px;
   margin-top: 18px;
 }
@@ -632,25 +581,36 @@ input {
   grid-row: var(--row);
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  min-width: 0;
+  line-height: 22px;
   border: 0;
-  border-bottom: 1px solid #455247;
+  border-bottom: 1px solid var(--stat-line);
   border-radius: 0;
   padding: 14px 8px;
   font-size: 22px;
-  color: #c6c9b6;
+  color: var(--stat-text);
 }
 .stat b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: 0 0 2.5em;
+  line-height: 22px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
   font-size: 24px;
   font-weight: 400;
   font-synthesis: none;
-  color: #637975;
+  color: var(--stat-value);
 }
 .stat.active {
-  background: #b8a26419;
-  color: #f4dfa3;
+  background: var(--stat-active-surface);
+  color: var(--stat-active-text);
 }
 .stat.active b {
-  color: #f3d372;
+  color: var(--stat-active-value);
 }
 .rating-title {
   font-size: 14px;
@@ -665,6 +625,7 @@ input {
 .ratings {
   display: flex;
   gap: 12px;
+  margin-top: 16px;
 }
 .ratings button {
   flex: 1;
@@ -688,6 +649,8 @@ input {
 .record-actions {
   display: flex;
   gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
 }
 .record-actions button {
   flex: 1;
@@ -1011,9 +974,6 @@ main {
   gap: 22px 16px;
   align-items: start;
 }
-.journal-head {
-  min-width: 0;
-}
 .journal-info {
   min-width: 0;
 }
@@ -1021,9 +981,13 @@ main {
   display: flex;
   gap: 8px;
   grid-column: 2;
+  grid-row: 1;
+  flex-direction: row;
+  align-items: center;
 }
 .journal-actions button {
   font-size: 13px;
+  min-height: var(--touch-target-min);
 }
 button.danger {
   color: var(--red);
@@ -1038,6 +1002,8 @@ button.danger {
 }
 .journal .records {
   margin-top: 0;
+  grid-column: 1/-1;
+  grid-template-columns: repeat(2,minmax(0,1fr));
 }
 .initial-level {
   cursor: text;
@@ -1281,18 +1247,11 @@ main.has-bottom-bar {
   background: #314643;
   flex-shrink: 0;
 }
-.stat-heading {
-  gap: 12px;
-}
 .stat-heading .record-character h2 {
   font: 400 18px var(--font-game);
   font-synthesis: none;
   letter-spacing: 0;
   overflow-wrap: anywhere;
-}
-.stat-heading>span {
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 .growth-total strong {
   font: 28px/1.2 var(--font-number);
@@ -1311,13 +1270,6 @@ main.has-bottom-bar {
 .record-target-level,
 .stats-growth {
   display: none;
-}
-.ratings {
-  margin-top: 16px;
-}
-.record-actions {
-  margin-top: 18px;
-  flex-wrap: wrap;
 }
 @media(max-width:600px) {
   main.record-page {
@@ -1355,7 +1307,7 @@ main.has-bottom-bar {
   }
   .record-page .ratings button {
     padding: 8px;
-    min-height: 44px;
+    min-height: var(--touch-target-min);
   }
   .record-page .ratings span {
     font-size: 22px;
@@ -1365,7 +1317,7 @@ main.has-bottom-bar {
     gap: 10px;
   }
   .record-page .record-actions button {
-    min-height: 44px;
+    min-height: var(--touch-target-min);
     padding: 10px 8px;
   }
 }
@@ -1465,27 +1417,9 @@ main.has-bottom-bar {
 .character[hidden] {
   display: none;
 }
-.stats {
-  grid-template-columns: repeat(2,minmax(0,1fr));
-}
-.stat {
-  align-items: center;
-  min-width: 0;
-  line-height: 22px;
-}
 .stat>span {
   white-space: nowrap;
   font-weight: 400;
-}
-.stat b {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  flex: 0 0 2.5em;
-  line-height: 22px;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
 .stat.active b::after {
   content: "";
@@ -1577,7 +1511,6 @@ button.record-chip {
   }
   .record-chip p {
     margin-top: auto;
-    padding-top: 12px;
   }
 }
 @media(max-width:600px) {
@@ -1597,7 +1530,7 @@ button.record-chip {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
+    min-height: var(--touch-target-min);
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
@@ -1626,7 +1559,7 @@ button.record-chip {
   max-height: 90dvh;
   overflow: hidden;
   border: 1px solid #52615b;
-  border-radius: 18px;
+  border-radius: var(--dialog-radius);
   background: var(--surface-dialog);
   color: var(--text);
   box-shadow: 0 20px 64px #0007;
@@ -1645,10 +1578,10 @@ button.record-chip {
 }
 .app-dialog button {
   min-width: 0;
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   border: 1px solid var(--control-line);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   font: 13px/20px var(--font-ui);
 }
 .confirm-dialog {
@@ -1723,7 +1656,7 @@ button.record-chip {
   gap: 12px;
   padding: 12px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   cursor: pointer;
 }
 .choice-option:has(input:checked) {
@@ -1847,21 +1780,6 @@ header {
   line-height: 1.5;
   margin-top: 4px;
 }
-.journal-head {
-  gap: 12px;
-}
-.journal-actions {
-  grid-row: 1;
-  flex-direction: row;
-  align-items: center;
-}
-.journal .records {
-  grid-column: 1/-1;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-}
-.journal-actions button {
-  min-height: 44px;
-}
 .record-chip p {
   font-family: var(--font-game);
   font-size: 12px;
@@ -1897,7 +1815,7 @@ header {
   align-items: center;
 }
 .summary-actions>button,.action-menu>summary {
-  min-height: 44px;
+  min-height: var(--touch-target-min);
   font-size: 13px;
   padding: 12px 16px;
   white-space: nowrap;
@@ -1913,7 +1831,7 @@ header {
   list-style: none;
   cursor: pointer;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   color: var(--text);
   user-select: none;
 }
@@ -2041,7 +1959,7 @@ button.primary.touch-pressed:not(:disabled) {
   }
   .journal-actions button {
     padding: 10px 9px;
-    min-height: 44px;
+    min-height: var(--touch-target-min);
   }
   .initial-level:not(:has(input))::after {
     margin-left: 4px;
@@ -2050,7 +1968,7 @@ button.primary.touch-pressed:not(:disabled) {
     width: 58px;
   }
   .initial-level-form button {
-    min-height: 36px;
+    min-height: var(--control-height);
   }
   .journal:has(.initial-level-form) .journal-head {
     grid-column: 1/-1;
@@ -2161,7 +2079,7 @@ button,summary,a,[role="button"],[data-initial-level] {
   }
   .journal-actions>button,.summary-actions>button,.action-menu>summary {
     position: relative;
-    min-height: 36px;
+    min-height: var(--control-height);
     height: 36px;
     padding-block: 7px;
     line-height: 20px;
@@ -2179,7 +2097,7 @@ button,summary,a,[role="button"],[data-initial-level] {
 }
 @media(min-width:601px) {
   .summary-actions>button,.action-menu>summary,.journal-actions>button {
-    min-height: 36px;
+    min-height: var(--control-height);
     height: 36px;
     padding-block: 7px;
     line-height: 20px;
@@ -2206,17 +2124,12 @@ button,summary,a,[role="button"],[data-initial-level] {
 .select-page .toolbar>button {
   flex-shrink: 0;
   min-width: 0;
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   line-height: 20px;
 }
-.select-page .character-grid {
-  gap: 12px;
-}
+
 .select-page .character {
-  min-height: 144px;
-  padding: 16px 10px;
-  gap: 8px;
   justify-content: flex-start;
 }
 .select-page .character img {
@@ -2238,7 +2151,7 @@ button,summary,a,[role="button"],[data-initial-level] {
   flex-wrap: nowrap;
 }
 .levels-page .toolbar>button {
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   line-height: 20px;
   white-space: nowrap;
@@ -2281,7 +2194,7 @@ button,summary,a,[role="button"],[data-initial-level] {
 }
 .level-row>.drag-grip {
   position: relative;
-  min-height: 44px;
+  min-height: var(--touch-target-min);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2297,7 +2210,7 @@ button,summary,a,[role="button"],[data-initial-level] {
 
 .bottom-bar button {
   position: relative;
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   font-size: 13px;
   line-height: 20px;
@@ -2316,13 +2229,9 @@ button,summary,a,[role="button"],[data-initial-level] {
     padding-inline: 10px;
     position: relative;
   }
-  .select-page .character-grid {
-    gap: 8px;
-  }
+
   .select-page .character {
     min-height: 120px;
-    padding: 12px 6px;
-    gap: 8px;
   }
   .select-page .character img {
     width: 60px;
@@ -2583,7 +2492,7 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
   color: var(--muted);
 }
 .selection-toolbar button {
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   font-size: 12px;
   line-height: 20px;
@@ -2640,7 +2549,7 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
 .expectation-dialog .select-options button {
   display: block;
   width: 100%;
-  min-height: 36px;
+  min-height: var(--control-height);
   border: 0;
   border-radius: 5px;
   text-align: left;
@@ -2711,7 +2620,7 @@ body.marquee-selecting,body.marquee-selecting * {
 .expectation-setting,.profession-setting {
   font-size: 12px;
   line-height: 20px;
-  min-height: 36px;
+  min-height: var(--control-height);
   padding: 7px 12px;
   justify-self: start;
   max-width: 100%;
@@ -2774,7 +2683,7 @@ body.marquee-selecting,body.marquee-selecting * {
 }
 #notice button {
   padding: 0 8px;
-  min-height: 36px;
+  min-height: var(--control-height);
   border: 0;
   color: var(--on-accent);
   font-size: 13px;
@@ -3263,9 +3172,6 @@ main.levels-page { padding-left:60px; padding-right:24px; }
   .levels-page .setup-character img { width:72px; }
   .levels-page .setup-character>strong { font-size:14px; }
 }
-.journal-head {
-  padding-left: 0;
-}
 .row-select,.level-row .row-select,.journal>.row-select {
   display: block;
   visibility: hidden;
@@ -3347,7 +3253,7 @@ main.levels-page { padding-left:60px; padding-right:24px; }
   display:flex; flex-direction:row; justify-content:flex-end; gap:12px; padding:16px 24px;
   border-top:1px solid var(--line); background:var(--surface-raised);
 }
-.setup-level-dialog footer>button { flex:0 0 auto; width:auto; min-width:72px; min-height:36px; padding:7px 16px; }
+.setup-level-dialog footer>button { flex:0 0 auto; width:auto; min-width:72px; min-height:var(--control-height); padding:7px 16px; }
 @media(max-width:600px), (pointer:coarse) {
   .setup-level-dialog button { position:relative; }
   .setup-level-dialog button::after { content:''; position:absolute; inset:-4px; }
@@ -3507,7 +3413,7 @@ html[data-input-mode="touch"] button.expectation-link {
 @media(max-width:600px) {
   .selection-toolbar button,.expectation-dialog button:not([role="option"]) {
     position: relative;
-    min-height: 36px;
+    min-height: var(--control-height);
     padding-block: 7px;
     line-height: 20px;
   }
@@ -3520,7 +3426,7 @@ html[data-input-mode="touch"] button.expectation-link {
     gap: 8px;
   }
   .expectation-dialog .select-options button {
-    min-height: 44px;
+    min-height: var(--touch-target-min);
     padding-block: 12px;
   }
   .multi-select-mode .journal-head {
@@ -3529,7 +3435,7 @@ html[data-input-mode="touch"] button.expectation-link {
   .level-row>.row-select,.journal>.row-select {
     width: 44px;
     height: 44px;
-    min-height: 44px;
+    min-height: var(--touch-target-min);
     border: 0;
     border-radius: 0;
     background: transparent!important;
@@ -3940,7 +3846,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .ride-choice .game-text { font-size:18px; line-height:1.3; white-space:nowrap; }
 .ride-choice:focus-visible,.ride-hearts button:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
 .ride-hearts { display:flex; flex:none; }
-.ride-picker .ride-hearts button { display:grid; place-items:center; width:44px; min-width:0; min-height:44px; padding:0; border:0; background:transparent; }
+.ride-picker .ride-hearts button { display:grid; place-items:center; width:44px; min-width:0; min-height:var(--touch-target-min); padding:0; border:0; background:transparent; }
 .ride-hearts img { display:block; width:42px; height:42px; object-fit:contain; filter:grayscale(1) brightness(.75); opacity:.4; }
 .ride-hearts .lit img { filter:none; opacity:1; }
 @media(hover:hover) and (pointer:fine) { .ride-hearts button:not(.lit):hover img { filter:none; opacity:.7; } }
@@ -4215,73 +4121,4 @@ button,summary,[role="button"],[role="option"],.part3-segment,.choice-option,dia
 input,textarea {
   -webkit-user-select: text;
   user-select: text;
-}
-
-/* Motion: brief, never blocking, absent from the record page's high-frequency controls.
-   features.js mirrors these timings in MOTION. Everything here is off for reduced motion. */
-:root {
-  --motion-fast: 100ms;
-  --motion-medium: 120ms;
-  --motion-base: 160ms;
-  --ease-standard: cubic-bezier(.16,1,.3,1);
-}
-@keyframes motion-fade-in { from { opacity: 0; } }
-@keyframes motion-dialog-in { from { opacity: 0; transform: scale(.98); } }
-/* A press answers at once; only the release eases back. */
-button:active:not(:disabled) {
-  transition-duration: 0s;
-}
-.app-dialog[open] {
-  animation: motion-dialog-in var(--motion-base) var(--ease-standard);
-}
-.app-dialog[open]::backdrop {
-  animation: motion-fade-in var(--motion-base) ease-out;
-}
-.app-dialog,.app-dialog::backdrop {
-  transition: opacity var(--motion-fast) linear,display var(--motion-fast) allow-discrete,overlay var(--motion-fast) allow-discrete;
-}
-/* A closing dialog no longer matches :modal, so hold its geometry here. It must not catch clicks. */
-.app-dialog:where(:not([open])) {
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  height: fit-content;
-  max-width: calc(100% - 6px - 2em);
-  opacity: 0;
-  pointer-events: none;
-}
-/* These set their column layout only on [open], which ends when the fade starts. */
-:is(.expectation-dialog,.ride-picker,.profession-picker):not([open]) {
-  flex-direction: column;
-}
-.app-dialog:not([open])::backdrop {
-  opacity: 0;
-  pointer-events: none;
-}
-.action-menu[open]>.menu-panel,.select-options,.search-history:not([hidden]) {
-  animation: motion-fade-in var(--motion-fast) ease-out;
-}
-.menu-chevron {
-  transition: transform var(--motion-medium) var(--ease-standard);
-}
-#notice:not(:empty) {
-  animation: motion-fade-in var(--motion-medium) ease-out;
-}
-#notice.is-leaving {
-  opacity: 0;
-  transition: opacity var(--motion-medium) linear;
-}
-.list-ghost {
-  position: fixed !important;
-  margin: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-@media(prefers-reduced-motion:reduce) {
-  .app-dialog[open],.app-dialog[open]::backdrop,.action-menu[open]>.menu-panel,.select-options,.search-history:not([hidden]),#notice:not(:empty) {
-    animation: none;
-  }
-  .app-dialog,.app-dialog::backdrop,.menu-chevron,#notice.is-leaving {
-    transition: none;
-  }
 }

@@ -12,62 +12,38 @@ function setStorageIssue(issue = '') {
   storageIssue = issue;
   storageBlocked = issue === 'read' || issue === 'conflict';
   storageWarning = issue === 'write';
-  const banner = document.querySelector('#storage-status');
-  banner.hidden = !issue;
-  if (!issue) { banner.replaceChildren(); return; }
-  if (previousIssue === issue && banner.childNodes.length) return;
-  const message = issue === 'read' ? '本地记录无法读取，原文件已保留。' : issue === 'conflict' ? '另一页已保存，此页更改尚未保存。' : '此页更改尚未保存。';
-  const action = issue === 'read' ? '恢复备份' : issue === 'conflict' ? '保存此页' : '重试保存';
-  const exportLabel = issue === 'read' && typeof lastLocalSave === 'string' ? '导出原文件' : '导出备份';
-  banner.innerHTML = `<span>${message}</span><div><button data-storage-action="${issue === 'read' ? 'import' : 'save'}">${action}</button><button data-storage-action="export">${exportLabel}</button></div>`;
+  window.RiggingStorageStatus.render(issue, previousIssue, lastLocalSave);
 }
-function trackState(value) {
-  if (!value || typeof value !== 'object') return value;
-  if (trackedObjects.has(value)) return trackedObjects.get(value);
-  const proxy = new Proxy(value, {
-    get(target,key,receiver) { return trackState(Reflect.get(target,key,receiver)); },
-    set(target,key,value,receiver) { const changed=target[key]!==value; const result=Reflect.set(target,key,value,receiver); if(changed)scheduleLocalSave(); return result; },
-    deleteProperty(target,key) { const result=Reflect.deleteProperty(target,key);scheduleLocalSave();return result; }
-  });
-  trackedObjects.set(value,proxy);trackedObjects.set(proxy,proxy);return proxy;
-}
-function scheduleLocalSave() {
-  if (!storageReady || storageBlocked) return;
-  clearTimeout(localSaveTimer);localSaveTimer=setTimeout(saveLocalState,150);
-}
-function saveLocalState(replace = false) {
-  clearTimeout(localSaveTimer);
-  if (!storageReady || (storageBlocked && replace !== true)) return false;
-  try {
-    const serialized=JSON.stringify(state);
-    if(serialized===lastLocalSave && !storageIssue && replace !== true)return true;
-    // Do not silently overwrite work saved by another tab.
-    if(replace !== true && localStorage.getItem(LOCAL_STATE_KEY)!==lastLocalSave) {
-      setStorageIssue('conflict');return false;
-    }
-    localStorage.setItem(LOCAL_STATE_KEY,serialized);lastLocalSave=serialized;setStorageIssue();return true;
-  } catch {
-    setStorageIssue('write');return false;
+// Adapter preserves the existing global bindings used by import rollback and tests.
+// Persistence owns scheduling/conflict policy; the app owns navigation and feedback.
+const persistence = window.RiggingPersistence.create({
+  runtime: {
+    get ready() { return storageReady; }, set ready(value) { storageReady = value; },
+    get blocked() { return storageBlocked; },
+    get issue() { return storageIssue; },
+    get lastSave() { return lastLocalSave; }, set lastSave(value) { lastLocalSave = value; },
+    get timer() { return localSaveTimer; }, set timer(value) { localSaveTimer = value; }
+  },
+  key: LOCAL_STATE_KEY,
+  getStorage: () => localStorage,
+  serialize: () => JSON.stringify(state),
+  onIssue: setStorageIssue,
+  onRestore(data) {
+    state=trackState(validate(data));
+    // Pending additions can coexist with an existing roster; they do not imply
+    // the user was viewing the level setup page.
+    page=visibleRoster().length?'summary':state.selection.length?'levels':'select';
+    try {
+      const savedPage=sessionStorage.getItem(LOCAL_PAGE_KEY);
+      if(savedPage==='select'||savedPage==='summary'||(savedPage==='levels'&&state.selection.length))page=savedPage;
+    } catch { /* Fall back to the data-derived page when session storage is unavailable. */ }
   }
-}
-function restoreLocalState() {
-  try {
-    lastLocalSave=localStorage.getItem(LOCAL_STATE_KEY);
-    if(lastLocalSave) {
-      state=trackState(validate(JSON.parse(lastLocalSave)));
-      // Pending additions can coexist with an existing roster; they do not imply
-      // the user was viewing the level setup page.
-      page=visibleRoster().length?'summary':state.selection.length?'levels':'select';
-      try {
-        const savedPage=sessionStorage.getItem(LOCAL_PAGE_KEY);
-        if(savedPage==='select'||savedPage==='summary'||(savedPage==='levels'&&state.selection.length))page=savedPage;
-      } catch { /* Fall back to the data-derived page when session storage is unavailable. */ }
-    }
-  } catch {
-    setStorageIssue('read');
-  }
-  storageReady=true;
-}
+});
+function trackState(value) { return window.RiggingPersistence.track(value, trackedObjects, scheduleLocalSave); }
+function scheduleLocalSave() { persistence.schedule(); }
+function saveLocalState(replace = false) { return persistence.save(replace); }
+function restoreLocalState() { persistence.restore(); }
+
 let state = trackState({ version: 2, roster: [], selection: [], initialLevels: {} });
 let activeRecord = null;
 let page = 'select';
@@ -440,458 +416,12 @@ function recordStats(stats) {
 function pencilIcon(className) {
   return `<svg class="${className}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 2.5 3 3M2.5 13.5l3.5-.8 7.5-7.5a2.1 2.1 0 0 0-3-3L3 9.7z"/></svg>`;
 }
-const expandedJournals = new Set();
-let recordReturnPosition = null;
-const recordRails = new WeakMap();
-const desktopRecords = matchMedia('(min-width:601px)');
-function compactRecords(item) {
-  const records = M.live(item);
-  return records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;
-}
-function railState(rail) {
-  if (!recordRails.has(rail)) recordRails.set(rail, { frame: 0, timer: 0, signature: '', initialized: false, step: 0 });
-  return recordRails.get(rail);
-}
-function stopRail(rail, keepWheel = false) {
-  const status = railState(rail);
-  cancelAnimationFrame(status.frame); clearTimeout(status.timer); status.frame = 0;
-  clearTimeout(status.autoTimer); status.autoUntil = 0;
-  status.edgeAnimations?.forEach(animation => animation.cancel());
-  status.edgeAnimations = null;
-  if (!keepWheel) status.wheelGesture = null;
-}
-function moveRail(rail, target, duration = 120) {
-  stopRail(rail);
-  target = Math.max(0, Math.min(target, rail.scrollWidth - rail.clientWidth));
-  const from = rail.scrollLeft, status = railState(rail);
-  if (!duration || Math.abs(target - from) < 1 || !motionAllowed()) {
-    rail.scrollLeft = target; return;
-  }
-  const start = performance.now();
-  const tick = now => {
-    const t = Math.min(1, (now - start) / duration);
-    rail.scrollLeft = from + (target - from) * (1 - Math.pow(1 - t, 3));
-    if (t < 1) status.frame = requestAnimationFrame(tick);
-    else { status.frame = 0; clearTimeout(status.timer); }
-  };
-  status.frame = requestAnimationFrame(tick);
-}
-function defaultRailPosition(rail) {
-  const chips = [...rail.querySelectorAll('.record-chip')];
-  let processed = 0;
-  while (processed < chips.length && chips[processed].matches('.upgraded,.skipped')) processed++;
-  return Math.max(0, processed - 1) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
-}
-function autoPositionRail(rail, duration = 120) {
-  const status = railState(rail);
-  clearTimeout(status.autoTimer);
-  const deadline = Math.max(status.autoUntil || 0, status.returnUntil || 0);
-  if (deadline > performance.now()) {
-    status.autoTimer = setTimeout(() => {
-      if (!rail.isConnected) return;
-      autoPositionRail(rail, duration);
-    }, deadline - performance.now());
-    return;
-  }
-  status.autoPending = false;
-  status.returnUntil = 0;
-  clearTimeout(status.returnTimer);
-  if (status.retiring) { finishRecordRail(rail, duration); return; }
-  moveRail(rail, defaultRailPosition(rail), duration);
-}
-function scheduleRecordReturn(rail) {
-  const status = railState(rail);
-  clearTimeout(status.returnTimer);
-  status.returnUntil = performance.now() + 5000;
-  status.returnTimer = setTimeout(() => {
-    if (!rail.isConnected) return;
-    status.returnUntil = 0;
-    status.autoUntil = 0;
-    autoPositionRail(rail);
-  }, 5000);
-}
-function finishRecordRail(rail, duration = 120) {
-  const status = railState(rail);
-  const chips = [...rail.querySelectorAll('.record-chip')];
-  const before = chips.map(chip => chip.getBoundingClientRect());
-  const height = rail.getBoundingClientRect().height;
-  status.retiring = false;
-  status.autoPending = false;
-  stopRail(rail);
-  expandedJournals.delete(rail.closest('.journal').dataset.sortId);
-  renderSummary();
-  if (!duration || !motionAllowed()) return;
-  // Leaving rail mode resets scrollLeft in layout. Animate from the old visual
-  // positions so the return to the grid has the same motion as a normal scroll.
-  chips.forEach((chip, index) => {
-    const next = chip.getBoundingClientRect(), previous = before[index];
-    const x = previous.left - next.left, y = previous.top - next.top;
-    if (Math.abs(x) > 1 || Math.abs(y) > 1 || Math.abs(previous.width - next.width) > 1) {
-      chip.animate([
-        { transformOrigin: 'top left', transform: `translate(${x}px,${y}px) scaleX(${previous.width / next.width})` },
-        { transformOrigin: 'top left', transform: 'none' }
-      ], { duration, easing: MOTION.ease });
-    }
-  });
-  const nextHeight = rail.getBoundingClientRect().height;
-  if (Math.abs(height - nextHeight) > 1) rail.animate([
-    { height: `${height}px` }, { height: `${nextHeight}px` }
-  ], { duration, easing: MOTION.ease });
-}
-app.addEventListener('pointerout', event => {
-  if (event.pointerType !== 'mouse' || !desktopRecords.matches) return;
-  const journal = event.target.closest('.journal');
-  if (!journal?.matches('.has-record-rail:not(.records-expanded)') || journal.contains(event.relatedTarget)) return;
-  const rail = journal.querySelector('.records'), status = railState(rail);
-  if (!status.autoPending || status.returnUntil) return;
-  status.autoUntil = 0;
-  autoPositionRail(rail);
-});
-function setJournalExpanded(journal, expanded, animate = true) {
-  const rail = journal.querySelector('.records');
-  railState(rail).autoPending = false;
-  railState(rail).returnUntil = 0;
-  clearTimeout(railState(rail).returnTimer);
-  if (railState(rail).retiring) { finishRecordRail(rail, animate ? 120 : 0); return; }
-  const previousHeight = rail.getBoundingClientRect().height;
-  const chips = [...rail.querySelectorAll('.record-chip')];
-  const slideOpen = expanded && !journal.classList.contains('records-expanded') && chips.length <= 5;
-  const previousPositions = slideOpen ? chips.map(chip => chip.getBoundingClientRect()) : [];
-  stopRail(rail);
-  rail.getAnimations().forEach(animation => animation.cancel());
-  chips.forEach(chip => chip.getAnimations().forEach(animation => animation.cancel()));
-  expanded ? expandedJournals.add(journal.dataset.sortId) : expandedJournals.delete(journal.dataset.sortId);
-  journal.classList.toggle('records-expanded', expanded);
-  const button = journal.querySelector('[data-expand-records]');
-  if (button) { button.textContent = expanded ? '收起' : '展开'; button.setAttribute('aria-expanded', String(expanded)); }
-  if (expanded) rail.scrollLeft = 0;
-  else moveRail(rail, defaultRailPosition(rail));
-  const nextHeight = rail.getBoundingClientRect().height;
-  // Short lists keep the same height: animate the cards back from their
-  // scrolled positions so revealing hidden history still has a visible motion.
-  if (slideOpen && animate && motionAllowed()) {
-    chips.forEach((chip, index) => {
-      const next = chip.getBoundingClientRect(), previous = previousPositions[index];
-      const x = previous.left - next.left, y = previous.top - next.top;
-      if (Math.abs(x) > 1 || Math.abs(y) > 1) chip.animate([
-        { transform: `translate(${x}px,${y}px)` }, { transform: 'translate(0,0)' }
-      ], { duration: 120, easing: MOTION.ease });
-    });
-  }
-  if (animate && motionAllowed() && Math.abs(nextHeight - previousHeight) > 1) {
-    rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], {
-      duration: 130, easing: MOTION.ease
-    });
-  }
-}
-function refreshRecordRails() {
-  app.querySelectorAll('.journal').forEach(journal => {
-    const rail = journal.querySelector('.records');
-    const status = railState(rail);
-    const first = !status.initialized;
-    status.initialized = true;
-    if (!desktopRecords.matches || !journal.classList.contains('has-record-rail')) {
-      status.autoPending = false;
-      status.returnUntil = 0;
-      clearTimeout(status.returnTimer);
-      stopRail(rail); rail.scrollLeft = 0; status.signature = ''; return;
-    }
-    const width = rail.clientWidth;
-    const columns = Math.max(1, Math.min(5, Math.floor((width + 10) / 190)));
-    const step = (width - (columns - 1) * 10) / columns + 10;
-    const previousPosition = status.step ? rail.scrollLeft / status.step : 0;
-    rail.style.setProperty('--chip-width', `${step - 10}px`);
-    rail.style.setProperty('--record-columns', columns);
-    const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
-    if (status.signature !== signature) {
-      status.signature = signature;
-      if (!journal.classList.contains('records-expanded')) autoPositionRail(rail, first ? 0 : 120);
-    } else if (status.step !== step && !journal.classList.contains('records-expanded')) {
-      // Selection adds a checkbox column. Keep the same reviewed card when
-      // its width changes, instead of resetting the user's browsing position.
-      moveRail(rail, previousPosition * step, 0);
-    }
-    status.step = step;
-  });
-}
-function bounceRailEdge(rail, direction) {
-  stopRail(rail);
-  if (!motionAllowed()) return;
-  const status = railState(rail);
-  const distance = -direction * parseFloat(rail.style.getPropertyValue('--chip-width')) / 2;
-  status.edgeDirection = direction;
-  status.edgeAnimations = [...rail.querySelectorAll('.record-chip')].map(chip => chip.animate([
-    { transform: 'translateX(0)', offset: 0, easing: 'ease-out' },
-    { transform: `translateX(${distance}px)`, offset: .4, easing: 'ease-in-out' },
-    { transform: 'translateX(0)', offset: 1 }
-  ], { duration: 320 }));
-}
-function scheduleRailSnap(rail) {
-  const status = railState(rail);
-  clearTimeout(status.timer);
-  status.timer = setTimeout(() => {
-    const step = parseFloat(rail.style.getPropertyValue('--chip-width')) + 10;
-    let target = Math.round(rail.scrollLeft / step) * step;
-    // Finish wheel gestures in their direction, including any partial card.
-    const gesture = status.wheelGesture;
-    if (gesture) {
-      // scrollLeft is pixel-rounded while card widths can be fractional.
-      const position = (rail.scrollLeft - gesture.direction * .5) / step;
-      target = (gesture.direction > 0 ? Math.ceil(position) : Math.floor(position)) * step;
-      const minimum = (Math.round(gesture.start / step) + gesture.direction) * step;
-      target = gesture.direction > 0 ? Math.max(target, minimum) : Math.min(target, minimum);
-    }
-    moveRail(rail, target, 80);
-  }, 70);
-}
-app.addEventListener('wheel', event => {
-  const rail = event.target.closest('.has-record-rail:not(.records-expanded) .records');
-  if (!desktopRecords.matches || !rail || event.ctrlKey) return;
-  event.preventDefault();
-  const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? rail.clientWidth : 1);
-  if (!delta) return;
-  const status = railState(rail), direction = Math.sign(delta);
-  if (status.returnUntil) scheduleRecordReturn(rail);
-  // Let one edge bounce finish during a wheel burst; reversing cancels it.
-  if (status.edgeDirection === direction && status.edgeAnimations?.some(animation => animation.playState === 'running')) return;
-  stopRail(rail, true);
-  const target = Math.max(0, Math.min(rail.scrollLeft + delta, rail.scrollWidth - rail.clientWidth));
-  if (target === rail.scrollLeft) { bounceRailEdge(rail, direction); return; }
-  if (status.wheelGesture?.direction !== direction) status.wheelGesture = { start: rail.scrollLeft, direction };
-  rail.scrollLeft = target;
-  scheduleRailSnap(rail);
-}, { passive: false });
-app.addEventListener('scroll', event => {
-  const rail = event.target;
-  if (!desktopRecords.matches || !rail.matches?.('.has-record-rail:not(.records-expanded) .records')) return;
-  const status = railState(rail);
-  if (status.frame || status.autoUntil > performance.now()) return;
-  scheduleRailSnap(rail);
-}, true);
-app.addEventListener('pointerdown', event => {
-  const rail = event.target.closest('.records');
-  if (rail) stopRail(rail);
-});
-document.addEventListener('click', event => {
-  if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil) return;
-  app.querySelectorAll('.has-record-rail').forEach(journal => {
-    if (!journal.contains(event.target)) setJournalExpanded(journal, false);
-  });
-}, true);
+app.addEventListener('pointerout', onRecordRailPointerOut);
+app.addEventListener('wheel', onRecordRailWheel, { passive: false });
+app.addEventListener('scroll', onRecordRailScroll, true);
+app.addEventListener('pointerdown', onRecordRailPointerDown);
+document.addEventListener('click', onSummaryOutsideClick, true);
 window.addEventListener('resize', refreshRecordRails);
-function renderSummary() {
-  const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
-  const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && !x.skipped && !x.ratingPending).length, 0);
-  const canUndo = storyRoster().some(item => item.deleted || item.records.some(record => record.deleted));
-  const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.skipped));
-  const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>人物</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div>${part3Switch()}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
-      const c = char(item.id);
-      const editing = editingCharacters.has(c.id);
-      const displayLevels = M.displayLevels(item);
-      const previousRail = app.querySelector(`.journal[data-sort-id="${c.id}"] .records`);
-      const compact = compactRecords(item) || (desktopRecords.matches && previousRail && railState(previousRail).retiring);
-      return `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
-        <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span>${portrait(c)}<div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
-        <div class="journal-actions"><button class="primary" data-start="${c.id}">记录升级</button><button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
-        <div class="records">${M.live(item).length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.skipped ? '已跳过，' : r.upgraded ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.skipped ? '标记已升级' : r.upgraded ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.skipped ? 'skipped' : r.upgraded ? 'upgraded' : ''} ${editing ? 'editable' : ''}">${editing ? pencilIcon('edit-pencil') : ''}<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${professionMarkup(r.profession, editing, c.id, recordIndex)}<span>${r.ratingPending ? '待评价' : ratingIcon(r.happy) + (r.happy ? '满意' : '不满意')}</span></div><strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${r.skipped || r.upgraded ? `<span class="record-overlay ${r.skipped ? 'skip-overlay' : 'upgrade-overlay'}">${r.skipped ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
-    }).join('') || '<div class="panel empty">添加人物</div>'}</div>`;
-  if (app.querySelector('.summary-top')) {
-    const template = document.createElement('template');
-    template.innerHTML = markup;
-    syncChildren(app, template.content);
-  } else app.innerHTML = markup;
-  refreshRowSelection();
-}
-// Reconcile summary changes in place, retaining keyed journals and their images.
-function syncChildren(current, desired) {
-  const key = node => {
-    if (node.nodeType !== 1) return null;
-    for (const attribute of ['data-sort-id', 'data-start', 'data-toggle-edit', 'data-edit']) {
-      if (node.hasAttribute(attribute)) return `${attribute}:${node.getAttribute(attribute)}:${node.getAttribute('data-index') || ''}`;
-    }
-    return null;
-  };
-  const keyed = new Map([...current.childNodes].filter(key).map(node => [key(node), node]));
-  let cursor = current.firstChild;
-  // Selection owns this leading checkbox; it is absent from the render template.
-  // Keep it out of reconciliation so updates retain the journal's record rail.
-  if (current.matches?.('.journal') && cursor?.nodeType === 1 && cursor.matches('.row-select')) cursor = cursor.nextSibling;
-  for (const next of [...desired.childNodes]) {
-    const id = key(next);
-    let node = id ? keyed.get(id) : cursor;
-    if (!node || node.nodeType !== next.nodeType || node.nodeName !== next.nodeName || key(node) !== id) {
-      node = next.cloneNode(true);
-      current.insertBefore(node, cursor);
-    } else {
-      if (node !== cursor) current.insertBefore(node, cursor);
-      if (node.nodeType === 1) {
-        const chipWidth = node.matches('.records') ? node.style.getPropertyValue('--chip-width') : '';
-        const recordColumns = node.matches('.records') ? node.style.getPropertyValue('--record-columns') : '';
-        for (const attribute of [...node.attributes]) {
-          if (!next.hasAttribute(attribute.name)) node.removeAttribute(attribute.name);
-        }
-        for (const attribute of [...next.attributes]) {
-          if (node.getAttribute(attribute.name) !== attribute.value) node.setAttribute(attribute.name, attribute.value);
-        }
-        // Rail sizing is measured at runtime; retain it through record updates.
-        if (chipWidth) node.style.setProperty('--chip-width', chipWidth);
-        if (recordColumns) node.style.setProperty('--record-columns', recordColumns);
-        syncChildren(node, next);
-      } else if (node.nodeValue !== next.nodeValue) node.nodeValue = next.nodeValue;
-    }
-    cursor = node.nextSibling;
-  }
-  while (cursor) {
-    const next = cursor.nextSibling;
-    cursor.remove();
-    cursor = next;
-  }
-}
-function start(id) {
-  const rail = app.querySelector(`.journal[data-sort-id="${id}"] .records`);
-  const step = rail && railState(rail).step;
-  recordReturnPosition = desktopRecords.matches
-    ? { id, position: step ? rail.scrollLeft / step : 0 }
-    : null;
-  activeRecord = newRecordDraft(id);
-   page = 'record'; render(); window.scrollTo(0, 0);
-}
-function rememberListPosition() {
-  state.summaryScroll = Math.max(0, window.scrollY);
-
-  notify('');
-}
-function returnToSummary() {
-  const previous = recordReturnPosition;
-  recordReturnPosition = null;
-  page = 'summary'; render();
-  window.scrollTo(0, Number(state.summaryScroll) || 0);
-  const rail = previous && desktopRecords.matches
-    ? app.querySelector(`.journal.has-record-rail:not(.records-expanded)[data-sort-id="${previous.id}"] .records`)
-    : null;
-  if (rail && rail.scrollWidth > rail.clientWidth) {
-    // Align the latest card with the right edge, excluding the rail's trailing spacer.
-    const latest = rail.querySelector('.record-chip:last-child');
-    const target = rail.scrollLeft + latest.getBoundingClientRect().right
-      - rail.getBoundingClientRect().left - rail.clientWidth;
-    const previousLeft = previous.position * railState(rail).step;
-    // Use existing empty slots before moving the row to reveal new records.
-    if (target <= previousLeft + 1) {
-      moveRail(rail, previousLeft, 0);
-      return;
-    }
-    moveRail(rail, target, 0);
-    const status = railState(rail);
-    status.autoPending = true;
-    scheduleRecordReturn(rail);
-  }
-}
-function renderRecord() {
-  const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
-  const editing = d.editIndex !== undefined;
-  const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
-  app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><div class="ride-slot note-ride"></div></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></section></div>`;
-  if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
-  updateRecordControls();
-}
-// Keep portraits and focused buttons mounted during record interactions.
-function updateRecordControls() {
-  const d = activeRecord;
-  const profession = app.querySelector('.stat-heading .profession-field');
-  if (profession) profession.outerHTML = professionMarkup(d.profession, true);
-  app.querySelectorAll('.ride-slot').forEach(slot => { slot.innerHTML = recordRideMarkup(d); });
-  app.querySelectorAll('[data-stat]').forEach(button => {
-    const selected = d.stats.includes(button.dataset.stat);
-    button.classList.toggle('active', selected);
-    button.setAttribute('aria-pressed', String(selected));
-    button.querySelector('b').textContent = selected ? '+1' : '—';
-  });
-  app.querySelectorAll('.growth-total strong').forEach(total => { total.textContent = `+${d.stats.length}`; });
-  app.querySelectorAll('[data-rating]').forEach(button => {
-    const selected = d.happy === (button.dataset.rating === 'happy');
-    button.classList.toggle('chosen', selected);
-    button.setAttribute('aria-pressed', String(selected));
-  });
-  app.querySelector('[data-action="finish"]').disabled = d.happy === null;
-  const next = app.querySelector('[data-action="next"]');
-  if (next) next.disabled = d.happy === null;
-}
-function confirmRecordDeletion(question = '是否删除这条记录？', actionLabel = '删除', description = '') {
-  return new Promise(resolve => {
-    const dialog = document.createElement('dialog');
-    dialog.className = 'app-dialog confirm-dialog';
-    dialog.setAttribute('aria-labelledby', 'delete-confirm-title');
-    dialog.innerHTML = '<h2 id="delete-confirm-title">是否删除这条记录？</h2><form method="dialog"><button value="cancel" autofocus>返回</button><button class="danger" value="delete">删除</button></form>';
-    dialog.querySelector('h2').textContent = question;
-    if (description) {
-      const detail = document.createElement('p');
-      detail.id = 'delete-confirm-description'; detail.className = 'confirm-description';
-      detail.textContent = description;
-      dialog.querySelector('h2').after(detail);
-      dialog.classList.add('has-description');
-      dialog.setAttribute('aria-describedby', detail.id);
-    }
-    dialog.querySelector('.danger').textContent = actionLabel;
-    dialog.addEventListener('close', () => {
-      const confirmed = dialog.returnValue === 'delete';
-      retireDialog(dialog);
-      resolve(confirmed);
-    }, { once: true });
-    document.body.append(dialog);
-    dialog.showModal();
-  });
-}
-async function deleteRecord() {
-  const d = activeRecord;
-  if (!d || d.editIndex === undefined) return;
-  const item = state.roster.find(r => r.id === d.id);
-  if (!item || !item.records[d.editIndex]) return;
-  if (!await confirmRecordDeletion() || activeRecord !== d) return;
-  softDelete([item.records[d.editIndex]]);
-  if (!M.live(item).length) editingCharacters.delete(item.id);
-  activeRecord = null;
-  returnToSummary();
-}
-function saveRecord(next) {
-  const d = activeRecord;
-  if (!d || d.happy === null) return;
-  const item = state.roster.find(r => r.id === d.id);
-  const kind = rideKind(d.profession), ride = kind && d.ride ? { ...d.ride } : null;
-  const usedRides = kind ? { ...d.rides, [kind]: ride } : d.rides;
-  if (d.editIndex === undefined && (M.nextSeq(item) > M.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= M.limits.records)) {
-    notify('记录已达上限，请导出备份'); return;
-  }
-  if (d.editIndex !== undefined) {
-    // Correcting older history must not change what the next new record starts from.
-    if (item.records[d.editIndex] === M.live(item).at(-1)) rememberRides(d.id, usedRides);
-    const saved = { ...item.records[d.editIndex], profession: d.profession || null, stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
-    if (ride) saved.ride = ride; else delete saved.ride;
-    item.records[d.editIndex] = saved;
-  } else {
-    rememberRides(d.id, usedRides);
-    item.records.push({ id: M.uid(), seq: M.nextSeq(item), profession: d.profession || null, ...(ride ? { ride } : {}), stats: [...d.stats], happy: d.happy, ratingSource: d.ratingSource || 'auto', createdAt: new Date().toISOString() });
-  }
-  const id = d.id;
-  if (d.editIndex === undefined) delete item.pendingProfession;
-  activeRecord = null;
-
-  if (next) {
-    activeRecord = newRecordDraft(id);
-    const level = nextLevel(item);
-    app.querySelector('.big-level').textContent = upgradeLevelLabel(item, level);
-    app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
-    app.querySelector('.record-level-current').textContent = levelLabel(item, level);
-    app.querySelector('.record-level-transition').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
-    app.querySelector('.record-target-level').textContent = levelLabel(item, level);
-    hideExpectationTip();
-    updateRecordControls();
-  } else {
-    returnToSummary();
-  }
-
-}
 app.addEventListener('input', e => {
   if (e.target.matches('[data-level-input]')) { clearLevelError(e.target); e.target.removeAttribute('aria-invalid'); }
   if (e.target.id === 'search') { query = e.target.value; renderCards(); app.querySelector('#search-history').hidden = true; }
@@ -1053,7 +583,7 @@ app.addEventListener('click', e => {
 });
 // Native touch :active can outlive the gesture; own the visual press lifecycle.
 let touchPressedButton = null;
-document.documentElement.dataset.inputMode = matchMedia('(pointer:coarse)').matches ? 'touch' : 'mouse';
+document.documentElement.dataset.inputMode = UI_MEDIA.coarseInput.matches ? 'touch' : 'mouse';
 document.addEventListener('keydown', e => {
   if (!e.metaKey && !e.ctrlKey && !e.altKey) document.documentElement.dataset.inputMode = 'keyboard';
 }, true);
@@ -1069,7 +599,7 @@ document.addEventListener('pointerdown', e => {
   clearTouchPress();
   if (e.pointerType === 'mouse') return;
   const button = e.target.closest('button:not(:disabled)');
-  if (button?.matches('.expectation-link') || (matchMedia('(max-width:600px)').matches && button?.matches('.expectation-setting'))) return;
+  if (button?.matches('.expectation-link') || (UI_MEDIA.narrowLayout.matches && button?.matches('.expectation-setting'))) return;
   if (button) { touchPressedButton = button; button.classList.add('touch-pressed'); }
 }, true);
 document.addEventListener('pointerup', clearTouchPress, true);
@@ -1168,37 +698,7 @@ app.addEventListener('click', async e => {
     return;
   }
   if (b.hasAttribute('data-cancel-initial')) { rememberListPosition(); returnToSummary(); return; }
-  if (b.dataset.edit) {
-    rememberListPosition();
-    const index = Number(b.dataset.index);
-    const item = state.roster.find(r => r.id === b.dataset.edit);
-    const record = item.records[index];
-    if (!editingCharacters.has(item.id)) {
-      const status = railState(b.closest('.records'));
-      status.autoUntil = performance.now() + 1000;
-      // Manual browsing cancels the timer, but row exit still settles this change.
-      status.autoPending = true;
-      // Every status click renews this row's countdown, including skipped -> upgraded.
-      status.signature = '';
-      if (record.skipped) {
-        record.skipped = false;
-        record.upgraded = true;
-      } else if (record.upgraded) {
-        record.upgraded = false;
-      } else {
-        record.skipped = true;
-      }
-      status.retiring = desktopRecords.matches && !compactRecords(item) && b.closest('.journal').matches('.has-record-rail:not(.records-expanded)');
-      returnToSummary();
-      const overlay = motionAllowed() && app.querySelector(`.record-chip[data-edit="${item.id}"][data-index="${index}"] .record-overlay`);
-      if (overlay) overlay.animate({ opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
-      return;
-    }
-    const savedKind = rideKind(record.profession);
-    const savedRide = savedKind && window.RIDES.byId[record.ride?.id]?.kind === savedKind ? { ...record.ride } : null;
-    activeRecord = { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
-     page = 'record'; render(); window.scrollTo(0, 0);
-  }
+  if (b.dataset.edit && openSummaryRecord(b)) return;
   if (b.dataset.toggleEdit) {
     const id = b.dataset.toggleEdit;
     editingCharacters.has(id) ? editingCharacters.delete(id) : editingCharacters.add(id);
@@ -1223,13 +723,7 @@ app.addEventListener('click', async e => {
     rememberListPosition();
     start(b.dataset.start);
   }
-  if (b.dataset.stat) {
-    const d = activeRecord, s = b.dataset.stat;
-    d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
-    applyDraftRating(d);
-    updateRecordControls();
-  }
-  if (b.dataset.rating) { activeRecord.happy = b.dataset.rating === 'happy'; activeRecord.ratingSource = 'manual'; updateRecordControls(); }
+  updateRecordFromButton(b);
   const action = b.dataset.action;
   if (action === 'clear-skipped') {
     if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) return;
@@ -1370,11 +864,9 @@ function moveCard(id, targetId, after = false) {
   const list = page === 'levels' ? state.selection : state.roster;
   const getId = x => typeof x === 'string' ? x : x.id;
   const ids = movingIds(id);
-  if (ids.includes(targetId) || !list.some(x => getId(x) === targetId)) return;
-  const moved = list.filter(x => ids.includes(getId(x))), remaining = list.filter(x => !ids.includes(getId(x)));
-  const targetIndex = remaining.findIndex(x => getId(x) === targetId);
-  remaining.splice(targetIndex + (after ? 1 : 0), 0, ...moved);
-  if (remaining.every((item, index) => getId(item) === getId(list[index]))) return;
+  const move = window.RiggingActions.planMove(list, ids, targetId, after);
+  if (!move) return;
+  const { moved, remaining } = move;
   const before = captureList(false), dropped = mouseSort || touchSort ? ids : [];
   list.splice(0, list.length, ...remaining);
   const targetCard = app.querySelector(`[data-sort-id="${targetId}"]`);

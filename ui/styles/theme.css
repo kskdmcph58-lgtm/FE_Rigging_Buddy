@@ -1,0 +1,75 @@
+/* Shared tokens, component rules, responsive layouts and interaction states.
+   Keep responsive overrides next to their related rules when making changes. */
+@font-face {
+  font-family: "WLQS System CN";
+  src: url("../../assets/fonts/wlqs-system-cn.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "WLQS Number";
+  src: url("../../assets/fonts/wlqs-number.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+002B,U+002D,U+0030-0039;
+}
+@font-face {
+  font-family: "WLQS Level Up";
+  src: url("../../assets/fonts/wlqs-level-up.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0020,U+002B,U+002D-002E,U+0030-0039,U+0041-005A,U+0061-007A;
+}
+:root {
+  --font-ui: "Segoe UI","Microsoft YaHei",sans-serif;
+  --font-display: Georgia,"SimSun",serif;
+  --font-game: "WLQS System CN","Microsoft YaHei",serif;
+  --font-number: "WLQS Number","WLQS System CN","Segoe UI",sans-serif;
+  --font-level-up: "WLQS Level Up","WLQS System CN",Georgia,serif;
+  --surface-raised: #223332;
+  --surface-dialog: #1d3031;
+  --surface-field: #192c2d;
+  --surface-input: #102224;
+  --control-line: #53605a;
+  /* Modern tool controls; game content frames keep their own shapes. */
+  --control-height: 36px;
+  --control-radius: 8px;
+  --dialog-radius: 18px;
+  --touch-target-min: 44px;
+  --overlay-line: #60716a;
+  --surface-floating: #34443f;
+  --surface-hover: #314543;
+  --on-accent: #172626;
+  --accent-hover: #ecdbb5;
+  --surface-danger: #452f30;
+  --danger-fill: #793c38;
+  --on-danger: #ffe5df;
+  color-scheme: dark;
+  --bg: #101e20;
+  --panel: #192b2d;
+  --line: #334747;
+  --gold: #d8c394;
+  --text: #f4efdf;
+  --muted: #98aaa6;
+  --green: #8fd1ab;
+  --red: #efa39c;
+  /* Game-style stat controls; values match the existing upgrade page. */
+  --stat-line: #455247;
+  --stat-text: #c6c9b6;
+  --stat-value: #637975;
+  --stat-active-surface: #b8a26419;
+  --stat-active-text: #f4dfa3;
+  --stat-active-value: #f3d372;
+  font-family: var(--font-ui);
+  color: var(--text);
+  /* On the root so it also fills the scrollbar gutter; repeat-x carries the wash
+     across that strip. The noise tile dithers the 8-bit steps that would
+     otherwise show as bands, and its mean sits near --bg so it adds no lift. */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.5 0 0 0 -.63 1.5 0 0 0 -.63 1.5 0 0 0 -.63 0 0 0 0 .03'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,#172a2b 0,#152628 25%,#121f22 55%,var(--bg) 80%) repeat-x 0 0/100% 100vh,
+    var(--bg);
+}

@@ -1,7 +1,7 @@
 /* Selection, expectation editing and reversible deletion. Loaded before app.js. */
 // Motion timings. styles.css mirrors them as --motion-* and --ease-standard.
 const MOTION = { fast: 100, medium: 120, base: 160, ease: 'cubic-bezier(.16,1,.3,1)' };
-function motionAllowed() { return !matchMedia('(prefers-reduced-motion:reduce)').matches; }
+function motionAllowed() { return !UI_MEDIA.reducedMotion.matches; }
 // The dialog's result is already delivered; it stays only for its CSS fade and ignores input.
 function retireDialog(dialog) {
   if (motionAllowed()) setTimeout(() => dialog.remove(), MOTION.fast + 40);
@@ -76,7 +76,7 @@ function animateListChange(change) {
 }
 const rowSelection = new Set();
 let selectionPage = '', selectionAnchor = null, multiSelectMode = false;
-const compactSelectionToolbar = matchMedia('(max-width:600px), (max-width:1100px) and (pointer:coarse)');
+const compactSelectionToolbar = UI_MEDIA.compactSelection;
 const defaultRuleText = '默认：0–3 点不满意，4 点手动选择，5–9 点满意。';
 function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; multiSelectMode = false; }
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
@@ -160,9 +160,9 @@ function refreshRowSelection() {
     check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
     const image = row.querySelector('img');
     const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
-    if (row.matches('.level-row') && matchMedia('(max-width:600px)').matches) check.style.top = '48px';
-    else if (row.matches('.journal') && matchMedia('(min-width:1100px)').matches) check.style.top = '';
-    else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (matchMedia('(max-width:600px)').matches ? 22 : 10)}px`;
+    if (row.matches('.level-row') && UI_MEDIA.narrowLayout.matches) check.style.top = '48px';
+    else if (row.matches('.journal') && UI_MEDIA.wideJournalSelection.matches) check.style.top = '';
+    else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (UI_MEDIA.narrowLayout.matches ? 22 : 10)}px`;
   });
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
     b.textContent = multiSelectMode ? '完成多选' : '多选'; b.setAttribute('aria-pressed', String(multiSelectMode));
@@ -333,9 +333,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&marquee){finishMarq
 window.addEventListener('resize',()=>{if(typeof page!=='undefined'&&['levels','summary'].includes(page))refreshRowSelection();});
 
 function softDelete(objects) {
-  const batch = M.uid(), at = new Date().toISOString();
-  state.deletionCounter = state.roster.flatMap(i => [i,...i.records]).reduce((max,o) => Math.max(max, Number(o.deletionOrder) || 0), Number(state.deletionCounter) || 0) + 1;
-  objects.filter(o => !o.deleted).forEach(o => { o.deleted = true; o.deletedAt = at; o.deletionBatch = batch; o.deletionOrder = state.deletionCounter; });
+  window.RiggingActions.softDelete(state, objects);
   queueMicrotask(() => showUndoNotice(objects.length));
 }
 function showUndoNotice(count) {
@@ -346,11 +344,7 @@ function showUndoNotice(count) {
   notice.append(button); dismissNoticeAfter(8000);
 }
 function undoDelete() {
-  const deleted = storyRoster().flatMap(item => [item, ...item.records]).filter(o => o.deleted);
-  const latest = deleted.reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
-  if (!latest) return;
-  const batch = latest.deletionBatch;
-  deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { delete o.deleted; delete o.deletedAt; delete o.deletionBatch; });
+  if (!window.RiggingActions.undoDelete(storyRoster())) return;
   state.selection = state.selection.filter(id => !visibleRoster().some(item => item.id === id));
   page = 'summary'; activeRecord = null; animateListChange(render); notify('');
 }
@@ -370,15 +364,9 @@ function choiceDialog(question, choices, description = '') {
     document.body.append(dialog); dialog.showModal();
   });
 }
-function draftRule(d) {
-  const item = state.roster.find(i => i.id === d.id);
-  return M.ruleAt(item, d.editIndex === undefined ? M.nextSeq(item) : item.records[d.editIndex].seq);
-}
-function newRecordDraft(id) {
-  const item = state.roster.find(i => i.id === id);
-  const profession = currentProfession(item);
-  return { id, profession, ride: rememberedRide(id, rideKind(profession)), rides: {}, stats: [], happy: M.evaluate(M.ruleAt(item, M.nextSeq(item)), []), ratingSource:'auto' };
-}
+function draftRule(d) { return window.RiggingActions.draftRule(state, d); }
+function newRecordDraft(id) { return window.RiggingActions.newRecordDraft(state, id); }
+
 function recordExpectationMarkup() {
   const rule = draftRule(activeRecord);
   return rule ? ruleMarkup(rule) : `<p class="rule-default">${defaultRuleText}</p>`;
@@ -394,9 +382,8 @@ function openRecordExpectationDetails() {
   document.body.append(dialog);dialog.showModal();
 }
 function applyDraftRating(d) {
-  // Evaluate only on a stats or effective-rule change; manual clicks never re-run it.
-  d.happy = M.evaluate(draftRule(d), d.stats);
-  d.ratingSource = 'auto';
+  // Evaluate on stats/rule changes only; rendering and manual clicks never re-run it.
+  window.RiggingActions.applyDraftRating(state, d);
 }
 
 function ruleMarkup(rule, depth = 0) {
@@ -486,16 +473,7 @@ async function saveExpectations(ids, rule) {
     scope = answer === 'future' ? 'future' : 'history';
     overwrite = answer === 'replace';
   }
-  for (const item of items) {
-    M.setRule(item, M.nextSeq(item), rule, scope === 'history');
-    if (scope === 'history') for (const record of M.live(item)) {
-      const result = M.evaluate(rule,record.stats);
-      if (record.ratingSource !== 'auto' && !overwrite) continue;
-      record.ratingPending = result === null;
-      if (result !== null) record.happy = result;
-      record.ratingSource = 'auto';
-    }
-  }
+  window.RiggingActions.setExpectations(items, rule, scope === 'history', overwrite);
   if(draft && activeRecord===draft && JSON.stringify(draftRule(draft))!==previousRule) {
     applyDraftRating(draft);
   }

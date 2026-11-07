@@ -5,14 +5,21 @@ layout: null
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <style>
+    /* Paint the theme base before external styles or fonts arrive. */
+    html { color-scheme: dark; background-color: var(--bg, #101e20); }
+    html.fonts-loading body { visibility: hidden; }
+  </style>
   <meta name="app-version" content="{{ site.github.build_revision }}">
   <link rel="preload" href="assets/fonts/wlqs-system-cn.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/wlqs-number.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/wlqs-level-up.woff2" as="font" type="font/woff2" crossorigin>
   <script>{% include update-check.js %}</script>
   <title>Rigging Buddy · 万缕千丝</title>
+  <link rel="stylesheet" href="ui/styles/theme.css?v={{ site.github.build_revision }}">
   <link rel="stylesheet" href="styles.css?v={{ site.github.build_revision }}">
-  <style>html.fonts-loading body { visibility: hidden; }</style>
+  <link rel="stylesheet" href="ui/styles/motion.css?v={{ site.github.build_revision }}">
   <script>
     // Wait for the custom fonts without changing which elements use them.
     if (document.fonts) {
@@ -37,8 +44,18 @@ layout: null
   </script>
   <script defer src="characters.js?v={{ site.github.build_revision }}"></script>
   <script defer src="vendor/pinyin-pro.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="data/professions.js?v={{ site.github.build_revision }}"></script>
   <script defer src="professions.js?v={{ site.github.build_revision }}"></script>
   <script defer src="model.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="core/persistence.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="core/actions.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/environment.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/storage-status.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/summary-rails.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/summary-interactions.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/record-interactions.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/summary.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/record.js?v={{ site.github.build_revision }}"></script>
   <script defer src="features.js?v={{ site.github.build_revision }}"></script>
   <script defer src="app.js?v={{ site.github.build_revision }}"></script>
 </head>
