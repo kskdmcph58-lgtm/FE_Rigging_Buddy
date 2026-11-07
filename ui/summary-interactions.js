@@ -7,6 +7,9 @@ function start(id) {
     : null;
   activeRecord = takeRecordDraft(id) || newRecordDraft(id);
    page = 'record'; render(); window.scrollTo(0, 0);
+  // Records already on the list may be enough without another level-up.
+  const item = state.roster.find(r => r.id === id);
+  if (seedCanStart(item)) runSeedSearch(id);
 }
 function rememberListPosition() {
   state.summaryScroll = Math.max(0, window.scrollY);

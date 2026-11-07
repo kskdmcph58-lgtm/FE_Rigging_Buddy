@@ -32,7 +32,7 @@ window.RiggingActions = (() => {
 
   function draftRule(state, draft) {
     const item = state.roster.find(i => i.id === draft.id);
-    return model.ruleAt(item, draft.editIndex === undefined ? model.nextSeq(item) : item.records[draft.editIndex].seq);
+    return model.ruleAt(item, draft.editIndex === undefined ? model.nextSeq(item) + (draft.queueIndex || 0) : item.records[draft.editIndex].seq);
   }
 
   function newRecordDraft(state, id) {
@@ -62,6 +62,9 @@ window.RiggingActions = (() => {
       const saved = { ...item.records[draft.editIndex], profession: draft.profession || null, stats: [...draft.stats], happy: draft.happy, ratingSource: draft.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
       if (ride) saved.ride = ride; else delete saved.ride;
       if (plus2.length) saved.plus2 = plus2; else delete saved.plus2;
+      // After recovery, a changed input is what 重新反推 searches back from.
+      const inputs = r => JSON.stringify([r.profession || null, r.ride || null, [...r.stats].sort(), [...(r.plus2 || [])].sort()]);
+      if (item.seed && inputs(saved) !== inputs(item.records[draft.editIndex])) { saved.corrected = true; delete saved.calculated; }
       item.records[draft.editIndex] = saved;
     } else {
       rememberRides(state, draft.id, usedRides);

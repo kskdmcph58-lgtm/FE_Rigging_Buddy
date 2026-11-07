@@ -39,6 +39,15 @@ async function deleteRecord() {
 function saveRecord(next) {
   const d = activeRecord;
   if (!d || d.happy === null) return;
+  if (d.queueIndex !== undefined) {
+    const owner = state.roster.find(r => r.id === d.id);
+    if (!window.RiggingSeed.ready() || !window.RiggingSeed.saveRow(state, owner, char(d.id), d)) return;
+    activeRecord = null;
+    clearRecordDraft();
+    seedMessages.delete(d.id);
+    returnToSummary();
+    return;
+  }
   const result = window.RiggingActions.saveRecord(state, d);
   if (!result.saved) {
     if (result.reason === 'limit') {
@@ -48,6 +57,8 @@ function saveRecord(next) {
   }
   const item = result.item, id = d.id;
   activeRecord = null;
+  seedMessages.delete(id);
+  if (seedCanStart(item)) runSeedSearch(id);
 
   if (next) {
     activeRecord = newRecordDraft(id);
@@ -63,7 +74,15 @@ function saveRecord(next) {
 function updateRecordFromButton(b) {
   if (b.dataset.stat) {
     const d = activeRecord, s = b.dataset.stat;
-    d.stats = d.stats.includes(s) ? d.stats.filter(x => x !== s) : [...d.stats, s];
+    const item = state.roster.find(r => r.id === d.id);
+    if (!d.stats.includes(s)) d.stats = [...d.stats, s];
+    else if (!d.plus2?.includes(s) && window.RiggingSeed.canPlus2(state, item, char(d.id), d, s)) d.plus2 = [...(d.plus2 || []), s];
+    else {
+      d.stats = d.stats.filter(x => x !== s);
+      if (d.plus2?.includes(s)) d.plus2 = d.plus2.filter(x => x !== s);
+      if (!d.plus2?.length) delete d.plus2;
+    }
+    if (d.queueIndex !== undefined) d.statsEdited = true;
     applyDraftRating(d);
     updateRecordControls();
   }

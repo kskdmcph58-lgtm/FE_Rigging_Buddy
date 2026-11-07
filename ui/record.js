@@ -1,16 +1,30 @@
 /* Shared upgrade renderer; no save, storage, or navigation decisions. */
 function renderRecord() {
   const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
-  const editing = d.editIndex !== undefined;
-  const next = editing ? recordDisplayLevel(item, item.records[d.editIndex]) : nextLevel(item);
+  const history = d.editIndex !== undefined, editing = history || d.queueIndex !== undefined;
+  const next = history ? recordDisplayLevel(item, item.records[d.editIndex]) : editing ? window.RiggingSeed.rowDisplayLevel(item, d.queueIndex) : nextLevel(item);
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><div class="ride-slot note-ride"></div></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></section></div>`;
-  if (editing) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
+    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c)}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><div class="ride-slot note-ride"></div></div><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div>${seedStatusMarkup(item, c)}</section></div>`;
+  if (history) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
   updateRecordControls();
 }
 // Keep portraits and focused buttons mounted during record interactions.
+function followRowPrediction(d) {
+  if (d.queueIndex === undefined || d.statsEdited || !window.RiggingSeed.ready()) return;
+  const key = JSON.stringify([d.profession, d.ride]);
+  if (d.predictedFor === undefined) { d.predictedFor = key; return; }
+  if (d.predictedFor === key) return;
+  d.predictedFor = key;
+  const item = state.roster.find(r => r.id === d.id);
+  const predicted = window.RiggingSeed.draftPrediction(state, item, char(d.id), d);
+  if (!predicted) return;
+  d.stats = predicted.stats;
+  if (predicted.plus2.length) d.plus2 = predicted.plus2; else delete d.plus2;
+  if (d.ratingSource === 'auto') applyDraftRating(d);
+}
 function updateRecordControls() {
   const d = activeRecord;
+  followRowPrediction(d);
   const profession = app.querySelector('.stat-heading .profession-field');
   if (profession) profession.outerHTML = professionMarkup(d.profession, true);
   app.querySelectorAll('.ride-slot').forEach(slot => { slot.innerHTML = recordRideMarkup(d); });
@@ -18,9 +32,9 @@ function updateRecordControls() {
     const selected = d.stats.includes(button.dataset.stat);
     button.classList.toggle('active', selected);
     button.setAttribute('aria-pressed', String(selected));
-    button.querySelector('b').textContent = selected ? '+1' : '—';
+    button.querySelector('b').textContent = d.plus2?.includes(button.dataset.stat) ? '+2' : selected ? '+1' : '—';
   });
-  app.querySelectorAll('.growth-total strong').forEach(total => { total.textContent = `+${d.stats.length}`; });
+  app.querySelectorAll('.growth-total strong').forEach(total => { total.textContent = `+${d.stats.length + (d.plus2?.length || 0)}`; });
   app.querySelectorAll('[data-rating]').forEach(button => {
     const selected = d.happy === (button.dataset.rating === 'happy');
     button.classList.toggle('chosen', selected);

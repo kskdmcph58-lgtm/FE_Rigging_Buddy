@@ -217,6 +217,7 @@ function render() {
   applyStoryPhase();
   try { sessionStorage.setItem(LOCAL_PAGE_KEY,page==='record'?'summary':page); } catch { /* Navigation memory is optional. */ }
   rememberRecordDraft();
+  if (page === 'record' || (page === 'summary' && state.roster.some(item => item.seed))) loadSeedEngine();
   hideExpectationTip();
   app.classList.toggle('summary-page', page === 'summary');
   app.classList.toggle('select-page', page === 'select');
@@ -472,6 +473,8 @@ app.addEventListener('submit', e => {
   if (!validLevel(input)) return;
   const item = state.roster.find(r => r.id === form.dataset.initialForm);
   item.initialLevel = input.value === '' ? null : Number(input.value);
+  // The forecast needs a level, so without one this person goes back to plain records.
+  if (item.initialLevel === null) delete item.seed;
   rememberListPosition(); returnToSummary();
 });
 let touchSort = null;
@@ -708,6 +711,8 @@ app.addEventListener('click', async e => {
   }
   if (b.hasAttribute('data-cancel-initial')) { rememberListPosition(); returnToSummary(); return; }
   if (b.dataset.edit && openSummaryRecord(b)) return;
+  if (b.dataset.queue && openQueueRow(b)) return;
+  if (b.dataset.reseed) { runSeedSearch(b.dataset.reseed); return; }
   if (b.dataset.toggleEdit) {
     const id = b.dataset.toggleEdit;
     editingCharacters.has(id) ? editingCharacters.delete(id) : editingCharacters.add(id);
@@ -744,7 +749,7 @@ app.addEventListener('click', async e => {
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (['reset', 'reset-list'].includes(action)) clearRecordDraft();
+  if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); visibleRoster().forEach(item => { delete item.seed; }); }
   if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));
@@ -821,6 +826,7 @@ async function importFile(file) {
   storageReady = previous.ready;
   clearDrag();
   clearRecordDraft();
+  seedMessages.clear();
   // Choosing a backup explicitly replaces this site's saved state, including a
   // corrupt save or a prior tab conflict. A write failure stays visible.
   saveLocalState(true);
@@ -949,6 +955,7 @@ function checkRecordDraft(d, data) {
   const item = data.roster.find(r => r.id === d?.id);
   if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return false;
   if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return false;
+  if (d.queueIndex !== undefined && (!Number.isInteger(d.queueIndex) || d.queueIndex < 0 || !item.seed)) return false;
   d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
   M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
   // Snapshots from before mounts existed have neither field.
@@ -975,13 +982,13 @@ function rememberRecordDraft() {
   writeRecordDraft();
 }
 function clearRecordDraft() { heldRecordDraft = null; writeRecordDraft(); }
-function takeRecordDraft(id, editIndex) {
+function takeRecordDraft(id, editIndex, queueIndex) {
   const held = heldRecordDraft;
-  if (held?.draft?.id !== id || held.draft.editIndex !== editIndex) return null;
+  if (held?.draft?.id !== id || held.draft.editIndex !== editIndex || held.draft.queueIndex !== queueIndex) return null;
   try {
     const draft = M.copy(held.draft), item = state.roster.find(r => r.id === id);
     if (!checkRecordDraft(draft, state) || item.deleted || !inStory(char(id)) || item.records[editIndex]?.deleted) return null;
-    if (editIndex === undefined) {
+    if (editIndex === undefined && queueIndex === undefined) {
       // Changes made on the list while this waited win over what it remembered.
       if (window.RiggingActions.currentProfession(state, item) !== held.base) {
         const fresh = newRecordDraft(id);
@@ -994,7 +1001,7 @@ function takeRecordDraft(id, editIndex) {
 }
 function restoreRecordPage() {
   if (activeRecord || !heldRecordDraft?.open) return;
-  const draft = takeRecordDraft(heldRecordDraft.draft?.id, heldRecordDraft.draft?.editIndex);
+  const draft = takeRecordDraft(heldRecordDraft.draft?.id, heldRecordDraft.draft?.editIndex, heldRecordDraft.draft?.queueIndex);
   if (draft) { activeRecord = draft; page = 'record'; }
 }
 // Only used for a same-tab deployment update; existing localStorage is untouched.

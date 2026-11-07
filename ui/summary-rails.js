@@ -7,7 +7,7 @@ const recordRails = new WeakMap();
 const desktopRecords = UI_MEDIA.desktopRecordRail;
 function compactRecords(item) {
   const records = M.live(item);
-  return records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;
+  return Boolean(item.seed) || records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;
 }
 function railState(rail) {
   if (!recordRails.has(rail)) recordRails.set(rail, { frame: 0, timer: 0, signature: '', initialized: false, step: 0 });
@@ -39,7 +39,8 @@ function moveRail(rail, target, duration = 120) {
 }
 function defaultRailPosition(rail) {
   const chips = [...rail.querySelectorAll('.record-chip')];
-  let processed = 0;
+  // With a forecast, the rail opens on what comes next rather than on history.
+  let processed = Math.max(0, chips.findIndex(chip => chip.matches('.queue-row')));
   while (processed < chips.length && chips[processed].matches('.upgraded,.skipped')) processed++;
   return Math.max(0, processed - 1) * (parseFloat(rail.style.getPropertyValue('--chip-width')) + 10);
 }
@@ -154,7 +155,7 @@ function refreshRecordRails() {
     const previousPosition = status.step ? rail.scrollLeft / status.step : 0;
     rail.style.setProperty('--chip-width', `${step - 10}px`);
     rail.style.setProperty('--record-columns', columns);
-    const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
+    const signature = [...rail.querySelectorAll('.record-chip')].map(chip => `${chip.dataset.queue ? 'q' : ''}${chip.dataset.index}:${chip.matches('.upgraded,.skipped')}`).join('|');
     if (status.signature !== signature) {
       status.signature = signature;
       if (!journal.classList.contains('records-expanded')) autoPositionRail(rail, first ? 0 : 120);

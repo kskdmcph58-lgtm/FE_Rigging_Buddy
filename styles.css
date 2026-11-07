@@ -496,6 +496,31 @@ input {
   margin-bottom: 0;
   opacity: .85;
 }
+/* Forecast rows: the same card, dashed until the user has confirmed or changed them. */
+.record-chip.queue-row {
+  border-style: dashed;
+}
+.record-chip.queue-row.corrected {
+  border-style: solid;
+  border-color: var(--gold);
+}
+.record-chip .queue-exam {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+.seed-status {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.seed-status[hidden] {
+  display: none;
+}
+.stat-panel .seed-status {
+  margin-top: 12px;
+}
 .empty {
   color: var(--muted);
   font-size: 14px;

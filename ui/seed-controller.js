@@ -1,0 +1,87 @@
+/* Runs seed searches and shows their state. Rules live in core/seed.js. */
+const seedMessages = new Map();
+let seedSearches = Promise.resolve();
+const seedPending = new Set();
+function seedVersion() { return document.querySelector('meta[name="app-version"]')?.content || ''; }
+function seedMessage(item, c) {
+  const text = seedMessages.get(item.id);
+  if (text) return text;
+  if (item.seed || !window.RiggingSeed.eligible(item, c)) return '';
+  const missing = window.RiggingSeed.MIN_RECORDS - M.live(item).length;
+  return missing > 0 ? `再记 ${missing} 条就能反推种子` : '';
+}
+function seedStatusMarkup(item, c) {
+  const text = seedMessage(item, c);
+  return `<p class="seed-status" data-seed-status="${c.id}" aria-live="polite" ${text ? '' : 'hidden'}>${escapeValue(text)}</p>`;
+}
+function showSeedMessage(id, text = '') {
+  if (text) seedMessages.set(id, text); else seedMessages.delete(id);
+  const item = state.roster.find(r => r.id === id);
+  const shown = item ? seedMessage(item, char(id)) : '';
+  app.querySelectorAll(`[data-seed-status="${id}"]`).forEach(node => { node.textContent = shown; node.hidden = !shown; });
+}
+// The engine waits until someone can use it, and the page redraws once rows can be calculated.
+function loadSeedEngine() {
+  if (window.RiggingSeed.ready()) return;
+  window.RiggingSeed.load(seedVersion()).then(() => { if (page === 'summary' || page === 'record') render(); }).catch(() => {});
+}
+function runSeedSearch(id) {
+  if (seedPending.has(id)) return;
+  seedPending.add(id);
+  seedSearches = seedSearches.then(() => searchSeed(id)).finally(() => seedPending.delete(id));
+}
+async function searchSeed(id) {
+  const item = state.roster.find(r => r.id === id), c = char(id);
+  if (!item || item.deleted) return;
+  const rework = Boolean(item.seed);
+  const before = rework ? '原来的种子和队列没有变。' : '';
+  showSeedMessage(id, '正在反推种子…');
+  try {
+    let result, applied = false;
+    // Records saved during a search change the chain, so that answer is out of date.
+    for (let tries = 0; tries < 3 && !applied; tries++) {
+      result = await window.RiggingSeed.search(state, item, c, { onProgress: progress => showSeedMessage(id, `正在反推种子… ${Math.floor(progress.ratio * 100)}%`) });
+      if (result.status !== 'found') break;
+      const outcome = window.RiggingSeed.applyFound(state, item, c, result);
+      applied = outcome.applied;
+      if (outcome.reason === 'limit') { showSeedMessage(id, '记录已达上限，请导出备份。'); return; }
+    }
+    if (result.status === 'found' && applied) {
+      showSeedMessage(id);
+      // That return aligns the newest card, which would skip past the rows that come next.
+      if (recordReturnPosition?.id === id) recordReturnPosition = null;
+      if (page === 'record' && activeRecord?.id === id) { activeRecord = null; clearRecordDraft(); returnToSummary(); }
+      else if (page === 'summary') { rememberListPosition(); returnToSummary(); }
+    }
+    else if (result.status === 'short') showSeedMessage(id);
+    else if (result.status === 'class') showSeedMessage(id, `第 ${result.row + 1} 条没有填兵种，填上才能反推。`);
+    else if (result.status === 'none') showSeedMessage(id, `没有找到匹配的种子，从第 ${result.row + 1} 条开始对不上。${before}`);
+    else if (result.status === 'ambiguous') showSeedMessage(id, rework ? `还有 ${result.count} 个候选种子，再修正一条通常就能确定。${before}` : `还有 ${result.count} 个候选种子，再记一条通常就能确定。`);
+    else showSeedMessage(id);
+  } catch (error) {
+    showSeedMessage(id, `反推失败：${error?.message || '未知错误'}。${before}`);
+  }
+}
+function seedCanStart(item) {
+  return !item.seed && window.RiggingSeed.eligible(item, char(item.id)) && M.live(item).length >= window.RiggingSeed.MIN_RECORDS;
+}
+function openQueueRow(b) {
+  rememberListPosition();
+  const index = Number(b.dataset.index), id = b.dataset.queue;
+  const item = state.roster.find(r => r.id === id), c = char(id);
+  if (!window.RiggingSeed.ready()) return true;
+  if (!editingCharacters.has(id)) {
+    const status = railState(b.closest('.records'));
+    status.autoUntil = performance.now() + 1000;
+    status.autoPending = true;
+    status.signature = '';
+    window.RiggingSeed.cycleRowStatus(state, item, c, index);
+    returnToSummary();
+    return true;
+  }
+  const draft = takeRecordDraft(id, undefined, index) || window.RiggingSeed.rowDraft(state, item, c, index);
+  if (!draft) return true;
+  activeRecord = draft;
+  page = 'record'; render(); window.scrollTo(0, 0);
+  return true;
+}

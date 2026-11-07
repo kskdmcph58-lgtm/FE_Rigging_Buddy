@@ -112,6 +112,23 @@ window.RiggingModel = (() => {
       }
     }
   }
+  function seedValid(seed) {
+    if (seed === undefined) return;
+    const bad = () => { throw Error('种子数据不正确'); };
+    if (!seed || typeof seed !== 'object' || !Number.isSafeInteger(seed.value) || seed.value < 0 || seed.value >= 2 ** 32) bad();
+    if (seed.rows === undefined) return;
+    if (!seed.rows || typeof seed.rows !== 'object' || Array.isArray(seed.rows)) bad();
+    for (const [index, row] of Object.entries(seed.rows)) {
+      if (!/^(0|[1-9]\d{0,4})$/.test(index) || !row || typeof row !== 'object') bad();
+      for (const key of ['skipped', 'upgraded', 'part3', 'happy']) if (row[key] !== undefined && typeof row[key] !== 'boolean') bad();
+      if (row.skipped && row.upgraded) bad();
+      if (row.stats !== undefined && (!Array.isArray(row.stats) || new Set(row.stats).size !== row.stats.length || row.stats.some(s => !stats.includes(s)))) bad();
+      if (row.plus2 !== undefined && (!Array.isArray(row.plus2) || new Set(row.plus2).size !== row.plus2.length || row.plus2.some(s => !row.stats?.includes(s)))) bad();
+      renameClass(row, 'profession');
+      if (row.profession !== undefined && row.profession !== null && !window.PROFESSIONS.names.includes(row.profession)) bad();
+      if (row.ride !== undefined && row.ride !== null) validRide(row.ride);
+    }
+  }
   // Saved data keeps the class name it was written with, so older spellings are corrected on the way in.
   const renamedClasses = Object.freeze({ '骑甲驼兵': '骑甲鸵兵' });
   function renameClass(object, key) {
@@ -136,12 +153,12 @@ window.RiggingModel = (() => {
       if (item.pendingProfession !== undefined && item.pendingProfession !== null && !window.PROFESSIONS.names.includes(item.pendingProfession)) throw Error('待记录兵种不正确');
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
-      ids.add(item.id); rangesValid(item.expectations);
+      ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed);
       if (item.deleted !== undefined && typeof item.deleted !== 'boolean') throw Error('删除标记不正确');
       let last = 0, legacyLevel = (item.initialLevel ?? 0) + 1;
       for (const r of item.records) {
         if (!r || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !stats.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
-        for (const key of ['skipped', 'upgraded', 'deleted', 'part3']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
+        for (const key of ['skipped', 'upgraded', 'deleted', 'part3', 'calculated', 'corrected']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
         if (r.skipped && r.upgraded) throw Error('记录状态冲突');
         if (r.plus2 !== undefined && (!Array.isArray(r.plus2) || new Set(r.plus2).size !== r.plus2.length || r.plus2.some(s => !r.stats.includes(s)))) throw Error('升级记录不正确');
         if (old) {
