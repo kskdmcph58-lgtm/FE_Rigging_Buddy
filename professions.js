@@ -400,7 +400,8 @@ function betterDialog(title, current, groups) {
     // How many result cards each stop keeps: a card stays while any of its classes is within the cap.
     const kept = tier => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier)).length;
     const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
-    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span></div>${slider}</section>`;
+    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter">兵种推荐范围<select aria-label="兵种推荐范围">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
+    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span></div>${slider}${mobileFilter}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
     dialog.setAttribute('aria-labelledby', 'better-title');
@@ -429,6 +430,8 @@ function betterDialog(title, current, groups) {
       if (!track) return;
       const before = relayout ? betterSnapshot(dialog) : null;
       cap = Math.max(0, Math.min(highest, value));
+      const select = dialog.querySelector('.better-mobile-filter select');
+      if (select) select.value = String(cap);
       track.style.setProperty('--at', String(highest - cap));
       track.setAttribute('aria-valuenow', String(cap));
       track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
@@ -440,6 +443,7 @@ function betterDialog(title, current, groups) {
       }
       if (relayout) { pinned = null; animateBetter(dialog, before); }
     };
+    dialog.querySelector('.better-mobile-filter select')?.addEventListener('change', e => setCap(Number(e.target.value)));
     if (track) {
     const stopAt = y => { const box = track.getBoundingClientRect(); return highest - Math.round((y - box.top) / box.height * stops.length - .5); };
     let dragging = false, pointerFocus = false;
@@ -566,6 +570,7 @@ const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)')
 /* The dialog keeps the size it opened at (with every result shown) while filtering: neither smaller nor larger.
    layoutBetter reads the height from max-height, so the filtered results are laid out within that same box. */
 function lockBetterSize(dialog) {
+  if (dialog.classList.contains('better-mobile')) return;
   /* The layout size rounded up. offsetWidth/Height round to the nearest pixel, which can cut a fraction off
      the content and bring out both scrollbars; getBoundingClientRect is no good either while the dialog is
      still scaling in. The computed size is neither. */
@@ -610,6 +615,9 @@ function layoutBetter(dialog) {
   const branches = others.querySelector('.better-branches');
   dialog.betterNodes ||= [...others.querySelectorAll('.better-node')];
   const nodes = dialog.betterNodes.filter(node => !node.hidden);
+  const mobile = !UI_MEDIA.wideRecordRow.matches;
+  dialog.classList.toggle('better-mobile', mobile);
+  if (mobile) unlockBetterSize(dialog);
   others.querySelector('.better-none')?.remove();
   if (!nodes.length) {
     branches.replaceChildren();
@@ -618,6 +626,17 @@ function layoutBetter(dialog) {
   }
   dialog.classList.remove('better-compact');
   for (const box of others.querySelectorAll('.better-ridebox.floating')) box.classList.remove('floating');
+  if (mobile) {
+    const column = document.createElement('div');
+    column.className = 'better-branch';
+    for (const node of nodes) {
+      node.querySelector('.better-card').removeAttribute('tabindex');
+      node.querySelector('.better-ridebox').style.maxHeight = '';
+      column.append(node);
+    }
+    branches.replaceChildren(column);
+    return;
+  }
   // Measure everything at its natural size in a single column.
   const single = document.createElement('div');
   single.className = 'better-branch';
@@ -721,14 +740,14 @@ function layoutBetter(dialog) {
 }
 async function openBetterChoices(anchor) {
   hideExpectationTip();
-  const item = state.roster.find(i => i.id === anchor.dataset.better);
+  const item = state.roster.find(i => i.id === (anchor.dataset.better || anchor.dataset.cardOptions));
   if (!item || !window.RiggingSeed.ready()) return;
-  const index = Number(anchor.dataset.betterIndex), c = char(item.id);
+  const index = Number(anchor.dataset.betterIndex ?? anchor.dataset.queueIndex), c = char(item.id);
   const row = window.RiggingSeed.queueRows(state, item, c, index + 1)[index];
   const choices = row ? window.RiggingSeed.betterChoices(state, item, c, row) : [];
   // The mark only shows for choices within 推荐; the dialog still lists them all, filtered to that stop at first.
   if (row && !window.RiggingSeed.recommendedChoices(state, item, c, row).length) choices.length = 0;
-  const field = () => app.querySelector(`[data-better="${item.id}"][data-better-index="${index}"]`) || app.querySelector(`[data-profession][data-character="${item.id}"][data-queue-index="${index}"]`);
+  const field = () => app.querySelector(`[data-better="${item.id}"][data-better-index="${index}"]`) || app.querySelector(`[data-character="${item.id}"][data-queue-index="${index}"]`);
   const refocus = () => field()?.focus({ preventScroll: true });
   if (!choices.length) { refocus(); return; }
   const groups = betterGroups(choices), current = { id: item.id, part3: row.part3 === true, cap: window.RiggingSeed.recommendCap(state, row.part3 === true), profession: row.profession, ride: row.ride, stats: row.stats, plus2: row.plus2, happy: row.happy === true };

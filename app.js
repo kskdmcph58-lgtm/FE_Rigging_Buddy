@@ -791,6 +791,10 @@ window.addEventListener('pointerdown', e => {
   } else dismissSeedMessage(bubble.dataset.seedStatus);
 }, true);
 app.addEventListener('click', async e => {
+  const cardOptions = e.target.closest('[data-card-options]');
+  if (cardOptions) { e.preventDefault(); e.stopPropagation(); openCardOptions(cardOptions); return; }
+  const moreForecast = e.target.closest('[data-more-forecast]');
+  if (moreForecast) { showMoreForecast(moreForecast.dataset.moreForecast); return; }
   // With a better choice marked, clicking anywhere on the class name opens the choices; changing the class
   // is the class row in its hover tip. The keyboard keeps both: Enter on the field changes the class,
   // Enter on the mark opens the choices.
