@@ -97,8 +97,11 @@ window.RiggingModel = (() => {
       validRule(range.rule); last = range.from;
     }
   }
+  /* 布克发拉斯的孩子 and 罗西南的兄弟 grow exactly like the originals and are no longer listed; older saves become the original. */
+  const mergedRides = { 'RID_ブーケパラスの仔': 'RID_ブーケパラス', 'RID_ロシナンの仔': 'RID_ロシナン' };
   function validRide(ride, kind) {
     const rides = window.RIDES.byId;
+    if (ride && typeof ride === 'object' && Object.hasOwn(mergedRides, ride.id)) ride.id = mergedRides[ride.id];
     if (!ride || typeof ride !== 'object' || typeof ride.id !== 'string' || !Object.hasOwn(rides, ride.id) || (kind && rides[ride.id].kind !== kind) || !Number.isInteger(ride.level) || ride.level < 1 || ride.level > 5) throw Error('配属不正确');
     return true;
   }

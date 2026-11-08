@@ -50,11 +50,11 @@ window.PROFESSIONS = (() => {
 window.RIDES = (() => {
   const list = [
     ['RID_馬', '野生马', 'horse'], ['RID_汗血馬', '汗血马', 'horse'], ['RID_黒馬', '黑马', 'horse'],
-    ['RID_ユニコーン', '莫诺凯洛斯', 'horse'], ['RID_ロシナン', '罗西南', 'horse'], ['RID_ロシナンの仔', '罗西南的兄弟', 'horse'],
+    ['RID_ユニコーン', '莫诺凯洛斯', 'horse'], ['RID_ロシナン', '罗西南', 'horse'],
     ['RID_オルニウス', '野生欧鲁尼乌斯', 'ornius'], ['RID_白羽のオルニウス', '白羽欧鲁尼乌斯', 'ornius'], ['RID_メガニウス', '美加尼乌斯', 'ornius'],
     ['RID_赤羽のメガニウス', '红羽美加尼乌斯', 'ornius'], ['RID_マジニウス', '玛吉尼乌斯', 'ornius'], ['RID_黒羽のマジニウス', '黑羽玛吉尼乌斯', 'ornius'],
     ['RID_ペガサス', '野生飞马', 'pegasus'], ['RID_ダークペガサス', '暗飞马', 'pegasus'], ['RID_ファルコン', '圣飞马', 'pegasus'],
-    ['RID_レッドファルコン', '红圣飞马', 'pegasus'], ['RID_ブーケパラス', '布克发拉斯', 'pegasus'], ['RID_ブーケパラスの仔', '布克发拉斯的孩子', 'pegasus'],
+    ['RID_レッドファルコン', '红圣飞马', 'pegasus'], ['RID_ブーケパラス', '布克发拉斯', 'pegasus'],
     ['RID_バウ', '野生巴乌', 'bau'], ['RID_レッドバウ', '红巴乌', 'bau'], ['RID_ブラックバウ', '黑巴乌', 'bau'],
     ['RID_ダグザンゾウ', '萨拉弥斯战象', 'elephant']
   ].map(([id, name, kind]) => ({ id, name, kind }));

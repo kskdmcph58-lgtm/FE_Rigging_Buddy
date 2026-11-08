@@ -3076,6 +3076,10 @@ body.marquee-selecting,body.marquee-selecting * {
   font-size: 12px;
   line-height: 1.5;
 }
+/* Written-out expectation: mobile record page only (ui/styles/mobile/record.css). */
+.record-rule-preview { display: none; }
+/* Groups the rating and save rows; only the phone layout docks it (mobile/record.css). */
+.record-dock { display: contents; }
 .rating-rule-note .expectation-link {
   margin: 0;
   padding: 0;

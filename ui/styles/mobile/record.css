@@ -5,10 +5,20 @@
    hint, the expectation link and the rating in the thumb zone, with the save bar pinned inside the
    bottom safe area. Short landscape screens use two columns so nothing scrolls under the bar. */
 @media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  /* One screen, locked: the page never scrolls; the expectation text gives up space first. */
+  /* The document is locked too, as for step 3 (html.m-fit): the global body min-height is 100vh, which on iOS
+     is the toolbar-hidden height, so without this Safari still scrolls and rubber-bands the window. */
+  html:has(main#app.record-page), body:has(main#app.record-page) { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body:has(main#app.record-page) { min-height: 0; }
+  /* The root background ends in the panel's colour here, not the darker page base: Safari paints the strip under
+     its toolbar (and any area it has not reported yet) from the root, so it reads as the panel. */
+  html:has(main#app.record-page) { background-color: #18292b; background-image: linear-gradient(180deg, #172a2b 0, #152628 25%, #18292b 50%); }
   main#app.record-page {
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     padding-top: var(--m-safe-top);
     padding-bottom: 0;
   }
@@ -45,9 +55,10 @@
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 2 2 10l8 8'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
   }
   #app.record-page>.back:active { background: transparent; opacity: .45; }
-  #app.record-page .record-layout { flex: 1; display: flex; flex-direction: column; width: auto; max-width: none; margin: 0; }
+  #app.record-page .record-layout { flex: 1; min-height: 0; display: flex; flex-direction: column; width: auto; max-width: none; margin: 0; }
   #app.record-page .stat-panel {
     flex: 1;
+    min-height: 0;
     width: auto;
     max-width: none;
     align-self: stretch;
@@ -59,17 +70,32 @@
     border-radius: 16px 16px 0 0;
   }
 
-  /* ---------- Header: who and which level on one row, class and mount on the next ---------- */
+  /* ---------- Header: portrait on the left through both rows; who and which level on the first row,
+     class and mount on the second ---------- */
   #app.record-page .stat-heading {
+    --record-portrait: 60px;
     display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: var(--record-portrait) auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 12px 8px;
     padding: 0 0 12px;
   }
-  #app.record-page .stat-heading>.record-character { grid-column: 1 / 4; grid-row: 1; display: flex; gap: 12px; min-width: 0; }
-  /* Original face crop in a square frame, no circular mask. */
-  #app.record-page .record-character img { width: 44px; height: 44px; border-radius: 0; }
+  #app.record-page .stat-heading>.record-character { display: contents; }
+  #app.record-page .stat-heading>.record-character>div { grid-column: 2 / 4; grid-row: 1; min-width: 0; }
+  /* Original face crop, no circular mask, as tall as both rows; the sides of the square crop are trimmed. */
+  #app.record-page .record-character img {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    align-self: stretch;
+    width: var(--record-portrait);
+    height: 100%;
+    margin-right: 2px;
+    object-fit: cover;
+    border-radius: 0;
+    background: transparent;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  }
   #app.record-page .stat-heading .record-character h2 { margin: 0; font-size: 18px; line-height: 1.3; }
   #app.record-page .record-level { margin: 2px 0 0; font-size: 13px; }
   #app.record-page .stat-heading>.record-target-level {
@@ -100,19 +126,23 @@
     font: 15px/1 var(--font-ui);
     white-space: nowrap;
   }
-  #app.record-page .stat-heading>.profession-field.can-edit { grid-column: 1; grid-row: 2; justify-self: start; order: 0; }
+  #app.record-page .stat-heading>.profession-field.can-edit { grid-column: 2; grid-row: 2; justify-self: start; order: 0; }
   #app.record-page .stat-heading>.profession-field.can-edit::before { content: ''; position: absolute; inset: -4px 0; }
   #app.record-page .stat-heading>.profession-field.can-edit:active,
   #app.record-page .stat-heading>.heading-ride .ride-field:active { background: var(--m-fill-strong); }
-  #app.record-page .stat-heading>.profession-field img { display: block; order: 0; width: 24px; height: 24px; margin-left: -4px; border-radius: 0; }
+  /* Class sprites carry a transparent margin (about 50px drawn in 64), mount icons fill their frame:
+     the class is drawn larger so both read as the same size. */
+  #app.record-page .stat-heading>.profession-field img { display: block; order: 0; width: 31px; height: 31px; margin: 0 -2px 0 -7px; border-radius: 0; }
   #app.record-page .stat-heading>.profession-field .game-text { font-size: 16px; line-height: 1; }
   #app.record-page .stat-heading>.profession-field .profession-placeholder { color: var(--muted); }
-  #app.record-page .stat-heading>.heading-ride { grid-column: 2 / 4; grid-row: 2; justify-self: start; min-width: 0; max-width: 100%; order: 0; }
+  #app.record-page .stat-heading>.heading-ride { grid-column: 3 / -1; grid-row: 2; justify-self: start; min-width: 0; max-width: 100%; order: 0; }
   #app.record-page .stat-heading>.heading-ride:not(:empty) { display: block; }
   #app.record-page .stat-heading>.heading-ride .ride-field { padding: 0 10px 0 6px; }
   #app.record-page .stat-heading>.heading-ride .ride-field::after { content: ''; position: absolute; inset: -4px 0; }
-  #app.record-page .heading-ride .ride-icon,
-  #app.record-page .heading-ride .ride-level { width: 24px; height: 24px; }
+  #app.record-page .heading-ride .ride-icon { width: 26px; height: 26px; margin-right: 5px; }
+  /* Friendship heart as a corner badge on the mount icon's bottom-right corner, hanging a little past it
+     (icon: 6px from the left, centred in the 34px inner height, ends at 32 x 30). */
+  #app.record-page .heading-ride .ride-level { position: absolute; left: 21px; top: 18px; width: 16px; height: 16px; }
   #app.record-page .heading-ride .game-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 16px; line-height: 1.2; }
   #app.record-page .heading-ride .ride-none { font: 15px/1.2 var(--font-ui); color: var(--muted); }
   /* The mount lives in the header on mobile; the copy beside the expectation link stays unused. */
@@ -124,24 +154,73 @@
 
   /* ---------- Hint, expectation, rating, save: the thumb zone ---------- */
   #app.record-page .stat-panel>.seed-status { order: 1; margin: 16px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--m-fill); color: var(--muted); font-size: 13px; line-height: 1.5; }
-  #app.record-page .stat-panel>:is(.rating-rule-note, .ratings, .record-actions) { order: 2; }
+  #app.record-page .stat-panel>.rating-rule-note, #app.record-page .record-dock>:is(.ratings, .record-actions) { order: 2; }
   #app.record-page .rating-rule-note { display: flex; justify-content: flex-start; margin: auto 0 0; padding-top: 16px; font-size: 13px; }
   #app.record-page .rating-rule-note .expectation-link { min-height: 20px; font-size: 13px; line-height: 20px; }
+  /* The expectation written out (fillRecordRulePreview): it takes the free space above the rating and
+     keeps at least room for the caption and one condition; what does not fit ends in "等 N 项条件". */
+  /* Basis 0: the free space sets its height, never the length of the rule. */
+  #app.record-page .rating-rule-note:has(>.record-rule-preview) { flex: 1 1 0; flex-direction: column; align-items: stretch; min-height: 0; overflow: hidden; }
+  #app.record-page .rating-rule-note>.expectation-link { display: none; }
+  #app.record-page .record-rule-preview {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: 400 13px/20px var(--font-ui);
+    text-align: left;
+    box-shadow: none;
+  }
+  #app.record-page .record-rule-caption { flex: none; color: var(--gold); }
+  #app.record-page .record-rule-lines {
+    flex: 0 1 auto;
+    display: block;
+    min-height: 0;
+    overflow: hidden;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: var(--m-fill);
+    font-size: 15px;
+    line-height: 22px;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+  #app.record-page .record-rule-more { margin-left: 6px; color: var(--muted); font-size: 13px; white-space: nowrap; }
+  #app.record-page .record-rule-preview:active { background: transparent; opacity: .6; }
+  /* Rating and save, docked to the bottom edge: fixed, so the browser carries them with its toolbar as it slides.
+     The panel ends in a spacer of the dock's height (--m-dock-height, ui/record.js) so nothing sits under it. */
+  #app.record-page .record-dock {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 calc(var(--m-gutter) + var(--m-safe-right)) 0 calc(var(--m-gutter) + var(--m-safe-left));
+  }
+  #app.record-page .stat-panel::after { content: ''; flex: none; order: 3; height: var(--m-dock-height, 160px); }
   #app.record-page .ratings { gap: 12px; margin: 12px 0 16px; }
   #app.record-page .ratings button { min-height: 48px; padding: 8px; border-radius: 10px; font-size: 16px; }
   #app.record-page .record-actions {
-    position: sticky;
-    bottom: 0;
-    z-index: 3;
+    position: static;
     display: flex;
     flex-flow: row nowrap;
     gap: 12px;
     margin: 0 calc(-1 * var(--m-gutter) - var(--m-safe-right)) 0 calc(-1 * var(--m-gutter) - var(--m-safe-left));
     padding: 12px calc(var(--m-gutter) + var(--m-safe-right)) calc(12px + var(--m-safe-bottom)) calc(var(--m-gutter) + var(--m-safe-left));
-    border-top: .5px solid var(--m-hairline);
-    background: var(--m-chrome);
-    -webkit-backdrop-filter: saturate(1.6) blur(20px);
-    backdrop-filter: saturate(1.6) blur(20px);
+    /* Same surface as the panel above: no bar colour of its own. */
+    border-top: 0;
+    background: transparent;
   }
   #app.record-page .record-actions>button { flex: 1 1 0; width: auto; min-width: 0; min-height: 50px; margin: 0; padding: 0 12px; border-radius: var(--m-radius); font-size: 16px; }
   /* Editing a saved or forecast row: the save is the only commit, so it takes the primary look;
@@ -160,6 +239,8 @@
   #app.record-page .rating-rule-note { margin-top: 0; padding-top: 20px; }
   #app.record-page .ratings { margin-bottom: 24px; }
   #app.record-page .record-actions { margin-top: auto; }
+  #app.record-page .record-dock { display: contents; }
+  #app.record-page .stat-panel::after { content: none; }
 }
 
 /* Short landscape screens: stats on the left; header, rating and save on the right, all on one screen. */
@@ -175,8 +256,10 @@
     padding-top: 12px;
     padding-bottom: calc(12px + var(--m-safe-bottom));
   }
-  #app.record-page .stat-heading { grid-column: 2; grid-row: 1; gap: 8px; padding: 0 0 12px; border-bottom-width: 1px; }
-  #app.record-page .record-character img { width: 36px; height: 36px; }
+  #app.record-page .stat-heading { --record-portrait: 36px; grid-column: 2; grid-row: 1; gap: 8px; padding: 0 0 12px; border-bottom-width: 1px; }
+  /* The side column is narrow: the portrait stays on the name row and the class and mount get the full width. */
+  #app.record-page .record-character img { grid-row: 1; align-self: center; height: var(--record-portrait); }
+  #app.record-page .stat-heading>.profession-field.can-edit { grid-column: 1 / 3; }
   #app.record-page .stat-heading .record-character h2 { font-size: 16px; }
   #app.record-page .record-level { font-size: 12px; }
   #app.record-page .stat-heading>.record-target-level { font-size: 26px; }
@@ -192,7 +275,13 @@
   #app.record-page .stat { min-height: 40px; height: 100%; padding: 4px 8px; font-size: 15px; line-height: 22px; }
   #app.record-page .stat-panel>.seed-status { grid-column: 2; grid-row: 2; margin: 8px 0 0; padding: 4px 8px; font-size: 12px; }
   #app.record-page .rating-rule-note { grid-column: 2; grid-row: 3; margin: 0; padding-top: 8px; }
+  /* No spare height here: the link alone, as before. */
+  #app.record-page .rating-rule-note:has(>.record-rule-preview) { min-height: 0; }
+  #app.record-page .rating-rule-note>.expectation-link { display: inline-flex; }
+  #app.record-page .record-rule-preview { display: none; }
   #app.record-page .ratings { grid-column: 2; grid-row: 4; align-self: end; margin: 8px 0 0; gap: 8px; }
+  #app.record-page .record-dock { display: contents; }
+  #app.record-page .stat-panel::after { content: none; }
   #app.record-page .ratings button { min-height: 44px; padding: 4px 8px; font-size: 15px; gap: 6px; }
   #app.record-page .ratings .rating-icon { width: 22px; height: 22px; }
   #app.record-page .record-actions {
@@ -217,8 +306,7 @@
 @media (max-height:700px) and (orientation:portrait) and ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) {
   #app.record-page>.back { margin-bottom: 0; }
   #app.record-page .stat-panel { padding-top: 12px; }
-  #app.record-page .stat-heading { gap: 8px; }
-  #app.record-page .record-character img { width: 36px; height: 36px; }
+  #app.record-page .stat-heading { --record-portrait: 56px; gap: 8px; }
   #app.record-page .stat-heading .record-character h2 { font-size: 16px; }
   #app.record-page .record-level { font-size: 12px; }
   #app.record-page .stat-heading>.record-target-level { font-size: 26px; }
@@ -231,4 +319,13 @@
   #app.record-page .ratings button { min-height: 44px; }
   #app.record-page .record-actions { padding-top: 8px; padding-bottom: calc(8px + var(--m-safe-bottom)); }
   #app.record-page .record-actions>button { min-height: 48px; }
+}
+
+
+/* Phones narrower than 390px (SE, mini): a slightly narrower portrait and tighter class and mount buttons,
+   so the longest class next to the longest mount still fits beside the portrait. */
+@media (max-width:389px) and (orientation:portrait) {
+  #app.record-page .stat-heading { --record-portrait: 54px; column-gap: 6px; }
+  #app.record-page .stat-heading>.profession-field.can-edit { padding: 0 10px; }
+  #app.record-page .stat-heading>.heading-ride .ride-field { padding: 0 8px 0 5px; }
 }
