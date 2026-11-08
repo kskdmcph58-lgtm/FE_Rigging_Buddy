@@ -608,7 +608,9 @@ function betterDialog(title, current, groups) {
       setCap(kept);
     } else { lockBetterSize(dialog); layoutBetter(dialog); }
     window.addEventListener('resize', relayout);
-    dialog.querySelector('button.better-option')?.focus({ preventScroll: true });
+    /* Touch: nothing starts chosen, so focus the dialog itself (focusing an option would light it). */
+    if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }
+    else dialog.querySelector('button.better-option')?.focus({ preventScroll: true });
   });
 }
 /* Lays the results out in columns, read top to bottom then left to right, so the best result is top left.
