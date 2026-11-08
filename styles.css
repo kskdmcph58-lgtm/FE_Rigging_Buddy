@@ -104,7 +104,7 @@ header {
 }
 /* Part 3 segmented control: equal segments in the same outline and height as the
    buttons beside it, with a raised block marking the chosen side. */
-.part3-segment {
+:is(.part3-segment,.route-segment) {
   -webkit-tap-highlight-color: transparent;
   position: relative;
   display: grid;
@@ -117,7 +117,7 @@ header {
   border-radius: 8px;
   font-size: 13px;
 }
-.part3-segment::before {
+:is(.part3-segment,.route-segment)::before {
   content: "";
   position: absolute;
   top: 0;
@@ -127,10 +127,11 @@ header {
   border-radius: 7px;
   background: var(--surface-floating);
 }
-.part3-segment:has(#part3-on:checked)::before {
+.part3-segment:has(#part3-on:checked)::before,
+.route-segment:has([value="other"]:checked)::before {
   transform: translateX(100%);
 }
-.part3-segment label {
+:is(.part3-segment,.route-segment) label {
   position: relative;
   display: flex;
   align-items: center;
@@ -140,15 +141,15 @@ header {
   color: var(--muted);
   cursor: pointer;
 }
-.part3-segment label:has(input:checked) {
+:is(.part3-segment,.route-segment) label:has(input:checked) {
   color: var(--text);
 }
-.part3-segment label:has(input:disabled),
-.part3-segment input:disabled {
+:is(.part3-segment,.route-segment) label:has(input:disabled),
+:is(.part3-segment,.route-segment) input:disabled {
   opacity: .5;
   cursor: default;
 }
-.part3-segment input {
+:is(.part3-segment,.route-segment) input {
   -webkit-appearance: none;
   appearance: none;
   position: absolute;
@@ -162,27 +163,27 @@ header {
   opacity: 0;
   cursor: pointer;
 }
-.part3-segment input:focus-visible {
+:is(.part3-segment,.route-segment) input:focus-visible {
   outline: none;
 }
-html[data-input-mode="keyboard"] .part3-segment:has(input:focus-visible) {
+html[data-input-mode="keyboard"] :is(.part3-segment,.route-segment):has(input:focus-visible) {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
 @media (hover:hover) and (pointer:fine) {
-  .part3-segment:hover {
+  :is(.part3-segment,.route-segment):hover {
     border-color: var(--gold);
   }
-  .part3-segment label:has(input:not(:disabled)):hover {
+  :is(.part3-segment,.route-segment) label:has(input:not(:disabled)):hover {
     color: var(--text);
   }
 }
 @media(max-width:600px) {
-  .part3-segment {
+  :is(.part3-segment,.route-segment) {
     font-size: 12px;
   }
   /* 44px tap height, as the buttons on these rows have. */
-  .part3-segment input {
+  :is(.part3-segment,.route-segment) input {
     inset: -6px 0;
     height: calc(100% + 12px);
   }
@@ -1057,19 +1058,71 @@ button.danger {
   width: fit-content;
 }
 .initial-level-form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-flex;
   flex-wrap: wrap;
-}
-.initial-level-form input {
-  width: 70px;
-  padding: 7px;
-}
-.journal-head .initial-level-form button {
+  max-width: 100%;
+  align-items: center;
   margin: 0;
-  padding: 7px 10px;
+}
+.initial-level-form label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  cursor: text;
+}
+/* Inline field sized to the text line so the card does not move while editing. */
+.level-field {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-input);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / .25);
+  transition: border-color .15s, box-shadow .15s;
+}
+.level-field:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgb(216 195 148 / .22);
+}
+.initial-level-form:has([aria-invalid="true"]) .level-field {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgb(239 163 156 / .2);
+}
+.journal-head .level-field input {
+  width: 2.4em;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.level-field input::placeholder {
+  color: var(--muted);
+  opacity: .7;
+}
+/* Undo the generic .journal-head p span spacing inside the editor. */
+.initial-level-form :is(.initial-level-caption,.level-field,.level-error) {
+  margin: 0;
+}
+.initial-level-form .level-error {
+  flex-basis: 100%;
+  max-width: 100%;
+  margin-top: 3px;
   font-size: 12px;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: left;
 }
 .record-chip {
   position: relative;
@@ -1975,6 +2028,7 @@ button.primary.touch-pressed:not(:disabled) {
   .summary-page:not(.multi-select-mode) .summary-top .selection-toolbar>.selection-count { display:none; }
   .summary-page.multi-select-mode .summary-top>.summary-controls .selection-toolbar-anchor { flex:0 0 100%; width:100%; }
   .summary-page.multi-select-mode .summary-top>.part3-segment,
+  .summary-page.multi-select-mode .summary-top>.route-segment,
   .summary-page.multi-select-mode .summary-top>.metrics,
   .summary-page.multi-select-mode .summary-actions { display:none; }
   .summary-actions {
@@ -2057,21 +2111,9 @@ button.primary.touch-pressed:not(:disabled) {
   .initial-level:not(:has(input))::after {
     margin-left: 4px;
   }
-  .initial-level-form input {
-    width: 58px;
-  }
-  .initial-level-form button {
-    min-height: var(--control-height);
-  }
-  .journal:has(.initial-level-form) .journal-head {
-    grid-column: 1/-1;
-    padding-right: 0;
-  }
-  .journal:has(.initial-level-form) .journal-actions {
-    grid-row: 2;
-    grid-column: 1/-1;
-    flex-direction: row;
-    justify-content: flex-end;
+  /* Taller field for touch; it stays on the text line. */
+  .level-field {
+    height: 30px;
   }
 }
 @media(prefers-reduced-motion:reduce) {
@@ -2093,10 +2135,12 @@ button.primary.touch-pressed:not(:disabled) {
   text-align: center;
   white-space: nowrap;
 }
+/* Chinese glyphs keep about 1px of side bearing inside their box and the Latin H almost none, so HP is
+   nudged right by that much to sit as far from the dot as the names on the other side. */
 .record-chip .stat-name-hp {
-  font-family: Arial,"Segoe UI",sans-serif;
-  font-weight: 600;
-  letter-spacing: .06em;
+  padding-left: .15em;
+  box-sizing: border-box;
+  text-align: left;
 }
 .record-chip .stat-separator {
   display: inline-flex;
@@ -2612,7 +2656,8 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     right: 12px;
     bottom: 12px;
     display: grid;
-    justify-items: end;
+    /* Label and anchor share one centre line; the box stays flush with the card's right edge. */
+    justify-items: center;
     gap: 2px;
     font: 12px/16px var(--font-game);
   }
@@ -2639,9 +2684,6 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
       min-height: 61.6px;
       padding-top: 4px;
     }
-  }
-  .summary-page .journal:has(.initial-level-form) {
-    grid-template-columns: 176px minmax(0,1fr) 90px;
   }
 }
 html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[data-sort-id]):focus-visible {
@@ -2909,7 +2951,8 @@ body.marquee-selecting,body.marquee-selecting * {
   display: flex;
   flex-direction: column;
 }
-.expectation-dialog header {
+/* Complex dialogs share this frame: a raised header and footer, ruled off from the body. */
+:is(.expectation-dialog,.better-dialog) header {
   height: auto;
   flex: none;
   padding: 20px 24px;
@@ -2921,13 +2964,14 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--muted);
   font-size: 12px;
 }
-.expectation-dialog footer {
+:is(.expectation-dialog,.better-dialog) footer {
   flex: none;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   gap: 12px;
   width: 100%;
+  max-width: none;
   padding: 16px 24px;
   margin: 0;
   background: var(--surface-raised);
@@ -3173,6 +3217,32 @@ button.class-tip-row {
   width: auto;
   height: 26px;
 }
+.class-tip .class-tip-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  margin-top: 2px;
+  padding: 0 12px;
+  border: 1px solid var(--gold);
+  border-radius: var(--control-radius);
+  background: transparent;
+  color: var(--gold);
+  font: 13px/1 var(--font-game);
+  white-space: nowrap;
+}
+.class-tip-more svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+@media(hover:hover) and (pointer:fine) {
+  .class-tip .class-tip-more:hover:not(:disabled) {
+    background: #d8c3941a;
+    color: var(--gold);
+  }
+}
 @media(max-width:600px) {
   .selection-toolbar {
     gap: 8px;
@@ -3240,7 +3310,7 @@ button.class-tip-row {
     max-height: 90vh;
     max-height: 90dvh;
   }
-  .expectation-dialog header,.expectation-dialog footer {
+  :is(.expectation-dialog,.better-dialog) :is(header,footer) {
     padding: 14px 16px;
   }
   .expectation-body {
@@ -3572,6 +3642,16 @@ main.levels-page { padding-left:60px; padding-right:24px; }
 }
 .setup-level-dialog-body p { color:var(--muted); font:13px/1.6 var(--font-ui); margin:10px 0 0; }
 .setup-level-dialog .level-error { display:block; margin-top:8px; color:var(--red); }
+.missing-level-dialog .setup-level-dialog-body { display:grid; gap:10px; max-height:min(60vh,480px); overflow-y:auto; }
+.missing-level-dialog .setup-level-dialog-body>p { margin:0 0 4px; }
+.missing-level-row { display:grid; grid-template-columns:minmax(0,1fr) 96px; align-items:start; gap:12px; }
+.missing-level-row label { display:flex; align-items:center; gap:10px; min-width:0; min-height:42px; margin:0; font-size:15px; }
+.missing-level-row label img { width:36px; height:36px; flex:none; border-radius:6px; object-fit:cover; }
+.missing-level-row label span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.missing-level-row input { width:100%; height:42px; padding:8px 12px; border:1px solid var(--control-line); border-radius:8px; background:var(--surface-input); color:var(--text); font:18px/24px var(--font-ui); text-align:center; }
+.missing-level-field { display:grid; justify-items:end; }
+/* The message is wider than the box: it grows leftwards under the name, never past the dialog edge. */
+.missing-level-row .level-error { width:max-content; font-size:12px; white-space:nowrap; }
 .setup-level-dialog footer {
   display:flex; flex-direction:row; justify-content:flex-end; gap:12px; padding:16px 24px;
   border-top:1px solid var(--line); background:var(--surface-raised);
@@ -4092,7 +4172,104 @@ html[data-input-mode="touch"] button.expectation-link {
 .record-chip>div>.profession-field>span { display:block; font-size:inherit; overflow:hidden; text-overflow:ellipsis; }
 .record-chip>div>.profession-field img { width:20px; height:20px; }
 .record-chip>div>.profession-field.can-edit { position:relative; z-index:4; }
-.record-chip>div>.rating-toggle { position:relative; z-index:4; cursor:pointer; border-radius:4px; }
+/* top:1px: this font's ink sits higher than the level and class text beside it. */
+.record-chip>div>.rating-toggle { position:relative; top:1px; z-index:4; cursor:pointer; border-radius:4px; }
+/* A forecast with a better class or ride: the class turns gold and carries a drawn mark that opens the choices. */
+.record-chip>div>.profession-field.better,.record-chip>div>.profession-field.better:hover { color:var(--gold); }
+/* The mark sits 3px from the name. An empty spacer as wide as mark and margin (17px) balances it on the
+   left, so the centred name stays where it is with or without the mark. When a long name has no room the
+   spacer gives way first, moving the name left, before the name itself is cut short.
+   top:1px lines its ink up with the level and class text. */
+/* The 4px side padding goes too, so a six-character name with its mark fits a full-width card. */
+.record-chip>div>.profession-field.better { gap:0; padding-inline:0; }
+.record-chip>div>.profession-field.better::before { content:''; flex:0 1000 17px; min-width:0; }
+.better-mark { position:relative; top:1px; display:inline-flex; align-self:center; align-items:center; flex:none; margin:0 0 0 3px; border-radius:50%; color:var(--gold); cursor:pointer; }
+.better-mark::before { content:''; position:absolute; inset:-6px; }
+/* The size of the rating face on the same card. */
+.better-mark svg { display:block; width:14px; height:14px; }
+.better-mark:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+/* Grouped by space and fill, not lines: no rules between header, body and footer, no connectors. */
+.better-dialog { width:fit-content; max-width:calc(100% - 32px); max-height:min(820px,calc(100dvh - 48px)); }
+.better-dialog[open] { display:flex; flex-direction:column; }
+/* Title as in the other dialogs: the shared 18px heading; the header frame gives the padding. */
+.better-map { display:flex; align-items:flex-start; gap:32px; min-height:0; overflow:auto; padding:20px 24px; }
+.better-side-current { position:sticky; top:0; flex:none; display:grid; gap:8px; }
+.better-side-others { flex:none; display:grid; gap:8px; }
+.better-caption { margin:0; color:var(--muted); font:13px/18px var(--font-game); letter-spacing:.04em; }
+/* The current row reads apart from the choices: a gold caption and a faint gold tint and edge on its boxes.
+   Choices only turn fully gold while pointed at or picked, so the two never look alike. */
+.better-side-current .better-caption { color:var(--gold); font-weight:600; }
+.better-root .better-card, .better-root .better-ridebox { border-color:#d8c39466; background:#d8c39412; }
+.better-branches { display:flex; align-items:flex-start; gap:12px; }
+.better-branch { display:grid; align-content:start; gap:12px; }
+/* A result: the stats card (gain at its top right), and beside it a box with each class that gives it and
+   that class's rides. Both sit on the darker input surface so the text reads clearly against the dialog. */
+.better-node { display:flex; align-items:flex-start; gap:6px; }
+.better-card, .better-ridebox { box-sizing:border-box; display:grid; align-content:start; gap:6px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--surface-input); transition:border-color .12s, background-color .12s; }
+.better-card { width:156px; }
+.better-card[data-choice] { cursor:pointer; }
+/* The gain fills the empty cell beside HP (the right column starts on the second row), so the stat
+   board begins at the top of the card with no blank row above it. */
+.better-card { position:relative; }
+.better-card .better-gain { position:absolute; top:7px; right:10px; font:400 20px/20px var(--font-number); color:var(--text); }
+/* Each class box is as wide as its own content. */
+.better-ridebox { gap:12px; overflow:hidden auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--control-line) transparent; }
+.better-ridebox.scrolls { scrollbar-gutter:stable; }
+/* Compact layout: only the stat cards are laid out; a card's class box floats beside it when needed. */
+.better-compact .better-side-others .better-ridebox { display:none; }
+.better-compact .better-side-others .better-ridebox.floating { display:grid; position:absolute; z-index:5; width:max-content; border-color:var(--gold); background:var(--surface-input); box-shadow:0 12px 32px #0009; }
+.better-compact .better-side-others .better-card { cursor:pointer; }
+.better-compact .better-side-others .better-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.better-entry { display:grid; gap:6px; }
+.better-dialog :is(button.better-class-pick, button.better-ride-name, button.better-heart) { width:auto; min-height:0; padding:0; border:0; border-radius:4px; background:transparent; color:inherit; font:inherit; text-align:left; }
+.better-dialog button.better-class-pick { justify-self:start; }
+.better-dialog button.better-ride-name { display:flex; align-items:center; gap:6px; }
+.better-dialog button.better-heart { display:inline-flex; margin-left:-3px; padding:1px; border-radius:50%; transition:filter .12s; }
+.better-dialog button.better-heart:first-child { margin-left:0; }
+.better-pick { display:none; margin-left:26px; color:var(--gold); font:12px/16px var(--font-game); }
+/* A class picked but not its ride yet: it stays lit, the prompt shows and every ride and heart reads as clickable. */
+.better-entry.selected .better-pick { display:block; }
+.better-card.selected, .better-ridebox.selected { border-color:var(--gold); }
+.better-entry.selected .better-rides { border-left-color:var(--gold); }
+.better-entry.selected .better-class, .better-entry.selected .better-class .game-text { color:var(--gold); }
+.better-entry.selected .better-ride { color:var(--text); }
+.better-ridebox:has(.better-entry.selected) .better-entry:not(.selected) { opacity:.45; }
+/* The hearts overlap, so they light up instead of being ringed: a picked class brightens its hearts, the
+   ride to pick from (and the heart under the pointer) glows. */
+.better-entry.selected .better-heart { filter:brightness(1.15) drop-shadow(0 0 2px #d8c39466); }
+.better-ride.selected .better-heart { filter:brightness(1.35) drop-shadow(0 0 3px #d8c394b3); }
+@media(hover:hover) and (pointer:fine) {
+  .better-dialog button.better-ride-name:hover:not(:disabled) { background:transparent; color:var(--gold); }
+  .better-dialog button.better-heart:hover:not(:disabled) { background:transparent; filter:brightness(1.5) drop-shadow(0 0 3px var(--gold)); }
+}
+.better-dialog :is(button.better-class-pick, button.better-ride-name, button.better-heart):focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+.better-class { display:flex; align-items:center; gap:8px; min-height:28px; color:var(--text); font:14px/20px var(--font-game); white-space:nowrap; transition:color .12s; }
+.better-class img { width:28px; height:28px; object-fit:contain; flex:none; }
+.better-rides { display:grid; gap:6px; margin-left:13px; padding:2px 0 2px 13px; border-left:1px solid var(--control-line); transition:border-color .12s; }
+/* Pointing at a class: its rides' guide turns gold and the other classes in the box step back. */
+.better-entry.hot .better-rides { border-left-color:var(--gold); }
+.better-entry.hot .better-ride { color:var(--text); }
+.better-ridebox.hot:has(.better-entry + .better-entry) .better-entry:not(.hot) { opacity:.45; }
+.better-entry { transition:opacity .12s; }
+.better-card.hot, .better-ridebox.hot { border-color:var(--gold); background:#132a2b; }
+.better-entry.hot .better-class, .better-entry.hot .better-class .game-text { color:var(--gold); }
+.better-ride { display:flex; align-items:center; gap:6px; min-width:0; color:#d3d6c9; font:12px/16px var(--font-game); white-space:nowrap; }
+.better-ride .ride-icon { width:20px; height:20px; flex:none; }
+.better-hearts { display:inline-flex; align-items:center; flex:none; }
+.better-hearts .ride-level { display:block; width:16px; height:16px; }
+.better-root .better-hearts .ride-level { margin-left:0; }
+/* Same cells as the level-up page, scaled down; lit cells are filled, so the rules under each row are dropped. */
+.mini-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2px 6px; }
+.mini-stat { grid-column:var(--col); grid-row:var(--row); display:flex; justify-content:space-between; align-items:center; padding:2px 6px; border-radius:4px; color:var(--stat-text); font:12px/16px var(--font-game); }
+.mini-stat b { font:400 12px/16px var(--font-number); color:var(--stat-value); }
+.mini-stat.active { background:var(--stat-active-surface); color:var(--stat-active-text); }
+.mini-stat.active b { color:var(--stat-active-value); }
+/* Compared with the current row: tinted green where it grows more, red where it grows less. */
+.mini-stat.more { background:#8fd1ab38; }
+.mini-stat.less { background:#efa39c38; }
+.mini-stat.more b { color:var(--green); }
+.mini-stat.less b { color:var(--red); }
+
 /* A marked card's overlay covers its rating, as it did before the rating was clickable. */
 .record-chip.skipped>div>.rating-toggle,.record-chip.upgraded>div>.rating-toggle { z-index:auto; }
 .record-chip .rating-word { display:inline-grid; justify-items:end; }
@@ -4101,6 +4278,10 @@ html[data-input-mode="touch"] button.expectation-link {
 .record-chip .rating-word .rating-icon { margin:0 0 0 4px; }
 /* Room for the icon (14px and its 4px gap) beside the longer word. */
 .record-chip .rating-word::after { content:'不满意'; visibility:hidden; padding-left:18px; }
+/* No room for the word beside a long class name (ui/summary.js fitCardClasses): the face alone. */
+.record-chip.rating-face-only .rating-text { display:none; }
+.record-chip.rating-face-only .rating-word .rating-icon { margin-left:0; }
+.record-chip.rating-face-only .rating-word::after { content:none; }
 .record-chip>div>.rating-toggle::before { content:''; position:absolute; inset:-6px -6px; }
 .record-chip>div>.rating-toggle:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
 @media(hover:hover) and (pointer:fine) {
@@ -4427,6 +4608,12 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: 240px;
     translate: 0 -10px;
   }
+  /* The route switch sits 12px right of the part switch. */
+  .summary-top>.route-segment {
+    position: absolute;
+    left: 402px;
+    translate: 0 -10px;
+  }
   /* Multi-select's first action starts at 50% - 275px on this page. */
   .setup-toolbar>.part3-segment {
     left: min(240px,calc(50% - 445px));
@@ -4439,6 +4626,9 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .setup-toolbar>.part3-segment {
     left: calc(50% - 470px);
   }
+  .summary-top>.route-segment {
+    left: calc(50% - 308px);
+  }
 }
 /* No room beside the buttons here: it keeps its own centred line above them.
    The side margins fill that line, so nothing else can share it. */
@@ -4450,6 +4640,20 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     order: -2;
     margin-inline: calc(50% - 75px);
   }
+  /* With the route switch the pair is centred together on that line. */
+  .summary-top:has(>.route-segment)>.part3-segment {
+    margin-inline: calc(50% - 162px) 0;
+  }
+  /* 12px apart: the row's own gap (24px, 16px at 800px and below) is taken back by the left margin. */
+  .summary-top>.route-segment {
+    order: -2;
+    margin-inline: -12px calc(50% - 162px);
+  }
+}
+@media(min-width:601px) and (max-width:800px) {
+  .summary-top>.route-segment {
+    margin-left: -4px;
+  }
   /* The level page's uneven side padding would push it off the other pages' centre. */
   .setup-toolbar>.part3-segment {
     translate: -18px 0;
@@ -4459,7 +4663,13 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   main:is(.select-page,.levels-page,.summary-page) {
     padding-top: 14px;
   }
-  .summary-top>.part3-segment {
+  .summary-top>.part3-segment,
+  .summary-top:has(>.route-segment)>.part3-segment {
+    order: 1;
+    margin-inline: 0;
+    width: clamp(110px,calc(100vw - 208px),150px);
+  }
+  .summary-top>.route-segment {
     order: 1;
     margin-inline: 0;
     width: clamp(110px,calc(100vw - 208px),150px);
@@ -4474,7 +4684,7 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   }
 }
 /* Controls act on press; dragging or double-clicking one must not highlight its text. */
-button,summary,[role="button"],[role="option"],.part3-segment,.choice-option,dialog {
+button,summary,[role="button"],[role="option"],.part3-segment,.route-segment,.choice-option,dialog {
   -webkit-user-select: none;
   user-select: none;
 }

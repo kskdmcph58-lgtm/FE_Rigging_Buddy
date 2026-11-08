@@ -44,6 +44,44 @@ window.RiggingSeed = (() => {
     };
   }
 
+  /* Every class and ride this row could have had, at the row's own seed. The seed, level and part fix
+     the answer, so it is kept per row. Part 1-2 lets only 蕾达 (c017) become 舞者. */
+  const choiceCache = new Map();
+  function rowChoices(c, row) {
+    const id = personId(c);
+    if (!id) return [];
+    const key = `${id}|${row.seed}|${row.level}|${row.part3 ? 1 : 0}|${state.part3 !== true && state.route === 'other' ? 1 : 0}`;
+    let list = choiceCache.get(key);
+    if (list) return list;
+    const catalog = window.PROFESSIONS, person = game.persons[id];
+    // No class counts too (a stat with no personal growth then falls back to the base 30%), but only as the
+    // person's own base: 平民 or 贵族 by social status.
+    const names = catalog.names.filter(name => actions.classAllowed(state, c.id, name, row.part3));
+    list = [];
+    for (const profession of names) {
+      const jobId = jobs.get(profession);
+      if (!jobId) continue;
+      const kind = actions.rideKind(profession, c.id);
+      const rides = [null, ...actions.rideOptions(kind, c.id).flatMap(ride => [1, 2, 3, 4, 5].map(level => ({ id: ride.id, level })))];
+      for (const ride of rides) {
+        const { growth, guarantee } = computeGrowth({ person, jobId, level: row.level, part3: row.part3, ride });
+        const result = engine.simulateLevel(row.seed, { kind: 'level', growth, guarantee, room: new Array(9).fill(UNCAPPED), advanceBefore: 0 });
+        list.push({ profession, ride, ...statsOf(result.gains) });
+      }
+    }
+    if (choiceCache.size >= 600) choiceCache.delete(choiceCache.keys().next().value);
+    choiceCache.set(key, list);
+    return list;
+  }
+  /* Choices that beat what a forecast row shows now: more points, or 满意 where the row is not.
+     Only rows we predicted count; a marked or corrected row is already settled. */
+  function betterChoices(state, item, c, row) {
+    if (!ready() || row.skipped || row.upgraded || row.corrected) return [];
+    const rule = model.ruleAt(item, model.nextSeq(item) + row.index), points = r => r.stats.length + r.plus2.length, base = points(row);
+    return rowChoices(c, row).map(choice => ({ ...choice, happy: model.evaluate(rule, choice.stats) === true }))
+      .filter(choice => points(choice) > base || (row.happy !== true && choice.happy));
+  }
+
   // Null when the class is unknown, so nothing can be calculated for this row.
   function eventOf(c, row) {
     const id = personId(c), jobId = jobs.get(row.profession);
@@ -82,17 +120,20 @@ window.RiggingSeed = (() => {
     let locked = c.part3Only === true || live.some((record, i) => parts[i] && record.upgraded);
     let seed = item.seed.value;
     let profession = actions.currentProfession(state, item);
-    let ride = actions.rememberedRide(state, item.id, actions.rideKind(profession));
+    let ride = actions.rememberedRide(state, item.id, actions.rideKind(profession, item.id));
     const rows = [], first = item.initialLevel + live.length;
     // Skipped rows use a seed step without gaining a level, so the cap follows the displayed level.
     for (let n = 0, total = Math.max(rowCount(item), minRows); n < total && rowDisplayLevel(item, n) <= MAX_LEVEL; n++) {
       const saved = item.seed.rows?.[n] || {};
-      if (Object.hasOwn(saved, 'profession')) {
-        profession = saved.profession;
-        ride = actions.rememberedRide(state, item.id, actions.rideKind(profession));
-      }
-      if (Object.hasOwn(saved, 'ride')) ride = saved.ride;
       const part3 = saved.part3 ?? (locked || state.part3 === true);
+      // A Part 3 class saved while the switch was on waits in the data: a 第1-2部 row keeps the class it
+      // inherits, as saved records do (restoreStoryClasses), and gets it back once the switch is on again.
+      const usable = Object.hasOwn(saved, 'profession') && (part3 || !window.PROFESSIONS.part3Only.has(saved.profession));
+      if (usable) {
+        profession = saved.profession;
+        ride = actions.rememberedRide(state, item.id, actions.rideKind(profession, item.id));
+      }
+      if (Object.hasOwn(saved, 'ride') && (usable || !Object.hasOwn(saved, 'profession'))) ride = actions.usableRide(saved.ride, actions.rideKind(profession, item.id), item.id);
       const row = { level: first + n, part3, profession, ride };
       const event = eventOf(c, row);
       if (!event) return rows;
@@ -143,7 +184,7 @@ window.RiggingSeed = (() => {
   function rowDraft(state, item, c, index) {
     const row = queueRows(state, item, c, index + 1)[index];
     if (!row) return null;
-    const kind = actions.rideKind(row.profession);
+    const kind = actions.rideKind(row.profession, item.id);
     return { id: item.id, queueIndex: index, profession: row.profession, ride: row.ride, rides: kind ? { [kind]: row.ride } : {}, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}), happy: row.happy, ratingSource: row.ratingSource };
   }
   // What this row gives with the draft's class, for the stats shown while it is uncorrected.
@@ -156,9 +197,9 @@ window.RiggingSeed = (() => {
   function saveRow(state, item, c, draft) {
     const index = draft.queueIndex, rows = queueRows(state, item, c, index + 1), row = rows[index];
     if (!row) return false;
-    const before = index ? rows[index - 1] : { profession: actions.currentProfession(state, item), ride: actions.rememberedRide(state, item.id, actions.rideKind(actions.currentProfession(state, item))) };
+    const before = index ? rows[index - 1] : { profession: actions.currentProfession(state, item), ride: actions.rememberedRide(state, item.id, actions.rideKind(actions.currentProfession(state, item), item.id)) };
     const saved = savedRow(item, index), same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
-    const kind = actions.rideKind(draft.profession), ride = kind && draft.ride ? { ...draft.ride } : null;
+    const kind = actions.rideKind(draft.profession, item.id), ride = kind && draft.ride ? { ...draft.ride } : null;
     if (same(draft.profession, before.profession)) delete saved.profession; else saved.profession = draft.profession;
     const inherited = same(draft.profession, before.profession) ? before.ride : actions.rememberedRide(state, item.id, kind);
     if (same(ride, inherited)) delete saved.ride; else saved.ride = ride;
@@ -181,15 +222,15 @@ window.RiggingSeed = (() => {
     if (!row) return false;
     const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
     const write = (at, profession, ride, before) => {
-      const saved = savedRow(item, at), kind = actions.rideKind(profession);
+      const saved = savedRow(item, at), kind = actions.rideKind(profession, item.id);
       const inherited = same(profession, before.profession) ? before.ride : actions.rememberedRide(state, item.id, kind);
       if (same(profession, before.profession)) delete saved.profession; else saved.profession = profession;
       if (same(ride, inherited)) delete saved.ride; else saved.ride = ride;
       prune(item, at);
     };
     const first = actions.currentProfession(state, item);
-    const before = index ? rows[index - 1] : { profession: first, ride: actions.rememberedRide(state, item.id, actions.rideKind(first)) };
-    const kind = actions.rideKind(choice.profession), ride = kind && choice.ride ? { ...choice.ride } : null;
+    const before = index ? rows[index - 1] : { profession: first, ride: actions.rememberedRide(state, item.id, actions.rideKind(first, item.id)) };
+    const kind = actions.rideKind(choice.profession, item.id), ride = kind && choice.ride ? { ...choice.ride } : null;
     write(index, choice.profession, ride, before);
     if (scope === 'once' && next) write(index + 1, next.profession, next.ride, { profession: choice.profession, ride });
     if (scope === 'later' && kind) actions.rememberRides(state, item.id, { [kind]: ride });
@@ -313,6 +354,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

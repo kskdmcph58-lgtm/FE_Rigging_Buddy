@@ -256,6 +256,7 @@ function refreshRecordRails() {
     status.step = step;
     scheduleForecastCheck(rail);
   });
+  fitCardClasses();
 }
 function bounceRailEdge(rail, direction) {
   stopRail(rail);
@@ -333,7 +334,7 @@ function onRecordRailPointerDown(event) {
 function onSummaryOutsideClick(event) {
   // A dialog opened from a card is still part of that card's work, not a click elsewhere.
   if (page !== 'summary' || !desktopRecords.matches || Date.now() < suppressGestureClickUntil || event.target.closest('dialog,.expectation-tip')) return;
-  if (event.target.closest('.part3-segment')) return;
+  if (event.target.closest('.part3-segment,.route-segment')) return;
   app.querySelectorAll('.has-record-rail').forEach(journal => {
     if (!journal.contains(event.target)) setJournalExpanded(journal, false);
   });

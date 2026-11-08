@@ -62,8 +62,8 @@ function openSummaryRecord(b) {
     if (overlay) overlay.animate({ opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
     return true;
   }
-  const savedKind = rideKind(record.profession);
-  const savedRide = savedKind && window.RIDES.byId[record.ride?.id]?.kind === savedKind ? { ...record.ride } : null;
+  const savedKind = rideKind(record.profession, item.id);
+  const savedRide = savedKind ? window.RiggingActions.usableRide(record.ride && { ...record.ride }, savedKind, item.id) : null;
   activeRecord = takeRecordDraft(b.dataset.edit, index) || { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
    page = 'record'; render(); window.scrollTo(0, 0);
 }

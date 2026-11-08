@@ -193,6 +193,7 @@ window.RiggingModel = (() => {
       if (!characterIds.includes(id) || !(typeof value === 'string' && value.length <= 80 || Number.isInteger(value) && value >= 1 && value <= 99)) throw Error('初始等级不正确');
     }
     if (data.part3 !== undefined && typeof data.part3 !== 'boolean') throw Error('第3部开关不正确');
+    if (data.route !== undefined && data.route !== 'other') throw Error('路线不正确');
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
     if (data.deletionCounter !== undefined && (!Number.isSafeInteger(data.deletionCounter) || data.deletionCounter < 0)) throw Error('删除顺序不正确');
     for (const drafts of [data.draftProfessions, data.draftStoryClasses]) {

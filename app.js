@@ -79,6 +79,13 @@ function part3Switch() {
   const on = state.part3 === true, locked = part3Locked();
   return `<div class="part3-segment" role="radiogroup" aria-label="剧情范围"><label title="${locked ? '列表里都是第3部人物，添加人物时才能切换' : '不显示第3部的人物和兵种'}"><input id="part3-off" type="radio" name="part3" value="off" ${on ? '' : 'checked'} ${locked ? 'disabled' : ''}><span>第1-2部</span></label><label title="显示第3部的人物和兵种"><input id="part3-on" type="radio" name="part3" value="on" ${on ? 'checked' : ''}><span>第3部</span></label></div>`;
 }
+/* 第1-2部 only. On 凯伊's route mounted classes have rides; on the others they have none, so no ride is asked
+   for or counted (core/actions.js rideKind). */
+function routeSwitch() {
+  if (state.part3 === true) return '';
+  const other = state.route === 'other';
+  return `<div class="route-segment" role="radiogroup" aria-label="路线"><label title="骑兵单位可以选配属"><input type="radio" name="route" value="kai" ${other ? '' : 'checked'}><span>凯伊线</span></label><label title="骑兵单位都没有配属，不用选也不计算"><input type="radio" name="route" value="other" ${other ? 'checked' : ''}><span>其他线</span></label></div>`;
+}
 function applyStoryPhase() {
   const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;
   if (phaseChanged) {
@@ -230,6 +237,7 @@ function render() {
   if (page === 'record') renderRecord();
   // The summary reconciles in place, where a checked attribute alone would not move a used checkbox.
   app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); input.disabled = input.value === 'off' && part3Locked(); });
+  app.querySelectorAll('[name="route"]').forEach(input => { input.checked = (input.value === 'other') === (state.route === 'other'); });
   refreshRowSelection();
   scheduleLocalSave();
   if (pageChanged) fadeInPage();
@@ -298,6 +306,33 @@ function editSetupLevel(cell) {
   cell.removeAttribute('role');cell.removeAttribute('tabindex');
   cell.innerHTML=`<input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${escapeValue(state.initialLevels[id] ?? '')}" data-level-input data-level="${id}" aria-label="${char(id).name}当前等级">`;
   const input=cell.querySelector('input');setupLevelEdit={cell,input,ids,batch};input.focus();input.select();
+}
+/* Asks for the starting levels still missing before the records are made. 确定 keeps what was typed (a box
+   left empty stays 暂无), 跳过 goes on without them; resolves false when closed with Escape. */
+function askMissingLevels(ids) {
+  return new Promise(resolve => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'app-dialog setup-level-dialog missing-level-dialog';
+    dialog.setAttribute('aria-labelledby', 'missing-level-title');
+    dialog.setAttribute('aria-describedby', 'missing-level-help');
+    dialog.innerHTML = `<header><h2 id="missing-level-title">请填写初始等级</h2></header><form novalidate><div class="setup-level-dialog-body"><p id="missing-level-help">没有初始等级就无法反推种子，范围为 1–99。</p>${ids.map(id => `<div class="missing-level-row"><label for="missing-level-${id}">${portrait(char(id))}<span>${escapeValue(char(id).name)}</span></label><div class="missing-level-field"><input id="missing-level-${id}" data-level="${id}" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input placeholder="暂无"></div></div>`).join('')}</div><footer><button type="button" data-skip>跳过</button><button type="submit" class="primary">确定</button></footer></form>`;
+    let result = false;
+    dialog.querySelector('[data-skip]').onclick = () => { result = true; dialog.close(); };
+    dialog.addEventListener('input', e => { if (e.target.matches('input')) { clearLevelError(e.target); e.target.removeAttribute('aria-invalid'); } });
+    dialog.querySelector('form').onsubmit = e => {
+      e.preventDefault();
+      const inputs = [...dialog.querySelectorAll('input')];
+      if (!inputs.every(validLevel)) { inputs.find(input => input.getAttribute('aria-invalid') === 'true')?.focus(); return; }
+      inputs.forEach(input => {
+        if (!input.value) return;
+        state.initialLevels[input.dataset.level] = input.value;
+        const cell = app.querySelector(`[data-setup-level="${input.dataset.level}"]`); if (cell) paintSetupLevel(cell);
+      });
+      scheduleLocalSave(); result = true; dialog.close();
+    };
+    dialog.addEventListener('close', () => { retireDialog(dialog); resolve(result); }, { once: true });
+    document.body.append(dialog); dialog.showModal(); dialog.querySelector('input').focus();
+  });
 }
 function openSetupLevelDialog() {
   if(!finishSetupLevel()||document.querySelector('.setup-level-dialog[open]'))return;
@@ -420,7 +455,8 @@ function renderLevels() {
   document.fonts?.ready.then(()=>{if(page==='levels')refreshSetupExpectationSummaries();});
 }
 function recordStats(stats) {
-  const groups = [STATS.slice(0, 5), STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
+  // HP closes the first line, left-aligned in its cell so it sits right after the dot like the names before it.
+  const groups = [[...STATS.slice(1, 5), 'HP'], STATS.slice(5)].map(group => group.filter(stat => stats.includes(stat))).filter(group => group.length);
   return groups.length ? groups.map(group => `<span class="stat-line">${group.map(stat => `<span class="stat-name${stat === 'HP' ? ' stat-name-hp' : ''}">${stat}</span>`).join('<span class="stat-separator" aria-hidden="true"></span>')}</span>`).join('') : '<span class="stat-line">本次没有属性提升</span>';
 }
 function pencilIcon(className) {
@@ -458,9 +494,52 @@ function editInitialLevel(label) {
   const item = state.roster.find(r => r.id === label.dataset.initialLevel);
   label.removeAttribute('role');
   label.removeAttribute('tabindex');
-  label.innerHTML = `<form novalidate class="initial-level-form" data-initial-form="${item.id}"><label>初始等级 <input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无"></label><button type="submit">保存</button><button type="button" data-cancel-initial>取消</button></form>`;
+  // macOS-style inline edit: Return or clicking away saves, Escape cancels, no extra buttons.
+  label.innerHTML = `<form novalidate class="initial-level-form" data-initial-form="${item.id}"><label><span class="initial-level-caption">初始等级</span><span class="level-field"><input data-level-input type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" value="${item.initialLevel ?? ''}" aria-label="初始等级，留空删除" placeholder="暂无" autocomplete="off" enterkeyhint="done"></span></label></form>`;
   label.querySelector('input').focus();
 }
+function stepInitialLevel(input, delta) {
+  const current = /^[1-9][0-9]?$/.test(input.value) ? Number(input.value) : null;
+  const next = current === null ? (delta > 0 ? 1 : 99) : Math.min(99, Math.max(1, current + delta));
+  input.value = String(next);
+  clearLevelError(input); input.removeAttribute('aria-invalid');
+  input.select();
+}
+function closeInitialLevel(form, save) {
+  if (!form.isConnected || form.dataset.closing) return;
+  const input = form.querySelector('input');
+  if (save) {
+    if (!validLevel(input)) return;
+    const item = state.roster.find(r => r.id === form.dataset.initialForm);
+    item.initialLevel = input.value === '' ? null : Number(input.value);
+    // The forecast needs a level, so without one this person goes back to plain records.
+    if (item.initialLevel === null) delete item.seed;
+  }
+  form.dataset.closing = '1';
+  rememberListPosition();
+  // A click elsewhere blurs the field on pointerdown; redraw after that click lands so it is not lost.
+  if (initialPointerDown) {
+    const redraw = () => { document.removeEventListener('click', redraw, true); document.removeEventListener('pointercancel', redraw, true); setTimeout(returnToSummary); };
+    document.addEventListener('click', redraw, true);
+    document.addEventListener('pointercancel', redraw, true);
+    setTimeout(() => { if (!initialPointerDown) redraw(); }, 400);
+  } else returnToSummary();
+}
+let initialPointerDown = false;
+document.addEventListener('pointerdown', () => { initialPointerDown = true; }, true);
+document.addEventListener('pointerup', () => setTimeout(() => { initialPointerDown = false; }), true);
+app.addEventListener('pointerdown', e => {
+  const form = e.target.closest('[data-initial-form]');
+  if (!form || e.target.matches('input')) return;
+  // Clicking the caption or border keeps the edit open instead of blurring the field.
+  e.preventDefault();
+  form.querySelector('input').focus();
+});
+app.addEventListener('focusout', e => {
+  const form = e.target.closest?.('[data-initial-form]');
+  if (!form || form.contains(e.relatedTarget) || !document.hasFocus()) return;
+  closeInitialLevel(form, true);
+});
 app.addEventListener('dblclick', e => {
   const label = e.target.closest('[data-initial-level]');
   if (label && editingCharacters.has(label.dataset.initialLevel)) editInitialLevel(label);
@@ -469,13 +548,7 @@ app.addEventListener('submit', e => {
   const form = e.target.closest('[data-initial-form]');
   if (!form) return;
   e.preventDefault();
-  const input = form.querySelector('input');
-  if (!validLevel(input)) return;
-  const item = state.roster.find(r => r.id === form.dataset.initialForm);
-  item.initialLevel = input.value === '' ? null : Number(input.value);
-  // The forecast needs a level, so without one this person goes back to plain records.
-  if (item.initialLevel === null) delete item.seed;
-  rememberListPosition(); returnToSummary();
+  closeInitialLevel(form, true);
 });
 let touchSort = null;
 let mouseSort = null;
@@ -644,6 +717,11 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.action-menu[open]').forEach(menu => { menu.open = false; menu.querySelector('summary').focus(); });
 });
 app.addEventListener('click', async e => {
+  // With a better choice marked, clicking anywhere on the class name opens the choices; changing the class
+  // is the class row in its hover tip. The keyboard keeps both: Enter on the field changes the class,
+  // Enter on the mark opens the choices.
+  const better = e.target.closest('[data-better]') || e.target.closest('[data-profession][data-character]')?.querySelector('[data-better]');
+  if (better) { e.preventDefault(); e.stopPropagation(); openBetterChoices(better); return; }
   const rating = e.target.closest('[data-card-rating]');
   if (rating) { e.preventDefault(); e.stopPropagation(); toggleCardRating(rating); return; }
   const profession = e.target.closest('[data-profession]');
@@ -711,7 +789,6 @@ app.addEventListener('click', async e => {
     app.querySelector('#search-history').hidden = true;
     return;
   }
-  if (b.hasAttribute('data-cancel-initial')) { rememberListPosition(); returnToSummary(); return; }
   if (b.dataset.edit && openSummaryRecord(b)) return;
   if (b.dataset.queue && openQueueRow(b)) return;
   if (b.dataset.reseed) { runSeedSearch(b.dataset.reseed); return; }
@@ -763,6 +840,10 @@ app.addEventListener('click', async e => {
     if (!finishSetupLevel()) return;
     const invalid = state.selection.find(id => !/^(?:[1-9][0-9]?)?$/.test(String(state.initialLevels[id] ?? '')));
     if (invalid) { editSetupLevel(app.querySelector(`[data-setup-level="${invalid}"]`)); validLevel(setupLevelEdit.input); return; }
+    // Without a starting level the seed cannot be worked out: say who, and let the user go on or go back.
+    // Without a starting level the seed cannot be worked out: ask for the missing ones, or let them be skipped.
+    const empty = state.selection.filter(id => String(state.initialLevels[id] ?? '') === '');
+    if (empty.length && (!await askMissingLevels(empty) || page !== 'levels')) return;
     state.selection.forEach(id => {
       const value = String(state.initialLevels[id] ?? ''), existing = state.roster.find(item => item.id === id);
       const item = existing || { id, records: [] };
@@ -940,7 +1021,10 @@ app.addEventListener('keydown', e => {
     e.preventDefault(); editInitialLevel(e.target); return;
   }
   if (e.key === 'Escape' && e.target.closest('[data-initial-form]')) {
-    e.preventDefault(); rememberListPosition(); returnToSummary(); return;
+    e.preventDefault(); closeInitialLevel(e.target.closest('[data-initial-form]'), false); return;
+  }
+  if (['ArrowUp', 'ArrowDown'].includes(e.key) && e.target.closest('[data-initial-form]')) {
+    e.preventDefault(); stepInitialLevel(e.target, e.key === 'ArrowUp' ? 1 : -1); return;
   }
   if (!e.altKey || !['ArrowUp', 'ArrowDown'].includes(e.key) || !e.target.matches('[data-sort-id]')) return;
   e.preventDefault();
@@ -962,7 +1046,7 @@ function checkRecordDraft(d, data) {
   M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
   // Snapshots from before mounts existed have neither field.
   d.ride ??= null; d.rides ??= {};
-  if (d.ride !== null) M.validRide(d.ride, rideKind(d.profession));
+  if (d.ride !== null) M.validRide(d.ride, window.PROFESSIONS.mountOf[d.profession] || null);
   return true;
 }
 // One unsaved upgrade input, outside the save and backups. `open` means the page was
@@ -1011,7 +1095,7 @@ function updateSessionKey() {
   return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
 }
 window.prepareForAppUpdate = revision => {
-  if (mouseSort || touchSort || document.activeElement?.matches('input:not([name="part3"])') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
+  if (mouseSort || touchSort || document.activeElement?.matches('input:not([name="part3"]):not([name="route"])') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
     const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
@@ -1047,6 +1131,18 @@ restoreLocalState();
 restoreAfterAppUpdate();
 restoreRecordPage();
 render();
+app.addEventListener('change', e => {
+  if (e.target.name !== 'route') return;
+  const other = e.target.value === 'other';
+  if (other) state.route = 'other'; else delete state.route;
+  render();
+  const segment = app.querySelector('.route-segment');
+  if (!segment) return;
+  segment.querySelector('input:checked').focus({ preventScroll: true });
+  if (!motionAllowed()) return;
+  segment.animate({ transform: other ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
+    { duration: 200, easing: 'ease', pseudoElement: '::before' });
+});
 app.addEventListener('change', e => {
   if (e.target.name !== 'part3') return;
   const on = e.target.value === 'on';

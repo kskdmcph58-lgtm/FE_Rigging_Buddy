@@ -657,7 +657,8 @@ function showExpectationTip(b) {
   expectationTip.addEventListener('pointerleave',hideExpectationTip);
   if(classOwner) expectationTip.addEventListener('click',e=>{
     const row=e.target.closest('[data-tip-step]');
-    if(row) openCardClass(b,row.dataset.tipStep);
+    if(row?.dataset.tipStep==='better'){const mark=b.querySelector('[data-better]');if(mark)openBetterChoices(mark);}
+    else if(row) openCardClass(b,row.dataset.tipStep);
   });
 }
 document.addEventListener('pointerover',e=>{

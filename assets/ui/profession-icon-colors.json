@@ -281,6 +281,26 @@
       "color_layer": "JID_ヴァルキュリウム男_Clr"
     },
     {
+      "file": "trickster.png",
+      "base": "JID_トリックスター男",
+      "color_layer": "JID_トリックスター男_Clr"
+    },
+    {
+      "file": "enlightened.png",
+      "base": "JID_覚者男",
+      "color_layer": "JID_覚者男_Clr"
+    },
+    {
+      "file": "seere.png",
+      "base": "JID_セーレ男",
+      "color_layer": "JID_セーレ男_Clr"
+    },
+    {
+      "file": "badb-catha.png",
+      "base": "JID_バイヴ・カハ女",
+      "color_layer": "JID_バイヴ・カハ女_Clr"
+    },
+    {
       "file": "the-blade.png",
       "base": "JID_ザ・ブレイド男",
       "color_layer": "JID_ザ・ブレイド男_Clr"
