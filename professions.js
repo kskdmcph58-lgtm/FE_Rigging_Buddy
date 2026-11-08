@@ -75,13 +75,14 @@ function refreshSetupRide(id) {
 }
 
 // Nothing here reaches the data: onConfirm receives the choice once the player confirms.
-function rideDialog(kind, current, onConfirm, onClose, back = false, id = null) {
+function rideDialog(kind, current, onConfirm, onClose, back = false, id = null, stack = null) {
   let chosen = current?.id || '';
   const levels = current ? { [current.id]: current.level } : {};
   const hearts = ride => `<div class="ride-hearts" role="group" aria-label="${ride.name}友好LV">${[1, 2, 3, 4, 5].map(level => `<button data-heart="${level}" aria-label="友好LV${level}"><img src="assets/rides/heart-${level}.png" alt="" draggable="false"></button>`).join('')}</div>`;
   const row = (value, name, icon, extra = '') => `<div class="ride-row" data-ride-row="${value}"><button class="ride-choice">${icon}<span class="game-text">${name}</span></button>${extra}</div>`;
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog ride-picker';
+  animateMobilePickerClose(dialog);
   dialog.setAttribute('aria-labelledby', 'ride-title');
   dialog.innerHTML = `<div class="ride-titlebar"><h2 id="ride-title">配属</h2><span class="game-text">友好LV</span></div><div class="ride-list">${row('', '无配属', rideIcon(kind, null))}${window.RiggingActions.rideOptions(kind, id).map(ride => row(ride.id, ride.name, rideIcon(kind, ride), hearts(ride))).join('')}</div><div class="profession-footer"><button data-dismiss>${back ? '返回' : '取消'}</button><button class="primary" data-confirm>确定</button></div>`;
   const sync = () => dialog.querySelectorAll('.ride-row').forEach(line => {
@@ -102,10 +103,11 @@ function rideDialog(kind, current, onConfirm, onClose, back = false, id = null) 
     else if (e.target.closest('[data-dismiss]')) dialog.close();
     else if (e.target.closest('[data-confirm]')) {
       onConfirm(chosen ? { id: chosen, level: levels[chosen] || 1 } : null);
-      dialog.close();
+      if (!stack) dialog.close();
     }
   });
   dialog.addEventListener('close', () => { retireDialog(dialog); onClose(); }, { once: true });
+  stack?.add(dialog);
   document.body.append(dialog);
   sync();
   dialog.showModal();
@@ -140,10 +142,11 @@ function setupProfessionButton(id) {
 }
 
 // ids: the people the class is for; only classes every one of them may take are offered.
-function professionDialog(selected, mixed, clearable, onChoice, onClose, ids = []) {
+function professionDialog(selected, mixed, clearable, onChoice, onClose, ids = [], stack = null) {
   const data = window.PROFESSIONS;
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog profession-picker';
+  animateMobilePickerClose(dialog);
   dialog.setAttribute('aria-labelledby', 'profession-title');
   const available = name => ids.length ? ids.every(id => window.RiggingActions.classAllowed(state, id, name)) : state.part3 === true || !data.part3Only.has(name);
   const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${!mixed && selected === name}"><span class="profession-icon"><img src="assets/classes/${data.icons[name]}.png${ICON_QUERY}" alt="" loading="lazy"></span><span class="profession-name">${name}</span></button>`;
@@ -151,10 +154,15 @@ function professionDialog(selected, mixed, clearable, onChoice, onClose, ids = [
   dialog.innerHTML = `<div class="profession-titlebar"><h2 id="profession-title">更改兵种</h2></div><div class="profession-scroll"><div class="profession-table">${group('基础职业', [data.base], true)}${data.rows.map((row, t) => row.flat().some(available) ? group(data.tiers[t], row) : '').join('')}</div></div><div class="profession-footer">${clearable ? '<button data-class="">清除兵种</button>' : ''}<button data-dismiss>关闭</button></div>`;
   dialog.addEventListener('click', e => {
     const choice = e.target.closest('[data-class]');
-    if (choice) { onChoice(choice.dataset.class || null); dialog.close(); }
+    if (choice) {
+      dialog.querySelectorAll('[data-class]').forEach(button => button.setAttribute('aria-pressed', String(button === choice)));
+      onChoice(choice.dataset.class || null);
+      if (!stack) dialog.close();
+    }
     else if (e.target.closest('[data-dismiss]')) dialog.close();
   });
   dialog.addEventListener('close', () => { retireDialog(dialog); onClose(); }, { once: true });
+  stack?.add(dialog);
   document.body.append(dialog);
   dialog.showModal();
   (dialog.querySelector('[data-class][aria-pressed="true"]') || dialog.querySelector('.profession-option'))?.focus({ preventScroll: true });
@@ -236,14 +244,25 @@ const pickRide = (kind, current, id) => new Promise(resolve => {
   let chosen;
   rideDialog(kind, current, value => { chosen = value; }, () => resolve(chosen), true, id);
 });
-function cardClassScopeDialog(subject) {
+function cardClassScopeDialog(subject, stack = null) {
   // Lit cells show which levels the change reaches, in place of a description.
   const reach = lit => `<span class="class-scope-reach" aria-hidden="true">${[0, 1, 2, 3].map(cell => `<i class="${cell < lit ? 'lit' : ''}"></i>`).join('')}</span>`;
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog class-scope-dialog';
+    if (stack) {
+      dialog.classList.add('picker-stack-scope');
+      animateMobilePickerClose(dialog);
+      stack.add(dialog);
+    }
     dialog.setAttribute('aria-labelledby', 'class-scope-title');
     dialog.innerHTML = `<h2 id="class-scope-title">本次${subject}改动的生效范围</h2><form method="dialog"><div class="class-scope-options"><button class="class-scope-option" value="once" autofocus>${reach(1)}<span>仅限本次</span></button><button class="class-scope-option" value="later">${reach(4)}<span>今后沿用</span></button></div><div class="class-scope-actions"><button value="back">返回</button></div></form>`;
+    if (stack) dialog.querySelector('form').addEventListener('submit', event => {
+      event.preventDefault();
+      const value = event.submitter?.value;
+      if (value === 'once' || value === 'later') resolve(value);
+      else dialog.close('back');
+    });
     dialog.addEventListener('close', () => {
       retireDialog(dialog);
       resolve(dialog.returnValue);
@@ -252,53 +271,51 @@ function cardClassScopeDialog(subject) {
     dialog.showModal();
   });
 }
-async function openCardClass(anchor, start = 'profession') {
+function openCardClass(anchor, start = 'profession') {
   hideExpectationTip();
   const card = cardClass(anchor);
   if (!card) return;
   const { item } = card, id = item.id;
   const refocus = () => (anchor.isConnected ? anchor : null)?.focus({ preventScroll: true });
-  let profession = card.profession, ride = card.ride, scope;
+  let profession = card.profession, ride = card.ride;
+  const stack = createPickerStack();
   // Started from the ride, backing out of the ride leaves the flow instead of opening the class list.
   const fromRide = start === 'ride' && Boolean(rideKind(profession, id));
-  let step = fromRide ? 'ride' : 'profession';
-  while (true) {
-    if (step === 'profession') {
-      const chosen = await pickClass(profession, !item.seed, id);
-      if (chosen === undefined) { refocus(); return; }
+  const finish = async scope => {
+    await stack.closeAll();
+    if (scope === 'once' || scope === 'later') {
+      const choice = { profession, ride };
+      if (card.queued) window.RiggingSeed.applyRowClass(state, item, char(id), card.index, choice, scope);
+      else window.RiggingActions.applyRecordClass(state, item, card.record, choice, scope);
+      const rail = anchor.closest('.records');
+      if (rail) railState(rail).extending = true;
+      renderSummary();
+      refreshRecordRails();
+    }
+    refocus();
+  };
+  const showScope = () => {
+    if (profession === card.profession && JSON.stringify(ride) === JSON.stringify(card.ride)) { void finish(); return; }
+    const classChanged = profession !== card.profession;
+    const rideChanged = Boolean(rideKind(profession, id)) && JSON.stringify(ride) !== JSON.stringify(card.ride);
+    void cardClassScopeDialog(classChanged && rideChanged ? '兵种及配属' : rideChanged ? '配属' : '兵种', stack).then(scope => {
+      if (scope === 'once' || scope === 'later') void finish(scope);
+    });
+  };
+  const showRide = () => {
+    rideDialog(rideKind(profession, id), ride, value => { ride = value; showScope(); }, () => {
+      if (fromRide && !stack.closing) refocus();
+    }, true, id, stack);
+  };
+  if (fromRide) showRide();
+  else {
+    professionDialog(profession, false, !item.seed, chosen => {
       if (rideKind(chosen, id) !== rideKind(profession, id)) ride = rememberedRide(id, rideKind(chosen, id));
       profession = chosen;
-      step = rideKind(profession, id) ? 'ride' : 'scope';
-      if (!rideKind(profession, id)) ride = null;
-    } else if (step === 'ride') {
-      const chosen = await pickRide(rideKind(profession, id), ride, id);
-      if (chosen === undefined) {
-        if (fromRide && profession === card.profession) { refocus(); return; }
-        step = 'profession'; continue;
-      }
-      ride = chosen;
-      step = 'scope';
-    } else {
-      if (profession === card.profession && JSON.stringify(ride) === JSON.stringify(card.ride)) { refocus(); return; }
-      // Moving to a class with no mount clears the ride as a side effect, so only a chosen ride counts.
-      const classChanged = profession !== card.profession;
-      const rideChanged = Boolean(rideKind(profession, id)) && JSON.stringify(ride) !== JSON.stringify(card.ride);
-      scope = await cardClassScopeDialog(classChanged && rideChanged ? '兵种及配属' : rideChanged ? '配属' : '兵种');
-      if (scope === 'once' || scope === 'later') break;
-      step = rideKind(profession, id) ? 'ride' : 'profession';
-    }
+      if (rideKind(profession, id)) showRide();
+      else { ride = null; showScope(); }
+    }, () => { if (!stack.closing) refocus(); }, [id], stack);
   }
-  if (scope === 'once' || scope === 'later') {
-    const choice = { profession, ride };
-    if (card.queued) window.RiggingSeed.applyRowClass(state, item, char(id), card.index, choice, scope);
-    else window.RiggingActions.applyRecordClass(state, item, card.record, choice, scope);
-    // A saved row can lengthen the forecast; that must not move the list the user is reading.
-    const rail = anchor.closest('.records');
-    if (rail) railState(rail).extending = true;
-    renderSummary();
-    refreshRecordRails();
-  }
-  refocus();
 }
 
 /* What a forecast row could get instead, grouped by class. Rides sit under their class, and the
@@ -405,6 +422,9 @@ function betterDialog(title, current, groups) {
     const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span>${mobileFilter}</div>${slider}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
+    animateMobilePickerClose(dialog);
+    const stack = createPickerStack();
+    stack.add(dialog);
     dialog.setAttribute('aria-labelledby', 'better-title');
     dialog.innerHTML = `<header><h2 id="better-title">${title}</h2></header><div class="better-map">${root}<section class="better-side-others"><h3 class="better-caption">其他选择</h3><div class="better-branches"><div class="better-branch">${groups.map(unit).join('')}</div></div></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
     let chosen;
@@ -423,7 +443,10 @@ function betterDialog(title, current, groups) {
     /* The pick goes down to one ride at one friendship level. A class with a single possibility is taken at
        once; otherwise it stays open with its rides lit until the user clicks a heart (or a ride that has
        only one level). 任意配属 keeps the ride in use, 无配属 takes none. */
-    const choose = (index, ride) => { chosen = { ...options[Number(index)], ride }; dialog.close(); };
+    const choose = (index, ride) => {
+      chosen = { ...options[Number(index)], ride };
+      void stack.closeAll();
+    };
     const track = dialog.querySelector('.tier-slider');
     // Starts at the toolbar's 推荐 stop; moving it here changes this dialog only.
     let cap = filterable ? Math.min(current.cap ?? highest, highest) : highest;
@@ -537,6 +560,8 @@ function betterDialog(title, current, groups) {
       });
       const sheet = document.createElement('dialog');
       sheet.className = 'app-dialog ride-picker better-ride-sheet';
+      animateMobilePickerClose(sheet);
+      stack.add(sheet);
       sheet.setAttribute('aria-labelledby', 'better-ride-title');
       sheet.innerHTML = `<div class="ride-titlebar"><h2 id="better-ride-title">${option.profession}</h2><span class="game-text">友好LV</span></div><div class="ride-list">${rows.join('')}</div><div class="profession-footer"><button type="button" data-back>返回</button></div>`;
       let ride;
@@ -550,12 +575,12 @@ function betterDialog(title, current, groups) {
           if (hearts.length !== 1) return;
           ride = { id: row.dataset.rideRow, level: Number(hearts[0].dataset.heart) };
         } else if (!ev.target.closest('[data-back]')) return;
-        sheet.close();
+        if (ride !== undefined) choose(index, ride);
+        else sheet.close();
       });
       sheet.addEventListener('close', () => {
         retireDialog(sheet);
-        if (ride !== undefined) choose(index, ride);
-        else entry.querySelector('.better-class-pick')?.focus({ preventScroll: true });
+        if (!stack.closing) entry.querySelector('.better-class-pick')?.focus({ preventScroll: true });
       }, { once: true });
       document.body.append(sheet);
       sheet.showModal();

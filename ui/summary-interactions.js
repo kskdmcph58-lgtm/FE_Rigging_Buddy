@@ -104,11 +104,16 @@ function openSummaryRecord(b) {
     status.autoPending = true;
     // Every status click renews this row's countdown, including skipped -> upgraded.
     status.signature = '';
+    // 已跳过 -> 已升级 swaps one mask for the other: fade between their colours, never through an unmasked card.
+    const previous = b.querySelector('.record-overlay');
+    const previousBackground = previous && getComputedStyle(previous).backgroundColor;
     window.RiggingActions.cycleRecordStatus(record, item);
     status.retiring = desktopRecords.matches && !compactRecords(item) && b.closest('.journal').matches('.has-record-rail:not(.records-expanded)');
     returnToSummary();
     const overlay = motionAllowed() && app.querySelector(`.record-chip[data-edit="${item.id}"][data-index="${index}"] .record-overlay`);
-    if (overlay) overlay.animate({ opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
+    if (overlay) overlay.animate(previousBackground
+      ? { backgroundColor: [previousBackground, getComputedStyle(overlay).backgroundColor] }
+      : { opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
     return true;
   }
   const savedKind = rideKind(record.profession, item.id);

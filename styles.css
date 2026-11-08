@@ -106,6 +106,8 @@ header {
   position: relative;
   display: grid;
   grid-template-columns: repeat(var(--stops), 40px);
+  /* Keep the six-stop footprint so centred toolbar layouts never shift 基础 when the range changes. */
+  margin-right: calc((6 - var(--stops)) * 40px);
   cursor: pointer;
   touch-action: none;
   outline: none;
@@ -1819,6 +1821,34 @@ button.record-chip {
   background: #050c0d99;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
+}
+/* Nested picker steps share the root's dimming; an upper modal never darkens or blurs it again. */
+dialog.app-dialog.picker-stack-layer::backdrop {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+  transition: none;
+}
+/* Dim the previous surface within its own bounds; the page backdrop is still painted only once. */
+dialog.app-dialog:is(.picker-stack-root,.picker-stack-layer)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  background: #050c0d55;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-standard);
+}
+dialog.app-dialog.picker-stack-covered::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  dialog.app-dialog:is(.picker-stack-root,.picker-stack-layer)::after { transition: none; }
+}
+dialog.app-dialog.m-picker-leaving::backdrop {
+  opacity: 0;
+  transition: opacity var(--m-picker-exit-duration, var(--motion-base)) ease-out;
 }
 .app-dialog h2 {
   font: 600 18px/1.5 var(--font-ui);
@@ -4889,15 +4919,12 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: 402px;
     translate: 0 -10px;
   }
-  /* 推荐 follows 24px after the last switch: the route switch in Part 1-2, the part switch in Part 3.
+  /* Reserve the route switch's space in both parts so the recommendation's left edge stays fixed.
      It hides in multi-select, so it only has to clear the buttons on the right. */
   .summary-top>.recommend-filter {
     position: absolute;
-    left: 414px;
-    translate: 0 -10px;
-  }
-  .summary-top:has(>.route-segment)>.recommend-filter {
     left: 576px;
+    translate: 0 -10px;
   }
   /* Multi-select's first action starts at 50% - 275px on this page. */
   .setup-toolbar>.part3-segment {
@@ -4909,6 +4936,17 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .setup-toolbar>.route-segment {
     position: absolute;
     left: min(402px,calc(50% - 445px));
+  }
+}
+/* The six-stop range needs a separate row before it clears the action buttons at 1360px. */
+@media(min-width:1280px) and (max-width:1359px) {
+  .summary-top { flex-wrap: wrap; }
+  .summary-top>.recommend-filter {
+    position: static;
+    order: 1;
+    flex-basis: 100%;
+    justify-content: center;
+    translate: none;
   }
 }
 /* Wide enough for one spot that clears the search box and both multi-select bars. */
@@ -4925,9 +4963,6 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: calc(50% - 308px);
   }
   .summary-top>.recommend-filter {
-    left: calc(50% - 296px);
-  }
-  .summary-top:has(>.route-segment)>.recommend-filter {
     left: calc(50% - 134px);
   }
   /* The extra route control must also clear the expanded batch actions. */
@@ -4977,6 +5012,8 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .summary-top>.route-segment {
     margin-left: -4px;
   }
+  /* This desktop layout stacks the route on its own row; retain its height when Part 3 hides it. */
+  .summary-top:not(:has(>.route-segment))>.part3-segment { margin-bottom: 52px; }
   /* The level page's uneven side padding would push it off the other pages' centre. */
   .setup-toolbar>.part3-segment,.setup-toolbar>.route-segment {
     translate: -18px 0;

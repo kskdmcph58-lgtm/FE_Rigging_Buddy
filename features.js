@@ -7,6 +7,89 @@ function retireDialog(dialog) {
   if (motionAllowed()) setTimeout(() => dialog.remove(), MOTION.fast + 40);
   else dialog.remove();
 }
+// Keep mobile pickers in the top layer until their exit finishes, preserving their open layout.
+// Every exit (including native Escape) uses the same path; close callbacks still run exactly once.
+function animateMobilePickerClose(dialog) {
+  const close = dialog.close.bind(dialog);
+  let leaving = false;
+  dialog.close = (...args) => {
+    if (leaving) return;
+    const group = dialog.pickerGroupExit;
+    if (!dialog.open || (!UI_MEDIA.mobileShell.matches && !group) || !motionAllowed()) { close(...args); return; }
+    leaving = true;
+    const style = getComputedStyle(dialog);
+    const from = { transform: style.transform, opacity: style.opacity };
+    dialog.getAnimations().forEach(animation => animation.cancel());
+    dialog.inert = true;
+    const sheet = UI_MEDIA.narrowLayout.matches;
+    const duration = group?.duration ?? (sheet ? 140 : MOTION.medium);
+    dialog.style.setProperty('--m-picker-exit-duration', `${duration}ms`);
+    dialog.classList.add('m-picker-leaving');
+    const animation = dialog.animate([from, {
+      transform: sheet ? `translateY(${group ? `${group.distance}px` : 'calc(100% + 24px)'})` : from.transform,
+      opacity: sheet ? 1 : 0
+    }], {
+      id: 'mobile-picker-exit', duration,
+      easing: sheet ? 'cubic-bezier(.4,0,.6,1)' : MOTION.ease, fill: 'forwards'
+    });
+    if (group?.startTime != null) animation.startTime = group.startTime;
+    const finish = () => close(...args);
+    animation.finished.then(finish, finish);
+  };
+  dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    dialog.close();
+  });
+}
+// Each step remains mounted under the next modal. Only the root paints a dimmed backdrop.
+function createPickerStack() {
+  const dialogs = [];
+  const stack = {
+    closing: false,
+    add(dialog) {
+      dialogs.at(-1)?.classList.add('picker-stack-covered');
+      dialog.classList.add(dialogs.length ? 'picker-stack-layer' : 'picker-stack-root');
+      dialogs.push(dialog);
+      // Mobile only: a tap on the dimmed area outside this step acts like Esc (back one step). Only the top
+      // step is outside the inert part, so it alone hears the tap. A drag that starts inside never counts.
+      let pressedOutside = false;
+      const outside = event => {
+        const box = dialog.getBoundingClientRect();
+        return event.target === dialog && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom);
+      };
+      dialog.addEventListener('pointerdown', event => { pressedOutside = UI_MEDIA.mobileShell.matches && outside(event); });
+      dialog.addEventListener('click', event => {
+        const close = pressedOutside && outside(event);
+        pressedOutside = false;
+        if (close && !stack.closing && dialog.open) dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        const index = dialogs.indexOf(dialog);
+        if (index !== -1) dialogs.splice(index, 1);
+        if (!stack.closing) {
+          const parent = dialogs.at(-1);
+          parent?.classList.remove('picker-stack-covered');
+          const selected = parent?.querySelector('[aria-pressed="true"], .better-entry.selected .better-class-pick');
+          (selected || parent?.querySelector('.profession-option, [data-dismiss], [data-back]'))?.focus({ preventScroll: true });
+        }
+      }, { once: true });
+    },
+    closeAll() {
+      if (stack.closing) return stack.finished;
+      stack.closing = true;
+      const open = dialogs.filter(dialog => dialog.open);
+      const group = { duration: 140, startTime: document.timeline.currentTime,
+        distance: Math.max(0, ...open.map(dialog => dialog.getBoundingClientRect().height)) + 24 };
+      stack.finished = Promise.all(open.map(dialog => new Promise(resolve => {
+        dialog.pickerGroupExit = group;
+        dialog.addEventListener('close', resolve, { once: true });
+        dialog.close();
+      })));
+      return stack.finished;
+    }
+  };
+  return stack;
+}
 function captureList(withChips = true) {
   const entries = new Map();
   app.querySelectorAll('[data-sort-id]').forEach(row => {

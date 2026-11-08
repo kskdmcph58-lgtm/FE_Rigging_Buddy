@@ -278,9 +278,9 @@
   @keyframes m-sheet-out { to { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
   @keyframes m-backdrop-out { to { opacity: 0; } }
   dialog.m-sheet.m-sheet-leaving[open] { pointer-events: none; }
-  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-body { animation: m-sheet-out 240ms cubic-bezier(.32,.72,0,1) forwards; }
-  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-edge { animation: m-edge-out 240ms ease-out forwards; }
-  dialog.m-sheet.m-sheet-leaving[open]::backdrop { animation: m-backdrop-out 240ms ease-out forwards; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-body { animation: m-sheet-out 260ms cubic-bezier(.4,0,.6,1) forwards; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-edge { animation: m-edge-out 260ms ease-out forwards; }
+  dialog.m-sheet.m-sheet-leaving[open]::backdrop { animation: m-backdrop-out 260ms ease-out forwards; }
   /* Once closed it has already left the screen: no second fade in the centred closing geometry. */
   dialog.m-sheet.m-sheet-leaving:not([open]) { opacity: 0; transition: none; }
 }

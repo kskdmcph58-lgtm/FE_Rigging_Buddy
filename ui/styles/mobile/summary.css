@@ -654,6 +654,9 @@
   #app.summary-page.m-board .record-chip:is(.upgraded,.skipped)>:is(strong,p) { visibility: visible; }
   #app.summary-page.m-board .record-chip.upgraded>div>.m-card-class { visibility: visible; }
   #app.summary-page.m-board .record-chip.upgraded>:is(div,strong,p) { position: relative; z-index: 1; color: #82765c; }
+  /* The side strip (hairlines, rating, class and mount icons) stays under the mask on both marks. 已升级's mask
+     lets it show faintly through, as 已跳过's does; the text above keeps its muted gold. */
+  #app.summary-page.m-board .upgrade-overlay { background: rgba(73,62,43,.88); }
 
   /* ---------- Step 3: list view for sorting and multi-select ---------- */
   /* The list scrolls inside the same screen-fitted area as the board; the page stays put. */

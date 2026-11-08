@@ -3,8 +3,16 @@
    Shared tokens and the design rules live in shell.css.
    Phone widths: tool dialogs rise from the bottom edge as sheets; short alerts (confirmations, choice,
    level input) stay centred like iOS alerts. Exit rules are unchanged everywhere: Esc or the exit button
-   only, never the backdrop. Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
+   only, never the backdrop,
+   except the class and ride picker steps, where a tap outside acts like Esc (features.js createPickerStack). Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
 @media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  /* Native modal focus restoration may focus the dialog surface on iOS. Only controls carry a focus ring. */
+  dialog.app-dialog:focus { outline: none; }
+  dialog.app-dialog.m-picker-leaving { pointer-events: none; }
+  /* A covered step dims to the shade of the page already dimmed around it (styles.css .app-dialog::backdrop),
+     not a lighter one: each area is dimmed once. The sheet's surface is lighter than the page, so it takes a
+     stronger tint (75%, against the page's 60%) to land on the same shade. */
+  dialog.app-dialog:is(.picker-stack-root,.picker-stack-layer)::after { background: #050c0dbf; }
   /* ---------- Footer buttons: one readable size, 36px visual, 44px hit area ---------- */
   dialog.app-dialog:not(.m-sheet) :is(footer, .profession-footer, .choice-actions, .class-scope-actions)>button,
   dialog.app-dialog.confirm-dialog form>button {
@@ -67,6 +75,12 @@
     border-radius: 16px 16px 0 0;
     padding-bottom: 0;
     box-shadow: 0 -8px 32px #0007;
+  }
+  /* A ride step reveals the retained class sheet behind it instead of stretching to the viewport. */
+  dialog.app-dialog.ride-picker:is(.picker-stack-root,.picker-stack-layer) {
+    height: fit-content;
+    min-height: 0;
+    max-height: min(65dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 80px));
   }
   /* The bottom safe area belongs to each sheet's footer, so its surface runs to the screen edge. */
   dialog.app-dialog:is(.card-options-dialog,.expectation-dialog,.better-dialog) footer,
