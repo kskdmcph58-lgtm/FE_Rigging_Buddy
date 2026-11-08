@@ -3,12 +3,23 @@ const seedMessages = new Map();
 let seedSearches = Promise.resolve();
 const seedPending = new Set();
 function seedVersion() { return document.querySelector('meta[name="app-version"]')?.content || ''; }
-function seedMessage(item, c) {
+// A hint closed by clicking its bubble stays closed until its text changes (this session only).
+const dismissedSeedMessages = new Map();
+function seedMessageText(item, c) {
   const text = seedMessages.get(item.id);
   if (text) return text;
   if (item.seed || !window.RiggingSeed.eligible(item, c)) return '';
   const missing = window.RiggingSeed.MIN_RECORDS - M.live(item).length;
   return missing > 0 ? `再记 ${missing} 条就能反推种子` : '';
+}
+function seedMessage(item, c) {
+  const text = seedMessageText(item, c);
+  return text && dismissedSeedMessages.get(item.id) === text ? '' : text;
+}
+function dismissSeedMessage(id) {
+  const item = state.roster.find(r => r.id === id);
+  if (item) dismissedSeedMessages.set(id, seedMessageText(item, char(id)));
+  showSeedMessage(id, seedMessages.get(id) || '');
 }
 function seedStatusMarkup(item, c) {
   const text = seedMessage(item, c);

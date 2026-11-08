@@ -86,6 +86,66 @@ function routeSwitch() {
   const other = state.route === 'other';
   return `<div class="route-segment" role="radiogroup" aria-label="路线"><label title="骑兵单位可以选配属"><input type="radio" name="route" value="kai" ${other ? '' : 'checked'}><span>凯伊线</span></label><label title="骑兵单位都没有配属，不用选也不计算"><input type="radio" name="route" value="other" ${other ? 'checked' : ''}><span>其他线</span></label></div>`;
 }
+/* 推荐: a stepped slider capping the class tier the summary recommends (the better-choice mark, and where
+   其他选择 starts filtering). Picking a class is never limited by it. */
+function recommendText(cap, top) { return cap >= top ? '全部职业' : `${TIER_LABELS[cap]}及以下职业`; }
+function recommendFilter() {
+  const part3 = state.part3 === true, top = part3 ? 5 : 3, cap = window.RiggingSeed.recommendCap(state, part3);
+  return `<div class="recommend-filter" title="只决定标出哪些更好的职业，以及其他选择默认筛到哪一级；选职业不受限制"><span class="recommend-caption" id="recommend-caption">兵种推荐范围</span><div class="recommend-slider" role="slider" tabindex="0" aria-labelledby="recommend-caption" aria-valuemin="0" aria-valuemax="${top}" aria-valuenow="${cap}" aria-valuetext="${recommendText(cap, top)}" style="--stops:${top + 1};--at:${cap}"><span class="recommend-track"><span class="recommend-fill"></span></span>${TIER_LABELS.slice(0, top + 1).map((label, tier) => `<span class="recommend-stop${tier <= cap ? ' in' : ''}"><i></i><small>${label}</small></span>`).join('')}<span class="recommend-thumb"></span></div></div>`;
+}
+function showRecommend(track, cap) {
+  const top = Number(track.getAttribute('aria-valuemax'));
+  track.style.setProperty('--at', String(cap));
+  track.setAttribute('aria-valuenow', String(cap));
+  track.setAttribute('aria-valuetext', recommendText(cap, top));
+  track.querySelectorAll('.recommend-stop').forEach((stop, tier) => stop.classList.toggle('in', tier <= cap));
+}
+function commitRecommend(cap) {
+  const part3 = state.part3 === true, top = part3 ? 5 : 3, key = part3 ? 'part3' : 'pre';
+  if (window.RiggingSeed.recommendCap(state, part3) === cap) return;
+  const next = { ...state.recommendTier };
+  if (cap >= top) delete next[key]; else next[key] = cap;
+  if (Object.keys(next).length) state.recommendTier = next; else delete state.recommendTier;
+  const focused = document.activeElement?.matches('.recommend-slider');
+  render();
+  if (focused) app.querySelector('.recommend-slider')?.focus({ preventScroll: true });
+}
+// Dragging moves only the thumb; the marks are worked out once it is let go.
+let recommendDrag = null;
+const recommendStopAt = (track, x) => {
+  const box = track.getBoundingClientRect(), count = Number(track.getAttribute('aria-valuemax')) + 1;
+  return Math.max(0, Math.min(count - 1, Math.floor((x - box.left) / box.width * count)));
+};
+app.addEventListener('pointerdown', e => {
+  const track = e.target.closest?.('.recommend-slider');
+  if (!track || e.button !== 0) return;
+  e.preventDefault(); track.focus({ preventScroll: true });
+  track.setPointerCapture(e.pointerId); track.classList.add('recommend-dragging');
+  recommendDrag = { track, cap: recommendStopAt(track, e.clientX) };
+  showRecommend(track, recommendDrag.cap);
+});
+app.addEventListener('pointermove', e => {
+  if (!recommendDrag) return;
+  const cap = recommendStopAt(recommendDrag.track, e.clientX);
+  if (cap !== recommendDrag.cap) { recommendDrag.cap = cap; showRecommend(recommendDrag.track, cap); }
+});
+const releaseRecommend = () => {
+  if (!recommendDrag) return;
+  const { track, cap } = recommendDrag;
+  recommendDrag = null; track.classList.remove('recommend-dragging');
+  commitRecommend(cap);
+};
+app.addEventListener('pointerup', releaseRecommend);
+app.addEventListener('pointercancel', releaseRecommend);
+app.addEventListener('keydown', e => {
+  const track = e.target.closest?.('.recommend-slider');
+  if (!track) return;
+  const cap = Number(track.getAttribute('aria-valuenow')), top = Number(track.getAttribute('aria-valuemax'));
+  const next = { ArrowRight: cap + 1, ArrowUp: cap + 1, ArrowLeft: cap - 1, ArrowDown: cap - 1, Home: 0, End: top, PageUp: top, PageDown: 0 }[e.key];
+  if (next === undefined) return;
+  e.preventDefault();
+  commitRecommend(Math.max(0, Math.min(top, next)));
+});
 function applyStoryPhase() {
   const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;
   if (phaseChanged) {
@@ -144,7 +204,8 @@ function validLevel(input) {
     error.id = `level-error-${input.dataset.level || input.closest('[data-initial-form]')?.dataset.initialForm || 'batch'}`;
     error.setAttribute('role', 'alert');
     error.textContent = '请输入 1–99，或留空';
-    (input.closest('.level-row,.initial-level-form,.toolbar') || input.parentElement).append(error);
+    // On a person's card the message is a speech bubble over the portrait, like the seed hint.
+    (input.closest('.journal')?.querySelector('.journal-portrait') || input.closest('.level-row,.initial-level-form,.toolbar') || input.parentElement).append(error);
     input.setAttribute('aria-describedby', error.id);
     input.focus();
   }
@@ -244,7 +305,7 @@ function render() {
 }
 function renderSelect() {
   app.innerHTML =
-    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${part3Switch()}${visibleRoster().length ? '<button data-action="summary">返回</button>' : `${storyRoster().some(item => item.deleted) ? '<button data-action="undo-delete">撤回删除</button>' : ''}<button class="import-zone" data-action="import">恢复备份</button>`}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
+    `<div class="toolbar"><label class="search"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input id="search" aria-label="搜索人物名字"></label>${part3Switch()}${routeSwitch()}${visibleRoster().length ? '<button data-action="summary">返回</button>' : `${storyRoster().some(item => item.deleted) ? '<button data-action="undo-delete">撤回删除</button>' : ''}<button class="import-zone" data-action="import">恢复备份</button>`}</div><div class="character-grid" id="character-grid"></div><div class="bottom-bar"><span id="selected-count"></span><button class="primary" id="choose-next" data-action="levels">下一步 · 设置等级</button></div>`;
   document.querySelector('#search').value = query;
   const searchInput = app.querySelector('#search');
   searchInput.name = 'rigging-buddy-character-search';
@@ -442,7 +503,7 @@ window.addEventListener('resize',refreshSetupExpectationSummaries);
 function renderLevels() {
   setupLevelEdit=null;
   app.innerHTML=`<section class="levels">
-    <div class="toolbar setup-toolbar">${part3Switch()}<button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置兵种</button>${selectionToolbar()}</div>
+    <div class="toolbar setup-toolbar">${part3Switch()}${routeSwitch()}<button data-action="batch" aria-haspopup="dialog">全部设置等级</button><button data-profession data-setup-profession="" aria-haspopup="dialog">全部设置兵种</button>${selectionToolbar()}</div>
     <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
@@ -716,6 +777,19 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   document.querySelectorAll('.action-menu[open]').forEach(menu => { menu.open = false; menu.querySelector('summary').focus(); });
 });
+/* Speech bubbles over a person's portrait close when pressed. This runs first (window, capture): the page
+   otherwise blurs an open level field on pointerdown, which redraws the error bubble under the pointer.
+   Focus stays where it is. */
+const PORTRAIT_BUBBLE = '.journal-portrait :is(.seed-status,.level-error)';
+window.addEventListener('pointerdown', e => {
+  const bubble = e.target.closest?.(PORTRAIT_BUBBLE);
+  if (!bubble || e.button !== 0) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (bubble.matches('.level-error')) {
+    bubble.closest('.journal').querySelector('[data-initial-form] input')?.removeAttribute('aria-describedby');
+    bubble.remove();
+  } else dismissSeedMessage(bubble.dataset.seedStatus);
+}, true);
 app.addEventListener('click', async e => {
   // With a better choice marked, clicking anywhere on the class name opens the choices; changing the class
   // is the class row in its hover tip. The keyboard keeps both: Enter on the field changes the class,

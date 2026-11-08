@@ -82,6 +82,23 @@ window.RiggingSeed = (() => {
       .filter(choice => points(choice) > base || (row.happy !== true && choice.happy));
   }
 
+  // Class tier: 0 for 平民/贵族, then 初级 1 up to 神将 5.
+  function classTier(name) {
+    const catalog = window.PROFESSIONS;
+    return catalog.base.includes(name) ? 0 : 1 + catalog.rows.findIndex(row => row.flat().includes(name));
+  }
+  /* The toolbar's 推荐 cap for one story part (Part 1-2 tops out at 上级, Part 3 at 神将). It narrows what is
+     recommended, never what can be picked. */
+  function recommendCap(state, part3) {
+    const top = part3 ? 5 : 3, cap = state.recommendTier?.[part3 ? 'part3' : 'pre'];
+    return Number.isInteger(cap) && cap >= 0 && cap < top ? cap : top;
+  }
+  // The better choices within that cap: these decide whether a row is marked.
+  function recommendedChoices(state, item, c, row) {
+    const cap = recommendCap(state, row.part3 === true);
+    return betterChoices(state, item, c, row).filter(choice => classTier(choice.profession) <= cap);
+  }
+
   // Null when the class is unknown, so nothing can be calculated for this row.
   function eventOf(c, row) {
     const id = personId(c), jobId = jobs.get(row.profession);
@@ -354,6 +371,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

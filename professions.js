@@ -368,6 +368,7 @@ function miniStats(stats, plus2, base = null) {
 /* The current row on the left, the other results to the right, best first. Each result is a stat card with
    a box beside it listing the classes that give it and their rides. The layout (layoutBetter) keeps every
    stat card in view without scrolling the dialog; only a class box that cannot fit scrolls inside itself. */
+const TIER_LABELS = ['基础', '初级', '中级', '上级', '最上级', '神将'];
 function betterDialog(title, current, groups) {
   return new Promise(resolve => {
     const options = [];
@@ -389,7 +390,17 @@ function betterDialog(title, current, groups) {
     const kind = rideKind(current.profession, current.id);
     const currentRide = kind ? `<span class="better-rides"><span class="better-ride">${rideIcon(kind, current.ride)}<span>${current.ride ? window.RIDES.byId[current.ride.id].name : '无配属'}</span>${current.ride ? `<span class="better-hearts">${heartIcon(current.ride.level)}</span>` : ''}</span></span>` : '';
     // Built like the other cards; the two sides are told apart only by their captions.
-    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span></div></section>`;
+    /* A vertical stepped slider caps the class tier of the results shown (基础 at the bottom; Part 1-2 goes up
+       to 上级, Part 3 on to 最上级 and 神将). It only hides results already listed, never adds any. */
+    const data = window.PROFESSIONS, highest = current.part3 ? 5 : 3;
+    const tierOf = name => data.base.includes(name) ? 0 : 1 + data.rows.findIndex(row => row.flat().includes(name));
+    const stops = Array.from({ length: highest + 1 }, (_, i) => highest - i);
+    // Shown only when it can change something: the results span at least two tiers.
+    const filterable = new Set(groups.flatMap(result => result.classes.map(entry => tierOf(entry.profession)))).size > 1;
+    // How many result cards each stop keeps: a card stays while any of its classes is within the cap.
+    const kept = tier => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier)).length;
+    const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
+    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span></div>${slider}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
     dialog.setAttribute('aria-labelledby', 'better-title');
@@ -411,6 +422,47 @@ function betterDialog(title, current, groups) {
        once; otherwise it stays open with its rides lit until the user clicks a heart (or a ride that has
        only one level). 任意配属 keeps the ride in use, 无配属 takes none. */
     const choose = (index, ride) => { chosen = { ...options[Number(index)], ride }; dialog.close(); };
+    const track = dialog.querySelector('.tier-slider');
+    // Starts at the toolbar's 推荐 stop; moving it here changes this dialog only.
+    let cap = filterable ? Math.min(current.cap ?? highest, highest) : highest;
+    const setCap = (value, relayout = true) => {
+      if (!track) return;
+      const before = relayout ? betterSnapshot(dialog) : null;
+      cap = Math.max(0, Math.min(highest, value));
+      track.style.setProperty('--at', String(highest - cap));
+      track.setAttribute('aria-valuenow', String(cap));
+      track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
+      for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
+      // Cards filtered out leave the page, so go through every stored card, not what the page holds now.
+      for (const node of dialog.betterNodes) {
+        for (const entry of node.querySelectorAll('.better-entry[data-choice]')) entry.hidden = tierOf(options[Number(entry.dataset.choice)].profession) > cap;
+        node.hidden = !node.querySelector('.better-entry[data-choice]:not([hidden])');
+      }
+      if (relayout) { pinned = null; animateBetter(dialog, before); }
+    };
+    if (track) {
+    const stopAt = y => { const box = track.getBoundingClientRect(); return highest - Math.round((y - box.top) / box.height * stops.length - .5); };
+    let dragging = false, pointerFocus = false;
+    track.addEventListener('focus', () => { if (!pointerFocus) track.classList.add('key-focus'); });
+    track.addEventListener('blur', () => track.classList.remove('key-focus'));
+    track.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      // Focus for the arrow keys, but no ring: the ring is for reaching the slider by keyboard only.
+      e.preventDefault(); pointerFocus = true; track.classList.remove('key-focus'); track.focus({ preventScroll: true }); pointerFocus = false;
+      dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('tier-dragging');
+      const next = stopAt(e.clientY); if (next !== cap) setCap(next);
+    });
+    track.addEventListener('pointermove', e => { if (!dragging) return; const next = stopAt(e.clientY); if (next !== cap) setCap(next); });
+    const release = () => { dragging = false; track.classList.remove('tier-dragging'); };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+    track.addEventListener('keydown', e => {
+      const next = { ArrowUp: cap + 1, ArrowRight: cap + 1, ArrowDown: cap - 1, ArrowLeft: cap - 1, Home: 0, End: highest, PageUp: highest, PageDown: 0 }[e.key];
+      if (next === undefined) return;
+      e.preventDefault(); e.stopPropagation(); track.classList.add('key-focus');
+      if (Math.max(0, Math.min(highest, next)) !== cap) setCap(next);
+    });
+    }
     /* Compact layout (layoutBetter): a card's class box floats beside it, inside the dialog, while the card
        or its box is pointed at or focused; a click on the card pins it so the pointer can travel there. */
     let pinned = null, hideTimer = 0;
@@ -478,11 +530,24 @@ function betterDialog(title, current, groups) {
       }
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
-    const relayout = () => layoutBetter(dialog);
+    // A window resize measures afresh: the kept size could otherwise exceed the new window.
+    const relayout = () => { unlockBetterSize(dialog); layoutBetter(dialog); lockBetterSize(dialog); layoutBetter(dialog); };
     dialog.addEventListener('close', () => { window.removeEventListener('resize', relayout); retireDialog(dialog); resolve(chosen); }, { once: true });
     document.body.append(dialog);
     dialog.showModal();
+    dialog.betterNodes = [...dialog.querySelectorAll('.better-side-others .better-node')];
+    setCap(cap, false);
     layoutBetter(dialog);
+    /* Filtering never shrinks the dialog: it keeps its opening size (or grows), so it does not jump and the
+       slider stays under the pointer while dragged. A filter remembered from before still opens at the size
+       of everything, so the size is taken with all results first. */
+    // Once locked, lay out again inside the lock, so opening and coming back to the top look the same.
+    if (track && cap !== highest) {
+      const kept = cap;
+      setCap(highest, false); layoutBetter(dialog);
+      lockBetterSize(dialog); layoutBetter(dialog);
+      setCap(kept);
+    } else { lockBetterSize(dialog); layoutBetter(dialog); }
     window.addEventListener('resize', relayout);
     dialog.querySelector('button.better-option')?.focus({ preventScroll: true });
   });
@@ -492,10 +557,65 @@ function betterDialog(title, current, groups) {
    for, whose class boxes lose the least height, fewer columns on a tie; results are split between the
    columns in order so that the overflow is smallest. In a column that is still too tall as few class boxes
    as possible are capped, the tallest first, never below their stat card, and they scroll inside. */
+/* Filtering animates like a macOS collection (about 0.2s, nothing under Reduce Motion): cards that stay slide
+   from where they were to their new place, cards that go fade out where they stood, new ones fade in. */
+// Pixels layoutBetter leaves spare (and lockBetterSize adds back), so fractions never tip a column over.
+const BETTER_SLACK = 2;
+const BETTER_MOTION = { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' };
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* The dialog keeps the size it opened at (with every result shown) while filtering: neither smaller nor larger.
+   layoutBetter reads the height from max-height, so the filtered results are laid out within that same box. */
+function lockBetterSize(dialog) {
+  /* The layout size rounded up. offsetWidth/Height round to the nearest pixel, which can cut a fraction off
+     the content and bring out both scrollbars; getBoundingClientRect is no good either while the dialog is
+     still scaling in. The computed size is neither. */
+  const style = getComputedStyle(dialog), sum = names => names.reduce((total, name) => total + (parseFloat(style[name]) || 0), 0);
+  const frame = style.boxSizing === 'border-box' ? [0, 0] : [sum(['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth']), sum(['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'])];
+  // Plus the slack layoutBetter keeps, so laying out inside the lock gives back the very same arrangement.
+  const width = Math.ceil(parseFloat(style.width) + frame[0]) + BETTER_SLACK, height = Math.ceil(parseFloat(style.height) + frame[1]) + BETTER_SLACK;
+  Object.assign(dialog.style, { width: `${width}px`, minWidth: `${width}px`, maxWidth: `${width}px`, height: `${height}px`, maxHeight: `${height}px` });
+}
+function unlockBetterSize(dialog) {
+  for (const name of ['width', 'minWidth', 'maxWidth', 'height', 'minHeight', 'maxHeight']) dialog.style[name] = '';
+}
+function betterSnapshot(dialog) {
+  const shown = new Map();
+  for (const node of dialog.betterNodes || []) if (node.isConnected && !node.hidden) shown.set(node, node.getBoundingClientRect());
+  return shown;
+}
+function animateBetter(dialog, before) {
+  const frame = dialog.getBoundingClientRect();
+  // Ghosts of the cards that go: copies left where they were, fading out above the new layout.
+  const ghosts = [];
+  if (!reduceMotion()) for (const [node, box] of before) if (node.hidden) {
+    const ghost = node.cloneNode(true);
+    ghost.removeAttribute('hidden');
+    ghost.classList.add('better-ghost');
+    Object.assign(ghost.style, { left: `${box.left - frame.left}px`, top: `${box.top - frame.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+    ghosts.push(ghost);
+  }
+  layoutBetter(dialog);
+  if (reduceMotion()) return;
+  dialog.append(...ghosts);
+  for (const ghost of ghosts) ghost.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.96)' }], { ...BETTER_MOTION, duration: 160, fill: 'forwards' }).finished.then(() => ghost.remove(), () => ghost.remove());
+  for (const node of dialog.betterNodes) {
+    if (node.hidden || !node.isConnected) continue;
+    const old = before.get(node), now = node.getBoundingClientRect();
+    if (!old) node.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { ...BETTER_MOTION, delay: 60 , fill: 'backwards' });
+    else if (Math.abs(old.left - now.left) > .5 || Math.abs(old.top - now.top) > .5) node.animate([{ transform: `translate(${old.left - now.left}px, ${old.top - now.top}px)` }, { transform: 'none' }], BETTER_MOTION);
+  }
+}
 function layoutBetter(dialog) {
   const map = dialog.querySelector('.better-map'), others = dialog.querySelector('.better-side-others');
-  const branches = others.querySelector('.better-branches'), nodes = [...others.querySelectorAll('.better-node')];
-  if (!nodes.length) return;
+  const branches = others.querySelector('.better-branches');
+  dialog.betterNodes ||= [...others.querySelectorAll('.better-node')];
+  const nodes = dialog.betterNodes.filter(node => !node.hidden);
+  others.querySelector('.better-none')?.remove();
+  if (!nodes.length) {
+    branches.replaceChildren();
+    branches.insertAdjacentHTML('afterend', '<p class="better-none">这个职业等级内没有其他选择</p>');
+    return;
+  }
   dialog.classList.remove('better-compact');
   for (const box of others.querySelectorAll('.better-ridebox.floating')) box.classList.remove('floating');
   // Measure everything at its natural size in a single column.
@@ -511,25 +631,32 @@ function layoutBetter(dialog) {
   const mapStyle = getComputedStyle(map), caption = others.querySelector('.better-caption');
   const height = Math.floor(parseFloat(getComputedStyle(dialog).maxHeight) - 2 - dialog.querySelector('header').offsetHeight - dialog.querySelector('footer').offsetHeight
     - parseFloat(mapStyle.paddingTop) - parseFloat(mapStyle.paddingBottom) - caption.offsetHeight - (parseFloat(getComputedStyle(others).rowGap) || 0));
-  const width = window.innerWidth - 32 - 2 - parseFloat(mapStyle.paddingLeft) - parseFloat(mapStyle.paddingRight)
+  // A dialog locked to its opening size (lockBetterSize) lays out within that width, not the window's.
+  const width = (parseFloat(dialog.style.maxWidth) || window.innerWidth - 32) - 2 - parseFloat(mapStyle.paddingLeft) - parseFloat(mapStyle.paddingRight)
     - dialog.querySelector('.better-side-current').offsetWidth - (parseFloat(mapStyle.columnGap) || 0);
-  const SCROLLBAR = 12;
+  const SCROLLBAR = 12, SLACK = BETTER_SLACK;
+  // Fractions of a pixel in fonts and zoom must never tip a column over: keep a little slack.
+  const room = height - SLACK, across = width - SLACK;
   const span = (from, to) => {
     const count = to - from, used = sizes.slice(from, to).reduce((sum, size) => sum + size.height, 0) + (count - 1) * gap;
-    return count * card + (count - 1) * gap > height ? Infinity : Math.max(0, used - height);
+    return count * card + (count - 1) * gap > room ? Infinity : Math.max(0, used - room);
   };
-  // Best split of the results into k columns, in order, by total overflow.
+  /* Best split of the results into k columns, in order: least overflow first; between splits that overflow
+     equally (usually none), the most even columns, by the sum of squared column heights. One pixel of
+     overflow outweighs any difference in evenness. */
+  const usedHeight = (from, to) => sizes.slice(from, to).reduce((sum, size) => sum + size.height, 0) + (to - from - 1) * gap;
+  const score = (from, to) => span(from, to) * 1e4 + (usedHeight(from, to) / 100) ** 2;
   const split = k => {
     const n = sizes.length, best = Array.from({ length: k + 1 }, () => new Array(n + 1).fill(Infinity)), cut = best.map(row => row.map(() => 0));
     best[0][0] = 0;
     for (let j = 1; j <= k; j++) for (let to = j; to <= n; to++) for (let from = j - 1; from < to; from++) {
-      const cost = best[j - 1][from] + span(from, to);
+      const cost = best[j - 1][from] + score(from, to);
       if (cost < best[j][to]) { best[j][to] = cost; cut[j][to] = from; }
     }
     if (best[k][n] === Infinity) return null;
     const columns = [];
     for (let j = k, to = n; j > 0; to = cut[j][to], j--) columns.unshift([cut[j][to], to]);
-    const overflow = best[k][n];
+    const overflow = columns.reduce((sum, [from, to]) => sum + span(from, to), 0);
     const spread = columns.reduce((sum, [from, to]) => sum + Math.max(...sizes.slice(from, to).map(size => size.width)) + (span(from, to) > 0 ? SCROLLBAR : 0), 0) + (k - 1) * columnGap;
     return { columns, overflow, spread };
   };
@@ -538,17 +665,17 @@ function layoutBetter(dialog) {
     const option = split(k);
     if (!option) continue;
     // Too wide only counts when something narrower already works.
-    if (option.spread > width && chosen) break;
+    if (option.spread > across && chosen) break;
     if (!chosen || option.overflow < chosen.overflow - 0.5) chosen = option;
     if (chosen.overflow < 0.5) break;
   }
   /* Not even that fits the window: the class boxes fold away and only the stat cards are laid out, as
      many to a column as the height takes; a card's box floats beside it when pointed at or picked. */
-  if (!chosen || chosen.spread > width) {
+  if (!chosen || chosen.spread > across) {
     dialog.classList.add('better-compact');
     for (const node of nodes) { node.querySelector('.better-ridebox').style.maxHeight = ''; node.querySelector('.better-card').tabIndex = 0; }
     // Spread evenly, the earlier columns taking one more (10 cards in 4 columns: 3 3 2 2).
-    const perColumn = Math.max(1, Math.floor((height + gap) / (card + gap))), count = Math.ceil(nodes.length / perColumn);
+    const perColumn = Math.max(1, Math.floor((room + gap) / (card + gap))), count = Math.ceil(nodes.length / perColumn);
     const size = Math.floor(nodes.length / count), extra = nodes.length % count;
     let from = 0;
     branches.replaceChildren(...Array.from({ length: count }, (_, i) => {
@@ -565,7 +692,7 @@ function layoutBetter(dialog) {
     const column = document.createElement('div');
     column.className = 'better-branch';
     const items = nodes.slice(from, to), heights = sizes.slice(from, to).map(size => size.height);
-    const budget = height - (items.length - 1) * gap;
+    const budget = room - (items.length - 1) * gap;
     if (heights.reduce((a, b) => a + b, 0) > budget) {
       /* As few boxes as possible scroll, so none is left scrolling by a few pixels: the tallest boxes take
          the whole cut, one more at a time until it fits, and the rest show in full. The ones cut share
@@ -599,11 +726,14 @@ async function openBetterChoices(anchor) {
   const index = Number(anchor.dataset.betterIndex), c = char(item.id);
   const row = window.RiggingSeed.queueRows(state, item, c, index + 1)[index];
   const choices = row ? window.RiggingSeed.betterChoices(state, item, c, row) : [];
+  // The mark only shows for choices within 推荐; the dialog still lists them all, filtered to that stop at first.
+  if (row && !window.RiggingSeed.recommendedChoices(state, item, c, row).length) choices.length = 0;
   const field = () => app.querySelector(`[data-better="${item.id}"][data-better-index="${index}"]`) || app.querySelector(`[data-profession][data-character="${item.id}"][data-queue-index="${index}"]`);
   const refocus = () => field()?.focus({ preventScroll: true });
   if (!choices.length) { refocus(); return; }
-  const groups = betterGroups(choices), current = { id: item.id, profession: row.profession, ride: row.ride, stats: row.stats, plus2: row.plus2, happy: row.happy === true };
-  const picked = await betterDialog(`LV ${row.displayLevel} 的其他选择`, current, groups);
+  const groups = betterGroups(choices), current = { id: item.id, part3: row.part3 === true, cap: window.RiggingSeed.recommendCap(state, row.part3 === true), profession: row.profession, ride: row.ride, stats: row.stats, plus2: row.plus2, happy: row.happy === true };
+  // The level in the title is written like LEVEL UP on the record page: its font, in gold.
+  const picked = await betterDialog(`<span class="better-level">${levelLabel(item, row.displayLevel)}</span> 的其他选择`, current, groups);
   if (!picked) { refocus(); return; }
   // The user picked a ride and level, or 任意配属: then keep the one in use when it gives this result.
   const kind = rideKind(picked.profession, item.id), rides = picked.outcome.rides, same = a => b => JSON.stringify(a) === JSON.stringify(b);

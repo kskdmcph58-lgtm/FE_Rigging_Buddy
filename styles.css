@@ -102,6 +102,90 @@ header {
   letter-spacing: 3px;
   margin-top: 8px;
 }
+/* 推荐 slider: stops 基础 (left) up to 上级 or 神将, labelled under their dots; the gold part is what is
+   recommended. As tall as the buttons beside it. */
+.recommend-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  min-height: var(--control-height);
+}
+.recommend-caption {
+  color: var(--muted);
+  font: 13px/20px var(--font-ui);
+}
+.recommend-slider {
+  --col: calc(100% / var(--stops));
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--stops), 40px);
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-input-mode="keyboard"] .recommend-slider:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.recommend-track {
+  position: absolute;
+  top: 9px;
+  left: calc(var(--col) / 2);
+  right: calc(var(--col) / 2);
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.recommend-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--at) / (var(--stops) - 1) * 100%);
+  border-radius: inherit;
+  background: var(--gold);
+  opacity: .75;
+  transition: width .2s cubic-bezier(.2,0,0,1);
+}
+.recommend-stop {
+  display: grid;
+  grid-template-rows: 22px auto;
+  justify-items: center;
+  align-items: center;
+  color: var(--muted);
+  font: 11px/14px var(--font-ui);
+  white-space: nowrap;
+}
+.recommend-stop small {
+  font: inherit;
+}
+.recommend-stop i {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3f5552;
+}
+.recommend-stop.in { color: var(--text); }
+.recommend-stop.in i { background: var(--gold); }
+.recommend-thumb {
+  position: absolute;
+  top: 1px;
+  left: calc((var(--at) + .5) * var(--col) - 10px);
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 3px solid var(--bg);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold),0 2px 6px #0008;
+  transition: left .2s cubic-bezier(.2,0,0,1);
+}
+.recommend-dragging :is(.recommend-thumb,.recommend-fill) { transition-duration: .08s; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.recommend-thumb,.recommend-fill) { transition: none; }
+}
 /* Part 3 segmented control: equal segments in the same outline and height as the
    buttons beside it, with a raised block marking the chosen side. */
 :is(.part3-segment,.route-segment) {
@@ -521,6 +605,89 @@ input {
 }
 .seed-status[hidden] {
   display: none;
+}
+/* Person cards: the narrow portrait, with hints spoken from it in a comic speech bubble that sizes to its text. */
+.journal-portrait {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  /* The strip's left edge is transparent: pull it in so the face lines up with the name below. */
+  margin-left: -14px;
+}
+.journal-head .journal-portrait img {
+  width: 116px;
+  height: 60px;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 3px;
+  background: transparent;
+}
+.journal-portrait :is(.seed-status,.level-error) {
+  position: absolute;
+  left: 4px;
+  bottom: calc(100% + 9px);
+  z-index: 4;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 48px));
+  margin: 0;
+  padding: 6px 12px;
+  border: 1.5px solid #1b2826;
+  border-radius: 14px;
+  background: #f3ecd9;
+  color: #22302d;
+  font: 500 13px/1.45 var(--font-ui);
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 4px 14px #0007;
+  cursor: pointer;
+}
+.journal-portrait :is(.seed-status,.level-error)::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: -7px;
+  width: 11px;
+  height: 11px;
+  background: inherit;
+  border-right: 1.5px solid #1b2826;
+  border-bottom: 1.5px solid #1b2826;
+  transform: rotate(45deg) skew(8deg, 8deg);
+}
+.journal-portrait .level-error {
+  color: #a3271c;
+}
+.journal-portrait:has(.level-error) .seed-status {
+  display: none;
+}
+/* 暂无记录 sits at the centre point of the whole card, not just the middle of the record column. */
+.journal:has(.records>.empty) {
+  position: relative;
+}
+.journal .records:has(>.empty) {
+  position: static;
+}
+.journal .records>.empty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Phones clip the card, so the bubble gets room above the portrait instead of overhanging the card edge. */
+@media(max-width:600px) {
+  .journal-head:has(.journal-portrait :is(.seed-status:not([hidden]),.level-error)) {
+    align-items: flex-start;
+    padding-top: 44px;
+  }
+  .journal-head .journal-portrait img {
+    width: 87px;
+    height: 45px;
+  }
+  .journal-portrait {
+    margin-left: -10px;
+  }
 }
 .stat-panel .seed-status {
   margin-top: 12px;
@@ -2029,6 +2196,7 @@ button.primary.touch-pressed:not(:disabled) {
   .summary-page.multi-select-mode .summary-top>.summary-controls .selection-toolbar-anchor { flex:0 0 100%; width:100%; }
   .summary-page.multi-select-mode .summary-top>.part3-segment,
   .summary-page.multi-select-mode .summary-top>.route-segment,
+  .summary-page.multi-select-mode .summary-top>.recommend-filter,
   .summary-page.multi-select-mode .summary-top>.metrics,
   .summary-page.multi-select-mode .summary-actions { display:none; }
   .summary-actions {
@@ -2383,6 +2551,13 @@ button,summary,a,[role="button"],[data-initial-level] {
     grid-row: 2;
     width: 100%;
   }
+  .select-page>.toolbar>.route-segment {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .select-page>.toolbar:has(>.route-segment)>.search-box {
+    grid-row: 3;
+  }
   .select-page .search-box {
     flex: 1;
     width: auto;
@@ -2555,11 +2730,10 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     gap: 8px 12px;
     align-self: start;
   }
-  .summary-page .journal-head img {
+  .summary-page .journal-head .journal-portrait {
     grid-column: 2;
     grid-row: 1;
-    width: 56px;
-    height: 56px;
+    justify-self: start;
   }
   .summary-page .journal-head .drag-grip {
     grid-column: 1;
@@ -3217,24 +3391,27 @@ button.class-tip-row {
   width: auto;
   height: 26px;
 }
+/* A full-width action at the foot of the popover, in the UI font: the pixel font's glyphs sit off centre
+   in a box with line-height 1, which made the label look crooked beside its icon. */
 .class-tip .class-tip-more {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  width: 100%;
   min-height: 32px;
-  margin-top: 2px;
+  margin-top: 4px;
   padding: 0 12px;
   border: 1px solid var(--gold);
   border-radius: var(--control-radius);
   background: transparent;
   color: var(--gold);
-  font: 13px/1 var(--font-game);
+  font: 500 13px/18px var(--font-ui);
   white-space: nowrap;
 }
 .class-tip-more svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   flex: none;
 }
 @media(hover:hover) and (pointer:fine) {
@@ -3615,12 +3792,14 @@ main.levels-page { padding-left:60px; padding-right:24px; }
 @media(max-width:600px) {
   .levels-page .levels .setup-toolbar { display:grid; grid-template-columns:auto auto minmax(0,1fr); margin-left:-16px; gap:8px; margin-bottom:4px; }
   .levels-page .setup-toolbar>.part3-segment { grid-column:1 / span 2; grid-row:1; }
+  .levels-page .setup-toolbar>.route-segment { grid-column:1 / span 2; grid-row:2; }
+  .levels-page .setup-toolbar:has(>.route-segment)>button { grid-row:3; }
   .levels-page .setup-toolbar>button { grid-row:2; justify-self:start; }
   .levels-page .setup-toolbar>button[data-action="batch"] { grid-column:1; }
   .levels-page .setup-toolbar>button[data-setup-profession] { grid-column:2; }
   .levels-page .setup-toolbar .selection-toolbar-anchor { grid-column:3; grid-row:1; min-width:0; margin:0; }
   .levels-page.multi-select-mode .setup-toolbar .selection-toolbar-anchor { grid-column:1 / -1; }
-  .levels-page.multi-select-mode .setup-toolbar>.part3-segment { display:none; }
+  .levels-page.multi-select-mode .setup-toolbar>:is(.part3-segment,.route-segment) { display:none; }
   .levels-page .setup-toolbar .selection-toolbar { display:grid; grid-template-columns:minmax(0,1fr) auto auto; }
   .levels-page .setup-toolbar .selection-toolbar>[data-action="multi-select"] { grid-column:3; grid-row:1; justify-self:end; }
   .levels-page .setup-toolbar .selection-toolbar>.selection-count { grid-column:2; grid-row:1; justify-self:end; }
@@ -4192,13 +4371,43 @@ html[data-input-mode="touch"] button.expectation-link {
 .better-dialog { width:fit-content; max-width:calc(100% - 32px); max-height:min(820px,calc(100dvh - 48px)); }
 .better-dialog[open] { display:flex; flex-direction:column; }
 /* Title as in the other dialogs: the shared 18px heading; the header frame gives the padding. */
-.better-map { display:flex; align-items:flex-start; gap:32px; min-height:0; overflow:auto; padding:20px 24px; }
+.better-map { display:flex; flex:1 1 auto; align-items:flex-start; gap:32px; min-height:0; overflow:auto; padding:20px 24px; }
 .better-side-current { position:sticky; top:0; flex:none; display:grid; gap:8px; }
 .better-side-others { flex:none; display:grid; gap:8px; }
-.better-caption { margin:0; color:var(--muted); font:13px/18px var(--font-game); letter-spacing:.04em; }
+.better-caption { margin:0; color:var(--muted); font:13px/18px var(--font-ui); }
+/* Like LEVEL UP on the record page. */
+/* Taller than the words after it; the level-up face runs small, so 1.6× and on the same baseline. */
+.better-level { margin-right:.3em; font:400 1.6em/1 var(--font-level-up); color:var(--gold); vertical-align:baseline; }
 /* The current row reads apart from the choices: a gold caption and a faint gold tint and edge on its boxes.
    Choices only turn fully gold while pointed at or picked, so the two never look alike. */
 .better-side-current .better-caption { color:var(--gold); font-weight:600; }
+/* Class tier slider: stops top (highest) to bottom (基础); the thumb sits on the cap, the gold part below it
+   is what is shown. Rows are 30px; the track runs from the first stop's centre to the last's. */
+.tier-filter { display:grid; gap:10px; margin-top:12px; padding-top:14px; border-top:1px solid var(--line); }
+.tier-filter .better-caption { color:var(--muted); font-weight:400; }
+.tier-slider { --row:30px; position:relative; display:grid; grid-auto-rows:var(--row); width:max-content; padding-right:8px; cursor:pointer; touch-action:none; user-select:none; border-radius:8px; outline:none; }
+.tier-slider:focus-visible { box-shadow:none; }
+.tier-slider.key-focus { box-shadow:0 0 0 2px var(--gold); }
+.tier-track { position:absolute; left:9px; top:calc(var(--row) / 2); bottom:calc(var(--row) / 2); width:4px; border-radius:2px; background:var(--line); }
+.tier-fill { position:absolute; inset:calc(var(--at) * var(--row)) 0 0; border-radius:inherit; background:var(--gold); opacity:.75; transition:top .2s cubic-bezier(.2,0,0,1); }
+.tier-stop { display:grid; grid-template-columns:22px auto auto; align-items:center; gap:10px; color:var(--muted); font:13px/1 var(--font-ui); transition:color .2s; }
+.tier-stop i { justify-self:center; width:8px; height:8px; border-radius:50%; background:#3f5552; position:relative; z-index:1; transition:background-color .2s; }
+.tier-stop.in { color:var(--text); }
+.tier-stop.in i { background:var(--gold); }
+.tier-thumb { position:absolute; left:1px; top:calc(var(--at) * var(--row) + var(--row) / 2 - 10px); width:20px; height:20px; border-radius:50%; background:var(--gold); border:3px solid var(--surface-dialog); box-shadow:0 0 0 1px var(--gold),0 2px 6px #0008; z-index:2; transition:top .2s cubic-bezier(.2,0,0,1); }
+/* While dragged the thumb follows the pointer stop by stop with a shorter glide. */
+.tier-slider.tier-dragging .tier-thumb, .tier-slider.tier-dragging .tier-fill { transition-duration:.1s; }
+.better-ghost { position:absolute; z-index:3; margin:0; pointer-events:none; }
+@media (prefers-reduced-motion: reduce) {
+  .tier-thumb, .tier-fill, .tier-stop, .tier-stop i { transition:none; }
+}
+.tier-slider .tier-stop[data-tier]:hover span { color:var(--text); }
+/* Filtered out by the tier slider: their own display rules must not bring them back. */
+.better-dialog :is(.better-entry,.better-node)[hidden] { display:none !important; }
+/* Results each stop keeps, a quiet hint beside the name. */
+.tier-count { min-width:1.6em; padding:2px 5px; border-radius:6px; background:#ffffff0d; color:var(--muted); font:11px/1.2 var(--font-ui); font-variant-numeric:tabular-nums; text-align:center; }
+.tier-stop.in .tier-count { color:var(--text); }
+.better-none { margin:0; color:var(--muted); font-size:14px; }
 .better-root .better-card, .better-root .better-ridebox { border-color:#d8c39466; background:#d8c39412; }
 .better-branches { display:flex; align-items:flex-start; gap:12px; }
 .better-branch { display:grid; align-content:start; gap:12px; }
@@ -4604,6 +4813,11 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: 360px;
     translate: 0 -2.5px;
   }
+  .select-page>.toolbar>.route-segment {
+    position: absolute;
+    left: 522px;
+    translate: 0 -2.5px;
+  }
   .summary-top>.part3-segment {
     left: 240px;
     translate: 0 -10px;
@@ -4614,20 +4828,53 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: 402px;
     translate: 0 -10px;
   }
+  /* 推荐 follows 24px after the last switch: the route switch in Part 1-2, the part switch in Part 3.
+     It hides in multi-select, so it only has to clear the buttons on the right. */
+  .summary-top>.recommend-filter {
+    position: absolute;
+    left: 414px;
+    translate: 0 -10px;
+  }
+  .summary-top:has(>.route-segment)>.recommend-filter {
+    left: 576px;
+  }
   /* Multi-select's first action starts at 50% - 275px on this page. */
   .setup-toolbar>.part3-segment {
     left: min(240px,calc(50% - 445px));
+  }
+  .setup-toolbar:has(>.route-segment)>.part3-segment {
+    left: min(240px,calc(50% - 607px));
+  }
+  .setup-toolbar>.route-segment {
+    position: absolute;
+    left: min(402px,calc(50% - 445px));
   }
 }
 /* Wide enough for one spot that clears the search box and both multi-select bars. */
 @media(min-width:1680px) {
   .select-page>.toolbar>.part3-segment,
   .summary-top>.part3-segment,
-  .setup-toolbar>.part3-segment {
+  .setup-toolbar>.part3-segment,
+  .setup-toolbar:has(>.route-segment)>.part3-segment {
     left: calc(50% - 470px);
   }
+  .select-page>.toolbar>.route-segment,
+  .setup-toolbar>.route-segment,
   .summary-top>.route-segment {
     left: calc(50% - 308px);
+  }
+  .summary-top>.recommend-filter {
+    left: calc(50% - 296px);
+  }
+  .summary-top:has(>.route-segment)>.recommend-filter {
+    left: calc(50% - 134px);
+  }
+  /* The extra route control must also clear the expanded batch actions. */
+  .levels-page.multi-select-mode .setup-toolbar:has(>.route-segment)>.part3-segment {
+    left: calc(50% - 607px);
+  }
+  .levels-page.multi-select-mode .setup-toolbar>.route-segment {
+    left: calc(50% - 445px);
   }
 }
 /* No room beside the buttons here: it keeps its own centred line above them.
@@ -4640,6 +4887,15 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     order: -2;
     margin-inline: calc(50% - 75px);
   }
+  .select-page>.toolbar:has(>.route-segment)>.part3-segment,
+  .setup-toolbar:has(>.route-segment)>.part3-segment {
+    margin-inline: calc(50% - 156px) 0;
+  }
+  .select-page>.toolbar>.route-segment,
+  .setup-toolbar>.route-segment {
+    order: -2;
+    margin-inline: 0 calc(50% - 156px);
+  }
   /* With the route switch the pair is centred together on that line. */
   .summary-top:has(>.route-segment)>.part3-segment {
     margin-inline: calc(50% - 162px) 0;
@@ -4649,13 +4905,19 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     order: -2;
     margin-inline: -12px calc(50% - 162px);
   }
+  /* 推荐 gets the centred line below the switches. */
+  .summary-top>.recommend-filter {
+    order: -2;
+    flex-basis: 100%;
+    justify-content: center;
+  }
 }
 @media(min-width:601px) and (max-width:800px) {
   .summary-top>.route-segment {
     margin-left: -4px;
   }
   /* The level page's uneven side padding would push it off the other pages' centre. */
-  .setup-toolbar>.part3-segment {
+  .setup-toolbar>.part3-segment,.setup-toolbar>.route-segment {
     translate: -18px 0;
   }
 }
@@ -4674,6 +4936,10 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     margin-inline: 0;
     width: clamp(110px,calc(100vw - 208px),150px);
   }
+  .summary-top>.recommend-filter {
+    order: 1;
+    justify-content: flex-start;
+  }
   .toolbar>.part3-segment {
     margin-left: 0;
     margin-right: calc(100% - 150px);
@@ -4681,6 +4947,12 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .setup-toolbar>.part3-segment {
     margin-inline: 0;
     translate: 0 0;
+  }
+  .select-page>.toolbar:has(>.route-segment)>.part3-segment,
+  .setup-toolbar:has(>.route-segment)>.part3-segment,
+  .select-page>.toolbar>.route-segment,
+  .setup-toolbar>.route-segment {
+    margin-inline: 0;
   }
 }
 /* Controls act on press; dragging or double-clicking one must not highlight its text. */

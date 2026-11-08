@@ -194,6 +194,8 @@ window.RiggingModel = (() => {
     }
     if (data.part3 !== undefined && typeof data.part3 !== 'boolean') throw Error('第3部开关不正确');
     if (data.route !== undefined && data.route !== 'other') throw Error('路线不正确');
+    if (data.recommendTier !== undefined && (!data.recommendTier || typeof data.recommendTier !== 'object' || Array.isArray(data.recommendTier)
+      || Object.entries(data.recommendTier).some(([key, cap]) => !['pre', 'part3'].includes(key) || !Number.isInteger(cap) || cap < 0 || cap >= (key === 'part3' ? 5 : 3)))) throw Error('推荐范围不正确');
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
     if (data.deletionCounter !== undefined && (!Number.isSafeInteger(data.deletionCounter) || data.deletionCounter < 0)) throw Error('删除顺序不正确');
     for (const drafts of [data.draftProfessions, data.draftStoryClasses]) {
