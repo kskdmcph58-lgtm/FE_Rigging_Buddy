@@ -22,7 +22,7 @@ function animateMobilePickerClose(dialog) {
     dialog.getAnimations().forEach(animation => animation.cancel());
     dialog.inert = true;
     const sheet = UI_MEDIA.narrowLayout.matches;
-    const duration = group?.duration ?? (sheet ? 140 : MOTION.medium);
+    const duration = group?.duration ?? (sheet ? 220 : MOTION.medium);
     dialog.style.setProperty('--m-picker-exit-duration', `${duration}ms`);
     dialog.classList.add('m-picker-leaving');
     const animation = dialog.animate([from, {
@@ -30,7 +30,7 @@ function animateMobilePickerClose(dialog) {
       opacity: sheet ? 1 : 0
     }], {
       id: 'mobile-picker-exit', duration,
-      easing: sheet ? 'cubic-bezier(.4,0,.6,1)' : MOTION.ease, fill: 'forwards'
+      easing: sheet ? 'cubic-bezier(.4,0,1,1)' : MOTION.ease, fill: 'forwards'
     });
     if (group?.startTime != null) animation.startTime = group.startTime;
     const finish = () => close(...args);
@@ -78,7 +78,7 @@ function createPickerStack() {
       if (stack.closing) return stack.finished;
       stack.closing = true;
       const open = dialogs.filter(dialog => dialog.open);
-      const group = { duration: 140, startTime: document.timeline.currentTime,
+      const group = { duration: 220, startTime: document.timeline.currentTime,
         distance: Math.max(0, ...open.map(dialog => dialog.getBoundingClientRect().height)) + 24 };
       stack.finished = Promise.all(open.map(dialog => new Promise(resolve => {
         dialog.pickerGroupExit = group;
