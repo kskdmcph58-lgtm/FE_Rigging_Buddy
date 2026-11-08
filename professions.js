@@ -400,8 +400,9 @@ function betterDialog(title, current, groups) {
     // How many result cards each stop keeps: a card stays while any of its classes is within the cap.
     const kept = tier => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier)).length;
     const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
-    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter">兵种推荐范围<select aria-label="兵种推荐范围">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
-    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span></div>${slider}${mobileFilter}</section>`;
+    // Phones: the same filter as a menu, under the current class's box (not inside it).
+    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter"><span>筛选</span><select aria-label="筛选兵种推荐范围">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
+    const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span>${mobileFilter}</div>${slider}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
     dialog.setAttribute('aria-labelledby', 'better-title');
@@ -514,7 +515,61 @@ function betterDialog(title, current, groups) {
       else if (hearts.length === 1) choose(entry.dataset.choice, { id, level: Number(hearts[0].dataset.level) });
       else select(entry, line);
     };
+    /* Phones: a class with rides opens its own sheet to pick one ride at one friendship level; a class that
+       takes none (or keeps any ride) is taken at once. Each ride shows its five friendship slots in place,
+       only the levels that give this result filled in; the ride in use comes first. */
+    const rideSheet = entry => {
+      const index = entry.dataset.choice, option = options[Number(index)], kind = rideKind(option.profession, current.id);
+      const used = current.ride?.id;
+      // 任意配属 (every ride at every level gives this result) still asks which ride: 无配属 and each ride, all five levels.
+      const all = [1, 2, 3, 4, 5];
+      const lines = entry.querySelector('.better-ride[data-ride="*"]')
+        ? [{ id: '', levels: [] }, ...window.RiggingActions.rideOptions(kind, current.id).map(ride => ({ id: ride.id, levels: all }))]
+        : [...entry.querySelectorAll('.better-ride[data-ride]')].map(line => ({ id: line.dataset.ride, levels: [...line.querySelectorAll('[data-level]')].map(heart => Number(heart.dataset.level)) }));
+      lines.sort((a, b) => (b.id === used) - (a.id === used));
+      const rows = lines.map(line => {
+        const id = line.id, name = id ? window.RIDES.byId[id].name : '无配属';
+        const levels = new Set(line.levels);
+        const hearts = id ? `<div class="ride-hearts" role="group" aria-label="${name}友好LV">${[1, 2, 3, 4, 5].map(level => levels.has(level)
+          ? `<button type="button" class="lit" data-heart="${level}" aria-label="${name} 友好LV${level}"><img src="assets/rides/heart-${level}.png" alt="" draggable="false"></button>`
+          : '<span class="ride-heart-slot" aria-hidden="true"></span>').join('')}</div>` : '';
+        return `<div class="ride-row${id && id === used ? ' current' : ''}" data-ride-row="${id}"><button type="button" class="ride-choice"${id && levels.size > 1 ? ' tabindex="-1"' : ''}>${rideIcon(kind, id ? { id } : null)}<span class="game-text">${name}</span>${id && id === used ? '<small class="ride-current">当前</small>' : ''}</button>${hearts}</div>`;
+      });
+      const sheet = document.createElement('dialog');
+      sheet.className = 'app-dialog ride-picker better-ride-sheet';
+      sheet.setAttribute('aria-labelledby', 'better-ride-title');
+      sheet.innerHTML = `<div class="ride-titlebar"><h2 id="better-ride-title">${option.profession}</h2><span class="game-text">友好LV</span></div><div class="ride-list">${rows.join('')}</div><div class="profession-footer"><button type="button" data-back>返回</button></div>`;
+      let ride;
+      sheet.addEventListener('click', ev => {
+        const heart = ev.target.closest('[data-heart]'), row = ev.target.closest('[data-ride-row]');
+        if (heart) ride = { id: row.dataset.rideRow, level: Number(heart.dataset.heart) };
+        else if (row && !row.dataset.rideRow) ride = null;
+        else if (row) {
+          // A ride with a single level is taken from its name too; with several, the heart decides.
+          const hearts = row.querySelectorAll('[data-heart]');
+          if (hearts.length !== 1) return;
+          ride = { id: row.dataset.rideRow, level: Number(hearts[0].dataset.heart) };
+        } else if (!ev.target.closest('[data-back]')) return;
+        sheet.close();
+      });
+      sheet.addEventListener('close', () => {
+        retireDialog(sheet);
+        if (ride !== undefined) choose(index, ride);
+        else entry.querySelector('.better-class-pick')?.focus({ preventScroll: true });
+      }, { once: true });
+      document.body.append(sheet);
+      sheet.showModal();
+      sheet.querySelector('.ride-row.current [data-heart], [data-heart], .ride-choice')?.focus({ preventScroll: true });
+    };
     dialog.addEventListener('click', e => {
+      const tapped = dialog.classList.contains('better-mobile') && !e.target.closest('.better-mobile-filter') && e.target.closest('[data-choice]');
+      if (tapped) {
+        const entry = dialog.querySelector(`.better-entry[data-choice="${tapped.dataset.choice}"]`), lines = [...entry.querySelectorAll('.better-ride[data-ride]')];
+        // Any class with a ride to choose (凯伊线, 第三部, or someone's own ride) asks for it; only a class with none is taken at once.
+        if (lines.some(line => line.dataset.ride)) rideSheet(entry);
+        else choose(tapped.dataset.choice, null);
+        return;
+      }
       if (compact()) {
         const node = floatingNode(e.target);
         // In the compact layout a card only opens its classes; the pick is made in the floating box.

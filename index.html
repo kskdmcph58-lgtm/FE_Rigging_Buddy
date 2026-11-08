@@ -4,7 +4,7 @@ layout: null
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <style>
     /* Paint the theme base before external styles or fonts arrive. */
@@ -19,6 +19,11 @@ layout: null
   <title>Rigging Buddy · 万缕千丝</title>
   <link rel="stylesheet" href="ui/styles/theme.css?v={{ site.github.build_revision }}">
   <link rel="stylesheet" href="styles.css?v={{ site.github.build_revision }}">
+  <link rel="stylesheet" href="ui/styles/mobile/shell.css?v={{ site.github.build_revision }}">
+  <link rel="stylesheet" href="ui/styles/mobile/setup.css?v={{ site.github.build_revision }}">
+  <link rel="stylesheet" href="ui/styles/mobile/summary.css?v={{ site.github.build_revision }}">
+  <link rel="stylesheet" href="ui/styles/mobile/record.css?v={{ site.github.build_revision }}">
+  <link rel="stylesheet" href="ui/styles/mobile/dialogs.css?v={{ site.github.build_revision }}">
   <link rel="stylesheet" href="ui/styles/motion.css?v={{ site.github.build_revision }}">
   <script>
     // Wait for the custom fonts without changing which elements use them.
@@ -61,6 +66,7 @@ layout: null
   <script defer src="ui/record.js?v={{ site.github.build_revision }}"></script>
   <script defer src="features.js?v={{ site.github.build_revision }}"></script>
   <script defer src="app.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/mobile.js?v={{ site.github.build_revision }}"></script>
 </head>
 <body>
   <header><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 40" width="32" height="40" fill="currentColor"><path d="M16 3C13 14 10 17 2 20c8 3 11 6 14 17 3-11 6-14 14-17C22 17 19 14 16 3Z"/></svg></span><span>Rigging Buddy<small>万缕千丝 · 升级凹点助手</small></span></a></header>

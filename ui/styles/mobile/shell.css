@@ -1,0 +1,253 @@
+/* Mobile shell, after styles.css and before motion.css. Every rule sits inside the mobile range
+   (UI_MEDIA.mobileShell), so desktop layouts never read this file's declarations.
+   Visual language: the game's colours, fonts and content frames (portraits, cards, stats) stay;
+   tool chrome follows iOS conventions — a navigation bar with a large title, grouped controls,
+   bottom toolbars inside the safe area, sheets for menus, and 44px hit areas around compact visuals. */
+@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  :root {
+    --m-gutter: 16px;
+    --m-bar: 44px;
+    --m-large: 52px;
+    --m-safe-top: env(safe-area-inset-top, 0px);
+    --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --m-chrome: #101e20d9;
+    --m-hairline: #ffffff1f;
+    --m-fill: #ffffff0f;
+    --m-fill-strong: #ffffff1a;
+    --m-radius: 12px;
+  }
+  body { -webkit-tap-highlight-color: transparent; }
+  /* Step 3 fitted to the screen (mobile.js layoutBoard): the page never scrolls or bounces; the board's columns
+     and lists scroll inside. 100vh is Safari's toolbar-hidden height, so the body's and main's minimums would overflow. */
+  html.m-fit, html.m-fit body { overflow: hidden; overscroll-behavior: none; }
+  html.m-fit body, html.m-fit main#app { min-height: 0; }
+  #app {
+    --m-safe-left: env(safe-area-inset-left, 0px);
+    --m-safe-right: env(safe-area-inset-right, 0px);
+    --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  main#app {
+    padding-left: calc(var(--m-gutter) + var(--m-safe-left));
+    padding-right: calc(var(--m-gutter) + var(--m-safe-right));
+    padding-top: 4px;
+  }
+
+  /* ---------- Navigation bar ---------- */
+  body>header.m-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: block;
+    height: auto;
+    padding: var(--m-safe-top) calc(8px + env(safe-area-inset-right, 0px)) 0 calc(8px + env(safe-area-inset-left, 0px));
+    border-bottom: .5px solid transparent;
+    background: var(--m-chrome);
+    -webkit-backdrop-filter: saturate(1.6) blur(20px);
+    backdrop-filter: saturate(1.6) blur(20px);
+    transition: border-color var(--motion-base, 160ms) ease;
+  }
+  body>header.m-header.m-collapsed { border-bottom-color: var(--m-hairline); }
+  /* Scroll-edge appearance: clear at the top of the page, frosted once content passes beneath. */
+  body>header.m-header:not(.m-collapsed) { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  body>header.m-header.m-compact+.m-large-title,
+  body:has(main.record-page)>.m-large-title { display: none; }
+  body>header.m-header .brand {
+    position: absolute;
+    top: calc(var(--m-safe-top) + 6px);
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    height: 32px;
+    gap: 0;
+    font-size: 0;
+  }
+  body>header.m-header .brand>span:not(.brand-mark) { display: none; }
+  body>header.m-header .brand-mark { display: flex; align-items: center; }
+  body>header.m-header .brand-mark svg { width: 20px; height: 25px; }
+  body>header.m-header:has(.m-nav-leading>*) .brand { display: none; }
+  .m-nav-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--m-bar);
+    gap: 4px;
+  }
+  .m-nav-leading, .m-nav-trailing {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-width: 44px;
+  }
+  .m-nav-trailing { justify-content: flex-end; }
+  .m-nav-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    max-width: 52%;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    color: var(--text);
+    font: 600 17px/22px var(--font-ui);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity var(--motion-base, 160ms) ease;
+    pointer-events: none;
+  }
+  .m-header.m-collapsed .m-nav-title { opacity: 1; }
+  body>.m-large-title {
+    height: var(--m-large);
+    margin: 0;
+    padding: 2px calc(var(--m-gutter) + env(safe-area-inset-right, 0px)) 0 calc(var(--m-gutter) + env(safe-area-inset-left, 0px));
+    color: var(--text);
+    font: 700 30px/44px var(--font-display);
+    letter-spacing: .5px;
+  }
+  /* Plain text and icon buttons, like UIBarButtonItem: no outline, gold tint, 44px hit area. */
+  .m-nav-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--gold);
+    font: 400 17px/22px var(--font-ui);
+    box-shadow: none;
+  }
+  .m-nav-button.strong { font-weight: 600; }
+  .m-nav-button svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .m-nav-button.m-back { padding-left: 4px; gap: 5px; }
+  .m-nav-button.m-back svg { width: 12px; height: 20px; }
+  .m-nav-button.icon { padding: 0; width: 44px; }
+  .m-nav-button[aria-pressed="true"].icon { color: var(--text); }
+  .m-nav-button[aria-pressed="true"].icon::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    z-index: -1;
+    border-radius: 9px;
+    background: var(--m-fill-strong);
+  }
+  .m-nav-button:disabled { color: var(--muted); opacity: .5; }
+  .m-nav-button:active:not(:disabled) { opacity: .45; }
+  html[data-input-mode="keyboard"] .m-nav-button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+  /* ---------- Shared tool controls ---------- */
+  /* Same control as on wide screens (outlined, a raised block on the chosen side), at the 36px button height. */
+  #app :is(.part3-segment,.route-segment) {
+    min-height: 36px;
+    font-size: 14px;
+  }
+  /* Primary bottom actions: a toolbar docked to the screen edge, inside the safe area. */
+  #app .bottom-bar {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    transform: none;
+    min-height: 0;
+    padding: 8px calc(var(--m-gutter) + var(--m-safe-right)) calc(8px + var(--m-safe-bottom)) calc(var(--m-gutter) + var(--m-safe-left));
+    border: 0;
+    border-top: .5px solid var(--m-hairline);
+    border-radius: 0;
+    background: var(--m-chrome);
+    -webkit-backdrop-filter: saturate(1.6) blur(20px);
+    backdrop-filter: saturate(1.6) blur(20px);
+    box-shadow: none;
+    font-size: 15px;
+  }
+  #app .bottom-bar button {
+    min-height: 44px;
+    border-radius: var(--m-radius);
+    font-size: 16px;
+  }
+  #app .bottom-bar button.primary { padding-inline: 20px; }
+  main#app.has-bottom-bar { padding-bottom: calc(84px + var(--m-safe-bottom)); }
+
+  /* The floating multi-select bar covers the navigation bar like iOS edit mode, below the status bar. */
+  .selection-toolbar-anchor.is-floating .selection-toolbar { top: calc(8px + var(--m-safe-top)); }
+  .selection-toolbar-anchor.is-floating .selection-toolbar-backdrop { height: calc(var(--selection-bar-height) + var(--m-safe-top)); }
+
+  /* Wide screens: keep bottom actions at a readable width instead of stretching across a tablet. */
+  @media (min-width:601px) {
+    #app .bottom-bar {
+      padding-left: max(calc(var(--m-gutter) + var(--m-safe-left)), calc((100% - 680px) / 2));
+      padding-right: max(calc(var(--m-gutter) + var(--m-safe-right)), calc((100% - 680px) / 2));
+    }
+  }
+
+  /* ---------- Storage warning ---------- */
+  /* Pinned under the navigation bar instead of sliding beneath it. */
+  #storage-status {
+    top: calc(var(--m-bar) + var(--m-safe-top));
+    gap: 8px 12px;
+    padding: 12px calc(var(--m-gutter) + env(safe-area-inset-right, 0px)) 12px calc(var(--m-gutter) + env(safe-area-inset-left, 0px));
+    border-bottom: .5px solid var(--m-hairline);
+    font-size: 15px;
+    line-height: 20px;
+  }
+  #storage-status>span { flex: 1 1 100%; }
+  #storage-status button {
+    position: relative;
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+  #storage-status button::after { content: ''; position: absolute; inset: -4px 0; }
+
+  /* ---------- Sheets ---------- */
+  dialog.m-sheet {
+    width: min(100% - 16px, 480px);
+    max-width: none;
+    max-height: calc(100dvh - 16px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    margin: auto auto calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+  dialog.m-sheet[open] { display: flex; flex-direction: column; }
+  /* The actions scroll on a short screen; 取消 always stays in reach. */
+  dialog.m-sheet .m-sheet-groups { display: grid; gap: 8px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; border-radius: 14px; }
+  dialog.m-sheet .m-sheet-group, dialog.m-sheet footer button {
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--surface-dialog);
+    box-shadow: 0 0 0 .5px var(--line);
+  }
+  dialog.m-sheet .m-sheet-group button, dialog.m-sheet footer button {
+    display: block;
+    width: 100%;
+    min-height: 56px;
+    margin: 0;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--gold);
+    font: 400 18px/22px var(--font-ui);
+    text-align: center;
+  }
+  dialog.m-sheet .m-sheet-group button+button { border-top: .5px solid var(--line); }
+  dialog.m-sheet .m-sheet-group button.danger-text { color: var(--red); }
+  dialog.m-sheet .m-sheet-group button:disabled { color: var(--muted); opacity: .5; }
+  dialog.m-sheet .m-sheet-group button:active:not(:disabled) { background: var(--m-fill-strong); }
+  dialog.m-sheet footer { flex: none; align-self: stretch; width: auto; display: block; margin: 8px 0 0; padding: 0; border: 0; background: none; }
+  @media (max-height:500px) {
+    dialog.m-sheet .m-sheet-group button, dialog.m-sheet footer button { min-height: 44px; font-size: 17px; }
+  }
+  dialog.m-sheet footer button { border-radius: 14px; background: var(--surface-floating); font-weight: 600; }
+}
+@media ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) and (prefers-reduced-motion:no-preference) {
+  @keyframes m-sheet-in { from { transform: translateY(100%); } }
+  dialog.m-sheet[open] { animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1); }
+}

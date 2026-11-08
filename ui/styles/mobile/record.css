@@ -1,0 +1,234 @@
+/* Upgrade entry page.
+   Mobile shell only: every rule sits inside the mobile range (UI_MEDIA.mobileShell); desktop never reads it.
+   Shared tokens and the design rules live in shell.css.
+   Layout: an iOS detail view. Header (who, target level, class and mount), the stat grid, then the
+   hint, the expectation link and the rating in the thumb zone, with the save bar pinned inside the
+   bottom safe area. Short landscape screens use two columns so nothing scrolls under the bar. */
+@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  main#app.record-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    padding-top: var(--m-safe-top);
+    padding-bottom: 0;
+  }
+  /* Back: the same iOS "‹ label" button as the nav bar's .m-nav-button.m-back (gold 17px, 12×20 chevron),
+     at the same place (12px from the edge, the 44px bar row under the safe area). The page's arrow icon is
+     swapped for the chevron drawn as a mask; the button and its handler are unchanged. */
+  #app.record-page>.back {
+    position: relative;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    margin: 0 0 4px calc(-1 * var(--m-gutter) + 8px);
+    padding: 0 8px 0 4px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--gold);
+    font: 400 17px/22px var(--font-ui);
+    box-shadow: none;
+  }
+  #app.record-page>.back svg { display: none; }
+  #app.record-page>.back::before {
+    content: '';
+    flex: none;
+    width: 12px;
+    height: 20px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 2 2 10l8 8'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 2 2 10l8 8'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
+  }
+  #app.record-page>.back:active { background: transparent; opacity: .45; }
+  #app.record-page .record-layout { flex: 1; display: flex; flex-direction: column; width: auto; max-width: none; margin: 0; }
+  #app.record-page .stat-panel {
+    flex: 1;
+    width: auto;
+    max-width: none;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    margin: 0 calc(-1 * var(--m-gutter) - var(--m-safe-right)) 0 calc(-1 * var(--m-gutter) - var(--m-safe-left));
+    padding: 16px calc(var(--m-gutter) + var(--m-safe-right)) 0 calc(var(--m-gutter) + var(--m-safe-left));
+    border-width: .5px 0 0;
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* ---------- Header: who and which level on one row, class and mount on the next ---------- */
+  #app.record-page .stat-heading {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px 8px;
+    padding: 0 0 12px;
+  }
+  #app.record-page .stat-heading>.record-character { grid-column: 1 / 4; grid-row: 1; display: flex; gap: 12px; min-width: 0; }
+  /* Original face crop in a square frame, no circular mask. */
+  #app.record-page .record-character img { width: 44px; height: 44px; border-radius: 0; }
+  #app.record-page .stat-heading .record-character h2 { margin: 0; font-size: 18px; line-height: 1.3; }
+  #app.record-page .record-level { margin: 2px 0 0; font-size: 13px; }
+  #app.record-page .stat-heading>.record-target-level {
+    grid-column: 4;
+    grid-row: 1;
+    order: 0;
+    align-self: center;
+    font: 30px/1.1 var(--font-level-up);
+    white-space: nowrap;
+  }
+  #app.record-page .stat-heading>.heading-growth { display: none; }
+  /* Class and mount: two outlined tool buttons that start at the gutter. */
+  #app.record-page .stat-heading>.profession-field.can-edit,
+  #app.record-page .stat-heading>.heading-ride .ride-field {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    min-height: 36px;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--control-line);
+    border-radius: 10px;
+    background: var(--m-fill);
+    color: var(--text);
+    font: 15px/1 var(--font-ui);
+    white-space: nowrap;
+  }
+  #app.record-page .stat-heading>.profession-field.can-edit { grid-column: 1; grid-row: 2; justify-self: start; order: 0; }
+  #app.record-page .stat-heading>.profession-field.can-edit::before { content: ''; position: absolute; inset: -4px 0; }
+  #app.record-page .stat-heading>.profession-field.can-edit:active,
+  #app.record-page .stat-heading>.heading-ride .ride-field:active { background: var(--m-fill-strong); }
+  #app.record-page .stat-heading>.profession-field img { display: block; order: 0; width: 24px; height: 24px; margin-left: -4px; border-radius: 0; }
+  #app.record-page .stat-heading>.profession-field .game-text { font-size: 16px; line-height: 1; }
+  #app.record-page .stat-heading>.profession-field .profession-placeholder { color: var(--muted); }
+  #app.record-page .stat-heading>.heading-ride { grid-column: 2 / 4; grid-row: 2; justify-self: start; min-width: 0; max-width: 100%; order: 0; }
+  #app.record-page .stat-heading>.heading-ride:not(:empty) { display: block; }
+  #app.record-page .stat-heading>.heading-ride .ride-field { padding: 0 10px 0 6px; }
+  #app.record-page .stat-heading>.heading-ride .ride-field::after { content: ''; position: absolute; inset: -4px 0; }
+  #app.record-page .heading-ride .ride-icon,
+  #app.record-page .heading-ride .ride-level { width: 24px; height: 24px; }
+  #app.record-page .heading-ride .game-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 16px; line-height: 1.2; }
+  #app.record-page .heading-ride .ride-none { font: 15px/1.2 var(--font-ui); color: var(--muted); }
+  /* The mount lives in the header on mobile; the copy beside the expectation link stays unused. */
+  #app.record-page .rating-rule-note>.note-ride { display: none; }
+
+  /* ---------- Stats ---------- */
+  #app.record-page .stats { flex: 0 0 auto; margin-top: 8px; }
+  #app.record-page .stat { min-height: 52px; }
+
+  /* ---------- Hint, expectation, rating, save: the thumb zone ---------- */
+  #app.record-page .stat-panel>.seed-status { order: 1; margin: 16px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--m-fill); color: var(--muted); font-size: 13px; line-height: 1.5; }
+  #app.record-page .stat-panel>:is(.rating-rule-note, .ratings, .record-actions) { order: 2; }
+  #app.record-page .rating-rule-note { display: flex; justify-content: flex-start; margin: auto 0 0; padding-top: 16px; font-size: 13px; }
+  #app.record-page .rating-rule-note .expectation-link { min-height: 20px; font-size: 13px; line-height: 20px; }
+  #app.record-page .ratings { gap: 12px; margin: 12px 0 16px; }
+  #app.record-page .ratings button { min-height: 48px; padding: 8px; border-radius: 10px; font-size: 16px; }
+  #app.record-page .record-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 12px;
+    margin: 0 calc(-1 * var(--m-gutter) - var(--m-safe-right)) 0 calc(-1 * var(--m-gutter) - var(--m-safe-left));
+    padding: 12px calc(var(--m-gutter) + var(--m-safe-right)) calc(12px + var(--m-safe-bottom)) calc(var(--m-gutter) + var(--m-safe-left));
+    border-top: .5px solid var(--m-hairline);
+    background: var(--m-chrome);
+    -webkit-backdrop-filter: saturate(1.6) blur(20px);
+    backdrop-filter: saturate(1.6) blur(20px);
+  }
+  #app.record-page .record-actions>button { flex: 1 1 0; width: auto; min-width: 0; min-height: 50px; margin: 0; padding: 0 12px; border-radius: var(--m-radius); font-size: 16px; }
+  /* Editing a saved or forecast row: the save is the only commit, so it takes the primary look;
+     deleting stays a compact auxiliary action at the far left. */
+  #app.record-page .record-actions:not(:has([data-action="next"]))>[data-action="finish"] { background: var(--gold); border-color: var(--gold); color: var(--on-accent); font-weight: 700; }
+  #app.record-page .record-actions>[data-action="delete-record"] { order: -1; flex: 0 0 auto; padding: 0 20px; }
+}
+
+/* Tablets: rating follows the stats; only the save bar stays at the bottom edge. */
+@media (min-width:601px) and (max-width:1100px) and (min-height:501px) and (pointer:coarse) {
+  #app.record-page>.back { align-self: center; justify-content: flex-start; width: min(100%, 680px); margin-left: auto; margin-right: auto; }
+  #app.record-page .record-layout { align-self: center; width: min(100%, 680px); }
+  #app.record-page .stat-panel { border-width: .5px .5px 0; }
+  #app.record-page .stat-panel { padding-top: 20px; }
+  #app.record-page .stat-heading { padding-bottom: 16px; }
+  #app.record-page .rating-rule-note { margin-top: 0; padding-top: 20px; }
+  #app.record-page .ratings { margin-bottom: 24px; }
+  #app.record-page .record-actions { margin-top: auto; }
+}
+
+/* Short landscape screens: stats on the left; header, rating and save on the right, all on one screen. */
+@media (max-height:500px) and (orientation:landscape) and ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) {
+  main#app.record-page { min-height: 100dvh; padding-bottom: 0; }
+  #app.record-page>.back { margin-bottom: 0; }
+  #app.record-page .stat-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(240px, 36vw, 320px);
+    grid-template-rows: auto auto auto 1fr auto;
+    gap: 0 24px;
+    align-content: start;
+    padding-top: 12px;
+    padding-bottom: calc(12px + var(--m-safe-bottom));
+  }
+  #app.record-page .stat-heading { grid-column: 2; grid-row: 1; gap: 8px; padding: 0 0 12px; border-bottom-width: 1px; }
+  #app.record-page .record-character img { width: 36px; height: 36px; }
+  #app.record-page .stat-heading .record-character h2 { font-size: 16px; }
+  #app.record-page .record-level { font-size: 12px; }
+  #app.record-page .stat-heading>.record-target-level { font-size: 26px; }
+  #app.record-page .stats {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    grid-template-rows: repeat(5, minmax(40px, 1fr));
+    grid-auto-rows: 40px;
+    align-content: stretch;
+    gap: 0 16px;
+    margin: 0;
+  }
+  #app.record-page .stat { min-height: 40px; height: 100%; padding: 4px 8px; font-size: 15px; line-height: 22px; }
+  #app.record-page .stat-panel>.seed-status { grid-column: 2; grid-row: 2; margin: 8px 0 0; padding: 4px 8px; font-size: 12px; }
+  #app.record-page .rating-rule-note { grid-column: 2; grid-row: 3; margin: 0; padding-top: 8px; }
+  #app.record-page .ratings { grid-column: 2; grid-row: 4; align-self: end; margin: 8px 0 0; gap: 8px; }
+  #app.record-page .ratings button { min-height: 44px; padding: 4px 8px; font-size: 15px; gap: 6px; }
+  #app.record-page .ratings .rating-icon { width: 22px; height: 22px; }
+  #app.record-page .record-actions {
+    position: static;
+    grid-column: 2;
+    grid-row: 5;
+    flex-direction: row;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  #app.record-page .record-actions>button { flex: 1 1 0; min-height: 44px; padding: 0 8px; font-size: 15px; }
+  #app.record-page .record-actions>[data-action="delete-record"] { flex: 0 0 auto; padding: 0 12px; }
+}
+
+/* Short portrait phones (SE-class, or Safari with both toolbars): tighter rows so the rating and the save
+   bar fit without scrolling. */
+@media (max-height:700px) and (orientation:portrait) and ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) {
+  #app.record-page>.back { margin-bottom: 0; }
+  #app.record-page .stat-panel { padding-top: 12px; }
+  #app.record-page .stat-heading { gap: 8px; }
+  #app.record-page .record-character img { width: 36px; height: 36px; }
+  #app.record-page .stat-heading .record-character h2 { font-size: 16px; }
+  #app.record-page .record-level { font-size: 12px; }
+  #app.record-page .stat-heading>.record-target-level { font-size: 26px; }
+  #app.record-page .stats { margin-top: 4px; }
+  #app.record-page .stats { grid-auto-rows: 44px; }
+  #app.record-page .stat { height: 44px; min-height: 44px; padding-block: 0; }
+  #app.record-page .stat-panel>.seed-status { margin-top: 12px; padding: 6px 12px; }
+  #app.record-page .rating-rule-note { padding-top: 12px; }
+  #app.record-page .ratings { margin: 8px 0 12px; }
+  #app.record-page .ratings button { min-height: 44px; }
+  #app.record-page .record-actions { padding-top: 8px; padding-bottom: calc(8px + var(--m-safe-bottom)); }
+  #app.record-page .record-actions>button { min-height: 48px; }
+}

@@ -1,0 +1,791 @@
+/* Step 3: summary strip, the column board, list view for sorting and multi-select.
+   Mobile shell only: every rule sits inside the mobile range (UI_MEDIA.mobileShell); desktop never reads it.
+   Shared tokens and the design rules live in shell.css.
+   Structure (fixed in every state, so nothing shifts when a hint, an edit or a selection appears):
+   - strip: one line of counters with 多选 at the trailing gutter; display settings float over the board below it;
+     in multi-select the line becomes a selection toolbar laid out on a six-column grid.
+   - board: the columns share one grid (subgrid rows), so every head, button row and card rail starts at the same
+     height in every column whatever each column is showing. Inside a head the portrait and name never move:
+     the name lies on the portrait; level and 属性期望 share one fixed 32px line, so editing the level moves nothing.
+   - list view (sorting, multi-select): one row per person, checkbox leading, reorder grip trailing, both centred. */
+@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  /* ---------- Step 3: header strip ---------- */
+  #app.summary-page { padding-top: 0; }
+  #app.summary-page .summary-top {
+    position: static;
+    display: grid;
+    /* Panel insets, two equal halves for the switches. */
+    grid-template-columns: 12px minmax(0, 1fr) minmax(0, 1fr) 12px;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 4px 0 12px;
+  }
+  #app.summary-page .summary-top::after { display: none; }
+  #app.summary-page .summary-top>* { order: 0; }
+  #app.summary-page .summary-top>.summary-controls { display: contents; }
+  #app.summary-page .summary-actions { display: none; }
+
+  /* Counters: one line that never shrinks below its text; 多选 (fixed 64px) sits over its trailing end. */
+  #app.summary-page .summary-top>.metrics {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    display: flex;
+    flex: none;
+    /* If the counts ever outgrow the line, the last one moves under the first instead of under 多选. */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0 16px;
+    min-width: 0;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 76px 0 0;
+  }
+  #app.summary-page.m-sort-mode .summary-top>.metrics { padding-right: 0; }
+  #app.summary-page .summary-top .metrics>div {
+    display: flex;
+    flex: none;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    gap: 4px;
+  }
+  #app.summary-page .summary-top .metrics b { font-size: 20px; line-height: 24px; }
+  #app.summary-page .summary-top .metrics span { flex: none; font-size: 13px; line-height: 18px; white-space: nowrap; }
+  @media (max-width:374px) {
+    #app.summary-page .summary-top>.metrics { column-gap: 12px; padding-right: 64px; }
+    #app.summary-page .summary-top .metrics b { font-size: 18px; }
+    #app.summary-page .summary-top .metrics span { font-size: 12px; }
+    #app.summary-page:not(.multi-select-mode) .summary-top .selection-toolbar button { min-width: 52px; padding: 0 10px; }
+  }
+
+  /* ---------- Selection toolbar (多选 / multi-select) ---------- */
+  #app.summary-page .summary-top .selection-toolbar-anchor {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    justify-self: end;
+    flex: none;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+  }
+  #app.summary-page.m-sort-mode .summary-top .selection-toolbar-anchor { display: none; }
+  #app.summary-page .summary-top .selection-toolbar {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  #app.summary-page .summary-top .selection-toolbar button {
+    position: relative;
+    min-width: 64px;
+    height: 36px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  /* 36px visuals, 44px hit areas: the 8px gaps are split, so neighbours never overlap. */
+  #app.summary-page .summary-top .selection-toolbar button::after { content: ''; position: absolute; inset: -4px; }
+  #app.summary-page:not(.multi-select-mode) .summary-top .selection-count { display: none; }
+  #app.summary-page.multi-select-mode .summary-top>.metrics { display: none; }
+  #app.summary-page.multi-select-mode .summary-top .selection-toolbar-anchor { justify-self: stretch; }
+  #app.summary-page.multi-select-mode .summary-top .selection-toolbar {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px;
+  }
+  #app.summary-page.multi-select-mode .summary-top .selection-actions:not([hidden]) { display: contents; }
+  #app.summary-page.multi-select-mode .summary-top .selection-toolbar>* { margin: 0; }
+  #app.summary-page.multi-select-mode .summary-top .selection-toolbar button { justify-self: stretch; min-width: 0; padding: 0 8px; }
+  #app.summary-page.multi-select-mode .summary-top .selection-count {
+    grid-row: 1;
+    grid-column: 1 / 4;
+    justify-self: start;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  #app.summary-page.multi-select-mode .summary-top .selection-toolbar button[data-action="multi-select"] { grid-row: 1; grid-column: 4 / 7; justify-self: end; min-width: 88px; padding: 0 12px; }
+  #app.summary-page.multi-select-mode .summary-top [data-action="select-all-rows"] { grid-row: 2; grid-column: 1 / 3; }
+  #app.summary-page.multi-select-mode .summary-top [data-action="invert-rows"] { grid-row: 2; grid-column: 3 / 5; }
+  #app.summary-page.multi-select-mode .summary-top [data-action="clear-row-selection"] { grid-row: 2; grid-column: 5 / 7; }
+  #app.summary-page.multi-select-mode .summary-top [data-action="batch-expectation"] { grid-row: 3; grid-column: 1 / 4; }
+  #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-row: 3; grid-column: 4 / 7; }
+  /* Tablets: one line — count, the five actions, then 完成多选 at the trailing gutter. */
+  @media (min-width:601px) {
+    #app.summary-page.multi-select-mode .summary-top .selection-toolbar {
+      grid-template-columns: max-content repeat(5, max-content) minmax(0, 1fr) max-content;
+    }
+    #app.summary-page.multi-select-mode .summary-top .selection-toolbar button { padding: 0 12px; }
+    #app.summary-page.multi-select-mode .summary-top .selection-count { grid-column: 1; margin-right: 8px; }
+    #app.summary-page.multi-select-mode .summary-top [data-action="select-all-rows"] { grid-row: 1; grid-column: 2; }
+    #app.summary-page.multi-select-mode .summary-top [data-action="invert-rows"] { grid-row: 1; grid-column: 3; }
+    #app.summary-page.multi-select-mode .summary-top [data-action="clear-row-selection"] { grid-row: 1; grid-column: 4; }
+    #app.summary-page.multi-select-mode .summary-top [data-action="batch-expectation"] { grid-row: 1; grid-column: 5; }
+    #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-row: 1; grid-column: 6; }
+    #app.summary-page.multi-select-mode .summary-top .selection-toolbar button[data-action="multi-select"] { grid-row: 1; grid-column: 8; }
+  }
+
+  /* ---------- Display settings: a panel hanging from the navigation bar ----------
+     It drops straight down from the nav bar, full width and in the bar's own frosted material, so the two read as
+     one bar: the bar's closing hairline moves to the panel's lower edge. It covers the strip and the board instead
+     of pushing them down, so nothing under it moves when it opens or closes. */
+  #app.summary-page .summary-top { position: relative; z-index: 6; }
+  #app.summary-page .summary-top>.m-settings { display: none; }
+  #app.summary-page.m-settings-open .summary-top>.m-settings {
+    position: absolute;
+    top: 0;
+    /* Above the strip's 多选, which is positioned too and comes later in the page. */
+    z-index: 2;
+    /* Full bleed: out through main's gutters and safe areas to the screen edges, content kept on the gutter. */
+    left: calc(-1 * (var(--m-gutter) + var(--m-safe-left)));
+    right: calc(-1 * (var(--m-gutter) + var(--m-safe-right)));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0 8px;
+    padding: 4px calc(var(--m-gutter) + var(--m-safe-right)) 12px calc(var(--m-gutter) + var(--m-safe-left));
+    border: 0;
+    border-bottom: .5px solid var(--m-hairline);
+    border-radius: 0;
+    /* The nav bar's colour (--m-chrome is --bg made translucent), solid: what it covers must not show through. */
+    background: var(--bg);
+    box-shadow: 0 12px 24px #0004;
+  }
+  /* One bar: no seam between the nav bar and the panel. */
+  body:has(#app.summary-page.m-settings-open)>header.m-header { border-bottom-color: transparent; }
+  #app.summary-page.m-settings-open .m-settings>:is(.part3-segment,.route-segment) {
+    position: relative;
+    left: auto;
+    translate: none;
+    width: auto;
+    margin: 0;
+  }
+  #app.summary-page.m-settings-open .m-settings:not(:has(>.route-segment))>.part3-segment { grid-column: 1 / -1; }
+  /* 兵种推荐范围: caption and the desktop's compact slider on one line (Part 3's six stops wrap under the caption
+     on the narrowest phones), drawn flat: hairline track, plain dots, a flat thumb. */
+  #app.summary-page.m-settings-open .m-settings>.recommend-filter {
+    position: static;
+    left: auto;
+    translate: none;
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    min-height: 0;
+    max-width: none;
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    border: 0;
+    border-top: .5px solid var(--m-hairline);
+    border-radius: 0;
+    background: none;
+  }
+  #app.summary-page.m-settings-open .recommend-caption { color: var(--text); font-size: 14px; line-height: 20px; }
+  #app.summary-page.m-settings-open .recommend-slider { grid-template-columns: repeat(var(--stops), 40px); }
+  /* Taps a little above or below the dots still land on the slider. */
+  #app.summary-page.m-settings-open .recommend-slider::before { content: ''; position: absolute; inset: -6px 0; }
+  #app.summary-page.m-settings-open .recommend-track { top: 10px; height: 2px; border-radius: 1px; background: var(--m-fill-strong); }
+  #app.summary-page.m-settings-open .recommend-fill { opacity: 1; }
+  #app.summary-page.m-settings-open .recommend-stop { grid-template-rows: 22px auto; font-size: 11px; line-height: 14px; }
+  #app.summary-page.m-settings-open .recommend-stop i { width: 6px; height: 6px; background: var(--m-fill-strong); }
+  #app.summary-page.m-settings-open .recommend-stop.in i { background: var(--gold); }
+  #app.summary-page.m-settings-open .recommend-thumb {
+    top: 4px;
+    left: calc((var(--at) + .5) * var(--col) - 7px);
+    width: 14px;
+    height: 14px;
+    border: 0;
+    background: var(--gold);
+    box-shadow: none;
+  }
+
+  /* ---------- Step 3: the board — one column per person, people side by side ---------- */
+  #app.summary-page.m-board .journals {
+    container-type: inline-size;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    /* head · buttons · cards · 查看更多预测: shared by every column (subgrid), so they line up. */
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 0 8px;
+    height: var(--m-board-height, 70dvh);
+    margin-inline: calc(-1 * (var(--m-gutter) + var(--m-safe-left))) calc(-1 * (var(--m-gutter) + var(--m-safe-right)));
+    padding: 0 calc(var(--m-gutter) + var(--m-safe-right)) 0 calc(var(--m-gutter) + var(--m-safe-left));
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: calc(var(--m-gutter) + var(--m-safe-left));
+    scrollbar-width: none;
+  }
+  #app.summary-page.m-board .journals::-webkit-scrollbar { display: none; }
+  #app.summary-page.m-board .journals>.empty {
+    grid-row: 1 / -1;
+    width: 100cqw;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #app.summary-page.m-board .journal {
+    position: relative;
+    display: grid;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    /* Phones: one column wide enough for the card's side strip and a full stat line beside its pass rate, and the
+       next column's left half showing at its trailing edge. Tablets fit as many such columns as they can. */
+    width: var(--m-col-width);
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: var(--m-radius);
+    scroll-snap-align: start;
+  }
+  /* The board reaches the bottom edge of the screen (ui/mobile.js layoutBoard): a column has no bottom edge or
+     bottom corners, its two side lines run on off the screen, and the cards scroll on under Safari's bar. */
+  #app.summary-page.m-board:not(.m-sort-mode,.multi-select-mode) .journal {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  /* Board content width C → floor((C + 8) / (W + 8)) whole columns of at least W; below two, one W column. */
+  #app.summary-page.m-board .journals { --m-col-width: 272px; }
+  @container (min-width:552px) { #app.summary-page.m-board .journal { width: calc((100cqw - 8px) / 2); } }
+  @container (min-width:832px) { #app.summary-page.m-board .journal { width: calc((100cqw - 16px) / 3); } }
+  @container (min-width:1112px) { #app.summary-page.m-board .journal { width: calc((100cqw - 24px) / 4); } }
+  #app.summary-page.m-board .journal>.row-select,
+  #app.summary-page.m-board .journal .drag-grip,
+  #app.summary-page.m-board .journal .expand-records { display: none; }
+
+  /* Column head: the narrow portrait across the top of the column, edge to edge (the column's rounded frame
+     clips its top corners), the name laid over its bottom-left corner, then one fixed 32px line: initial level
+     leading, 属性期望 trailing. Opening the level field happens inside that line, so the head never changes height. */
+  #app.summary-page.m-board .journal-head {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "pic pic" "level extra";
+    align-self: start;
+    align-content: start;
+    align-items: center;
+    gap: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 8px;
+  }
+  #app.summary-page.m-board .journal-head .journal-info { display: contents; }
+  /* A fixed band: the crop keeps its height whatever the column width and sits centred in it. */
+  #app.summary-page.m-board .journal-head .journal-portrait {
+    grid-area: pic;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: auto;
+    height: 92px;
+    margin: 0;
+    overflow: hidden;
+    background: var(--m-fill);
+  }
+  #app.summary-page.m-board .journal-head .journal-portrait img {
+    display: block;
+    flex: none;
+    width: auto;
+    height: 100%;
+    /* The troop crop's own shape (116 × 60). */
+    aspect-ratio: 116 / 60;
+    margin: 0;
+    border-radius: 0;
+    object-fit: cover;
+  }
+  /* The name on the portrait: light text on a dark fade, the same in both themes since it sits on the art. */
+  #app.summary-page.m-board .journal-head h2 {
+    grid-area: pic;
+    align-self: end;
+    /* No shade across the portrait: where the name runs over the drawn figure, the figure fades out behind it
+       (img.m-name-fade below); a name that ends before the figure changes nothing. */
+    justify-self: start;
+    z-index: 1;
+    overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    padding: 10px 16px 8px 12px;
+    color: #f4efdf;
+    font-size: 16px;
+    line-height: 22px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgb(0 0 0 / .6);
+    pointer-events: none;
+  }
+  /* Where the name runs over the figure, the figure itself fades out behind it, softly, the way the portrait's
+     own edges fade into the band; nothing dark is laid over it. ui/mobile.js places the fade (in the image's box). */
+  #app.summary-page.m-board .journal-head .journal-portrait img.m-name-fade {
+    -webkit-mask-image: radial-gradient(var(--m-fade-rx) var(--m-fade-ry) at var(--m-fade-x) var(--m-fade-y), rgb(0 0 0 / .12), rgb(0 0 0 / .45) 45%, #000 100%);
+    mask-image: radial-gradient(var(--m-fade-rx) var(--m-fade-ry) at var(--m-fade-x) var(--m-fade-y), rgb(0 0 0 / .12), rgb(0 0 0 / .45) 45%, #000 100%);
+  }
+  #app.summary-page.m-board .journal-head p.initial-level {
+    grid-area: level;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    min-width: 0;
+    height: 32px;
+    min-height: 0;
+    margin: 4px 0 0;
+    padding: 0 0 0 12px;
+    font-size: 12px;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+  #app.summary-page.m-board .journal-head p.initial-level::after { display: none; }
+  #app.summary-page.m-board .journal-head .initial-pencil { flex: none; width: 13px; height: 13px; margin: 0; color: var(--gold); }
+  /* Tapping the level line (in 编辑) opens the field: the target grows into the name line above (not tappable),
+     never into its tappable neighbours below. */
+  #app.summary-page.m-board .journal-head p.initial-level.can-edit::before { content: ''; position: absolute; inset: -4px 0 -4px 8px; }
+  #app.summary-page.m-board .journal-head .initial-level-form { min-width: 0; max-width: 100%; }
+  /* Caption and field share the 32px line, so opening the field changes nothing around it. */
+  #app.summary-page.m-board .journal-head .initial-level-form label { display: flex; flex-wrap: nowrap; align-items: center; gap: 4px; min-width: 0; white-space: nowrap; }
+  #app.summary-page.m-board .journal-head .level-field { height: 32px; padding: 0 4px; border-radius: 8px; }
+  /* 16px or more, or iOS zooms the page when the field takes focus. Two digits fit in 1.7em. */
+  #app.summary-page.m-board .journal-head .level-field input { width: 1.7em; font-size: 16px; }
+  #app.summary-page.m-board .journal-head .expectation-link {
+    grid-area: extra;
+    position: relative;
+    justify-self: end;
+    width: auto;
+    height: 32px;
+    min-height: 0;
+    margin: 4px 12px 0 8px;
+    padding: 0;
+    font-size: 13px;
+    line-height: 32px;
+    white-space: nowrap;
+    text-align: right;
+  }
+  #app.summary-page.m-board .journal-head .expectation-link::after { content: ''; position: absolute; inset: -4px -8px; }
+  #app.summary-page.m-board .journal-head .expectation-link[aria-hidden="true"] { display: none; }
+
+  /* The portrait's hint: its speech bubble laid over the top of the portrait, pointing down at the face. It takes
+     no room, so it may cover what is under it. Tapping anywhere on it closes it (app.js); the drawn X marks that. */
+  #app.summary-page.m-board .journal-head .journal-portrait :is(.seed-status:not([hidden]),.level-error) {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: auto;
+    bottom: auto;
+    z-index: 4;
+    width: max-content;
+    max-width: calc(100% - 12px);
+    margin: 0;
+    padding: 4px 22px 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 16px;
+    box-shadow: 0 2px 8px #0006;
+  }
+  #app.summary-page.m-board .journal-head .journal-portrait :is(.seed-status,.level-error)::after {
+    left: 14px;
+    bottom: -5px;
+    width: 8px;
+    height: 8px;
+  }
+  /* The close mark: two 1.5px strokes drawn in the bubble's text colour. Decoration only. */
+  #app.summary-page.m-board .journal-head .journal-portrait :is(.seed-status,.level-error)::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    margin-top: -4.5px;
+    background:
+      linear-gradient(45deg, transparent calc(50% - .75px), currentColor calc(50% - .75px) calc(50% + .75px), transparent calc(50% + .75px)),
+      linear-gradient(-45deg, transparent calc(50% - .75px), currentColor calc(50% - .75px) calc(50% + .75px), transparent calc(50% + .75px));
+    opacity: .7;
+    pointer-events: none;
+  }
+  /* The list view is for ordering and choosing people: hints wait for the board. */
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-portrait :is(.seed-status,.level-error) { display: none; }
+
+  /* Buttons: a fixed row under the head, the same height in every column. */
+  #app.summary-page.m-board .journal-actions {
+    grid-area: 2 / 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: start;
+    gap: 8px;
+    margin: 0;
+    padding: 0 12px 12px;
+  }
+  #app.summary-page.m-board .journal-actions>button {
+    position: relative;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 36px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 4px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  /* 36px visuals, 44px hit areas; the 8px gap is split so neighbours never overlap. */
+  #app.summary-page.m-board .journal-actions>button::after { content: ''; position: absolute; inset: -4px; }
+  #app.summary-page.m-board .journal .records {
+    grid-area: 3 / 1;
+    align-self: stretch;
+    /* The rail scrolls inside its row, never grows the row: WebKit does not stretch a subgrid item by itself. */
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: none;
+    margin: 0;
+    /* The bottom inset clears the home indicator and Safari's bar once the rail is scrolled to its end. */
+    padding: 8px 8px calc(12px + var(--m-safe-bottom));
+    border-top: .5px solid var(--line);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Room under the last card, so the last 已升级/已跳过 card can rest at the top of the column (ui/mobile.js, the
+     vertical form of the desktop rail's trailing spacer): the column's height less about one card. Columns
+     without a marked card need none. */
+  #app.summary-page.m-board .journal .records::after { content: none; }
+  #app.summary-page.m-board .journal .records:has(.record-chip:is(.upgraded,.skipped))::after {
+    content: '';
+    flex: 0 0 max(0px, calc(100% - 104px));
+  }
+  /* 查看更多预测 is the column's last row, so it sits clear of the home indicator in the same way. */
+  #app.summary-page.m-board .journal .forecast-more { padding-bottom: calc(10px + var(--m-safe-bottom)); }
+  /* Without 查看更多预测 the cards use its row too. */
+  #app.summary-page.m-board .journal .records:last-child { grid-row: 3 / 5; }
+  #app.summary-page.m-board .journal .records::-webkit-scrollbar { display: none; }
+  #app.summary-page.m-board .journal .records>.empty { margin: 0; text-align: center; }
+
+  /* Cards: LV, class name, the big growth, then its stats with the pass rate (forecast) or the anchor mark
+     beside them, label over value as on wide screens. A hairline sets off the side strip at the trailing edge:
+     rating face · class icon (! when a better choice exists) · mount (empty when the class takes none).
+     A tap anywhere else on the card marks it (已跳过 → 已升级 → 原样); 编辑 changes the class. */
+  #app.summary-page.m-board .record-chip {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 40px;
+    /* The stats row is fixed (two lines and the bottom inset), so a pass rate or anchor beside it never adds height. */
+    grid-template-rows: auto auto 46px;
+    grid-template-areas: "head head side" "grow grow side" "stats mark side";
+    align-items: start;
+    gap: 0 8px;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 0 0 0 10px;
+    border-radius: 8px;
+    text-align: left;
+  }
+  /* LV leading, the class name centred in the room to its right. */
+  #app.summary-page.m-board .record-chip>div {
+    grid-area: head;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 8px 0 0;
+    border: 0;
+  }
+  #app.summary-page.m-board .record-chip>div>b { flex: none; font-size: 14px; line-height: 20px; }
+  #app.summary-page.m-board .record-chip>div>.m-card-class {
+    flex: 1 1 0;
+    display: block;
+    overflow: hidden;
+    min-width: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  #app.summary-page.m-board .record-chip>strong {
+    grid-area: grow;
+    float: none;
+    margin: 4px 0 0;
+    padding: 0;
+    font-size: 28px;
+    line-height: 32px;
+  }
+  /* Stats always take two lines' room, so every card is the same height; a single line sits on the second,
+     as on wide screens. */
+  #app.summary-page.m-board .record-chip>p {
+    grid-area: stats;
+    align-self: end;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 44px;
+    min-height: 0;
+    margin: 2px 0 0;
+    padding: 0 0 10px;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: left;
+  }
+  #app.summary-page.m-board .record-chip .stat-line { flex-wrap: nowrap; white-space: nowrap; }
+  /* Pass rate / anchor: in flow beside the stats, never over them. */
+  #app.summary-page.m-board .record-chip>:is(.queue-exam,.anchor-mark) {
+    grid-area: mark;
+    position: static;
+    align-self: end;
+    margin: 0;
+    padding: 0 0 10px;
+    color: inherit;
+  }
+  #app.summary-page.m-board .record-chip .queue-exam-compact { display: none; }
+  #app.summary-page.m-board .record-chip .queue-exam-rate {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-items: end;
+    align-items: baseline;
+    font-family: var(--font-game);
+  }
+  #app.summary-page.m-board .record-chip .queue-exam-label { grid-area: 1 / 1; font-size: 11px; line-height: 14px; opacity: .85; }
+  #app.summary-page.m-board .record-chip .queue-exam-rate b { grid-area: 2 / 1; font: 400 22px/1 var(--font-number); }
+  #app.summary-page.m-board .record-chip .queue-exam-percent { grid-area: 2 / 2; margin-left: 2px; font-size: 11px; }
+  #app.summary-page.m-board .record-chip>.anchor-mark {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    font: 11px/14px var(--font-game);
+  }
+  #app.summary-page.m-board .record-chip>.anchor-mark>span { opacity: .85; }
+  #app.summary-page.m-board .record-chip>.anchor-mark>svg { width: 20px; height: 20px; }
+
+  /* The side strip: three equal cells down the card's full height. */
+  #app.summary-page.m-board .record-chip>.m-card-side {
+    grid-area: 1 / 3 / -1 / 4;
+    align-self: stretch;
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    border-left: .5px solid color-mix(in srgb, currentColor 30%, transparent);
+  }
+  #app.summary-page.m-board .m-side-cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 0;
+  }
+  #app.summary-page.m-board .m-side-cell+.m-side-cell { border-top: .5px solid color-mix(in srgb, currentColor 30%, transparent); }
+  #app.summary-page.m-board .m-side-rating .rating-icon { width: 20px; height: 20px; margin: 0; }
+  #app.summary-page.m-board .m-side-rating.pending { font-size: 11px; opacity: .7; }
+  #app.summary-page.m-board .m-side-cell img { width: 26px; height: 26px; object-fit: contain; }
+  /* Class sprites carry a transparent margin (about 50px drawn in 64), mount icons fill their frame:
+     the class is drawn larger so both read as the same size. */
+  #app.summary-page.m-board .m-side-class > img { width: 33px; height: 33px; }
+  /* Mount icon centred, its friendship heart on the icon's bottom-right corner. */
+  #app.summary-page.m-board .m-side-ride .ride-icon { width: 26px; height: 26px; }
+  #app.summary-page.m-board .m-side-ride .ride-level { position: absolute; right: 1px; bottom: 2px; width: 16px; height: 16px; }
+  /* The ! sits on the class icon's top-right corner, in gold. */
+  #app.summary-page.m-board .m-side-class.better { color: var(--gold); }
+  #app.summary-page.m-board .m-side-class .m-better { position: absolute; top: 3px; right: 2px; display: grid; width: 15px; height: 15px; border-radius: 50%; background: var(--panel); }
+  #app.summary-page.m-board .m-side-class .m-better svg { width: 15px; height: 15px; }
+  #app.summary-page.m-board .m-side-cell.m-pressed { background: color-mix(in srgb, currentColor 14%, transparent); }
+  #app.summary-page.m-board .m-side-empty { font-size: 11px; opacity: .6; }
+  html[data-input-mode="keyboard"] #app.summary-page.m-board .m-side-cell[role="button"]:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 4px; }
+  /* Marked cards, as on wide screens: the mask covers the whole card with its word in the middle. 已升级 keeps
+     LV, class, growth and stats readable above it in muted gold; 已跳过 shows everything faintly through it.
+     This replaces the narrow phone layout's moved growth number (styles.css, max-width:600px). */
+  #app.summary-page.m-board .record-chip:is(.upgraded,.skipped)::after { content: none; }
+  #app.summary-page.m-board .record-chip:is(.upgraded,.skipped)>:is(strong,p) { visibility: visible; }
+  #app.summary-page.m-board .record-chip.upgraded>div>.m-card-class { visibility: visible; }
+  #app.summary-page.m-board .record-chip.upgraded>:is(div,strong,p) { position: relative; z-index: 1; color: #82765c; }
+
+  /* ---------- Step 3: list view for sorting and multi-select ---------- */
+  /* The list scrolls inside the same screen-fitted area as the board; the page stays put. */
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journals {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: var(--m-board-height, auto);
+    margin: 0 calc(-1 * (var(--m-gutter) + var(--m-safe-right))) 0 calc(-1 * (var(--m-gutter) + var(--m-safe-left)));
+    padding: 0 calc(var(--m-gutter) + var(--m-safe-right)) calc(16px + var(--m-safe-bottom)) calc(var(--m-gutter) + var(--m-safe-left));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journals::-webkit-scrollbar { display: none; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal { flex: none; }
+  main#app.summary-page { padding-bottom: 0; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal {
+    --sort-marker-offset: -5.5px;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 0 12px;
+    width: auto;
+    /* A fixed row: the narrow portrait (116×60) fills it from the top edge to the bottom edge, inside the 1px border. */
+    height: 62px;
+    min-height: 62px;
+    margin: 0;
+    padding: 0 16px;
+    border-radius: var(--m-radius);
+    overflow: visible;
+  }
+  #app.summary-page.multi-select-mode .journal { grid-template-columns: 44px minmax(0, 1fr); column-gap: 4px; padding-left: 4px; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal :is(.records,.forecast-more,.journal-actions) { display: none; }
+  #app.summary-page.multi-select-mode .journal.row-selected {
+    box-shadow: inset 0 0 0 1.5px var(--gold);
+    background: color-mix(in srgb, var(--gold) 8%, var(--panel));
+  }
+  /* The checkbox is centred on the row; the inline top that styles a desktop row has no effect here. */
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal>.row-select { display: none; }
+  /* A 20px box inside a 44px target, the same check as step 2's rows. */
+  #app.summary-page.multi-select-mode .journal>.row-select {
+    position: relative;
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    /* refreshRowSelection() writes an inline top for the desktop row; it must not move this one. */
+    left: auto !important;
+    top: auto !important;
+    transform: none;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    box-shadow: none;
+  }
+  #app.summary-page.multi-select-mode .journal>.row-select::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--muted);
+    border-radius: 5px;
+    background: var(--surface-field);
+  }
+  #app.summary-page.multi-select-mode .journal>.row-select[aria-pressed="true"]::before { border-color: var(--gold); background: var(--gold); }
+  #app.summary-page.multi-select-mode .journal>.row-select svg {
+    position: absolute;
+    left: 13px;
+    top: 13px;
+    width: 18px;
+    height: 18px;
+    transform: none;
+    color: var(--on-accent);
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head {
+    grid-row: 1;
+    grid-column: -2;
+    display: grid;
+    /* The strip's left 14px is transparent, so it is pulled in by that much and takes 102px. */
+    /* Name and initial level share one line, centred on the row. The name column is the widest name in the
+       list (--m-list-name, ui/mobile.js), so every 初始等级 starts at the same edge; a name only shrinks if the
+       row cannot fit it beside its level. */
+    grid-template-columns: 102px minmax(0, var(--m-list-name, max-content)) minmax(max-content, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) 22px minmax(0, 1fr);
+    grid-template-areas: "pic . . grip" "pic name level grip" "pic . . grip";
+    /* The row's height inside its 1px border; the flexible rows above and below the line never grow with the
+       reorder handle, which spans all three. */
+    height: 60px;
+    align-items: center;
+    gap: 0 12px;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+  /* Multi-select has no reorder handle: no empty column and gap for it at the trailing edge. */
+  #app.summary-page.multi-select-mode .journal-head {
+    grid-template-columns: 102px minmax(0, var(--m-list-name, max-content)) minmax(max-content, 1fr);
+    grid-template-areas: "pic . ." "pic name level" "pic . .";
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head :is(.journal-portrait,.journal-info) { display: contents; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head .journal-portrait img {
+    grid-area: pic;
+    align-self: stretch;
+    width: 116px;
+    height: 60px;
+    margin: 0 0 0 -14px;
+    border-radius: 0;
+    object-fit: cover;
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head h2 {
+    grid-area: name;
+    overflow: hidden;
+    align-self: center;
+    margin: 0;
+    font-size: 16px;
+    line-height: 22px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head p.initial-level {
+    grid-area: level;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 18px;
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head p.initial-level::after { display: none; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head .initial-pencil { width: 13px; height: 13px; margin: 0; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head .expectation-link { display: none; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head .drag-grip { display: none; }
+  /* Reorder control at the trailing edge, as in an iOS list. */
+  #app.summary-page.m-sort-mode .journal-head .drag-grip {
+    grid-area: grip;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    color: var(--muted);
+    touch-action: none;
+  }
+  #app.summary-page.m-sort-mode .journal-head .drag-grip svg { width: 14px; height: 21px; }
+  #app.summary-page.m-sort-mode .journal-head .drag-grip::before { content: ''; position: absolute; inset: -10px -16px -10px -10px; }
+}

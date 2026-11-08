@@ -1,0 +1,113 @@
+/* App dialogs on mobile.
+   Mobile shell only: every rule sits inside the mobile range (UI_MEDIA.mobileShell); desktop never reads it.
+   Shared tokens and the design rules live in shell.css.
+   Phone widths: tool dialogs rise from the bottom edge as sheets; short alerts (confirmations, choice,
+   level input) stay centred like iOS alerts. Exit rules are unchanged everywhere: Esc or the exit button
+   only, never the backdrop. Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
+@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+  /* ---------- Footer buttons: one readable size, 36px visual, 44px hit area ---------- */
+  dialog.app-dialog:not(.m-sheet) :is(footer, .profession-footer, .choice-actions, .class-scope-actions)>button,
+  dialog.app-dialog.confirm-dialog form>button {
+    position: relative;
+    min-width: 64px;
+    min-height: 36px;
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  dialog.app-dialog:not(.m-sheet) :is(footer, .profession-footer, .choice-actions, .class-scope-actions)>button::after,
+  dialog.app-dialog.confirm-dialog form>button::after { content: ''; position: absolute; inset: -4px 0; }
+  /* A lone exit sits at the trailing edge, like every other footer. */
+  dialog.app-dialog.card-options-dialog footer { display: flex; justify-content: flex-end; }
+
+  /* Fields stay at 16px or larger, or iOS zooms the page when they take focus. */
+  dialog.app-dialog .better-mobile-filter select { font-size: 16px; border-radius: 10px; }
+
+  /* ---------- Card panel: title, current class, grouped options; only the list scrolls ---------- */
+  dialog.app-dialog.card-options-dialog[open] { display: flex; flex-direction: column; overflow: hidden; }
+  dialog.app-dialog.card-options-dialog header { flex: none; height: auto; padding: 20px 16px 12px; }
+  dialog.app-dialog.card-options-dialog .card-options-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
+  dialog.app-dialog.card-options-dialog .card-options-current { margin: 0 0 4px; font-size: 13px; }
+  dialog.app-dialog.card-options-dialog .card-options-list button { font-size: 16px; line-height: 22px; }
+  dialog.app-dialog.card-options-dialog .card-options-list button>span { font-size: 13px; }
+  dialog.app-dialog.card-options-dialog footer { flex: none; align-self: stretch; max-width: none; margin: 0; padding: 12px 16px 16px; border: 0; }
+
+  /* ---------- Scope choice: the same 16px gutter as the other sheets ---------- */
+  dialog.app-dialog.class-scope-dialog h2 { padding: 20px 16px 16px; font-size: 17px; }
+  dialog.app-dialog.class-scope-dialog .class-scope-options { gap: 12px; padding: 0 16px; }
+  dialog.app-dialog.class-scope-dialog .class-scope-option { min-height: 88px; font-size: 16px; }
+  dialog.app-dialog.class-scope-dialog .class-scope-actions { padding: 16px; }
+
+  /* ---------- Class picker: tiers as wrapped rows on every touch width (the desktop table is 1280px wide
+     and would scroll sideways under a finger) ---------- */
+  dialog.app-dialog.profession-picker .profession-titlebar { padding: 16px; }
+  dialog.app-dialog.profession-picker .profession-scroll { padding: 4px 12px 12px; overflow-x: hidden; }
+  dialog.app-dialog.profession-picker .profession-footer { padding: 12px 16px; }
+  dialog.app-dialog.profession-picker .profession-table { min-width: 0; gap: 0; }
+  dialog.app-dialog.profession-picker .profession-tier { display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 4px; padding: 12px 0; border: 0; border-bottom: 1px solid var(--control-line); background: transparent; }
+  dialog.app-dialog.profession-picker .profession-tier:last-child { border-bottom: 0; }
+  dialog.app-dialog.profession-picker .profession-tier h3 { grid-column: 1 / -1; position: static; padding: 0 4px 8px; font-size: 18px; color: var(--text); background: transparent; }
+  dialog.app-dialog.profession-picker .profession-tier .profession-options { display: contents; }
+  dialog.app-dialog.profession-picker .profession-option { width: 100%; max-width: none; min-height: 96px; padding: 4px 0; justify-content: flex-start; gap: 6px; }
+  dialog.app-dialog.profession-picker .profession-option:is(:hover, [aria-pressed="true"]) { border-color: transparent; background: transparent; }
+  dialog.app-dialog.profession-picker .profession-icon { width: 50px; height: 50px; }
+  dialog.app-dialog.profession-picker .profession-option .profession-name { font-size: 16px; white-space: normal; overflow-wrap: anywhere; text-align: center; }
+}
+
+/* Phone widths: tool dialogs become bottom sheets. */
+@media (max-width:600px) {
+  dialog.app-dialog:is(.card-options-dialog,.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog) {
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 16px);
+    border-width: .5px 0 0;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: 0;
+    box-shadow: 0 -8px 32px #0007;
+  }
+  /* The bottom safe area belongs to each sheet's footer, so its surface runs to the screen edge. */
+  dialog.app-dialog:is(.card-options-dialog,.expectation-dialog,.better-dialog) footer,
+  dialog.app-dialog:is(.profession-picker,.ride-picker) .profession-footer,
+  dialog.app-dialog.class-scope-dialog .class-scope-actions {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  dialog.app-dialog.card-options-dialog footer { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  /* The card's panel reads as an inset grouped list with a full-width close, like an action sheet. */
+  dialog.app-dialog.card-options-dialog .card-options-list button {
+    min-height: 52px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--m-fill);
+  }
+  dialog.app-dialog.card-options-dialog .card-options-list button:active { background: var(--m-fill-strong); }
+  dialog.app-dialog.card-options-dialog .card-options-list .card-option-recommend { box-shadow: inset 0 0 0 1px var(--gold); }
+  dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button { flex: 1 1 auto; width: 100%; min-height: 50px; border-radius: 12px; font-size: 16px; }
+  dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button::after { display: none; }
+  /* Alerts: centred, inset from the edges by the page gutter. */
+  dialog.app-dialog:is(.confirm-dialog,.choice-dialog,.setup-level-dialog) { width: calc(100% - 32px); max-width: 400px; max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px); }
+  dialog.app-dialog.choice-dialog { overflow-y: auto; }
+}
+@media (max-width:600px) and (prefers-reduced-motion:no-preference) {
+  dialog.app-dialog:is(.card-options-dialog,.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog)[open] {
+    animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1);
+  }
+}
+
+/* Short landscape screens: dialogs stay centred and fit the height; their bodies scroll, footers stay put. */
+@media (max-height:500px) and (orientation:landscape) and ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) {
+  dialog.app-dialog:not(.m-sheet) { max-height: calc(100dvh - 16px); }
+  dialog.app-dialog.card-options-dialog { max-height: calc(100dvh - 16px); }
+  dialog.app-dialog.card-options-dialog header { padding: 12px 16px 8px; }
+  dialog.app-dialog.card-options-dialog footer { padding: 8px 16px 12px; }
+  dialog.app-dialog.profession-picker .profession-titlebar { padding: 8px 16px; }
+  dialog.app-dialog.profession-picker .profession-footer { padding: 8px 16px; }
+  dialog.app-dialog.profession-picker .profession-tier { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); padding: 8px 0; }
+  dialog.app-dialog.profession-picker .profession-option { min-height: 80px; }
+  dialog.app-dialog.profession-picker .profession-icon { width: 44px; height: 44px; }
+  dialog.app-dialog.class-scope-dialog h2 { padding: 12px 16px; }
+  dialog.app-dialog.class-scope-dialog .class-scope-option { min-height: 72px; padding-block: 12px; }
+  dialog.app-dialog.class-scope-dialog .class-scope-actions { padding: 12px 16px; }
+}

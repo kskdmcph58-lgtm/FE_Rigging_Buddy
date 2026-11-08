@@ -7,7 +7,8 @@ const forecastLengths = new Map();
 const FORECAST_BATCH = 30;
 let recordReturnPosition = null;
 const recordRails = new WeakMap();
-const desktopRecords = UI_MEDIA.desktopRecordRail;
+// The mobile shell lays each person out as a vertical column, so touch tablets wider than 600px leave the rail too.
+const desktopRecords = { get matches() { return UI_MEDIA.desktopRecordRail.matches && !UI_MEDIA.mobileShell.matches; } };
 function compactRecords(item) {
   const records = M.live(item);
   return Boolean(item.seed) || records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;

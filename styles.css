@@ -68,20 +68,6 @@ header {
   justify-content: space-between;
   padding: 0 5vw;
 }
-/* Collapse the header's space as it leaves; content keeps its internal spacing. */
-@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
-  body>header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--bg);
-  }
-  body>header.is-scroll-hidden {
-    transform: translateY(-100%);
-    margin-bottom: calc(-1 * var(--page-header-height));
-    pointer-events: none;
-  }
-}
 .brand {
   display: flex;
   align-items: center;
@@ -2860,8 +2846,11 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     }
   }
 }
-html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[data-sort-id]):focus-visible {
-  outline: none;
+/* Touch and pointer never paint a focus ring, including on elements focused by script when a dialog opens
+   (the iOS convention: nothing looks selected until the person picks it). !important so a component's own
+   :focus-visible rule, written for keyboard use, cannot win on specificity or order. */
+html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[data-sort-id],[tabindex]):focus-visible {
+  outline: none !important;
 }
 @media(hover:none), (pointer:coarse) {
   button,summary {
@@ -2992,6 +2981,15 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
   outline: 0;
   background: #d7c59430;
   color: #f5e5bd;
+}
+/* On touch the list opens with focus on the current option; only its selected look shows, no extra highlight. */
+html[data-input-mode="touch"] .select-options button:focus {
+  background: transparent;
+  color: var(--text);
+}
+html[data-input-mode="touch"] .select-options button[aria-selected="true"]:focus {
+  background: #d7c59420;
+  color: var(--gold);
 }
 .select-options button:disabled {
   opacity: .35;
@@ -4510,23 +4508,32 @@ html[data-input-mode="touch"] button.expectation-link {
 .better-mobile .better-side-current { position:static; margin-bottom:20px; }
 .better-mobile :is(.better-side-current,.better-side-others,.better-branches,.better-branch) { width:100%; min-width:0; }
 .better-mobile .better-branches { display:block; }
-.better-mobile .better-branch { gap:16px; }
-.better-mobile .better-node { display:grid; width:100%; gap:0; }
-.better-mobile .better-card { width:100%; border-bottom-left-radius:0; border-bottom-right-radius:0; cursor:default; }
-.better-mobile .better-ridebox { width:100%; min-width:0; overflow:visible; border-top:0; border-top-left-radius:0; border-top-right-radius:0; gap:4px; }
+.better-mobile .better-branch { gap:12px; }
+/* Phones keep the desktop card (156px) with its classes in the box to its right; rides are picked in a sheet. */
+.better-mobile .better-node { display:flex; align-items:flex-start; gap:6px; width:100%; }
+.better-mobile .better-card { flex:none; width:156px; cursor:default; }
+/* A long class list scrolls past its card: the card holds at the top until the list's end reaches it, then both leave together. */
+.better-mobile .better-side-others .better-card { position:sticky; top:0; }
+.better-mobile .better-ridebox { flex:1; min-width:0; overflow:visible; gap:0; padding:2px 8px; }
+.better-mobile .better-root .better-ridebox { gap:6px; padding:8px; }
 .better-mobile .tier-filter { display:none; }
-.better-mobile .better-mobile-filter { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:8px; color:var(--muted); font:13px/20px var(--font-ui); }
-.better-mobile-filter select { min-height:44px; padding:6px 10px; border:1px solid var(--control-line); border-radius:var(--control-radius); background:var(--surface-input); color:var(--text); font:13px/20px var(--font-ui); }
+.better-mobile .better-root { display:grid; grid-template-columns:156px minmax(0,1fr); grid-template-rows:auto 1fr; column-gap:6px; row-gap:12px; align-items:start; }
+.better-mobile .better-root>.better-card { grid-row:1 / span 2; }
+.better-mobile .better-root>.better-ridebox { grid-column:2; }
+.better-mobile .better-mobile-filter { grid-column:2; display:grid; gap:4px; padding:0 2px; color:var(--muted); font:13px/18px var(--font-ui); }
+.better-mobile-filter select { width:100%; min-height:44px; padding:6px 10px; border:1px solid var(--control-line); border-radius:var(--control-radius); background:var(--surface-input); color:var(--text); font:13px/20px var(--font-ui); }
 .better-mobile .better-entry { min-width:0; }
-.better-mobile button.better-class-pick { width:100%; min-height:44px; padding:6px 2px; }
-.better-mobile .better-entry[data-choice]:not(.selected)>.better-rides { display:none; }
-.better-mobile .better-rides { margin-left:0; padding-left:10px; gap:6px; }
-.better-mobile .better-ride { flex-wrap:wrap; gap:4px 6px; white-space:normal; }
-.better-mobile button.better-ride-name { min-height:44px; padding:4px 0; }
-.better-mobile .better-hearts { flex-wrap:wrap; }
-.better-mobile button.better-heart { display:inline-flex; flex-direction:column; justify-content:center; align-items:center; min-width:44px; min-height:44px; margin:0; padding:4px; border-radius:var(--control-radius); }
-.better-mobile button.better-heart::after { content:attr(data-level); color:var(--muted); font:11px/14px var(--font-ui); }
+.better-mobile .better-side-others :is(.better-rides,.better-pick) { display:none !important; }
+.better-mobile .better-root .better-rides { margin-left:0; padding-left:0; border-left:0; }
+.better-mobile button.better-class-pick { width:100%; min-height:44px; padding:4px 0; }
+.better-mobile .better-class { white-space:normal; }
 .better-mobile .better-ridebox:has(.better-entry.selected) .better-entry:not(.selected),.better-mobile .better-ridebox.hot:has(.better-entry + .better-entry) .better-entry:not(.hot) { opacity:1; }
+/* The ride sheet: the five friendship slots keep their places; levels that do not give the result stay empty. */
+.better-ride-sheet .ride-heart-slot { display:block; flex:none; width:44px; min-height:var(--touch-target-min); }
+.better-ride-sheet .ride-row { cursor:default; }
+.better-ride-sheet .ride-current { margin-left:6px; padding:1px 6px; border-radius:6px; background:#d8c39424; color:var(--gold); font:11px/16px var(--font-ui); white-space:nowrap; }
+.better-ride-sheet .profession-footer { justify-content:flex-end; }
+@media(max-width:520px) { .better-ride-sheet .ride-heart-slot { flex:1; width:auto; } }
 .better-mobile .better-actions { flex:none; }
 
 /* A marked card's overlay covers its rating, as it did before the rating was clickable. */
