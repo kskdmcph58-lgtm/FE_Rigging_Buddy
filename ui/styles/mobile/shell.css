@@ -216,6 +216,9 @@
     overflow: visible;
   }
   dialog.m-sheet[open] { display: flex; flex-direction: column; }
+  /* The slide moves this body, not the dialog: a transform on the dialog would carry the fixed edge band
+     below along with it, off the screen's bottom edge. */
+  dialog.m-sheet .m-sheet-body { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
   /* The actions scroll on a short screen; 取消 always stays in reach. */
   dialog.m-sheet .m-sheet-groups { display: grid; gap: 8px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; border-radius: 14px; }
   dialog.m-sheet .m-sheet-group, dialog.m-sheet footer button {
@@ -246,8 +249,38 @@
     dialog.m-sheet .m-sheet-group button, dialog.m-sheet footer button { min-height: 44px; font-size: 17px; }
   }
   dialog.m-sheet footer button { border-radius: 14px; background: var(--surface-floating); font-weight: 600; }
+  /* iOS Safari tints the area behind its bottom toolbar from the fixed element it finds at the screen's
+     bottom edge. Without help that is the sheet's 取消 button, and the strip jumps to its grey. A real element
+     (Safari's sampling skips pseudo-elements) fills the gap under 取消 to the bottom edge, full width, in the
+     dimmed page colour (the page under the 60% backdrop), so the toolbar area darkens with the rest of the
+     page. It stays put while the sheet slides and fades with the dimming; it takes no taps. */
+  dialog.m-sheet .m-sheet-edge {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(8px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, #050c0d 60%, var(--bg));
+    pointer-events: none;
+  }
 }
 @media ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) and (prefers-reduced-motion:no-preference) {
-  @keyframes m-sheet-in { from { transform: translateY(100%); } }
-  dialog.m-sheet[open] { animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1); }
+  @keyframes m-sheet-in { from { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
+  /* The dialog itself stays still (no shared dialog scale-in); its body slides and the edge band fades in
+     with the dimming (motion.css: 160ms). */
+  dialog.m-sheet[open] { animation: none; }
+  dialog.m-sheet[open] .m-sheet-body { animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1); }
+  /* The band stays opaque (Safari may skip a translucent one) and changes colour instead: page to dimmed. */
+  @keyframes m-edge-in { from { background-color: var(--bg); } }
+  @keyframes m-edge-out { to { background-color: var(--bg); } }
+  dialog.m-sheet[open] .m-sheet-edge { animation: m-edge-in var(--motion-base) ease-out; }
+  /* Cancel: back down the same way, a little quicker, with the dimming fading in step (ui/mobile.js). */
+  @keyframes m-sheet-out { to { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
+  @keyframes m-backdrop-out { to { opacity: 0; } }
+  dialog.m-sheet.m-sheet-leaving[open] { pointer-events: none; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-body { animation: m-sheet-out 240ms cubic-bezier(.32,.72,0,1) forwards; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-edge { animation: m-edge-out 240ms ease-out forwards; }
+  dialog.m-sheet.m-sheet-leaving[open]::backdrop { animation: m-backdrop-out 240ms ease-out forwards; }
+  /* Once closed it has already left the screen: no second fade in the centred closing geometry. */
+  dialog.m-sheet.m-sheet-leaving:not([open]) { opacity: 0; transition: none; }
 }

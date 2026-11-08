@@ -47,7 +47,6 @@
   #app.select-page>.toolbar>.search-box { grid-column: 1 / -1; grid-row: 1; order: 0; width: 100%; margin: 0; }
   #app.select-page>.toolbar>.part3-segment { grid-column: 1; grid-row: 2; }
   #app.select-page>.toolbar>.route-segment { grid-column: 2; grid-row: 2; }
-  #app.select-page>.toolbar:not(:has(>.route-segment))>.part3-segment { grid-column: 1 / -1; }
   /* 返回 / 撤回删除 / 恢复备份 are reached from the navigation bar (ui/mobile.js forwards to these). */
   #app.select-page>.toolbar>button { display: none; }
   #app.select-page .search {
@@ -126,7 +125,8 @@
     border: 0;
   }
   #app.levels-page .setup-toolbar>:is(.part3-segment,.route-segment) { flex: 1 1 calc(50% - 4px); }
-  #app.levels-page .setup-toolbar:not(:has(>.route-segment))>.part3-segment { flex-basis: 100%; }
+  /* Keep the scope control and tool row in place when Part 3 removes the route control. */
+  #app.levels-page .setup-toolbar:not(:has(>.route-segment))>.part3-segment { margin-right: calc(50% + 4px); }
   #app.levels-page .setup-toolbar>button {
     flex: 1 1 0;
     order: 0;
@@ -433,13 +433,12 @@
     #app.select-page>.toolbar>.search-box { grid-column: 1; }
     #app.select-page>.toolbar>.part3-segment { grid-column: 2; grid-row: 1; }
     #app.select-page>.toolbar>.route-segment { grid-column: 3; grid-row: 1; }
-    #app.select-page>.toolbar:not(:has(>.route-segment))>.part3-segment { grid-column: 2 / -1; }
     #app.select-page .character-grid { grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); }
     #app.select-page .bottom-bar #choose-next { flex: 0 1 320px; }
     @media (max-height:500px) { #app.select-page .character-grid { grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); } }
 
     #app.levels-page .setup-toolbar>:is(.part3-segment,.route-segment) { flex: 0 0 200px; }
-    #app.levels-page .setup-toolbar:not(:has(>.route-segment))>.part3-segment { flex-basis: 200px; }
+    #app.levels-page .setup-toolbar:not(:has(>.route-segment))>.part3-segment { margin-right: 0; }
     #app.levels-page .setup-toolbar>button { flex: none; padding-inline: 12px; }
     #app.levels-page .setup-toolbar>button[data-action="batch"] { margin-left: auto; }
     #app.levels-page.multi-select-mode .selection-toolbar {

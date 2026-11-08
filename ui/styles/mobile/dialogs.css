@@ -86,6 +86,36 @@
   dialog.app-dialog.card-options-dialog .card-options-list .card-option-recommend { box-shadow: inset 0 0 0 1px var(--gold); }
   dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button { flex: 1 1 auto; width: 100%; min-height: 50px; border-radius: 12px; font-size: 16px; }
   dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button::after { display: none; }
+  /* Sheet footers speak the same language as the record page's save bar: full-width 50px buttons that
+     share the row equally, 12px corners, primary in gold at the trailing end. A third, auxiliary action
+     (恢复默认) stays compact at the far left, like 删除记录 there. */
+  dialog.app-dialog:is(.profession-picker,.ride-picker) .profession-footer,
+  dialog.app-dialog:is(.expectation-dialog,.better-dialog) footer,
+  dialog.app-dialog.class-scope-dialog .class-scope-actions {
+    display: flex;
+    justify-content: stretch;
+    gap: 12px;
+    padding-top: 12px;
+    padding-inline: 16px;
+    border-top: .5px solid var(--m-hairline);
+  }
+  dialog.app-dialog.class-scope-dialog .class-scope-actions { border-top: 0; }
+  dialog.app-dialog:is(.profession-picker,.ride-picker):not(.m-sheet) .profession-footer>button,
+  dialog.app-dialog:is(.expectation-dialog,.better-dialog):not(.m-sheet) footer>button,
+  dialog.app-dialog.class-scope-dialog:not(.m-sheet) .class-scope-actions>button {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    min-height: 50px;
+    margin: 0;
+    padding: 0 12px;
+    border-radius: var(--m-radius);
+    font-size: 16px;
+  }
+  dialog.app-dialog:is(.profession-picker,.ride-picker):not(.m-sheet) .profession-footer>button::after,
+  dialog.app-dialog:is(.expectation-dialog,.better-dialog):not(.m-sheet) footer>button::after,
+  dialog.app-dialog.class-scope-dialog:not(.m-sheet) .class-scope-actions>button::after { display: none; }
+  dialog.app-dialog.expectation-dialog:not(.m-sheet) footer>button:first-child:nth-last-child(3) { flex: 0 0 auto; padding: 0 16px; }
   /* Alerts: centred, inset from the edges by the page gutter. */
   dialog.app-dialog:is(.confirm-dialog,.choice-dialog,.setup-level-dialog) { width: calc(100% - 32px); max-width: 400px; max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px); }
   dialog.app-dialog.choice-dialog { overflow-y: auto; }

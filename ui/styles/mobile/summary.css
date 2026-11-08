@@ -142,8 +142,7 @@
      one bar: the bar's closing hairline moves to the panel's lower edge. It covers the strip and the board instead
      of pushing them down, so nothing under it moves when it opens or closes. */
   #app.summary-page .summary-top { position: relative; z-index: 6; }
-  #app.summary-page .summary-top>.m-settings { display: none; }
-  #app.summary-page.m-settings-open .summary-top>.m-settings {
+  #app.summary-page .summary-top>.m-settings {
     position: absolute;
     top: 0;
     /* Above the strip's 多选, which is positioned too and comes later in the page. */
@@ -151,7 +150,7 @@
     /* Full bleed: out through main's gutters and safe areas to the screen edges, content kept on the gutter. */
     left: calc(-1 * (var(--m-gutter) + var(--m-safe-left)));
     right: calc(-1 * (var(--m-gutter) + var(--m-safe-right)));
-    display: grid;
+    display: none;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0 8px;
     padding: 4px calc(var(--m-gutter) + var(--m-safe-right)) 12px calc(var(--m-gutter) + var(--m-safe-left));
@@ -161,20 +160,41 @@
     /* The nav bar's colour (--m-chrome is --bg made translucent), solid: what it covers must not show through. */
     background: var(--bg);
     box-shadow: 0 12px 24px #0004;
+    opacity: 0;
+    clip-path: inset(0 -32px 100%);
+    pointer-events: none;
+    transition: opacity var(--motion-base) var(--ease-standard),
+      clip-path var(--motion-base) var(--ease-standard),
+      display var(--motion-base) allow-discrete;
+  }
+  #app.summary-page.m-settings-open .summary-top>.m-settings {
+    display: grid;
+    opacity: 1;
+    clip-path: inset(0 -32px -32px);
+    pointer-events: auto;
+  }
+  @starting-style {
+    #app.summary-page.m-settings-open.m-settings-entering .summary-top>.m-settings {
+      opacity: 0;
+      clip-path: inset(0 -32px 100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #app.summary-page .summary-top>.m-settings { transition: none; }
   }
   /* One bar: no seam between the nav bar and the panel. */
   body:has(#app.summary-page.m-settings-open)>header.m-header { border-bottom-color: transparent; }
-  #app.summary-page.m-settings-open .m-settings>:is(.part3-segment,.route-segment) {
+  #app.summary-page .m-settings>:is(.part3-segment,.route-segment) {
     position: relative;
     left: auto;
     translate: none;
     width: auto;
     margin: 0;
   }
-  #app.summary-page.m-settings-open .m-settings:not(:has(>.route-segment))>.part3-segment { grid-column: 1 / -1; }
+  #app.summary-page .m-settings>.part3-segment { grid-column: 1; }
   /* 兵种推荐范围: caption and the desktop's compact slider on one line (Part 3's six stops wrap under the caption
      on the narrowest phones), drawn flat: hairline track, plain dots, a flat thumb. */
-  #app.summary-page.m-settings-open .m-settings>.recommend-filter {
+  #app.summary-page .m-settings>.recommend-filter {
     position: static;
     left: auto;
     translate: none;
@@ -193,16 +213,20 @@
     border-radius: 0;
     background: none;
   }
-  #app.summary-page.m-settings-open .recommend-caption { color: var(--text); font-size: 14px; line-height: 20px; }
-  #app.summary-page.m-settings-open .recommend-slider { grid-template-columns: repeat(var(--stops), 40px); }
+  #app.summary-page .m-settings .recommend-caption { color: var(--text); font-size: 14px; line-height: 20px; }
+  /* Reserve the six-stop footprint so 基础 stays anchored, including when the slider wraps below its caption. */
+  #app.summary-page .m-settings .recommend-slider {
+    grid-template-columns: repeat(var(--stops), 40px);
+    margin-right: calc((6 - var(--stops)) * 40px);
+  }
   /* Taps a little above or below the dots still land on the slider. */
-  #app.summary-page.m-settings-open .recommend-slider::before { content: ''; position: absolute; inset: -6px 0; }
-  #app.summary-page.m-settings-open .recommend-track { top: 10px; height: 2px; border-radius: 1px; background: var(--m-fill-strong); }
-  #app.summary-page.m-settings-open .recommend-fill { opacity: 1; }
-  #app.summary-page.m-settings-open .recommend-stop { grid-template-rows: 22px auto; font-size: 11px; line-height: 14px; }
-  #app.summary-page.m-settings-open .recommend-stop i { width: 6px; height: 6px; background: var(--m-fill-strong); }
-  #app.summary-page.m-settings-open .recommend-stop.in i { background: var(--gold); }
-  #app.summary-page.m-settings-open .recommend-thumb {
+  #app.summary-page .m-settings .recommend-slider::before { content: ''; position: absolute; inset: -6px 0; }
+  #app.summary-page .m-settings .recommend-track { top: 10px; height: 2px; border-radius: 1px; background: var(--m-fill-strong); }
+  #app.summary-page .m-settings .recommend-fill { opacity: 1; }
+  #app.summary-page .m-settings .recommend-stop { grid-template-rows: 22px auto; font-size: 11px; line-height: 14px; }
+  #app.summary-page .m-settings .recommend-stop i { width: 6px; height: 6px; background: var(--m-fill-strong); }
+  #app.summary-page .m-settings .recommend-stop.in i { background: var(--gold); }
+  #app.summary-page .m-settings .recommend-thumb {
     top: 4px;
     left: calc((var(--at) + .5) * var(--col) - 7px);
     width: 14px;

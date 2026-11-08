@@ -163,7 +163,15 @@
     }
     const action = button.dataset.mobileAction;
     if (action === 'sort') setSortMode(!sortMode);
-    else if (action === 'settings') { settingsOpen = !settingsOpen; applyClasses(); refreshNav(); layoutBoard(); }
+    else if (action === 'settings') {
+      settingsOpen = !settingsOpen;
+      app.classList.toggle('m-settings-entering', settingsOpen);
+      applyClasses(); refreshNav(); layoutBoard();
+      // Starting styles belong to this button press, not to controls rebuilt by a story switch.
+      const panel = app.querySelector('.m-settings');
+      if (panel) getComputedStyle(panel).opacity;
+      app.classList.remove('m-settings-entering');
+    }
     else if (action === 'more') openMoreSheet(button);
   }
   function updateCollapse() {
@@ -189,6 +197,8 @@
     const active = media.matches && onSummary();
     app.classList.toggle('m-sort-mode', active && sortMode);
     app.classList.toggle('m-settings-open', active && settingsOpen);
+    // A closing panel stays painted for its transition, but stops accepting focus immediately.
+    app.querySelector('.m-settings')?.toggleAttribute('inert', active && !settingsOpen);
     app.classList.toggle('m-board', active && !listMode());
   }
   function board() { return onSummary() && app.classList.contains('m-board') ? app.querySelector('.journals') : null; }
@@ -434,10 +444,24 @@
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog m-sheet';
     dialog.setAttribute('aria-label', '备份与更多操作');
-    dialog.innerHTML = `<div class="m-sheet-groups">${groups.map((buttons, group) => `<div class="m-sheet-group">${buttons.map((button, index) => `<button type="button" class="${button.classList.contains('menu-danger') ? 'danger-text' : ''}" data-sheet="${group}:${index}" ${button.disabled ? 'disabled' : ''}>${escapeValue(button.textContent.trim())}</button>`).join('')}</div>`).join('')}</div><footer><button type="button" data-sheet-close autofocus>取消</button></footer>`;
-    let chosen = null;
+    dialog.innerHTML = `<div class="m-sheet-body"><div class="m-sheet-groups">${groups.map((buttons, group) => `<div class="m-sheet-group">${buttons.map((button, index) => `<button type="button" class="${button.classList.contains('menu-danger') ? 'danger-text' : ''}" data-sheet="${group}:${index}" ${button.disabled ? 'disabled' : ''}>${escapeValue(button.textContent.trim())}</button>`).join('')}</div>`).join('')}</div><footer><button type="button" data-sheet-close autofocus>取消</button></footer></div><div class="m-sheet-edge" aria-hidden="true"></div>`;
+    let chosen = null, leaving = false;
+    /* Cancelling leaves the way the sheet came in (HIG Motion: dismiss along the axis of the reveal): it slides
+       back down while the dimming fades, then closes. Choosing an action closes at once, so that action's own
+       dialog or file picker opens inside the same tap. */
+    const dismiss = () => {
+      if (leaving) return;
+      leaving = true;
+      if (!motionAllowed()) { dialog.close(); return; }
+      dialog.classList.add('m-sheet-leaving');
+      const body = dialog.querySelector('.m-sheet-body');
+      body.addEventListener('animationend', event => { if (event.target === body) dialog.close(); });
+      setTimeout(() => dialog.close(), 400);
+    };
+    dialog.addEventListener('cancel', event => { event.preventDefault(); dismiss(); });
     dialog.addEventListener('click', event => {
       const option = event.target.closest('[data-sheet]');
+      if (leaving) return;
       if (option && !option.disabled) {
         const [group, index] = option.dataset.sheet.split(':').map(Number);
         chosen = groups[group][index];
@@ -445,7 +469,10 @@
         // Run the original item inside this tap: iOS Safari only opens the file picker (恢复备份) or starts a
         // download (导出备份) during a user gesture, and the sheet is already closed so its confirmation opens cleanly.
         if (chosen.isConnected && !chosen.disabled) chosen.click();
-      } else if (event.target.closest('[data-sheet-close]')) dialog.close();
+      } else if (event.target.closest('[data-sheet-close]')) dismiss();
+      // An action sheet, like iOS: a tap on the dimmed page outside the groups cancels it. The tool dialogs
+      // keep the general rule (exit button or Esc only).
+      else if (event.target === dialog) dismiss();
     });
     dialog.addEventListener('close', () => {
       retireDialog(dialog);
@@ -456,9 +483,92 @@
   }
 
   /* ---------- Lifecycle ---------- */
+  let storyMotion = null;
+  const storyGhosts = new Set();
+  function clearStoryMotion() {
+    storyMotion = null;
+    storyGhosts.forEach(node => node.remove());
+    storyGhosts.clear();
+    app.getAnimations({ subtree: true }).forEach(animation => {
+      if (animation.id === 'mobile-story') animation.cancel();
+    });
+  }
+  function captureStoryControl(selector) {
+    const node = app.querySelector(selector);
+    if (!node || !node.getClientRects().length) return null;
+    return { node: node.cloneNode(true), rect: node.getBoundingClientRect() };
+  }
+  // Capture before app.js rebuilds the controls; play after the mobile settings panel is restored.
+  app.addEventListener('change', event => {
+    if (event.target.name !== 'part3') return;
+    clearStoryMotion();
+    if (!media.matches || !motionAllowed()) return;
+    storyMotion = {
+      page,
+      route: captureStoryControl('.route-segment'),
+      slider: captureStoryControl('.recommend-slider'),
+      track: captureStoryControl('.recommend-track'),
+      fill: captureStoryControl('.recommend-fill'),
+      thumb: captureStoryControl('.recommend-thumb')
+    };
+  }, true);
+  function playStoryMotion() {
+    const before = storyMotion;
+    storyMotion = null;
+    if (!before || before.page !== page || !motionAllowed()) return;
+    const options = { id: 'mobile-story', duration: MOTION.base, easing: MOTION.ease };
+    const part = app.querySelector('.part3-segment');
+    if (!part) return;
+    const retire = (entry, host, clip) => {
+      const ghost = entry.node;
+      ghost.inert = true;
+      ghost.setAttribute('aria-hidden', 'true');
+      [ghost, ...ghost.querySelectorAll('*')].forEach(node => {
+        ['id', 'name', 'tabindex'].forEach(attr => node.removeAttribute(attr));
+      });
+      ghost.classList.add('list-ghost');
+      Object.assign(ghost.style, { left: `${entry.rect.left}px`, top: `${entry.rect.top}px`, width: `${entry.rect.width}px`, height: `${entry.rect.height}px`, clipPath: clip || 'none' });
+      host.append(ghost);
+      storyGhosts.add(ghost);
+      const remove = () => { ghost.remove(); storyGhosts.delete(ghost); };
+      const animation = ghost.animate({ opacity: [1, 0] }, options);
+      animation.onfinish = animation.oncancel = remove;
+    };
+    const route = app.querySelector('.route-segment');
+    if (before.route && !route) retire(before.route, part.parentElement);
+    else if (!before.route && route) route.animate({ opacity: [0, 1] }, options);
+    const slider = app.querySelector('.recommend-slider');
+    if (!before.slider || !slider || !slider.getClientRects().length) return;
+    const rect = slider.getBoundingClientRect();
+    // Measure every destination before starting any animation: the fill's percentage width depends
+    // on the track. Starting the track first would make us capture its old width as the fill's target.
+    const rails = ['track', 'fill'].map(name => {
+      const node = slider.querySelector(`.recommend-${name}`);
+      return { node, old: before[name], width: node?.getBoundingClientRect().width };
+    });
+    const thumb = slider.querySelector('.recommend-thumb');
+    const thumbX = thumb && before.thumb ? before.thumb.rect.left - thumb.getBoundingClientRect().left : 0;
+    for (const { node, old, width } of rails) {
+      if (node && old) node.animate({ width: [`${old.rect.width}px`, `${width}px`] }, options);
+    }
+    if (thumb && before.thumb) {
+      thumb.animate({ transform: [`translateX(${thumbX}px)`, 'translateX(0)'] }, options);
+    }
+    if (before.slider.rect.width > rect.width) {
+      // Only the retired stops fade. Keeping the old rail or thumb here would paint a second,
+      // full-length gold line behind the live rail while it shrinks.
+      before.slider.node.querySelectorAll('.recommend-track,.recommend-thumb').forEach(node => node.remove());
+      retire(before.slider, slider.parentElement, `inset(0 0 0 ${rect.width}px)`);
+    } else {
+      slider.querySelectorAll('.recommend-stop').forEach((stop, index) => {
+        if (index * 40 >= before.slider.rect.width) stop.animate({ opacity: [0, 1] }, options);
+      });
+    }
+  }
   function update() {
     frame = 0;
     if (!media.matches) {
+      clearStoryMotion();
       removeNav();
       ['m-sort-mode', 'm-settings-open', 'm-board'].forEach(name => app.classList.remove(name));
       app.style.removeProperty('--m-board-height'); app.style.removeProperty('--m-list-name');
@@ -472,6 +582,7 @@
     alignListNames();
     shadeBoardNames();
     settleBoard();
+    playStoryMotion();
   }
   /* The sort and multi-select lists put 初始等级 on the name's line. Every row is its own grid, so the name
      column takes the widest name's width in all of them, measured, and the levels start at one edge. */
