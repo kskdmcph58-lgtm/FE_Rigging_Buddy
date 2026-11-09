@@ -7,25 +7,25 @@ window.RiggingModel = (() => {
   const live = item => item.records.filter(r => !r.deleted);
   const nextSeq = item => item.records.reduce((max, r) => Math.max(max, r.seq), 0) + 1;
   function level(item, record) {
-    return (item.initialLevel ?? 0) + item.records.filter(r => r.seq <= record.seq && !r.deleted && !r.skipped).length;
+    return (item.initialLevel ?? 0) + item.records.filter(r => r.seq <= record.seq && !r.deleted && r.status !== 'skipped').length;
   }
   // Compute every visible attempt's display level in one pass, including skips.
   function displayLevels(item) {
     let current = item.initialLevel ?? 0;
     return item.records.map(record => {
       if (record.deleted) return current;
-      if (record.skipped) return current + 1;
+      if (record.status === 'skipped') return current + 1;
       return ++current;
     });
   }
-  const nextLevel = item => (item.initialLevel ?? 0) + live(item).filter(r => !r.skipped).length + 1;
+  const nextLevel = item => (item.initialLevel ?? 0) + live(item).filter(r => r.status !== 'skipped').length + 1;
   // A person cannot leave Part 3, so everything after a Part 3 level-up marked 已升级 is Part 3.
   // Parallel to live(item). part3Only people always count as Part 3.
   function recordParts(item, part3Only = false) {
     let locked = part3Only;
     return live(item).map(record => {
       const part3 = locked || record.part3 === true;
-      if (part3 && record.upgraded) locked = true;
+      if (part3 && record.status === 'upgraded') locked = true;
       return part3;
     });
   }
@@ -116,6 +116,12 @@ window.RiggingModel = (() => {
       }
     }
   }
+  // Older data marked a record with two booleans; status replaces them. Returns null for a conflict.
+  const statuses = Object.freeze(['normal', 'skipped', 'upgraded']);
+  function legacyStatus(object) {
+    if (object.skipped === true && object.upgraded === true) return null;
+    return object.skipped === true ? 'skipped' : object.upgraded === true ? 'upgraded' : undefined;
+  }
   function seedValid(seed) {
     if (seed === undefined) return;
     const bad = () => { throw Error('种子数据不正确'); };
@@ -125,7 +131,11 @@ window.RiggingModel = (() => {
     for (const [index, row] of Object.entries(seed.rows)) {
       if (!/^(0|[1-9]\d{0,4})$/.test(index) || !row || typeof row !== 'object') bad();
       for (const key of ['skipped', 'upgraded', 'part3', 'happy']) if (row[key] !== undefined && typeof row[key] !== 'boolean') bad();
-      if (row.skipped && row.upgraded) bad();
+      // A queue row stores a status only once it is marked, so an unmarked row has none.
+      const legacy = legacyStatus(row);
+      if (legacy === null || (row.status !== undefined && !['skipped', 'upgraded'].includes(row.status)) || (legacy && row.status && legacy !== row.status)) bad();
+      if (legacy) row.status = legacy;
+      delete row.skipped; delete row.upgraded;
       if (row.stats !== undefined && (!Array.isArray(row.stats) || new Set(row.stats).size !== row.stats.length || row.stats.some(s => !stats.includes(s)))) bad();
       if (row.plus2 !== undefined && (!Array.isArray(row.plus2) || new Set(row.plus2).size !== row.plus2.length || row.plus2.some(s => !row.stats?.includes(s)))) bad();
       renameClass(row, 'profession');
@@ -163,17 +173,20 @@ window.RiggingModel = (() => {
       for (const r of item.records) {
         if (!r || !Array.isArray(r.stats) || new Set(r.stats).size !== r.stats.length || r.stats.some(s => !stats.includes(s)) || typeof r.happy !== 'boolean') throw Error('升级记录不正确');
         for (const key of ['skipped', 'upgraded', 'deleted', 'part3', 'calculated', 'corrected', 'anchor']) if (r[key] !== undefined && typeof r[key] !== 'boolean') throw Error('记录标记不正确');
-        if (r.skipped && r.upgraded) throw Error('记录状态冲突');
+        const legacy = legacyStatus(r);
+        if (legacy === null || (r.status !== undefined && !statuses.includes(r.status)) || (legacy && r.status && legacy !== r.status)) throw Error('记录状态冲突');
+        r.status ||= legacy || 'normal';
+        delete r.skipped; delete r.upgraded;
         if (r.plus2 !== undefined && (!Array.isArray(r.plus2) || new Set(r.plus2).size !== r.plus2.length || r.plus2.some(s => !r.stats.includes(s)))) throw Error('升级记录不正确');
         if (old) {
           if (r.level !== legacyLevel) throw Error('旧记录等级不正确');
-          if (!r.skipped) legacyLevel++;
+          if (r.status !== 'skipped') legacyLevel++;
           r.seq = last + 1; r.id = uid(); r.ratingSource = 'legacy';
         }
         if (!Number.isSafeInteger(r.seq) || r.seq <= last || r.seq > limits.seq || typeof r.id !== 'string' || !r.id || r.id.length > 128 || recordIds.has(r.id)) throw Error('记录序号或 ID 不正确');
         renameClass(r, 'profession');
         if (r.profession !== undefined && r.profession !== null && !window.PROFESSIONS.names.includes(r.profession)) throw Error('Invalid profession');
-        if (r.ride !== undefined) validRide(r.ride);
+        if (r.ride !== undefined && r.ride !== null) validRide(r.ride);
         metadata(r);
         if (r.ratingSource !== undefined && !['auto', 'manual', 'legacy'].includes(r.ratingSource)) throw Error('评价来源不正确');
         r.ratingSource ||= 'legacy';
@@ -196,7 +209,7 @@ window.RiggingModel = (() => {
       if (!characterIds.includes(id) || !(typeof value === 'string' && value.length <= 80 || Number.isInteger(value) && value >= 1 && value <= 99)) throw Error('初始等级不正确');
     }
     if (data.part3 !== undefined && typeof data.part3 !== 'boolean') throw Error('第3部开关不正确');
-    if (data.route !== undefined && data.route !== 'other') throw Error('路线不正确');
+    if (data.route !== undefined && !['kai', 'other'].includes(data.route)) throw Error('路线不正确');
     if (data.recommendTier !== undefined && (!data.recommendTier || typeof data.recommendTier !== 'object' || Array.isArray(data.recommendTier)
       || Object.entries(data.recommendTier).some(([key, cap]) => !['pre', 'part3'].includes(key) || !Number.isInteger(cap) || cap < 0 || cap >= (key === 'part3' ? 5 : 3)))) throw Error('推荐范围不正确');
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
@@ -215,7 +228,28 @@ window.RiggingModel = (() => {
       if (!data.draftExpectations || typeof data.draftExpectations !== 'object' || Array.isArray(data.draftExpectations)) throw Error('待设置期望不正确');
       for (const [id, rule] of Object.entries(data.draftExpectations)) { if (!characterIds.includes(id)) throw Error('未知人物'); validRule(rule); }
     }
-    return { ...data, version: 2, selection: data.selection || [], initialLevels: data.initialLevels || {} };
+    return normalize({ ...data, version: 2, selection: data.selection || [], initialLevels: data.initialLevels || {} });
   }
-  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate };
+  /* Required fields are always written, so no part of the app has to guess what a missing one means.
+     Older data left them out; the gaps are filled with what a missing field used to mean. Optional
+     fields (plus2, seed marks, drafts, ...) stay out when empty. Runs on every import, load and save. */
+  function normalize(data) {
+    data.part3 = data.part3 === true;
+    data.route = data.route === 'other' ? 'other' : 'kai';
+    for (const item of data.roster) {
+      item.deleted = item.deleted === true;
+      if (item.initialProfession === undefined) item.initialProfession = null;
+      item.expectations ||= [];
+      for (const r of item.records) {
+        r.status ||= 'normal';
+        r.deleted = r.deleted === true;
+        if (r.profession === undefined) r.profession = null;
+        if (r.ride === undefined) r.ride = null;
+        // 第1-2部 unless marked; a Part 3 only class can only have been taken in Part 3.
+        r.part3 = r.part3 === true || window.PROFESSIONS.part3Only.has(r.profession);
+      }
+    }
+    return data;
+  }
+  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate, normalize };
 })();

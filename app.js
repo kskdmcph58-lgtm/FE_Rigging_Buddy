@@ -27,7 +27,7 @@ const persistence = window.RiggingPersistence.create({
   },
   key: LOCAL_STATE_KEY,
   getStorage: () => localStorage,
-  serialize: () => JSON.stringify(state),
+  serialize: () => JSON.stringify(M.normalize(state)),
   onIssue: setStorageIssue,
   onRestore(data) {
     state=trackState(validate(data));
@@ -187,7 +187,7 @@ function showSearchHistory() {
 const editingCharacters = new Set();
 function nextLevel(item) { return M.nextLevel(item); }
 // A skipped attempt previews the level it attempted, but never advances it.
-function recordDisplayLevel(item, record) { return M.level(item, record) + (record.skipped ? 1 : 0); }
+function recordDisplayLevel(item, record) { return M.level(item, record) + (record.status === 'skipped' ? 1 : 0); }
 function storyRoster() { return state.roster.filter(item => inStory(char(item.id))); }
 function visibleRoster() { return storyRoster().filter(item => !item.deleted); }
 function validate(data) { return M.migrate(data, characters.map(c => c.id)); }
@@ -243,7 +243,7 @@ function backupFilename() {
   const suffix = ((now.getTime() + random) % (36 ** 5)).toString(36).padStart(5, '0');
   return `Rigging-Buddy-${date}_${time}_${suffix}.json`;
 }
-function exportBackup(text = JSON.stringify(state, null, 2)) {
+function exportBackup(text = JSON.stringify(M.normalize(state), null, 2)) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
   const a = document.createElement('a'); a.href = url; a.download = backupFilename(); a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -427,7 +427,7 @@ function setupRuleText(rule) {
 }
 function setupExpectationButton(id) {
   const full=setupRuleText(setupExpectationRule(id));
-  return `<button class="expectation-setting" data-expectation-edit="${id}" data-setup-expectation="${id}" aria-label="${char(id).name}属性期望：${escapeValue(full)}"><span class="setup-rule-summary">${escapeValue(full)}</span></button>`;
+  return `<button class="expectation-setting${setupExpectationRule(id) ? '' : ' is-unset'}" data-expectation-edit="${id}" data-setup-expectation="${id}" aria-label="${char(id).name}属性期望：${escapeValue(full)}"><span class="setup-rule-summary">${escapeValue(full)}</span></button>`;
 }
 function setupConditionCount(rule) {
   if(!rule)return 0;
@@ -730,8 +730,11 @@ app.addEventListener('click', e => {
 // Native touch :active can outlive the gesture; own the visual press lifecycle.
 let touchPressedButton = null;
 document.documentElement.dataset.inputMode = UI_MEDIA.coarseInput.matches ? 'touch' : 'mouse';
+/* Only moving focus with the keyboard turns on the focus ring. Shortcut keys (digits, Return, Escape) leave a
+   mouse session without one, as on macOS, where the ring follows Tab navigation. */
+const FOCUS_NAVIGATION_KEYS = new Set(['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown']);
 document.addEventListener('keydown', e => {
-  if (!e.metaKey && !e.ctrlKey && !e.altKey) document.documentElement.dataset.inputMode = 'keyboard';
+  if (!e.metaKey && !e.ctrlKey && !e.altKey && FOCUS_NAVIGATION_KEYS.has(e.key)) document.documentElement.dataset.inputMode = 'keyboard';
 }, true);
 function clearTouchPress() {
   touchPressedButton?.classList.remove('touch-pressed');
@@ -897,9 +900,9 @@ app.addEventListener('click', async e => {
   updateRecordFromButton(b);
   const action = b.dataset.action;
   if (action === 'clear-skipped') {
-    if (!visibleRoster().some(item => M.live(item).some(record => record.skipped))) return;
+    if (!visibleRoster().some(item => M.live(item).some(record => record.status === 'skipped'))) return;
     if (!await confirmRecordDeletion('是否清空所有已跳过记录？', '清空')) return;
-    softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.skipped)));
+    softDelete(visibleRoster().flatMap(item => M.live(item).filter(record => record.status === 'skipped')));
     rememberListPosition(); animateListChange(returnToSummary); return;
   }
   if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部人物和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
@@ -924,13 +927,13 @@ app.addEventListener('click', async e => {
     if (empty.length && (!await askMissingLevels(empty) || page !== 'levels')) return;
     state.selection.forEach(id => {
       const value = String(state.initialLevels[id] ?? ''), existing = state.roster.find(item => item.id === id);
-      const item = existing || { id, records: [] };
+      const item = existing || { id, deleted: false, initialProfession: null, expectations: [], records: [] };
       item.initialLevel = value === '' ? null : Number(value);
       // A hidden Part 3 starting class waits for the switch, unless another class was chosen.
       if (!existing || classAvailable(item.initialProfession) || Object.hasOwn(state.draftProfessions || {}, id)) item.initialProfession = setupProfession(id);
       rememberRides(id, state.draftRides?.[id]);
       if (existing && Object.hasOwn(state.draftProfessions || {}, id)) item.pendingProfession = item.initialProfession;
-      delete item.deleted; delete item.deletedAt; delete item.deletionBatch;
+      item.deleted = false; delete item.deletedAt; delete item.deletionBatch;
       if (state.draftExpectations && Object.hasOwn(state.draftExpectations, id)) M.setRule(item, M.nextSeq(item), state.draftExpectations[id], false);
       if (!existing) state.roster.push(item);
     });
@@ -1212,7 +1215,7 @@ render();
 app.addEventListener('change', e => {
   if (e.target.name !== 'route') return;
   const other = e.target.value === 'other';
-  if (other) state.route = 'other'; else delete state.route;
+  state.route = other ? 'other' : 'kai';
   render();
   const segment = app.querySelector('.route-segment');
   if (!segment) return;

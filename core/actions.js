@@ -44,6 +44,15 @@ window.RiggingActions = (() => {
     return classAvailable(state, item.initialProfession) ? item.initialProfession || null : null;
   }
 
+  /* The class a saved record shows. With the switch on 第1-2部, a Part 3 class shows the class before it,
+     which is what a 第1-2部 level-up would have inherited; the record keeps its own class. */
+  function shownClass(state, item, record) {
+    if (state.part3 === true || !catalog.part3Only.has(record.profession)) return { profession: record.profession || null, ride: record.ride || null };
+    const live = model.live(item), before = live.slice(0, live.indexOf(record)).findLast(r => !catalog.part3Only.has(r.profession));
+    if (before) return { profession: before.profession || null, ride: before.ride || null };
+    return { profession: catalog.part3Only.has(item.initialProfession) ? null : item.initialProfession || null, ride: null };
+  }
+
   function rememberedRide(state, id, kind, unsaved) {
     if (!kind) return null;
     if (unsaved && Object.hasOwn(unsaved, kind)) return usableRide(unsaved[kind], kind, id);
@@ -95,7 +104,7 @@ window.RiggingActions = (() => {
     for (const target of targets) {
       const before = { ...target };
       target.profession = choice.profession ?? null;
-      if (ride) target.ride = { ...ride }; else delete target.ride;
+      target.ride = ride ? { ...ride } : null;
       target.updatedAt = new Date().toISOString();
       // Same as editing the record: a changed input is what 重新反推 searches back from.
       trackSeedInput(item, before, target);
@@ -141,7 +150,8 @@ window.RiggingActions = (() => {
       // Editing earlier history does not affect the next record's ride selection.
       if (item.records[draft.editIndex] === model.live(item).at(-1)) rememberRides(state, draft.id, usedRides);
       const saved = { ...item.records[draft.editIndex], profession: draft.profession || null, stats: [...draft.stats], happy: draft.happy, ratingSource: draft.ratingSource || 'auto', ratingPending: false, updatedAt: new Date().toISOString() };
-      if (ride) saved.ride = ride; else delete saved.ride;
+      saved.ride = ride;
+      saved.part3 = saved.part3 === true || catalog.part3Only.has(saved.profession);
       if (plus2.length) saved.plus2 = plus2; else delete saved.plus2;
       // After recovery, a changed input is what 重新反推 searches back from.
       trackSeedInput(item, item.records[draft.editIndex], saved);
@@ -149,22 +159,21 @@ window.RiggingActions = (() => {
     } else {
       rememberRides(state, draft.id, usedRides);
       // Only the switch writes the label. A lock from an earlier 已升级 stays derived, so removing that mark undoes it.
-      item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: draft.profession || null, ...(ride ? { ride } : {}), stats: [...draft.stats], ...(plus2.length ? { plus2 } : {}), ...(state.part3 === true ? { part3: true } : {}), happy: draft.happy, ratingSource: draft.ratingSource || 'auto', createdAt: new Date().toISOString() });
+      item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: draft.profession || null, ride, stats: [...draft.stats], ...(plus2.length ? { plus2 } : {}), part3: state.part3 === true || catalog.part3Only.has(draft.profession), status: 'normal', deleted: false, happy: draft.happy, ratingSource: draft.ratingSource || 'auto', createdAt: new Date().toISOString() });
     }
     if (draft.editIndex === undefined) delete item.pendingProfession;
     return { saved: true, item };
   }
 
   function cycleRecordStatus(record, item) {
-    if (record.skipped) {
+    if (record.status === 'skipped') {
       // A 已升级 made while locked counts as a Part 3 mark of its own, and survives removing the earlier one.
       if (item && model.recordParts(item)[model.live(item).indexOf(record)]) record.part3 = true;
-      record.skipped = false;
-      record.upgraded = true;
-    } else if (record.upgraded) {
-      record.upgraded = false;
+      record.status = 'upgraded';
+    } else if (record.status === 'upgraded') {
+      record.status = 'normal';
     } else {
-      record.skipped = true;
+      record.status = 'skipped';
     }
   }
 
@@ -179,7 +188,7 @@ window.RiggingActions = (() => {
     const latest = deleted.reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
     if (!latest) return false;
     const batch = latest.deletionBatch;
-    deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { delete o.deleted; delete o.deletedAt; delete o.deletionBatch; });
+    deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { o.deleted = false; delete o.deletedAt; delete o.deletionBatch; });
     return true;
   }
 
@@ -207,7 +216,7 @@ window.RiggingActions = (() => {
     }
   }
 
-  return { classAvailable, classAllowed, currentProfession, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
+  return { classAvailable, classAllowed, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

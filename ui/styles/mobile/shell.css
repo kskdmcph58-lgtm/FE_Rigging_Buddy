@@ -3,7 +3,7 @@
    Visual language: the game's colours, fonts and content frames (portraits, cards, stats) stay;
    tool chrome follows iOS conventions — a navigation bar with a large title, grouped controls,
    bottom toolbars inside the safe area, sheets for menus, and 44px hit areas around compact visuals. */
-@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media (max-width:1419px) {
   :root {
     --m-gutter: 16px;
     --m-bar: 44px;
@@ -27,6 +27,8 @@
     --m-safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   main#app {
+    /* Mid-width desktop windows are wider than the desktop's 1180px column; the shell spans the window. */
+    max-width: none;
     padding-left: calc(var(--m-gutter) + var(--m-safe-left));
     padding-right: calc(var(--m-gutter) + var(--m-safe-right));
     padding-top: 4px;
@@ -264,7 +266,7 @@
     pointer-events: none;
   }
 }
-@media ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) and (prefers-reduced-motion:no-preference) {
+@media (max-width:1419px) and (prefers-reduced-motion:no-preference) {
   @keyframes m-sheet-in { from { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
   /* The dialog itself stays still (no shared dialog scale-in); its body slides and the edge band fades in
      with the dimming (motion.css: 160ms). */

@@ -5,7 +5,7 @@
    level input) stay centred like iOS alerts. Exit rules are unchanged everywhere: Esc or the exit button
    only, never the backdrop,
    except the class and ride picker steps, where a tap outside acts like Esc (features.js createPickerStack). Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
-@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media (max-width:1419px) {
   /* Native modal focus restoration may focus the dialog surface on iOS. Only controls carry a focus ring. */
   dialog.app-dialog:focus { outline: none; }
   dialog.app-dialog.m-picker-leaving { pointer-events: none; }
@@ -141,7 +141,7 @@
 }
 
 /* Short landscape screens: dialogs stay centred and fit the height; their bodies scroll, footers stay put. */
-@media (max-height:500px) and (orientation:landscape) and ((max-width:600px) or ((max-width:1100px) and (pointer:coarse))) {
+@media (max-height:500px) and (orientation:landscape) and (max-width:1419px) {
   dialog.app-dialog:not(.m-sheet) { max-height: calc(100dvh - 16px); }
   dialog.app-dialog.card-options-dialog { max-height: calc(100dvh - 16px); }
   dialog.app-dialog.card-options-dialog header { padding: 12px 16px 8px; }

@@ -71,6 +71,26 @@ function saveRecord(next) {
   }
 
 }
+/* Keyboard shortcuts for the upgrade page, with no on-screen hints. 1–9 toggle the stats in their listed
+   order (HP first), Return saves and goes to the next level (or saves, when there is no next level), and
+   Ctrl/⌘+Return saves and ends. Each one clicks the existing button, so disabled states and feedback are
+   unchanged. Return on a focused control other than a stat keeps its native meaning. */
+document.addEventListener('keydown', e => {
+  if (typeof page === 'undefined' || page !== 'record' || !activeRecord || e.repeat || e.isComposing || e.altKey || e.shiftKey) return;
+  if (document.querySelector('dialog[open]') || e.target.closest('input,textarea,select,[contenteditable]')) return;
+  const mod = e.ctrlKey || e.metaKey;
+  if (!mod && /^[1-9]$/.test(e.key)) {
+    const stat = app.querySelectorAll('.record-page [data-stat]')[Number(e.key) - 1];
+    if (stat) { e.preventDefault(); stat.click(); }
+    return;
+  }
+  if (e.key !== 'Enter') return;
+  const focused = e.target.closest?.('button,a,summary,[role="button"],[tabindex]');
+  if (!mod && focused && !focused.matches('[data-stat]')) return;
+  const target = app.querySelector(`.record-page [data-action="${mod ? 'finish' : 'next'}"]`) || app.querySelector('.record-page [data-action="finish"]');
+  e.preventDefault();
+  if (target && !target.disabled) target.click();
+});
 function updateRecordFromButton(b) {
   if (b.dataset.stat) {
     const d = activeRecord, s = b.dataset.stat;

@@ -11,7 +11,7 @@ const recordRails = new WeakMap();
 const desktopRecords = { get matches() { return UI_MEDIA.desktopRecordRail.matches && !UI_MEDIA.mobileShell.matches; } };
 function compactRecords(item) {
   const records = M.live(item);
-  return Boolean(item.seed) || records.length > 5 || records.filter(r => r.upgraded || r.skipped).length >= 2;
+  return Boolean(item.seed) || records.length > 5 || records.filter(r => r.status !== 'normal').length >= 2;
 }
 function railState(rail) {
   if (!recordRails.has(rail)) recordRails.set(rail, { frame: 0, timer: 0, signature: '', initialized: false, step: 0 });

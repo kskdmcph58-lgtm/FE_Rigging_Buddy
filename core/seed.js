@@ -76,7 +76,7 @@ window.RiggingSeed = (() => {
   /* Choices that beat what a forecast row shows now: more points, or 满意 where the row is not.
      Only rows we predicted count; a marked or corrected row is already settled. */
   function betterChoices(state, item, c, row) {
-    if (!ready() || row.skipped || row.upgraded || row.corrected) return [];
+    if (!ready() || row.status !== 'normal' || row.corrected) return [];
     const rule = model.ruleAt(item, model.nextSeq(item) + row.index), points = r => r.stats.length + r.plus2.length, base = points(row);
     return rowChoices(c, row).map(choice => ({ ...choice, happy: model.evaluate(rule, choice.stats) === true }))
       .filter(choice => points(choice) > base || (row.happy !== true && choice.happy));
@@ -121,7 +121,7 @@ window.RiggingSeed = (() => {
     let current = model.nextLevel(item) - 1;
     for (let n = 0; n <= index; n++) {
       if (n === index) return current + 1;
-      if (!item.seed?.rows?.[n]?.skipped) current++;
+      if (item.seed?.rows?.[n]?.status !== 'skipped') current++;
     }
     return current + 1;
   }
@@ -133,16 +133,19 @@ window.RiggingSeed = (() => {
   // minRows lets a view ask for more of the fixed sequence; nothing about it is stored.
   function queueRows(state, item, c, minRows = 0) {
     if (!ready() || !item.seed || !eligible(item, c)) return [];
-    const live = model.live(item), parts = model.recordParts(item, c.part3Only === true);
-    let locked = c.part3Only === true || live.some((record, i) => parts[i] && record.upgraded);
+    const live = model.live(item), part3Only = window.PROFESSIONS.part3Only;
     let seed = item.seed.value;
     let profession = actions.currentProfession(state, item);
     let ride = actions.rememberedRide(state, item.id, actions.rideKind(profession, item.id));
+    // The 第1-2部 class a row falls back to when it inherits a Part 3 class.
+    let story = actions.currentProfession({ ...state, part3: false }, item);
     const rows = [], first = item.initialLevel + live.length;
     // Skipped rows use a seed step without gaining a level, so the cap follows the displayed level.
     for (let n = 0, total = Math.max(rowCount(item), minRows); n < total && rowDisplayLevel(item, n) <= MAX_LEVEL; n++) {
       const saved = item.seed.rows?.[n] || {};
-      const part3 = saved.part3 ?? (locked || state.part3 === true);
+      // A row nobody marked follows the switch, even after a Part 3 已升级: on 第1-2部 the person is not really
+      // back in Part 1-2 (the game does not allow it), the switch only shows the 第1-2部 growth.
+      const part3 = saved.part3 ?? (c.part3Only === true || state.part3 === true);
       // A Part 3 class saved while the switch was on waits in the data: a 第1-2部 row keeps the class it
       // inherits, as saved records do (restoreStoryClasses), and gets it back once the switch is on again.
       const usable = Object.hasOwn(saved, 'profession') && (part3 || !window.PROFESSIONS.part3Only.has(saved.profession));
@@ -151,16 +154,18 @@ window.RiggingSeed = (() => {
         ride = actions.rememberedRide(state, item.id, actions.rideKind(profession, item.id));
       }
       if (Object.hasOwn(saved, 'ride') && (usable || !Object.hasOwn(saved, 'profession'))) ride = actions.usableRide(saved.ride, actions.rideKind(profession, item.id), item.id);
-      const row = { level: first + n, part3, profession, ride };
+      let rowClass = profession, rowRide = ride;
+      if (!part3 && part3Only.has(rowClass)) { rowClass = story; rowRide = actions.rememberedRide(state, item.id, actions.rideKind(story, item.id)); }
+      else if (!part3Only.has(rowClass)) story = rowClass;
+      const row = { level: first + n, part3, profession: rowClass, ride: rowRide };
       const event = eventOf(c, row);
       if (!event) return rows;
       const result = engine.simulateLevel(seed, event), predicted = statsOf(result.gains);
       const stats = saved.stats ?? predicted.stats, plus2 = saved.stats ? saved.plus2 || [] : predicted.plus2;
       const rule = model.ruleAt(item, model.nextSeq(item) + n);
       const happy = saved.happy ?? model.evaluate(rule, stats);
-      rows.push({ ...row, index: n, seed, stats, plus2, predicted: predicted.stats, corrected: saved.stats !== undefined, skipped: saved.skipped === true, upgraded: saved.upgraded === true,
+      rows.push({ ...row, index: n, seed, stats, plus2, predicted: predicted.stats, corrected: saved.stats !== undefined, status: saved.status || 'normal',
         happy, displayLevel: rowDisplayLevel(item, n), examMinimum: engine.simulateExam(seed, 100).minimumProbability, ratingSource: saved.happy === undefined ? 'auto' : 'manual' });
-      if (part3 && saved.upgraded) locked = true;
       seed = result.next;
     }
     return rows;
@@ -188,12 +193,12 @@ window.RiggingSeed = (() => {
   // Same order as saved records. A mark holds the part it was made in, so the switch cannot move it.
   function cycleRowStatus(state, item, c, index) {
     const row = queueRows(state, item, c, index + 1)[index], saved = savedRow(item, index);
-    if (saved.skipped) {
-      delete saved.skipped; saved.upgraded = true; saved.part3 = row.part3;
-    } else if (saved.upgraded) {
-      delete saved.upgraded; delete saved.part3;
+    if (saved.status === 'skipped') {
+      saved.status = 'upgraded'; saved.part3 = row.part3;
+    } else if (saved.status === 'upgraded') {
+      delete saved.status; delete saved.part3;
     } else {
-      saved.skipped = true; saved.part3 = row.part3;
+      saved.status = 'skipped'; saved.part3 = row.part3;
     }
     prune(item, index);
   }
@@ -325,8 +330,8 @@ window.RiggingSeed = (() => {
       if (total + rows.length > model.limits.records) return { applied: false, reason: 'limit' };
       const now = new Date().toISOString();
       for (const row of rows) {
-        item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: row.profession, ...(row.ride ? { ride: { ...row.ride } } : {}), stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}),
-          ...(row.part3 ? { part3: true } : {}), ...(row.skipped ? { skipped: true } : {}), ...(row.upgraded ? { upgraded: true } : {}), happy: row.happy === true, ...(row.happy === null ? { ratingPending: true } : {}),
+        item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: row.profession, ride: row.ride ? { ...row.ride } : null, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}),
+          part3: row.part3 === true || window.PROFESSIONS.part3Only.has(row.profession), status: row.status, deleted: false, happy: row.happy === true, ...(row.happy === null ? { ratingPending: true } : {}),
           ratingSource: row.ratingSource, ...(row.corrected ? {} : { calculated: true }), createdAt: now });
       }
       const later = {};

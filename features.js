@@ -492,7 +492,7 @@ function expectationRanges(item) {
   if (!ranges.length) return ruleMarkup(null);
   const hasInitial = Number.isInteger(item.initialLevel);
   // A skipped attempt shares the next effective level; deleted attempts do not advance it.
-  const boundaryLevel = seq => item.initialLevel + item.records.filter(r => r.seq < seq && !r.deleted && !r.skipped).length + 1;
+  const boundaryLevel = seq => item.initialLevel + item.records.filter(r => r.seq < seq && !r.deleted && r.status !== 'skipped').length + 1;
   return ranges.map((range,i) => {
     const end = ranges[i+1]?.from - 1;
     const startLabel = hasInitial ? `LV ${boundaryLevel(range.from)}` : `记录 +${range.from}`;
@@ -767,4 +767,13 @@ document.addEventListener('keydown',e=>{
   if(typeof page==='undefined'||document.querySelector('dialog[open]')||e.target.closest('input,textarea,select'))return;
   if(e.key==='Escape'){clearRowSelection();refreshRowSelection();}
   if(e.key===' '&&e.target.matches('[data-sort-id]')){e.preventDefault();selectRow(e.target.dataset.sortId,{shiftKey:e.shiftKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey});}
+});
+/* Common desktop shortcuts, with no on-screen hints: Ctrl/⌘+Z undoes the last deletion where the page offers
+   that command, and Ctrl/⌘+A selects every row while multi-select is open. Text fields keep their own. */
+document.addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey||e.isComposing||typeof page==='undefined')return;
+  if(document.querySelector('dialog[open]')||e.target.closest('input,textarea,select,[contenteditable]'))return;
+  const key=e.key.toLowerCase();
+  if(key==='z'&&['summary','select'].includes(page)&&storyRoster().some(item=>item.deleted||item.records.some(record=>record.deleted))){e.preventDefault();undoDelete();}
+  else if(key==='a'&&multiSelectMode&&['summary','levels'].includes(page)){e.preventDefault();rowIds().forEach(id=>rowSelection.add(id));refreshRowSelection();}
 });

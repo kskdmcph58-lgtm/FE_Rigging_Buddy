@@ -4,7 +4,7 @@
    older narrow-screen layers in styles.css without !important.
    Tool chrome (search, segments, tool buttons, bottom bar) follows iOS; the character grid and the setup
    rows keep the game's frames, portraits and fonts. */
-@media (max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media (max-width:1419px) {
   /* ---------- Shared tool buttons on both pages: 36px visual, 44px hit area ---------- */
   #app:is(.select-page,.levels-page) .toolbar button,
   #app.levels-page .selection-toolbar button {

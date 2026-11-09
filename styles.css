@@ -480,6 +480,10 @@ input {
   gap: 24px;
   margin-bottom: 32px;
 }
+/* Multi-select actions take the slider's place; the controls before it keep their positions. */
+.summary-page.multi-select-mode .summary-top>.recommend-filter {
+  display: none;
+}
 .metrics {
   display: flex;
   gap: 35px;
@@ -886,7 +890,7 @@ footer {
 #notice:empty {
   display: none;
 }
-@media(min-width:1200px) {
+@media(min-width:1420px) {
   .character-grid {
     grid-template-columns: repeat(6,minmax(0,1fr));
   }
@@ -1121,9 +1125,8 @@ body.sorting-cards,body.sorting-cards * {
   outline-offset: 3px;
   background: #35463b;
 }
+/* An ordinary button until a backup file is dragged over it. */
 .import-zone {
-  border: 1px dashed #8c9b86;
-  background: #21332e66;
   min-width: 112px;
 }
 .import-zone.drag-over {
@@ -2157,6 +2160,39 @@ header {
   border-top: 1px solid var(--line);
   border-radius: 0 0 8px 8px;
 }
+/* Mouse: a macOS-style menu. Compact left-aligned rows, and a single separator between the groups
+   (the ordinary commands, then the destructive ones) rather than between every destructive row. */
+@media(hover:hover) and (pointer:fine) {
+  .menu-panel {
+    padding: 5px;
+    border-radius: 10px;
+  }
+  .menu-panel button {
+    position: relative;
+    min-height: 32px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-align: left;
+    line-height: 20px;
+  }
+  .menu-panel .menu-danger+ .menu-danger {
+    border-top: 0;
+    border-radius: 6px;
+  }
+  .menu-panel button:not(.menu-danger)+ .menu-danger {
+    margin-top: 11px;
+  }
+  .menu-panel button:not(.menu-danger)+ .menu-danger::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 8px;
+    right: 8px;
+    height: 1px;
+    background: var(--line);
+    pointer-events: none;
+  }
+}
 button {
   transition: background .14s,border-color .14s;
 }
@@ -2364,7 +2400,7 @@ button.primary.touch-pressed:not(:disabled) {
     grid-template-columns: repeat(3,minmax(0,1fr));
   }
 }
-@media(min-width:1200px) {
+@media(min-width:1420px) {
   .journal .records {
     grid-template-columns: repeat(4,minmax(0,1fr));
   }
@@ -2725,7 +2761,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     flex-wrap: wrap;
   }
 }
-@media(min-width:1100px) {
+@media(min-width:1420px) {
   main.summary-page {
     max-width: 1760px;
   }
@@ -2906,7 +2942,7 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
     text-align: left;
   }
 }
-@media(min-width:1100px) {
+@media(min-width:1420px) {
   main {
     max-width: 1760px;
   }
@@ -2921,8 +2957,14 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
   .select-page .character-grid {
     grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
   }
+  /* The record layout's 960px plus main's 24px gutters, so the page and its back button sit centred. */
   main.record-page {
-    max-width: 1180px;
+    max-width: 1008px;
+  }
+  /* Both bottom bars keep the shared 760px; the level page's bar is centred on its table, which sits
+     inside main's 60px/24px padding, hence the 18px shift. */
+  .levels-page .bottom-bar {
+    left: calc(50% + 18px);
   }
 }
 .selection-toolbar {
@@ -3700,14 +3742,14 @@ main.levels-page { padding-left:60px; padding-right:24px; }
   .levels-page .level-row>.level-value { padding-inline:8px; }
   .levels-page .table-head>.setup-level-heading { flex-direction:column; gap:0; }
 }
-@media(min-width:601px) and (max-width:1099px) {
+@media(min-width:601px) and (max-width:1419px) {
   .levels-page .levels {
     --setup-name-size:18px;
     --setup-class-size:16.2px;
     --setup-icon-size:36.735px;
   }
 }
-@media(min-width:851px) and (max-width:1099px) {
+@media(min-width:851px) and (max-width:1419px) {
   .levels-page .levels {
     --setup-columns:260px 200px 120px minmax(160px,1fr);
     --setup-gap:6px;
@@ -3900,7 +3942,7 @@ main.levels-page { padding-left:60px; padding-right:24px; }
     -webkit-text-stroke: .2px currentColor;
   }
 }
-@media(min-width:1100px) {
+@media(min-width:1420px) {
   .journal>.row-select {
     top: 50%;
     transform: translateY(-50%);
@@ -3909,7 +3951,7 @@ main.levels-page { padding-left:60px; padding-right:24px; }
     grid-template-columns: 128px minmax(0,1fr) 90px;
   }
 }
-@media(min-width:601px) and (max-width:1099px) {
+@media(min-width:601px) and (max-width:1419px) {
   .multi-select-mode .journal-head {
     padding-left: 24px;
   }
@@ -4102,7 +4144,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .selection-toolbar [hidden] {
   display: none;
 }
-@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media(max-width:1419px) {
   .summary-controls .selection-toolbar-anchor {
     width: 100%;
     flex-basis: 100%;
@@ -4182,7 +4224,7 @@ html[data-input-mode="touch"] button.expectation-link {
   width: var(--selection-width);
   z-index: 41;
 }
-@media(max-width:1100px) and (pointer:coarse) {
+@media(max-width:1419px) {
   .selection-toolbar-anchor.is-floating .selection-toolbar {
     left: 16px;
     right: 16px;
@@ -4201,7 +4243,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .expand-records {
   display: none;
 }
-@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media(max-width:1419px) {
   body:has(main.record-page)>header {
     display: none;
   }
@@ -4382,7 +4424,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .card-options-list .card-option-recommend { color:var(--gold); border-color:var(--gold); }
 .forecast-more { grid-column:1 / -1; display:grid; justify-items:center; gap:4px; width:100%; min-height:48px; padding:10px 12px; color:var(--gold); }
 .forecast-more>span { font:12px/18px var(--font-ui); color:var(--muted); }
-@media(max-width:1099px) {
+@media(max-width:1419px) {
   .record-chip:has(.card-options-field)>div { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 8px; }
   .record-chip>div>.card-options-field { grid-column:1 / -1; grid-row:2; position:relative; z-index:4; display:flex; align-items:center; justify-content:space-between; gap:6px; min-height:44px; min-width:0; padding:2px 0; border-block:1px solid var(--line); color:var(--muted); font:13px/18px var(--font-ui); cursor:pointer; visibility:visible; }
   .card-options-field>.game-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:14px/20px var(--font-game); }
@@ -4587,7 +4629,7 @@ html[data-input-mode="touch"] button.expectation-link {
 @media(hover:hover) and (pointer:fine) {
   .record-chip>div>.rating-toggle:hover { filter:brightness(1.3); }
 }
-@media(min-width:1100px) {
+@media(min-width:1420px) {
   .record-chip>div>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
 }
 .record-chip .record-overlay { pointer-events:none; }
@@ -4600,7 +4642,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .stat-heading>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
 .stat-heading>.profession-field.can-edit>span { text-decoration:none; }
 .stat-heading>.heading-growth { margin-left:14px; }
-@media(min-width:601px) and (pointer:fine), (min-width:1101px) {
+@media(min-width:601px) and (pointer:fine), (min-width:1420px) {
   .stat-heading>.profession-field.can-edit { order:0; margin:0; padding:0; min-height:48px; max-width:none; gap:10px; color:var(--text); font:24px/1.3 var(--font-display); }
   .stat-heading>.profession-field img { order:0; width:48px; height:48px; border-radius:5px; }
   .stat-heading>.heading-ride { order:1; }
@@ -4629,7 +4671,7 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
   .ride-field .game-text { font-size:15px; }
   .ride-field .ride-icon,.ride-field .ride-level { width:26px; height:26px; }
 }
-@media(max-width:600px), (max-width:1100px) and (pointer:coarse) {
+@media(max-width:1419px) {
   .heading-ride { display:none; }
   .rating-rule-note:has(.note-ride:not(:empty)) { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .note-ride:not(:empty) { display:block; min-width:0; margin-block:-6px; }
@@ -4648,7 +4690,7 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
 .setup-ride:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
 .levels-page .level-row .setup-ride { grid-column:2; grid-row:1; justify-self:end; align-self:center; margin-right:10px; }
 .levels-page .level-row:has(.setup-ride:not([hidden])) .profession-setting { padding-right:50px; }
-@media(min-width:601px) and (max-width:1099px) {
+@media(min-width:601px) and (max-width:1419px) {
   .levels-page .level-row .setup-ride { width:28px; height:28px; margin-right:6px; }
   .levels-page .level-row:has(.setup-ride:not([hidden])) .profession-setting { padding-right:36px; }
 }
@@ -4683,9 +4725,10 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
   .ride-hearts { flex:1; justify-content:space-between; }
   .ride-picker .ride-hearts button { flex:1; width:auto; }
 }
-/* Use the same centered surface and controls as the existing app dialogs. */
+/* Use the same centered surface and controls as the existing app dialogs. Sized to the 1280px table plus
+   its padding rather than the window, so wide screens get a compact sheet instead of empty columns. */
 .app-dialog.profession-picker {
-  position:fixed; inset:0; margin:auto; width:min(1840px,calc(100vw - 32px));
+  position:fixed; inset:0; margin:auto; width:min(1360px,calc(100vw - 32px));
   max-width:none; max-height:calc(100dvh - 32px); padding:0;
   border-radius:12px; overflow:hidden;
 }
@@ -4694,6 +4737,8 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
 .profession-titlebar h2 { margin:0; font:400 22.05px/1.4 var(--font-game); color:#ffd9a5; letter-spacing:0; }
 .profession-placeholder { font-family:var(--font-game); font-weight:400; color:#ffd9a5; }
 .levels-page .profession-setting>.profession-placeholder { color:var(--muted); font:13px/1.4 var(--font-ui); }
+/* An unset expectation reads like the unset class beside it. */
+.levels-page .expectation-setting.is-unset>.setup-rule-summary { color:var(--muted); font:13px/1.4 var(--font-ui); }
 .profession-scroll { min-height:0; overflow:auto; overscroll-behavior:contain; padding:8px 16px; }
 .profession-table { min-width:1280px; display:grid; gap:4px; }
 .profession-tier { display:grid; grid-template-columns:132px repeat(5,minmax(0,1fr)); border:1px solid var(--control-line); background:#0a1d2026; }
@@ -4754,6 +4799,70 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
 @media(orientation:landscape) and (max-height:600px) {
   .profession-titlebar { padding:12px 20px; }
   .profession-footer { padding:10px 20px; }
+}
+/* Desktop class picker, drawn after the game's class-change table (Common_JobList): each tier is one row,
+   a tier-name block, a 6px gap, then one darker block holding every family, split only by faint dashed
+   lines. Families share one set of columns so they line up between tiers, each as wide as its widest
+   tier (up to three classes per line, like the game). Colours are sampled from the game's frames; the
+   frame itself is CSS. Rows do not highlight on hover. The phone and tablet sheets (mobile/dialogs.css) are unchanged. */
+@media(min-width:1420px) {
+  .app-dialog.profession-picker {
+    --pk-head-fill: #182d33;
+    --pk-head-edge: #394b4f;
+    --pk-body-fill: #15262b;
+    --pk-body-edge: #2b3d41;
+    --pk-divider: #050b0c99;
+    --pk-slot: 76px;
+    --pk-gap: 4px;
+    width: fit-content;
+    background: linear-gradient(165deg,#0f2427,#06191c 70%);
+  }
+  .profession-scroll { padding:12px 16px; }
+  .profession-table {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 132px repeat(5,max-content);
+    gap: 6px 0;
+  }
+  .profession-tier {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    border: 0;
+    background: transparent;
+  }
+  .profession-tier h3 {
+    grid-column: 1;
+    margin-right: 6px;
+    padding: 0 14px;
+    background: var(--pk-head-fill);
+    box-shadow: inset 0 0 0 1px var(--pk-head-edge);
+    color: #ffd9a5;
+  }
+  .profession-options {
+    gap: var(--pk-gap);
+    max-width: calc(3 * var(--pk-slot) + 2 * var(--pk-gap) + 16px);
+    padding: 6px 8px;
+    border-left: 0;
+    background: var(--pk-body-fill);
+    box-shadow: inset 0 1px var(--pk-body-edge),inset 0 -1px var(--pk-body-edge);
+  }
+  .profession-options:nth-of-type(1) { grid-column:2; box-shadow:inset 0 1px var(--pk-body-edge),inset 0 -1px var(--pk-body-edge),inset 1px 0 var(--pk-body-edge); }
+  .profession-options:nth-of-type(2) { grid-column:3; }
+  .profession-options:nth-of-type(3) { grid-column:4; }
+  .profession-options:nth-of-type(4) { grid-column:5; }
+  .profession-options:nth-of-type(5) { grid-column:6; box-shadow:inset 0 1px var(--pk-body-edge),inset 0 -1px var(--pk-body-edge),inset -1px 0 var(--pk-body-edge); }
+  .profession-base .profession-options { grid-column:2 / -1; max-width:none; box-shadow:inset 0 0 0 1px var(--pk-body-edge); }
+  /* Family separators: a dashed hairline inset from the row's top and bottom edges. */
+  .profession-options:nth-of-type(n+2) {
+    background-image: repeating-linear-gradient(to bottom,var(--pk-divider) 0 3px,transparent 3px 6px);
+    background-size: 1px calc(100% - 12px);
+    background-position: left 6px;
+    background-repeat: no-repeat;
+  }
+  .profession-picker .profession-option { width:var(--pk-slot); max-width:none; gap:0; padding:2px 0 0; }
+  .profession-icon { width:clamp(44px,5.6dvh,56px); height:clamp(44px,5.6dvh,56px); }
+  .profession-option .profession-name { margin-top:-2px; color:var(--text); font:12px/1.3 var(--font-game); }
 }
 
 /* Native meal-list layers: face 214x200, lower frame 214x166. */
@@ -4895,7 +5004,7 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
 /* Part 3 control placement: one spot per width that multi-select's actions never
    reach, so it does not move between states. No row is positioned, so left resolves
    against the viewport, and being out of flow it never moves a button. */
-@media(min-width:1280px) {
+@media(min-width:1420px) {
   .toolbar>.part3-segment,.summary-top>.part3-segment {
     position: absolute;
   }
@@ -4938,17 +5047,6 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
     left: min(402px,calc(50% - 445px));
   }
 }
-/* The six-stop range needs a separate row before it clears the action buttons at 1360px. */
-@media(min-width:1280px) and (max-width:1359px) {
-  .summary-top { flex-wrap: wrap; }
-  .summary-top>.recommend-filter {
-    position: static;
-    order: 1;
-    flex-basis: 100%;
-    justify-content: center;
-    translate: none;
-  }
-}
 /* Wide enough for one spot that clears the search box and both multi-select bars. */
 @media(min-width:1680px) {
   .select-page>.toolbar>.part3-segment,
@@ -4975,7 +5073,7 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
 }
 /* No room beside the buttons here: it keeps its own centred line above them.
    The side margins fill that line, so nothing else can share it. */
-@media(max-width:1279px) {
+@media(max-width:1419px) {
   .toolbar,.select-page>.toolbar,.summary-top {
     flex-wrap: wrap;
   }
