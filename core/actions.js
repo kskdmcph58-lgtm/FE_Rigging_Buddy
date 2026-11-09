@@ -216,7 +216,18 @@ window.RiggingActions = (() => {
     }
   }
 
-  return { classAvailable, classAllowed, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
+  /* 考试推荐: whether the person has passed this class's exam. 平民/贵族 always count; every other class,
+     the current one too, is marked by hand. The list is optional and left out when empty. */
+  const classUnlocked = (item, name) => catalog.base.includes(name) || Boolean(item.unlockedClasses?.includes(name));
+  function setClassUnlocked(item, name, unlocked) {
+    if (catalog.base.includes(name) || classUnlocked(item, name) === unlocked) return false;
+    const list = (item.unlockedClasses || []).filter(entry => entry !== name);
+    if (unlocked) list.push(name);
+    if (list.length) item.unlockedClasses = list; else delete item.unlockedClasses;
+    return true;
+  }
+
+  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

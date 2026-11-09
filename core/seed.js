@@ -99,6 +99,70 @@ window.RiggingSeed = (() => {
     return betterChoices(state, item, c, row).filter(choice => classTier(choice.profession) <= cap);
   }
 
+  /* 考试推荐: which classes beat the forecast most, to take their exam first. The rows are those after the
+     newest 已升级 (or all of them) up to the level cap, skipped rows left out. An option is a class with one
+     ride at one friendship level. Its points are the rows where it beats the row's class (betterChoices); on
+     those rows only, what each stat gains over the row and what it loses are summed apart, a +2 counting 2.
+     A row's 强烈推荐 are its better choices with the most points; strong counts those rows.
+     Within one class an option goes when another is at least as good everywhere (every gain as high, every
+     loss as low, as many rows and strong rows) and better somewhere; options that come out the same share one entry.
+     Runs a slice at a time so the page can show progress. */
+  async function examStats(state, item, c, { onProgress } = {}) {
+    if (!ready() || !item.seed || !eligible(item, c) || hasCorrection(item)) return null;
+    const all = queueRows(state, item, c, 0, Infinity);
+    const start = all.findLastIndex(row => row.status === 'upgraded') + 1;
+    const rows = all.slice(start).filter(row => row.status === 'normal');
+    const amount = (r, stat) => r.plus2.includes(stat) ? 2 : r.stats.includes(stat) ? 1 : 0;
+    const options = new Map();
+    let slice = Date.now();
+    for (const [n, row] of rows.entries()) {
+      const choices = betterChoices(state, item, c, row), points = r => r.stats.length + r.plus2.length;
+      // 强烈推荐: the choices that raise the most points on this level, one or several.
+      const most = Math.max(...choices.map(points));
+      for (const choice of choices) {
+        const key = `${choice.profession}|${choice.ride?.id ?? ''}|${choice.ride?.level ?? 0}`;
+        if (!options.has(key)) options.set(key, { profession: choice.profession, ride: choice.ride, count: 0, strong: 0, levels: [], gain: model.stats.map(() => 0), loss: model.stats.map(() => 0) });
+        const option = options.get(key);
+        option.count++; option.levels.push(row.displayLevel);
+        if (points(choice) === most) option.strong++;
+        model.stats.forEach((stat, i) => {
+          const diff = amount(choice, stat) - amount(row, stat);
+          if (diff > 0) option.gain[i] += diff; else option.loss[i] -= diff;
+        });
+      }
+      if (Date.now() - slice > 12) {
+        onProgress?.({ ratio: (n + 1) / rows.length });
+        await new Promise(resolve => setTimeout(resolve));
+        slice = Date.now();
+      }
+    }
+    const atLeast = (a, b) => a.count >= b.count && a.strong >= b.strong && a.gain.every((v, i) => v >= b.gain[i]) && a.loss.every((v, i) => v <= b.loss[i]);
+    const sameAs = (a, b) => atLeast(a, b) && atLeast(b, a);
+    const byClass = new Map();
+    for (const option of options.values()) {
+      if (!byClass.has(option.profession)) byClass.set(option.profession, []);
+      byClass.get(option.profession).push(option);
+    }
+    const sum = list => list.reduce((a, b) => a + b, 0);
+    const entries = [];
+    for (const list of byClass.values()) {
+      const kept = list.filter(option => !list.some(other => other !== option && atLeast(other, option) && !sameAs(other, option)));
+      const merged = [];
+      for (const option of kept) {
+        const twin = merged.find(entry => sameAs(entry, option));
+        if (twin) twin.rides.push(option.ride);
+        else merged.push({ ...option, rides: [option.ride] });
+      }
+      for (const entry of merged) {
+        const { ride, ...rest } = entry;
+        entries.push({ ...rest, tier: classTier(entry.profession), gainTotal: sum(entry.gain), lossTotal: sum(entry.loss),
+          gain: Object.fromEntries(model.stats.map((stat, i) => [stat, entry.gain[i]])), loss: Object.fromEntries(model.stats.map((stat, i) => [stat, entry.loss[i]])) });
+      }
+    }
+    entries.sort((a, b) => b.gainTotal - a.gainTotal || a.lossTotal - b.lossTotal || b.count - a.count);
+    return { rows: rows.length, from: rows[0]?.displayLevel ?? null, to: rows.at(-1)?.displayLevel ?? null, part3: rows.some(row => row.part3), entries };
+  }
+
   // Null when the class is unknown, so nothing can be calculated for this row.
   function eventOf(c, row) {
     const id = personId(c), jobId = jobs.get(row.profession);
@@ -490,6 +554,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, examStats, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

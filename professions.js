@@ -387,6 +387,31 @@ function miniStats(stats, plus2, base = null) {
    a box beside it listing the classes that give it and their rides. The layout (layoutBetter) keeps every
    stat card in view without scrolling the dialog; only a class box that cannot fit scrolls inside itself. */
 const TIER_LABELS = ['基础', '初级', '中级', '上级', '最上级', '神将'];
+// The vertical tier slider's pointer and keyboard handling, shared by 其他选择 and 考试推荐.
+function wireTierSlider(track, highest, getCap, setCap) {
+  const stops = highest + 1;
+  const stopAt = y => { const box = track.getBoundingClientRect(); return highest - Math.round((y - box.top) / box.height * stops - .5); };
+  let dragging = false, pointerFocus = false;
+  track.addEventListener('focus', () => { if (!pointerFocus) track.classList.add('key-focus'); });
+  track.addEventListener('blur', () => track.classList.remove('key-focus'));
+  track.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    // Focus for the arrow keys, but no ring: the ring is for reaching the slider by keyboard only.
+    e.preventDefault(); pointerFocus = true; track.classList.remove('key-focus'); track.focus({ preventScroll: true }); pointerFocus = false;
+    dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('tier-dragging');
+    const next = stopAt(e.clientY); if (next !== getCap()) setCap(next);
+  });
+  track.addEventListener('pointermove', e => { if (!dragging) return; const next = stopAt(e.clientY); if (next !== getCap()) setCap(next); });
+  const release = () => { dragging = false; track.classList.remove('tier-dragging'); };
+  track.addEventListener('pointerup', release);
+  track.addEventListener('pointercancel', release);
+  track.addEventListener('keydown', e => {
+    const cap = getCap(), next = { ArrowUp: cap + 1, ArrowRight: cap + 1, ArrowDown: cap - 1, ArrowLeft: cap - 1, Home: 0, End: highest, PageUp: highest, PageDown: 0 }[e.key];
+    if (next === undefined) return;
+    e.preventDefault(); e.stopPropagation(); track.classList.add('key-focus');
+    if (Math.max(0, Math.min(highest, next)) !== cap) setCap(next);
+  });
+}
 function betterDialog(title, current, groups) {
   return new Promise(resolve => {
     const options = [];
@@ -469,29 +494,7 @@ function betterDialog(title, current, groups) {
       if (relayout) { pinned = null; animateBetter(dialog, before); }
     };
     dialog.querySelector('.better-mobile-filter select')?.addEventListener('change', e => setCap(Number(e.target.value)));
-    if (track) {
-    const stopAt = y => { const box = track.getBoundingClientRect(); return highest - Math.round((y - box.top) / box.height * stops.length - .5); };
-    let dragging = false, pointerFocus = false;
-    track.addEventListener('focus', () => { if (!pointerFocus) track.classList.add('key-focus'); });
-    track.addEventListener('blur', () => track.classList.remove('key-focus'));
-    track.addEventListener('pointerdown', e => {
-      if (e.button !== 0) return;
-      // Focus for the arrow keys, but no ring: the ring is for reaching the slider by keyboard only.
-      e.preventDefault(); pointerFocus = true; track.classList.remove('key-focus'); track.focus({ preventScroll: true }); pointerFocus = false;
-      dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('tier-dragging');
-      const next = stopAt(e.clientY); if (next !== cap) setCap(next);
-    });
-    track.addEventListener('pointermove', e => { if (!dragging) return; const next = stopAt(e.clientY); if (next !== cap) setCap(next); });
-    const release = () => { dragging = false; track.classList.remove('tier-dragging'); };
-    track.addEventListener('pointerup', release);
-    track.addEventListener('pointercancel', release);
-    track.addEventListener('keydown', e => {
-      const next = { ArrowUp: cap + 1, ArrowRight: cap + 1, ArrowDown: cap - 1, ArrowLeft: cap - 1, Home: 0, End: highest, PageUp: highest, PageDown: 0 }[e.key];
-      if (next === undefined) return;
-      e.preventDefault(); e.stopPropagation(); track.classList.add('key-focus');
-      if (Math.max(0, Math.min(highest, next)) !== cap) setCap(next);
-    });
-    }
+    if (track) wireTierSlider(track, highest, () => cap, setCap);
     /* Compact layout (layoutBetter): a card's class box floats beside it, inside the dialog, while the card
        or its box is pointed at or focused; a click on the card pins it so the pointer can travel there. */
     let pinned = null, hideTimer = 0;
@@ -848,6 +851,127 @@ async function openBetterChoices(anchor) {
   renderSummary();
   refreshRecordRails();
   refocus();
+}
+
+/* 考试推荐: which classes beat the forecast most often from here to the level cap, so their exams come first.
+   Built from the 其他选择 pieces: one stat card per class (or, for a mounted class, per ride result that no
+   other ride beats everywhere), with its total gain and loss at the top right, most gain first; the tier
+   filter narrows them. Classes
+   the user marked as passed sit in their own column. The calculation can take a moment on a slow phone, so a
+   bubble over the portrait shows its progress; the dialog opens when it is done. */
+const examPending = new Set();
+async function openExamRecommend(id) {
+  const item = state.roster.find(i => i.id === id), c = char(id);
+  if (!item || examPending.has(id)) return;
+  examPending.add(id);
+  const before = seedMessages.get(id) || '';
+  let shown = false;
+  const timer = setTimeout(() => { shown = true; showSeedMessage(id, '正在计算考试推荐…'); }, 200);
+  let stats = null;
+  try {
+    if (!window.RiggingSeed.ready()) await window.RiggingSeed.load(seedVersion());
+    stats = await window.RiggingSeed.examStats(state, item, c, { onProgress: progress => { if (shown) showSeedMessage(id, `正在计算考试推荐… ${Math.floor(progress.ratio * 100)}%`); } });
+  } catch (error) {
+    clearTimeout(timer);
+    examPending.delete(id);
+    showSeedMessage(id, `考试推荐计算失败：${error?.message || '未知错误'}`);
+    return;
+  }
+  clearTimeout(timer);
+  if (shown) showSeedMessage(id, before);
+  examPending.delete(id);
+  const button = () => app.querySelector(`[data-exam="${id}"]`);
+  if (!stats || page !== 'summary') return;
+  await examDialog(item, c, stats);
+  button()?.focus({ preventScroll: true });
+}
+// Rides as text, like the class box in 其他选择 but nothing to pick.
+function examRideLines(kind, rides, id) {
+  if (anyRide(kind, rides, id)) return `<span class="better-ride">${rideIcon(kind, {})}<span>任意配属</span></span>`;
+  return rideEntries(rides).map(({ id: rideId, name, levels }) => `<span class="better-ride">${rideIcon(kind, rideId ? { id: rideId, level: Math.max(...levels) } : null)}<span>${name}</span>${rideId ? `<span class="better-hearts">${heartRange(levels)}</span>` : ''}</span>`).join('');
+}
+// The level-up board again, each stat with what it gains and what it loses over the counted levels.
+function examMiniStats(entry) {
+  return `<span class="mini-stats" aria-hidden="true">${STATS.map((stat, i) => {
+    const gain = entry.gain[stat], loss = entry.loss[stat];
+    const text = gain || loss ? `${gain ? `<i class="exam-up">+${gain}</i>` : ''}${loss ? `<i class="exam-down">−${loss}</i>` : ''}` : '—';
+    return `<span class="mini-stat ${gain ? 'active more' : loss ? 'less' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}"><span>${stat}</span><b>${text}</b></span>`;
+  }).join('')}</span>`;
+}
+function examDialog(item, c, stats) {
+  return new Promise(resolve => {
+    const actions = window.RiggingActions, highest = stats.part3 || state.part3 === true || c.part3Only === true ? 5 : 3;
+    const icon = name => `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png${ICON_QUERY}" alt="" draggable="false">`;
+    const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
+    const entries = stats.entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id) }));
+    const node = (entry, unlocked) => {
+      const base = window.PROFESSIONS.base.includes(entry.profession);
+      const toggle = base ? '' : `<button type="button" class="exam-unlock" data-unlock="${entry.profession}" aria-pressed="${unlocked}">${unlocked ? '取消已解锁' : '标为已解锁'}</button>`;
+      return `<div class="better-node exam-node" data-tier="${entry.tier}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry"><span class="better-class">${icon(entry.profession)}<span class="game-text">${entry.profession}</span></span>${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
+    };
+    const column = unlocked => {
+      const list = entries.filter(entry => actions.classUnlocked(item, entry.profession) === unlocked);
+      return `<h3 class="better-caption">${unlocked ? '已解锁' : '未解锁'}</h3><div class="exam-nodes">${list.map(entry => node(entry, unlocked)).join('')}</div><p class="better-none exam-none" hidden>${unlocked ? '没有已解锁的职业' : '没有未解锁的职业'}</p>`;
+    };
+    const kept = tier => entries.filter(entry => entry.tier <= tier).length;
+    const filterable = new Set(entries.map(entry => entry.tier)).size > 1;
+    const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="exam-tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="exam-tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${highest + 1}"><span class="tier-track"><span class="tier-fill"></span></span>${Array.from({ length: highest + 1 }, (_, i) => highest - i).map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
+    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter exam-mobile-filter"><span>筛选</span><select aria-label="筛选职业等级">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
+    const range = stats.rows ? `${levelLabel(item, stats.from)}–${levelLabel(item, stats.to)}，共 ${stats.rows} 级` : '没有可以统计的预测';
+    const dialog = document.createElement('dialog');
+    dialog.className = 'app-dialog better-dialog exam-dialog';
+    animateMobilePickerClose(dialog);
+    const stack = createPickerStack();
+    stack.add(dialog);
+    dialog.setAttribute('aria-labelledby', 'exam-title');
+    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2><p>${range}</p></header><div class="exam-map"><aside class="exam-side">${mobileFilter}${slider}</aside><section class="exam-col exam-locked"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
+    const track = dialog.querySelector('.tier-slider');
+    let cap = filterable ? Math.min(window.RiggingSeed.recommendCap(state, highest === 5), highest) : highest;
+    const draw = () => {
+      dialog.querySelector('.exam-locked').innerHTML = column(false);
+      dialog.querySelector('.exam-unlocked').innerHTML = column(true);
+      filter();
+    };
+    const filter = () => {
+      for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
+      for (const col of dialog.querySelectorAll('.exam-col')) col.querySelector('.exam-none').hidden = Boolean(col.querySelector('.exam-node:not([hidden])'));
+    };
+    const setCap = value => {
+      cap = Math.max(0, Math.min(highest, value));
+      const select = dialog.querySelector('.exam-mobile-filter select');
+      if (select) select.value = String(cap);
+      if (track) {
+        track.style.setProperty('--at', String(highest - cap));
+        track.setAttribute('aria-valuenow', String(cap));
+        track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
+        for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
+      }
+      filter();
+    };
+    if (track) wireTierSlider(track, highest, () => cap, setCap);
+    dialog.querySelector('.exam-mobile-filter select')?.addEventListener('change', e => setCap(Number(e.target.value)));
+    dialog.addEventListener('click', e => {
+      const unlock = e.target.closest('[data-unlock]');
+      if (unlock) {
+        const name = unlock.dataset.unlock;
+        actions.setClassUnlocked(item, name, !actions.classUnlocked(item, name));
+        draw();
+        dialog.querySelector(`[data-unlock="${CSS.escape(name)}"]`)?.focus({ preventScroll: true });
+        return;
+      }
+      if (e.target.closest('[data-dismiss]')) dialog.close();
+    });
+    const mobile = () => dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches);
+    window.addEventListener('resize', mobile);
+    dialog.addEventListener('close', () => { window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    mobile();
+    draw();
+    setCap(cap);
+    document.body.append(dialog);
+    dialog.showModal();
+    if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }
+    else dialog.querySelector('[data-dismiss]')?.focus({ preventScroll: true });
+  });
 }
 
 document.addEventListener('keydown', e => {

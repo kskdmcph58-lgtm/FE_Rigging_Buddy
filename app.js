@@ -885,6 +885,7 @@ app.addEventListener('click', async e => {
   if (b.dataset.edit && openSummaryRecord(b)) return;
   if (b.dataset.queue && openQueueRow(b)) return;
   if (b.dataset.reseed) { runSeedSearch(b.dataset.reseed); return; }
+  if (b.dataset.exam) { openExamRecommend(b.dataset.exam); return; }
   if (b.dataset.toggleEdit) {
     const id = b.dataset.toggleEdit;
     editingCharacters.has(id) ? editingCharacters.delete(id) : editingCharacters.add(id);

@@ -165,6 +165,13 @@ window.RiggingModel = (() => {
       renameClass(item, 'initialProfession'); renameClass(item, 'pendingProfession');
       if (item.initialProfession !== undefined && item.initialProfession !== null && !window.PROFESSIONS.names.includes(item.initialProfession)) throw Error('初始兵种不正确');
       if (item.pendingProfession !== undefined && item.pendingProfession !== null && !window.PROFESSIONS.names.includes(item.pendingProfession)) throw Error('待记录兵种不正确');
+      // 考试推荐: classes the user marked as already passed. Optional, left out when empty.
+      if (item.unlockedClasses !== undefined) {
+        if (!Array.isArray(item.unlockedClasses)) throw Error('已解锁兵种不正确');
+        item.unlockedClasses.forEach((_, i) => renameClass(item.unlockedClasses, i));
+        if (new Set(item.unlockedClasses).size !== item.unlockedClasses.length || item.unlockedClasses.some(name => !window.PROFESSIONS.names.includes(name))) throw Error('已解锁兵种不正确');
+        if (!item.unlockedClasses.length) delete item.unlockedClasses;
+      }
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
       ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed);

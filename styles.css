@@ -4644,6 +4644,50 @@ html[data-input-mode="touch"] button.expectation-link {
 @media(max-width:520px) { .better-ride-sheet .ride-heart-slot { flex:1; width:auto; } }
 .better-mobile .better-actions { flex:none; }
 
+/* 考试推荐: the 其他选择 frame and cards. The filter on the left, then the classes not yet passed, then
+   the passed ones, each column most gain first. The body scrolls; the dialog keeps a
+   fixed width so marking a class does not resize it. */
+.better-dialog.exam-dialog { width:min(1400px,calc(100% - 32px)); max-width:calc(100% - 32px); }
+.exam-dialog header p { margin:4px 0 0; color:var(--muted); font:12px/16px var(--font-ui); }
+.exam-map { display:grid; grid-template-columns:130px minmax(0,1fr) 400px; align-items:start; gap:28px; flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; padding:20px 24px; }
+.exam-side { position:sticky; top:0; display:grid; gap:8px; }
+.exam-side .tier-filter { margin-top:0; padding-top:0; border-top:0; }
+.exam-dialog.better-mobile .exam-side:empty { display:none; }
+.exam-col { display:grid; align-content:start; gap:16px; min-width:0; }
+.exam-unlocked .better-caption { color:var(--muted); }
+.exam-none[hidden] { display:none; }
+.exam-nodes { display:flex; flex-wrap:wrap; align-items:flex-start; gap:12px; }
+.exam-node { min-width:0; }
+/* Wider than the 其他选择 card: a stat can show both a two-digit gain and a loss, and the totals are longer. */
+.exam-node .better-card { flex:none; width:188px; }
+.exam-node .mini-stat > span, .exam-node .mini-stat b { white-space:nowrap; }
+.exam-node .better-ridebox { flex:0 1 auto; min-width:150px; max-width:200px; overflow:visible; gap:6px; }
+.exam-node .better-ride { white-space:normal; }
+.exam-gain { position:absolute; top:6px; right:10px; display:flex; align-items:baseline; gap:4px; }
+.exam-gain b { font:400 20px/20px var(--font-number); color:var(--text); }
+.exam-gain small { font:400 13px/16px var(--font-number); color:var(--red); }
+.exam-node .mini-stat b { display:flex; gap:3px; }
+.exam-node .mini-stat i { font-style:normal; }
+.exam-node .mini-stat .exam-up { color:var(--green); }
+.exam-node .mini-stat .exam-down { color:var(--red); }
+.exam-count { color:var(--muted); font:12px/16px var(--font-ui); }
+.exam-dialog button.exam-unlock { justify-self:start; width:auto; min-height:28px; margin-top:2px; padding:2px 10px; border-radius:8px; font:12px/16px var(--font-ui); }
+.exam-dialog button.exam-unlock[aria-pressed="true"] { color:var(--muted); }
+/* Narrow windows: one column, the filter as a menu, passed classes after the rest. */
+.exam-dialog.better-mobile .exam-map { display:block; padding:12px 16px 20px; overflow-x:hidden; overflow-y:auto; }
+.exam-dialog.better-mobile .exam-side { position:static; margin-bottom:16px; }
+.exam-dialog.better-mobile .exam-side .tier-filter { display:none; }
+.exam-dialog.better-mobile .exam-mobile-filter { grid-column:auto; display:grid; gap:4px; padding:0; color:var(--muted); font:13px/18px var(--font-ui); }
+.exam-dialog.better-mobile .exam-col + .exam-col { margin-top:24px; }
+.exam-dialog.better-mobile .exam-nodes { display:grid; gap:12px; }
+.exam-dialog.better-mobile .exam-node { display:flex; align-items:flex-start; gap:6px; width:100%; }
+.exam-dialog.better-mobile .exam-node .better-card { flex:none; width:188px; }
+.exam-dialog.better-mobile .exam-node .better-ridebox { flex:1; max-width:none; min-width:0; padding:6px 8px; }
+.exam-dialog.better-mobile .better-class { white-space:normal; }
+.exam-dialog.better-mobile .better-ride { white-space:normal; }
+.exam-dialog.better-mobile button.exam-unlock { position:relative; min-height:32px; }
+.exam-dialog.better-mobile button.exam-unlock::after { content:''; position:absolute; inset:-6px; }
+
 /* A marked card's overlay covers its rating, as it did before the rating was clickable. */
 .record-chip.skipped>div>.rating-toggle,.record-chip.upgraded>div>.rating-toggle { z-index:auto; }
 .record-chip .rating-word { display:inline-grid; justify-items:end; }

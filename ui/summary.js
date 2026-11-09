@@ -100,7 +100,7 @@ function renderSummary() {
       const queue = window.RiggingSeed.queueRows(state, item, c, forecastLengths.get(c.id));
       const canSeed = window.RiggingSeed.eligible(item, c);
       const startLabel = !canSeed ? '记录升级' : M.live(item).length ? '继续反推' : '开始反推';
-      const mainAction = item.seed ? (window.RiggingSeed.hasCorrection(item) ? `<button class="primary" data-reseed="${c.id}">重新反推</button>` : '') : `<button class="primary" data-start="${c.id}">${startLabel}</button>`;
+      const mainAction = item.seed ? (window.RiggingSeed.hasCorrection(item) ? `<button class="primary" data-reseed="${c.id}">重新反推</button>` : `<button class="primary" data-exam="${c.id}">考试推荐</button>`) : `<button class="primary" data-start="${c.id}">${startLabel}</button>`;
       return `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span><span class="journal-portrait">${portrait(c, 'narrow', '(max-width:1419px) 178px, 116px')}${seedStatusMarkup(item, c)}</span><div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions">${mainAction}<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
@@ -117,7 +117,7 @@ function renderSummary() {
 function syncChildren(current, desired) {
   const key = node => {
     if (node.nodeType !== 1) return null;
-    for (const attribute of ['data-sort-id', 'data-start', 'data-reseed', 'data-toggle-edit', 'data-edit', 'data-queue']) {
+    for (const attribute of ['data-sort-id', 'data-start', 'data-reseed', 'data-exam', 'data-toggle-edit', 'data-edit', 'data-queue']) {
       if (node.hasAttribute(attribute)) return `${attribute}:${node.getAttribute(attribute)}:${node.getAttribute('data-index') || ''}`;
     }
     return null;
