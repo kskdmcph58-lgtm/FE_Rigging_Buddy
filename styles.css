@@ -4721,6 +4721,8 @@ html[data-input-mode="touch"] button.expectation-link {
 .record-chip.upgraded>div>.profession-field,.record-chip.skipped>div>.profession-field { visibility:visible; position:relative; z-index:auto; }
 .record-chip.upgraded>div>.profession-field { color:#82765c; }
 .record-chip.skipped>div>.profession-field { color:#62625d; }
+/* A missing class reads like a class name in the card's muted colour, not the bright placeholder gold. */
+.record-chip:is(.upgraded,.skipped)>div>.profession-field .profession-placeholder { color:inherit; }
 /* 已升级: LV, class, growth, stats and a forecast's pass rate stay readable above the mask in muted gold; the
    rating shows faintly under it, as on 已跳过 and the mobile board, so LV and class rise one by one instead of
    the whole first row. */

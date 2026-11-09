@@ -404,7 +404,9 @@ window.RiggingSeed = (() => {
     const levels = entries.map(entry => entry.record ? shown[item.records.indexOf(entry.record)] : entry.displayLevel);
     // Without a correction the saved seed still follows the last record, so a new answer has to arrive there.
     const end = item.seed && !target ? item.seed.value : null;
-    const found = (settled, mismatch) => ({ status: 'found', ...settled, target, key, ...(mismatch ? { mismatch, levels: [levels[settled.start], levels.at(-1)] } : {}) });
+    // Messages name levels, not positions in the chain: each row index also comes back as the level it shows.
+    const found = (settled, mismatch) => ({ status: 'found', ...settled, target, key, ...(mismatch ? { mismatch: { ...mismatch, levels: [levels[mismatch.from], levels[mismatch.to]] }, levels: [levels[settled.start], levels.at(-1)] } : {}) });
+    const none = row => ({ status: 'none', row, level: levels[row], target });
 
     const head = await searchHead(events, end, onProgress);
     if (head.status === 'cancelled') return head;
@@ -413,15 +415,15 @@ window.RiggingSeed = (() => {
 
     const tail = size => {
       const from = entries.length - size, list = events.slice(from), missing = list.findIndex(event => !event);
-      return missing < 0 ? solver.search(list, { onProgress }) : Promise.resolve({ status: 'class', row: from + missing });
+      return missing < 0 ? solver.search(list, { onProgress }) : Promise.resolve({ status: 'class', row: from + missing, level: levels[from + missing] });
     };
     for (let size = MIN_RECORDS; size <= entries.length; size++) {
       const from = entries.length - size, result = await tail(size);
       if (result.status === 'class') return result;
-      if (result.status === 'impossible') return { status: 'none', row: from + result.impossible.index, target };
+      if (result.status === 'impossible') return none(from + result.impossible.index);
       if (!result.complete) return { status: 'cancelled' };
       if (result.candidates.length === 1) {
-        if (end !== null && result.candidates[0] !== end) return { status: 'none', row: from, target };
+        if (end !== null && result.candidates[0] !== end) return none(from);
         return found(settle(result.originLists[0], from), head.mismatch);
       }
       if (!result.candidates.length) {
@@ -431,7 +433,7 @@ window.RiggingSeed = (() => {
           if (shorter.status !== 'searched' || !shorter.complete || shorter.candidates.length) break;
           shortest = smaller;
         }
-        return { status: 'none', row: entries.length - shortest, target };
+        return none(entries.length - shortest);
       }
       if (size === entries.length) return { status: 'ambiguous', count: result.candidates.length, target };
     }

@@ -51,8 +51,8 @@ function recheckSavedSeeds() {
 }
 // The part that could not become forecast rows, and the levels the seed now comes from.
 function partialSeedMessage(item, result) {
-  const { from, to } = result.mismatch;
-  const where = result.mismatch.class ? `第 ${from + 1} 条没有填兵种` : from === to ? `第 ${from + 1} 条数据不匹配` : `第 ${from + 1}–${to + 1} 条中有数据不匹配`;
+  const [from, to] = result.mismatch.levels.map(level => levelLabel(item, level));
+  const where = result.mismatch.class ? `${from} 没有填兵种` : from === to ? `${from} 数据不匹配` : `${from}–${to} 中有数据不匹配`;
   const [first, latest] = result.levels;
   return first === undefined ? `${where}。` : `${where}，已使用 ${levelLabel(item, first)}–${levelLabel(item, latest)} 进行预测。`;
 }
@@ -87,8 +87,8 @@ async function searchSeed(id, opensRecord = false) {
       else if (page === 'summary') { rememberListPosition(); returnToSummary(); }
     }
     else if (result.status === 'short') showSeedMessage(id);
-    else if (result.status === 'class') showSeedMessage(id, `第 ${result.row + 1} 条没有填兵种，填上才能反推。`);
-    else if (result.status === 'none') showSeedMessage(id, `没有找到匹配的种子，从第 ${result.row + 1} 条开始对不上。${before}`);
+    else if (result.status === 'class') showSeedMessage(id, `${levelLabel(item, result.level)} 没有填兵种，填上才能反推。`);
+    else if (result.status === 'none') showSeedMessage(id, `没有找到匹配的种子，从 ${levelLabel(item, result.level)} 开始对不上。${before}`);
     else if (result.status === 'ambiguous') showSeedMessage(id, rework ? `还有 ${result.count} 个候选种子，再修正一条通常就能确定。${before}` : `还有 ${result.count} 个候选种子，再记一条通常就能确定。`);
     else showSeedMessage(id);
     // These two need another level-up, unless the user has already moved on.
