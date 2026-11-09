@@ -33,8 +33,28 @@ function showSeedMessage(id, text = '') {
 }
 // The engine waits until someone can use it, and the page redraws once rows can be calculated.
 function loadSeedEngine() {
-  if (window.RiggingSeed.ready()) return;
-  window.RiggingSeed.load(seedVersion()).then(() => { if (page === 'summary' || page === 'record') render(); }).catch(() => {});
+  if (window.RiggingSeed.ready()) { recheckSavedSeeds(); return; }
+  window.RiggingSeed.load(seedVersion()).then(() => { recheckSavedSeeds(); if (page === 'summary' || page === 'record') render(); }).catch(() => {});
+}
+/* Data saved before records became forecast rows still has its window marked 锚点 (now only read here). It is
+   searched once per session as it is, after loading or importing; a later save then has the new shape. */
+const recheckedSeeds = new Set();
+function recheckSavedSeeds() {
+  for (const item of state.roster) {
+    const c = char(item.id);
+    if (item.deleted || !item.seed || !M.live(item).some(record => record.anchor) || !window.RiggingSeed.eligible(item, c) || window.RiggingSeed.hasCorrection(item)) continue;
+    const key = `${item.id}|${window.RiggingSeed.chainKey(state, item, c, null)}`;
+    if (recheckedSeeds.has(key)) continue;
+    recheckedSeeds.add(key);
+    runSeedSearch(item.id);
+  }
+}
+// The part that could not become forecast rows, and the levels the seed now comes from.
+function partialSeedMessage(item, result) {
+  const { from, to } = result.mismatch;
+  const where = result.mismatch.class ? `第 ${from + 1} 条没有填兵种` : from === to ? `第 ${from + 1} 条数据不匹配` : `第 ${from + 1}–${to + 1} 条中有数据不匹配`;
+  const [first, latest] = result.levels;
+  return first === undefined ? `${where}。` : `${where}，已使用 ${levelLabel(item, first)}–${levelLabel(item, latest)} 进行预测。`;
 }
 function runSeedSearch(id, opensRecord = false) {
   if (seedPending.has(id)) return;
@@ -57,9 +77,10 @@ async function searchSeed(id, opensRecord = false) {
       const outcome = window.RiggingSeed.applyFound(state, item, c, result);
       applied = outcome.applied;
       if (outcome.reason === 'limit') { showSeedMessage(id, '记录已达上限，请导出备份。'); return; }
+      if (outcome.reason === 'mismatch') { showSeedMessage(id, `算出的结果和记录对不上，没有改动。${before}`); return; }
     }
     if (result.status === 'found' && applied) {
-      showSeedMessage(id);
+      showSeedMessage(id, result.mismatch ? partialSeedMessage(item, result) : '');
       // That return aligns the newest card, which would skip past the rows that come next.
       if (recordReturnPosition?.id === id) recordReturnPosition = null;
       if (page === 'record' && activeRecord?.id === id) { activeRecord = null; clearRecordDraft(); returnToSummary(); }

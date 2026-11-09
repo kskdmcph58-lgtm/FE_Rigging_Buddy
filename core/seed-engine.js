@@ -767,6 +767,13 @@ const alignChunk = size => Math.min(MAX_CHUNK, Math.max(MIN_CHUNK, size)) & ~3;
 // One logical core is left free: measured total time is the same and the page stays smoother.
 export const defaultThreads = () => Math.max(1, (globalThis.navigator?.hardwareConcurrency ?? 2) - 1);
 
+/* Different seeds before a window can meet in the same seed after it. The other origins are kept,
+   because the seed at the window's first record is known only from the step where they all agree. */
+function shareOrigin(shared, hit) {
+  const list = shared.get(hit.current);
+  if (list) list.push(hit.origin); else shared.set(hit.current, [hit.origin]);
+}
+
 /** Drops the first record's skip: the search already covers every seed that could follow it. */
 export function normalizeEvents(events) {
   return events.map((event, index) => (index === 0 && event.advanceBefore ? {...event, advanceBefore: 0} : event));
@@ -827,7 +834,7 @@ export class SearchPool {
 
     return new Promise((resolve, reject) => {
       const prefix = new Array(events.length).fill(0);
-      const currents = new Map();
+      const currents = new Map(), shared = new Map();
       const chunkSize = new Map();
       let cursor = begin;
       let processed = 0;
@@ -857,6 +864,7 @@ export class SearchPool {
             complete,
             candidates: list,
             origins: list.map(current => currents.get(current)),
+            originLists: list.map(current => [currents.get(current), ...(shared.get(current) || [])]),
             candidatesComplete,
             matches,
             prefix,
@@ -892,7 +900,7 @@ export class SearchPool {
           matches += message.hits.length;
           message.prefix.forEach((value, index) => { prefix[index] += value; });
           for (const hit of message.hits) {
-            if (currents.has(hit.current)) continue;
+            if (currents.has(hit.current)) { shareOrigin(shared, hit); continue; }
             if (currents.size >= MAX_TRACKED_CANDIDATES) {
               candidatesComplete = false;
               continue;
@@ -1117,7 +1125,7 @@ export async function createGpuEngine() {
 
       const scanner = new Scanner(events, null, null);
       const prefix = new Array(events.length).fill(0);
-      const currents = new Map();
+      const currents = new Map(), shared = new Map();
       const total = end - begin;
       let cursor = begin;
       let size = FIRST_DISPATCH;
@@ -1171,7 +1179,7 @@ export async function createGpuEngine() {
           taken.prefix.forEach((value, index) => { prefix[index] += value; });
           matches += taken.hits.length;
           for (const hit of taken.hits) {
-            if (currents.has(hit.current)) continue;
+            if (currents.has(hit.current)) { shareOrigin(shared, hit); continue; }
             currents.set(hit.current, hit.origin);
             if (firstHitMs === null) firstHitMs = performance.now() - started;
             onHit?.({current: hit.current, origin: hit.origin, elapsedMs: performance.now() - started});
@@ -1187,6 +1195,7 @@ export async function createGpuEngine() {
         complete,
         candidates: [...currents.keys()],
         origins: [...currents.values()],
+        originLists: [...currents].map(([current, origin]) => [origin, ...(shared.get(current) || [])]),
         candidatesComplete: true,
         matches,
         prefix,

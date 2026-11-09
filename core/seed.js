@@ -130,8 +130,8 @@ window.RiggingSeed = (() => {
     return (marked.length ? Math.max(...marked) + 1 : 0) + QUEUE_SIZE;
   };
 
-  // minRows lets a view ask for more of the fixed sequence; nothing about it is stored.
-  function queueRows(state, item, c, minRows = 0) {
+  // minRows lets a view ask for more of the fixed sequence; nothing about it is stored. limit stops early.
+  function queueRows(state, item, c, minRows = 0, limit) {
     if (!ready() || !item.seed || !eligible(item, c)) return [];
     const live = model.live(item), part3Only = window.PROFESSIONS.part3Only;
     let seed = item.seed.value;
@@ -141,7 +141,7 @@ window.RiggingSeed = (() => {
     let story = actions.currentProfession({ ...state, part3: false }, item);
     const rows = [], first = item.initialLevel + live.length;
     // Skipped rows use a seed step without gaining a level, so the cap follows the displayed level.
-    for (let n = 0, total = Math.max(rowCount(item), minRows); n < total && rowDisplayLevel(item, n) <= MAX_LEVEL; n++) {
+    for (let n = 0, total = limit ?? Math.max(rowCount(item), minRows); n < total && rowDisplayLevel(item, n) <= MAX_LEVEL; n++) {
       const saved = item.seed.rows?.[n] || {};
       // A row nobody marked follows the switch, even after a Part 3 已升级: on 第1-2部 the person is not really
       // back in Part 1-2 (the game does not allow it), the switch only shows the 第1-2部 growth.
@@ -268,6 +268,8 @@ window.RiggingSeed = (() => {
   }
   const hasCorrection = item => correctionTarget(item) !== null;
 
+  /* What a search reads: every saved record, then the forecast rows up to the newest corrected one. A corrected
+     record ends it there instead; the records after it then follow whatever seed is found. */
   function chainEntries(state, item, c, target) {
     const chain = model.seedChain(item, c.part3Only === true) || [];
     let entries = chain.map(({ record, level, part3 }) => ({ level, part3, profession: record.profession, ride: record.ride || null, stats: record.stats, plus2: record.plus2, record }));
@@ -277,7 +279,54 @@ window.RiggingSeed = (() => {
   }
   const chainKey = (state, item, c, target) => JSON.stringify(chainEntries(state, item, c, target).map(e => [e.level, e.part3, e.profession, e.ride, e.stats, e.plus2]));
 
-  // Shortest window from the target back that leaves one seed. Nothing is written here.
+  /* Different seeds before a window can meet in the same seed after it. A level's seed is known from the step
+     where they all agree, so the levels before that step stay as they are. */
+  function settle(origins, from) {
+    let seeds = [...new Set(origins)], step = 0;
+    while (seeds.length > 1) { seeds = [...new Set(seeds.map(engine.advance))]; step++; }
+    return { start: from + step, seed: seeds[0] };
+  }
+
+  /* From the first entry: the shortest window that leaves one seed, then the rest replayed on it. Every entry
+     has to match; otherwise it says where matching stopped, as entry indexes. */
+  async function searchHead(events, end, onProgress) {
+    let list = null;
+    for (let size = 1; size <= events.length; size++) {
+      const at = size - 1, event = events[at];
+      if (!event) return { status: 'mismatch', mismatch: { from: at, to: at, class: true } };
+      if (size < MIN_RECORDS) continue;
+      if (!list) {
+        const result = await solver.search(events.slice(0, size), { onProgress });
+        if (result.status === 'impossible') return { status: 'mismatch', mismatch: { from: result.impossible.index, to: result.impossible.index } };
+        if (!result.complete) return { status: 'cancelled' };
+        if (!result.candidates.length) return { status: 'mismatch', mismatch: { from: 0, to: at } };
+        // Too many to follow one by one: a longer window narrows them down.
+        if (!result.candidatesComplete) {
+          if (size === events.length) return { status: 'ambiguous', count: result.candidates.length };
+          continue;
+        }
+        list = result.candidates.map((current, i) => ({ current, origins: result.originLists[i] }));
+      } else {
+        const next = new Map();
+        for (const { current, origins } of list) {
+          const after = engine.matchEvent(current, event);
+          if (after < 0) continue;
+          const kept = next.get(after);
+          if (kept) kept.push(...origins); else next.set(after, [...origins]);
+        }
+        // Even one seed left can be a chance fit of a wrong entry earlier on, so only the range is known.
+        if (!next.size) return { status: 'mismatch', mismatch: { from: 0, to: at } };
+        list = [...next].map(([current, origins]) => ({ current, origins }));
+      }
+    }
+    if (list.length > 1) return { status: 'ambiguous', count: list.length };
+    if (end !== null && list[0].current !== end) return { status: 'mismatch', mismatch: { from: 0, to: events.length - 1 } };
+    return { status: 'found', ...settle(list[0].origins, 0) };
+  }
+
+  /* First from the oldest entry, so every record can become a forecast row. If something there does not match,
+     the shortest window from the newest entry back, as before, and the result says where matching stopped.
+     Nothing is written here. */
   async function search(state, item, c, { onProgress } = {}) {
     await load();
     solver ||= new engine.Solver();
@@ -286,26 +335,35 @@ window.RiggingSeed = (() => {
     // Taken before searching, so applyFound can tell if the records moved on meanwhile.
     const key = chainKey(state, item, c, target);
     if (entries.length < MIN_RECORDS) return { status: 'short', missing: MIN_RECORDS - entries.length };
-    const windowEvents = size => {
-      const list = entries.slice(-size).map(entry => eventOf(c, entry));
-      const missing = list.findIndex(event => !event);
-      return missing < 0 ? { list } : { missing: entries.length - size + missing };
-    };
-    const run = async size => {
-      const events = windowEvents(size);
-      if (events.missing !== undefined) return { status: 'class', row: events.missing };
-      return solver.search(events.list, { onProgress });
+    const events = entries.map(entry => eventOf(c, entry));
+    const shown = model.displayLevels(item);
+    const levels = entries.map(entry => entry.record ? shown[item.records.indexOf(entry.record)] : entry.displayLevel);
+    // Without a correction the saved seed still follows the last record, so a new answer has to arrive there.
+    const end = item.seed && !target ? item.seed.value : null;
+    const found = (settled, mismatch) => ({ status: 'found', ...settled, target, key, ...(mismatch ? { mismatch, levels: [levels[settled.start], levels.at(-1)] } : {}) });
+
+    const head = await searchHead(events, end, onProgress);
+    if (head.status === 'cancelled') return head;
+    if (head.status === 'ambiguous') return { ...head, target };
+    if (head.status === 'found') return found(head);
+
+    const tail = size => {
+      const from = entries.length - size, list = events.slice(from), missing = list.findIndex(event => !event);
+      return missing < 0 ? solver.search(list, { onProgress }) : Promise.resolve({ status: 'class', row: from + missing });
     };
     for (let size = MIN_RECORDS; size <= entries.length; size++) {
-      const result = await run(size);
+      const from = entries.length - size, result = await tail(size);
       if (result.status === 'class') return result;
-      if (result.status === 'impossible') return { status: 'none', row: entries.length - size + result.impossible.index, target };
+      if (result.status === 'impossible') return { status: 'none', row: from + result.impossible.index, target };
       if (!result.complete) return { status: 'cancelled' };
-      if (result.candidates.length === 1) return { status: 'found', next: result.candidates[0], target, key, size };
+      if (result.candidates.length === 1) {
+        if (end !== null && result.candidates[0] !== end) return { status: 'none', row: from, target };
+        return found(settle(result.originLists[0], from), head.mismatch);
+      }
       if (!result.candidates.length) {
         let shortest = size;
         for (let smaller = size - 1; smaller >= 2 && size === MIN_RECORDS; smaller--) {
-          const shorter = await run(smaller);
+          const shorter = await tail(smaller);
           if (shorter.status !== 'searched' || !shorter.complete || shorter.candidates.length) break;
           shortest = smaller;
         }
@@ -316,51 +374,107 @@ window.RiggingSeed = (() => {
     return { status: 'ambiguous', count: 0, target };
   }
 
-  function statsFromSeed(c, seed, row) {
-    return statsOf(engine.simulateLevel(seed, eventOf(c, { ...row, stats: undefined })).gains);
-  }
-  // Records up to the target become history; rows after it keep their marks and renumber.
+  const sameList = (a, b) => JSON.stringify([...(a || [])].sort()) === JSON.stringify([...(b || [])].sort());
+  /* Records from the found seed on become forecast rows, and the seed moves to the first of them. Each row keeps
+     its record's class, ride, part, mark and rating, so it shows what the record did. A window that starts
+     inside the forecast turns the rows before it into records, as before. */
   function applyFound(state, item, c, found) {
     if (chainKey(state, item, c, found.target) !== found.key) return { applied: false };
-    const target = found.target;
-    let seed = found.next;
-    if (target?.row !== undefined) {
-      const rows = queueRows(state, item, c).slice(0, target.row + 1);
+    const target = found.target, chain = model.seedChain(item, c.part3Only === true);
+    const last = target?.row ?? -1, searched = target?.record ? chain.findIndex(entry => entry.record === target.record) : chain.length - 1;
+    const old = item.seed ? queueRows(state, item, c) : [];
+    const lift = Math.max(0, found.start - chain.length), kept = Math.min(found.start, chain.length), convert = chain.slice(kept);
+    // What the first level after them had, before anything moves: it may come from a "this one only" choice.
+    const firstClass = actions.currentProfession(state, item);
+    const carried = old[lift] ?? { profession: firstClass, ride: actions.rememberedRide(state, item.id, actions.rideKind(firstClass, item.id)) };
+    const backup = { records: item.records, seed: item.seed, pending: Object.hasOwn(item, 'pendingProfession'), pendingProfession: item.pendingProfession };
+
+    let records = item.records;
+    if (lift) {
       const total = state.roster.reduce((n, entry) => n + entry.records.length, 0);
-      if (total + rows.length > model.limits.records) return { applied: false, reason: 'limit' };
+      if (total + lift > model.limits.records) return { applied: false, reason: 'limit' };
       const now = new Date().toISOString();
-      for (const row of rows) {
-        item.records.push({ id: model.uid(), seq: model.nextSeq(item), profession: row.profession, ride: row.ride ? { ...row.ride } : null, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}),
+      let seq = model.nextSeq(item);
+      records = [...records];
+      for (const row of old.slice(0, lift)) {
+        records.push({ id: model.uid(), seq: seq++, profession: row.profession, ride: row.ride ? { ...row.ride } : null, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}),
           part3: row.part3 === true || window.PROFESSIONS.part3Only.has(row.profession), status: row.status, deleted: false, happy: row.happy === true, ...(row.happy === null ? { ratingPending: true } : {}),
           ratingSource: row.ratingSource, ...(row.corrected ? {} : { calculated: true }), createdAt: now });
       }
-      const later = {};
-      for (const [index, row] of Object.entries(item.seed.rows || {})) if (Number(index) > target.row) later[Number(index) - target.row - 1] = row;
-      item.seed = { value: seed, ...(Object.keys(later).length ? { rows: later } : {}) };
-    } else {
-      // Later calculated rows follow the new seed; anything the user typed stays.
-      const chain = model.seedChain(item, c.part3Only === true);
-      const start = target?.record ? chain.findIndex(entry => entry.record === target.record) + 1 : chain.length;
-      for (const entry of chain.slice(start)) {
-        if (entry.record.calculated) {
-          const fresh = statsFromSeed(c, seed, { level: entry.level, part3: entry.part3, profession: entry.record.profession, ride: entry.record.ride });
-          entry.record.stats = fresh.stats;
-          if (fresh.plus2.length) entry.record.plus2 = fresh.plus2; else delete entry.record.plus2;
-          if (entry.record.ratingSource === 'auto') {
-            const happy = model.evaluate(model.ruleAt(item, entry.record.seq), fresh.stats);
-            entry.record.happy = happy === true;
-            if (happy === null) entry.record.ratingPending = true; else delete entry.record.ratingPending;
-          }
-        }
-        seed = engine.advance(seed);
-      }
-      item.seed = { value: seed, ...(item.seed?.rows ? { rows: item.seed.rows } : {}) };
     }
+    // Deleted records after the first converted one go too: restoring one would put a record after the forecast.
+    if (convert.length) records = records.filter(record => record.seq < convert[0].record.seq);
+
+    const rows = {};
+    convert.forEach(({ record, part3 }, n) => {
+      rows[n] = { profession: record.profession ?? null, ride: record.ride ? { ...record.ride } : null, part3,
+        ...(record.status !== 'normal' ? { status: record.status } : {}), ...(record.ratingSource === 'manual' ? { happy: record.happy } : {}) };
+    });
+    const shift = convert.length - lift;
+    for (const [index, row] of Object.entries(item.seed?.rows || {})) {
+      const n = Number(index);
+      if (n < lift) continue;
+      const copy = model.copy(row);
+      // Rows the search read now match the seed, so they are no longer corrections.
+      if (n <= last) { delete copy.stats; delete copy.plus2; }
+      rows[n + shift] = copy;
+    }
+    const carry = convert.length;
+    if (convert.length || lift) {
+      rows[carry] ||= {};
+      if (!Object.hasOwn(rows[carry], 'profession')) rows[carry].profession = carried.profession ?? null;
+      if (!Object.hasOwn(rows[carry], 'ride')) rows[carry].ride = carried.ride ? { ...carried.ride } : null;
+    }
+    item.records = records;
+    if (convert.length) delete item.pendingProfession;
+    item.seed = { value: found.seed, ...(Object.keys(rows).length ? { rows } : {}) };
+
+    // Classes were written on every moved row; drop the ones the rows would inherit anyway.
+    // Later rows only inherit from the row after the moved ones, so checking up to it is enough.
+    const classes = () => JSON.stringify(queueRows(state, item, c, 0, carry + 2).map(row => [row.profession, row.ride, row.part3]));
+    const wanted = classes();
+    for (let n = 0; n <= carry; n++) {
+      const saved = item.seed.rows?.[n];
+      if (!saved) continue;
+      for (const keys of [['profession', 'ride'], ['ride'], ['profession']]) {
+        if (!keys.every(key => Object.hasOwn(saved, key))) continue;
+        const taken = keys.map(key => [key, saved[key]]);
+        keys.forEach(key => delete saved[key]);
+        if (classes() === wanted) break;
+        taken.forEach(([key, value]) => { saved[key] = value; });
+      }
+    }
+
+    // Records after a corrected one were not searched: a typed one stays as a correction if the seed differs.
+    const unsearched = n => kept + n > searched;
+    let shownRows = queueRows(state, item, c);
+    convert.forEach(({ record }, n) => {
+      const row = shownRows[n];
+      if (!row || !unsearched(n) || record.calculated) return;
+      if (sameList(row.stats, record.stats) && sameList(row.plus2, record.plus2)) return;
+      item.seed.rows[n].stats = [...record.stats];
+      if (record.plus2?.length) item.seed.rows[n].plus2 = [...record.plus2];
+    });
+    shownRows = queueRows(state, item, c);
+    // A calculated record nobody searched follows the seed; every other one has to come out exactly as it was.
+    const moved = convert.every(({ record }, n) => {
+      const row = shownRows[n], saved = item.seed.rows[n];
+      if (!row) return false;
+      if (record.calculated && unsearched(n)) return true;
+      if (!sameList(row.stats, record.stats) || !sameList(row.plus2, record.plus2)) return false;
+      if (saved.happy === undefined && row.happy !== record.happy) saved.happy = record.happy;
+      return true;
+    });
+    if (!moved) {
+      item.records = backup.records; item.seed = backup.seed;
+      if (backup.pending) item.pendingProfession = backup.pendingProfession;
+      return { applied: false, reason: 'mismatch' };
+    }
+    for (const n of Object.keys(item.seed.rows || {})) prune(item, Number(n));
     for (const record of item.records) { delete record.corrected; delete record.seedInput; delete record.anchor; }
-    // The window the seed was found from: the records that pin it down. Every branch above ends that
-    // window at the newest record, except a corrected record further back.
+    /* 锚点 is not shown for now: the window's records become forecast rows. Kept for when it comes back.
     const live = model.live(item), end = target?.record ? live.indexOf(target.record) : live.length - 1;
-    if (found.size && end >= 0) for (const record of live.slice(Math.max(0, end - found.size + 1), end + 1)) record.anchor = true;
+    if (found.size && end >= 0) for (const record of live.slice(Math.max(0, end - found.size + 1), end + 1)) record.anchor = true; */
     return { applied: true };
   }
 
