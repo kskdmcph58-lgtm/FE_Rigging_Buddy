@@ -359,19 +359,27 @@
     text-overflow: ellipsis;
   }
   #app.levels-page .levels .profession-placeholder { color: var(--muted); font-size: 15px; }
-  /* Ride: native icon outline, 28px visual inside a 36px box, 44px target. */
+  /* Ride: mount icon with the friendship heart on its right, 36px tall like the
+     class beside it so all three icons share one centre line, 44px target.
+     Class sprites carry a transparent margin (about 50px drawn in 64), mount icons fill their frame and the
+     heart is drawn about 42 in 52: both are scaled so they read as large as the class icon beside them. */
   #app.levels-page .levels .setup-ride {
+    --m-setup-ride-icon: 22px;
     position: relative;
     flex: none;
-    width: 36px;
+    gap: 2px;
+    width: auto;
     height: 36px;
     min-height: 36px;
-    padding: 4px;
+    margin: 0;
+    padding: 0 4px;
     border: 0;
     background: transparent;
   }
   #app.levels-page .levels .setup-ride::after { content: ''; position: absolute; inset: -8px -4px 0; }
-  #app.levels-page .levels .setup-ride .ride-icon { width: 28px; height: 28px; }
+  #app.levels-page .levels .setup-ride img { border-radius: 0; background: transparent; object-fit: contain; }
+  #app.levels-page .levels .setup-ride .ride-icon { width: var(--m-setup-ride-icon); height: var(--m-setup-ride-icon); }
+  #app.levels-page .levels .setup-ride .ride-level { position: static; display: block; flex: none; width: calc(var(--m-setup-ride-icon) * 52 / 42); height: calc(var(--m-setup-ride-icon) * 52 / 42); }
   /* Level: number in the game's figure font, the whole right column is the target. */
   #app.levels-page .levels .level-row>.level-value {
     grid-column: 4;
@@ -479,6 +487,8 @@
     #app.levels-page .levels .setup-character img { width: 72px; height: 60px; }
     #app.levels-page .levels .level-row .profession-setting { padding-inline: 2px; }
     #app.levels-page .levels .profession-setting>img { width: 24px; height: 24px; }
+    #app.levels-page .levels .setup-ride { --m-setup-ride-icon: 19px; gap: 0; padding-inline: 0; }
+    #app.levels-page .levels .setup-ride .ride-level { margin-left: -2px; }
     #app.levels-page .levels .setup-profession-cell { gap: 4px; padding-left: 4px; }
     #app.levels-page .levels .setup-character>strong { padding-left: 6px; }
   }

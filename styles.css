@@ -4763,6 +4763,10 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
 .setup-ride { display:flex; align-items:center; justify-content:center; position:relative; width:36px; min-width:0; height:36px; min-height:0; padding:0; border:0; border-radius:4px; background:transparent; }
 .setup-ride[hidden] { display:none; }
 .setup-ride .ride-icon { width:100%; height:100%; }
+/* Friendship heart as a corner badge on the mount icon's bottom-right corner, hanging a little past it (as on the
+   mobile record page); it grows over the icon, not further out. Phones put it beside the mount instead
+   (ui/styles/mobile/setup.css). */
+.setup-ride .ride-level { position:absolute; right:-7px; bottom:-6px; width:28px; height:28px; border-radius:0; background:transparent; }
 .setup-ride:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
 .levels-page .level-row .setup-ride { grid-column:2; grid-row:1; justify-self:end; align-self:center; margin-right:10px; }
 .levels-page .level-row:has(.setup-ride:not([hidden])) .profession-setting { padding-right:50px; }

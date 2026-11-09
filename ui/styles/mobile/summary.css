@@ -638,9 +638,10 @@
   /* Class sprites carry a transparent margin (about 50px drawn in 64), mount icons fill their frame:
      the class is drawn larger so both read as the same size. */
   #app.summary-page.m-board .m-side-class > img { width: 33px; height: 33px; }
-  /* Mount icon centred, its friendship heart on the icon's bottom-right corner. */
+  /* Mount icon centred, its friendship heart on the icon's bottom-right corner: the heart grows up and left over
+     the icon, its right and bottom edges stay put. */
   #app.summary-page.m-board .m-side-ride .ride-icon { width: 26px; height: 26px; }
-  #app.summary-page.m-board .m-side-ride .ride-level { position: absolute; right: 1px; bottom: 2px; width: 16px; height: 16px; }
+  #app.summary-page.m-board .m-side-ride .ride-level { position: absolute; right: 1px; bottom: 2px; width: 20px; height: 20px; }
   /* The ! sits on the class icon's top-right corner, in gold. */
   #app.summary-page.m-board .m-side-class.better { color: var(--gold); }
   #app.summary-page.m-board .m-side-class .m-better { position: absolute; top: 3px; right: 2px; display: grid; width: 15px; height: 15px; border-radius: 50%; background: var(--panel); }

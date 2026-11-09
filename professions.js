@@ -67,7 +67,7 @@ function setupRide(id) {
 }
 function setupRideButton(id) {
   const kind = rideKind(setupProfession(id), id), ride = setupRide(id);
-  return `<button class="setup-ride" data-setup-ride="${id}" aria-haspopup="dialog" aria-label="${char(id).name}配属，${rideText(ride)}" ${kind ? '' : 'hidden'}>${kind ? rideIcon(kind, ride) : ''}</button>`;
+  return `<button class="setup-ride" data-setup-ride="${id}" aria-haspopup="dialog" aria-label="${char(id).name}配属，${rideText(ride)}" ${kind ? '' : 'hidden'}>${kind ? rideIcon(kind, ride) : ''}${kind && ride ? `<img class="ride-level" src="assets/rides/heart-${ride.level}.png" alt="" draggable="false">` : ''}</button>`;
 }
 function refreshSetupRide(id) {
   const button = app.querySelector(`[data-setup-ride="${id}"]`);
