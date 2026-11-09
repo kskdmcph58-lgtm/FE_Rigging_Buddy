@@ -519,7 +519,7 @@ function renderLevels() {
     <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
-      <div class="setup-character">${portrait(c,'narrow','(max-width:1419px) 84px, 116px')}<strong>${c.name}</strong></div>
+      <div class="setup-character">${portrait(c,'narrow','(max-width:1749px) 84px, 116px')}<strong>${c.name}</strong></div>
       <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
       <div class="setup-profession-cell">${setupProfessionButton(id)}${setupRideButton(id)}</div>${setupExpectationButton(id)}</div>`;}).join('')}
     </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
@@ -1028,7 +1028,7 @@ function finishMouseSort(commit = false) {
   if (gesture.started) suppressGestureClickUntil = Date.now() + 400;
   mouseSort = null;
 }
-/* Desktop sorts by dragging a card or its grip. The phone layout (any pointer, below 1420px) has no direct
+/* Desktop sorts by dragging a card or its grip. The phone layout (any pointer, below 1750px) has no direct
    dragging on step 3: it sorts only in its 排序 list, by the grip. */
 function sortDragAllowed(target) {
   if (!UI_MEDIA.mobileShell.matches || page !== 'summary') return true;

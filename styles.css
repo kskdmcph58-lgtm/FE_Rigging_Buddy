@@ -177,7 +177,7 @@ html[data-input-mode="keyboard"] .recommend-slider:focus-visible {
 }
 /* Desktop: a plain macOS-style tick slider. A small flat knob, short tick lines under the track instead of
    dots on it, the same footprint as before. Phones and tablets keep the touch-sized version above. */
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .recommend-thumb {
     top: 4px;
     left: calc((var(--at) + .5) * var(--col) - 7px);
@@ -431,7 +431,7 @@ input {
   justify-content: space-between;
   position: fixed;
   bottom: 20px;
-  left: 50%;
+  left: 50vw;
   transform: translateX(-50%);
   width: min(calc(100% - 48px),760px);
   margin: 0;
@@ -898,7 +898,7 @@ footer {
 #notice {
   position: fixed;
   bottom: 16px;
-  left: 50%;
+  left: 50vw;
   transform: translateX(-50%);
   background: #e0cea2;
   color: #18292b;
@@ -912,7 +912,7 @@ footer {
 #notice:empty {
   display: none;
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .character-grid {
     grid-template-columns: repeat(6,minmax(0,1fr));
   }
@@ -1346,8 +1346,9 @@ button.danger {
 .record-chip.upgraded {
   border-color: var(--gold);
 }
+/* Slightly see-through, as on the mobile board: the rating shows faintly under it, the text above keeps its muted gold. */
 .upgrade-overlay {
-  background: #493e2b;
+  background: rgba(73,62,43,.88);
   color: #ffe8ad;
 }
 .record-chip.upgraded>div,.record-chip.upgraded>strong {
@@ -1422,8 +1423,16 @@ button.danger {
     font-size: 42px;
   }
 }
+/* No reserved scrollbar gutter on the page: Chrome fills an empty one with the root's flat background colour
+   only, without its wash and noise, so it showed as a dark band down the right edge. Instead the page is laid
+   out on the full window width (100vw counts a classic scrollbar), so a scrollbar appearing or leaving covers
+   the right padding rather than shifting anything; overlay scrollbars (phones) make 100vw and 100% the same.
+   Fixed bars centred on the window use 50vw for the same reason. */
 html {
-  scrollbar-gutter: stable;
+  overflow-x: clip;
+}
+body {
+  width: 100vw;
 }
 * {
   scrollbar-width: thin;
@@ -2422,7 +2431,7 @@ button.primary.touch-pressed:not(:disabled) {
     grid-template-columns: repeat(3,minmax(0,1fr));
   }
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .journal .records {
     grid-template-columns: repeat(4,minmax(0,1fr));
   }
@@ -2719,7 +2728,7 @@ button,summary,a,[role="button"],[data-initial-level] {
     box-shadow: 0 0 0 1px var(--gold);
   }
   button.record-chip.upgraded:hover .upgrade-overlay {
-    background: #55472f;
+    background: rgba(85,71,47,.88);
   }
 }
 .level-error {
@@ -2783,7 +2792,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     flex-wrap: wrap;
   }
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   main.summary-page {
     max-width: 1760px;
   }
@@ -2964,7 +2973,7 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
     text-align: left;
   }
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   main {
     max-width: 1760px;
   }
@@ -2986,7 +2995,7 @@ html:not([data-input-mode="keyboard"]) :is(button,summary,a,[role="button"],[dat
   /* Both bottom bars keep the shared 760px; the level page's bar is centred on its table, which sits
      inside main's 60px/24px padding, hence the 18px shift. */
   .levels-page .bottom-bar {
-    left: calc(50% + 18px);
+    left: calc(50vw + 18px);
   }
 }
 .selection-toolbar {
@@ -3117,7 +3126,7 @@ body.marquee-selecting,body.marquee-selecting * {
 #drag-count {
   position: fixed;
   top: 12px;
-  left: 50%;
+  left: 50vw;
   transform: translateX(-50%);
   z-index: 20;
   padding: 10px 18px;
@@ -3764,14 +3773,14 @@ main.levels-page { padding-left:60px; padding-right:24px; }
   .levels-page .level-row>.level-value { padding-inline:8px; }
   .levels-page .table-head>.setup-level-heading { flex-direction:column; gap:0; }
 }
-@media(min-width:601px) and (max-width:1419px) {
+@media(min-width:601px) and (max-width:1749px) {
   .levels-page .levels {
     --setup-name-size:18px;
     --setup-class-size:16.2px;
     --setup-icon-size:36.735px;
   }
 }
-@media(min-width:851px) and (max-width:1419px) {
+@media(min-width:851px) and (max-width:1749px) {
   .levels-page .levels {
     --setup-columns:260px 200px 120px minmax(160px,1fr);
     --setup-gap:6px;
@@ -3974,7 +3983,7 @@ html:not([data-input-mode="keyboard"]) .setup-level-dialog input:focus-visible {
     -webkit-text-stroke: .2px currentColor;
   }
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .journal>.row-select {
     top: 50%;
     transform: translateY(-50%);
@@ -3983,7 +3992,7 @@ html:not([data-input-mode="keyboard"]) .setup-level-dialog input:focus-visible {
     grid-template-columns: 128px minmax(0,1fr) 90px;
   }
 }
-@media(min-width:601px) and (max-width:1419px) {
+@media(min-width:601px) and (max-width:1749px) {
   .multi-select-mode .journal-head {
     padding-left: 24px;
   }
@@ -4176,7 +4185,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .selection-toolbar [hidden] {
   display: none;
 }
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   .summary-controls .selection-toolbar-anchor {
     width: 100%;
     flex-basis: 100%;
@@ -4256,7 +4265,7 @@ html[data-input-mode="touch"] button.expectation-link {
   width: var(--selection-width);
   z-index: 41;
 }
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   .selection-toolbar-anchor.is-floating .selection-toolbar {
     left: 16px;
     right: 16px;
@@ -4275,7 +4284,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .expand-records {
   display: none;
 }
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   body:has(main.record-page)>header {
     display: none;
   }
@@ -4456,7 +4465,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .card-options-list .card-option-recommend { color:var(--gold); border-color:var(--gold); }
 .forecast-more { grid-column:1 / -1; display:grid; justify-items:center; gap:4px; width:100%; min-height:48px; padding:10px 12px; color:var(--gold); }
 .forecast-more>span { font:12px/18px var(--font-ui); color:var(--muted); }
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   .record-chip:has(.card-options-field)>div { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 8px; }
   .record-chip>div>.card-options-field { grid-column:1 / -1; grid-row:2; position:relative; z-index:4; display:flex; align-items:center; justify-content:space-between; gap:6px; min-height:44px; min-width:0; padding:2px 0; border-block:1px solid var(--line); color:var(--muted); font:13px/18px var(--font-ui); cursor:pointer; visibility:visible; }
   .card-options-field>.game-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:14px/20px var(--font-game); }
@@ -4705,20 +4714,27 @@ html[data-input-mode="touch"] button.expectation-link {
 @media(hover:hover) and (pointer:fine) {
   .record-chip>div>.rating-toggle:hover { filter:brightness(1.3); }
 }
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .record-chip>div>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
 }
 .record-chip .record-overlay { pointer-events:none; }
 .record-chip.upgraded>div>.profession-field,.record-chip.skipped>div>.profession-field { visibility:visible; position:relative; z-index:auto; }
 .record-chip.upgraded>div>.profession-field { color:#82765c; }
 .record-chip.skipped>div>.profession-field { color:#62625d; }
+/* 已升级: LV, class, growth, stats and a forecast's pass rate stay readable above the mask in muted gold; the
+   rating shows faintly under it, as on 已跳过 and the mobile board, so LV and class rise one by one instead of
+   the whole first row. */
+.record-chip.upgraded>div { z-index:auto; }
+.record-chip.upgraded>div>:not(.rating-toggle) { position:relative; z-index:1; }
+.record-chip.upgraded>div>.rating-toggle { visibility:visible; }
+.record-chip.upgraded>.queue-exam { z-index:1; color:#82765c; }
 .stat-heading>.profession-field { margin-left:auto; flex-shrink:1; min-height:40px; max-width:180px; color:var(--text); font:16px/1.4 var(--font-ui); }
 .stat-heading>.profession-field img { width:30px; height:30px; order:1; }
 .stat-heading>.profession-field.can-edit { padding:6px 2px; border-radius:4px; color:var(--muted); }
 .stat-heading>.profession-field.can-edit:hover { background:transparent; color:var(--text); }
 .stat-heading>.profession-field.can-edit>span { text-decoration:none; }
 .stat-heading>.heading-growth { margin-left:14px; }
-@media(min-width:601px) and (pointer:fine), (min-width:1420px) {
+@media(min-width:601px) and (pointer:fine), (min-width:1750px) {
   .stat-heading>.profession-field.can-edit { order:0; margin:0; padding:0; min-height:48px; max-width:none; gap:10px; color:var(--text); font:24px/1.3 var(--font-display); }
   .stat-heading>.profession-field img { order:0; width:48px; height:48px; border-radius:5px; }
   .stat-heading>.heading-ride { order:1; }
@@ -4747,7 +4763,7 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
   .ride-field .game-text { font-size:15px; }
   .ride-field .ride-icon,.ride-field .ride-level { width:26px; height:26px; }
 }
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   .heading-ride { display:none; }
   .rating-rule-note:has(.note-ride:not(:empty)) { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .note-ride:not(:empty) { display:block; min-width:0; margin-block:-6px; }
@@ -4770,7 +4786,7 @@ img.ride-icon { display:block; flex:none; width:32px; height:32px; object-fit:co
 .setup-ride:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
 .levels-page .level-row .setup-ride { grid-column:2; grid-row:1; justify-self:end; align-self:center; margin-right:10px; }
 .levels-page .level-row:has(.setup-ride:not([hidden])) .profession-setting { padding-right:50px; }
-@media(min-width:601px) and (max-width:1419px) {
+@media(min-width:601px) and (max-width:1749px) {
   .levels-page .level-row .setup-ride { width:28px; height:28px; margin-right:6px; }
   .levels-page .level-row:has(.setup-ride:not([hidden])) .profession-setting { padding-right:36px; }
 }
@@ -4885,7 +4901,7 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
    lines. Families share one set of columns so they line up between tiers, each as wide as its widest
    tier (up to three classes per line, like the game). Colours are sampled from the game's frames; the
    frame itself is CSS. Rows do not highlight on hover. The phone and tablet sheets (mobile/dialogs.css) are unchanged. */
-@media(min-width:1420px) {
+@media(min-width:1750px) {
   .app-dialog.profession-picker {
     --pk-head-fill: #182d33;
     --pk-head-edge: #394b4f;
@@ -5083,8 +5099,8 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
 
 /* Part 3 control placement: one spot per width that multi-select's actions never
    reach, so it does not move between states. No row is positioned, so left resolves
-   against the viewport, and being out of flow it never moves a button. */
-@media(min-width:1420px) {
+   against the viewport (50vw, so a page scrollbar does not move it), and being out of flow it never moves a button. */
+@media(min-width:1750px) {
   .toolbar>.part3-segment,.summary-top>.part3-segment {
     position: absolute;
   }
@@ -5117,14 +5133,14 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   }
   /* Multi-select's first action starts at 50% - 275px on this page. */
   .setup-toolbar>.part3-segment {
-    left: min(240px,calc(50% - 445px));
+    left: min(240px,calc(50vw - 445px));
   }
   .setup-toolbar:has(>.route-segment)>.part3-segment {
-    left: min(240px,calc(50% - 607px));
+    left: min(240px,calc(50vw - 607px));
   }
   .setup-toolbar>.route-segment {
     position: absolute;
-    left: min(402px,calc(50% - 445px));
+    left: min(402px,calc(50vw - 445px));
   }
 }
 /* Wide enough for one spot that clears the search box and both multi-select bars. */
@@ -5133,27 +5149,27 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   .summary-top>.part3-segment,
   .setup-toolbar>.part3-segment,
   .setup-toolbar:has(>.route-segment)>.part3-segment {
-    left: calc(50% - 470px);
+    left: calc(50vw - 470px);
   }
   .select-page>.toolbar>.route-segment,
   .setup-toolbar>.route-segment,
   .summary-top>.route-segment {
-    left: calc(50% - 308px);
+    left: calc(50vw - 308px);
   }
   .summary-top>.recommend-filter {
-    left: calc(50% - 134px);
+    left: calc(50vw - 134px);
   }
   /* The extra route control must also clear the expanded batch actions. */
   .levels-page.multi-select-mode .setup-toolbar:has(>.route-segment)>.part3-segment {
-    left: calc(50% - 607px);
+    left: calc(50vw - 607px);
   }
   .levels-page.multi-select-mode .setup-toolbar>.route-segment {
-    left: calc(50% - 445px);
+    left: calc(50vw - 445px);
   }
 }
 /* No room beside the buttons here: it keeps its own centred line above them.
    The side margins fill that line, so nothing else can share it. */
-@media(max-width:1419px) {
+@media(max-width:1749px) {
   .toolbar,.select-page>.toolbar,.summary-top {
     flex-wrap: wrap;
   }
