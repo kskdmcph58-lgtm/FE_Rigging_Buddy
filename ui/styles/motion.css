@@ -4,6 +4,7 @@
   --motion-fast: 100ms;
   --motion-medium: 120ms;
   --motion-base: 160ms;
+  --motion-large: 200ms;
   --ease-standard: cubic-bezier(.16,1,.3,1);
 }
 @keyframes motion-fade-in { from { opacity: 0; } }
@@ -45,6 +46,30 @@ button:active:not(:disabled) {
 .menu-chevron {
   transition: transform var(--motion-medium) var(--ease-standard);
 }
+/* A menu that closes fades out, as macOS menus do; it opens with the fade-in above. The details element keeps
+   its content rendered until the fade ends. Browsers without ::details-content simply close at once. */
+@media(min-width:1420px) {
+  .action-menu::details-content {
+    transition: content-visibility var(--motion-medium) allow-discrete;
+  }
+  .action-menu:not([open])>.menu-panel {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-medium) linear;
+  }
+  .search-history {
+    transition: opacity var(--motion-medium) linear,display var(--motion-medium) allow-discrete;
+  }
+  .search-history[hidden] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .select-options.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-medium) linear;
+  }
+}
 #notice:not(:empty) {
   animation: motion-fade-in var(--motion-medium) ease-out;
 }
@@ -62,7 +87,7 @@ button:active:not(:disabled) {
   .app-dialog[open],.app-dialog[open]::backdrop,.action-menu[open]>.menu-panel,.select-options,.search-history:not([hidden]),#notice:not(:empty) {
     animation: none;
   }
-  .app-dialog,.app-dialog::backdrop,.menu-chevron,#notice.is-leaving {
+  .app-dialog,.app-dialog::backdrop,.menu-chevron,#notice.is-leaving,.action-menu::details-content,.action-menu>.menu-panel,.search-history,.select-options {
     transition: none;
   }
 }

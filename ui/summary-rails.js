@@ -103,6 +103,7 @@ function finishRecordRail(rail, duration = 120) {
   ], { duration, easing: MOTION.ease });
 }
 // A large height change needs a gentler curve than the standard one, which covers most of it in one frame.
+// MOTION.large; this file loads before features.js defines MOTION.
 const EXPAND_MOTION = { duration: 200, easing: 'cubic-bezier(.3,0,.2,1)' };
 function visibleCards(rail) {
   const box = rail.getBoundingClientRect();
@@ -166,13 +167,13 @@ function setJournalExpanded(journal, expanded, animate = true) {
       const x = previous.left - next.left, y = previous.top - next.top;
       if (Math.abs(x) > 1 || Math.abs(y) > 1) chip.animate([
         { transform: `translate(${x}px,${y}px)` }, { transform: 'translate(0,0)' }
-      ], { duration: 120, easing: MOTION.ease });
+      ], { duration: MOTION.medium, easing: MOTION.ease });
     });
   }
   if (anchorChip && animate && motionAllowed()) animateOpeningCards(rail, anchorIndex, anchorBefore);
   if (animate && motionAllowed() && Math.abs(nextHeight - previousHeight) > 1) {
     rail.animate([{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }], anchoring ? EXPAND_MOTION : {
-      duration: 130, easing: MOTION.ease
+      duration: MOTION.medium, easing: MOTION.ease
     }).onfinish = () => scheduleForecastCheck(rail);
   }
   scheduleForecastCheck(rail);
@@ -269,7 +270,7 @@ function bounceRailEdge(rail, direction) {
     { transform: 'translateX(0)', offset: 0, easing: 'ease-out' },
     { transform: `translateX(${distance}px)`, offset: .4, easing: 'ease-in-out' },
     { transform: 'translateX(0)', offset: 1 }
-  ], { duration: 320 }));
+  ], { duration: 240 }));
 }
 function scheduleRailSnap(rail) {
   const status = railState(rail);
@@ -300,9 +301,27 @@ function onRecordRailPointerOut(event) {
   autoPositionRail(rail);
 }
 
+/* Which device a wheel gesture comes from, decided on its first event and kept until it pauses for 200ms.
+   Browsers do not say, so this reads the event: line or page steps, or a whole number of 120-unit notches
+   with no sideways part, are a mouse wheel; small continuous pixels, or any sideways part, a trackpad. A
+   mouse taken for a trackpad scrolls the page (Shift+wheel or dragging still moves the rail); a trackpad
+   taken for a mouse behaves as before. */
+const wheelSource = { kind: null, until: 0 };
+function wheelKind(event) {
+  const now = performance.now();
+  if (!wheelSource.kind || now > wheelSource.until) {
+    wheelSource.kind = event.deltaMode !== 0 ? 'mouse'
+      : event.deltaX !== 0 ? 'trackpad'
+      : event.wheelDeltaY && event.wheelDeltaY % 120 === 0 ? 'mouse' : 'trackpad';
+  }
+  wheelSource.until = now + 200;
+  return wheelSource.kind;
+}
 function onRecordRailWheel(event) {
   const rail = event.target.closest('.has-record-rail:not(.records-expanded) .records');
   if (!desktopRecords.matches || !rail || event.ctrlKey) return;
+  // A trackpad's up/down swipe scrolls the page, as on macOS; only its sideways swipe moves the rail.
+  if (wheelKind(event) === 'trackpad' && Math.abs(event.deltaY) >= Math.abs(event.deltaX)) return;
   event.preventDefault();
   const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? rail.clientWidth : 1);
   if (!delta) return;

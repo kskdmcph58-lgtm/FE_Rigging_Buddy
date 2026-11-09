@@ -370,13 +370,25 @@ function editSetupLevel(cell) {
 }
 /* Asks for the starting levels still missing before the records are made. 确定 keeps what was typed (a box
    left empty stays 暂无), 跳过 goes on without them; resolves false when closed with Escape. */
-function askMissingLevels(ids) {
+// Each value the user enters goes through apply: step 2 keeps it as a draft, the list writes it to the person.
+function setupLevelDraft(id, value) {
+  state.initialLevels[id] = value;
+  const cell = app.querySelector(`[data-setup-level="${id}"]`); if (cell) paintSetupLevel(cell);
+}
+function askMissingLevels(ids, apply = setupLevelDraft) {
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog setup-level-dialog missing-level-dialog';
     dialog.setAttribute('aria-labelledby', 'missing-level-title');
-    dialog.setAttribute('aria-describedby', 'missing-level-help');
-    dialog.innerHTML = `<header><h2 id="missing-level-title">请填写初始等级</h2></header><form novalidate><div class="setup-level-dialog-body"><p id="missing-level-help">没有初始等级就无法反推种子，范围为 1–99。</p>${ids.map(id => `<div class="missing-level-row"><label for="missing-level-${id}">${portrait(char(id))}<span>${escapeValue(char(id).name)}</span></label><div class="missing-level-field"><input id="missing-level-${id}" data-level="${id}" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input placeholder="暂无"></div></div>`).join('')}</div><footer><button type="button" data-skip>跳过</button><button type="submit" class="primary">确定</button></footer></form>`;
+    // One person: the name goes in the title and the field stands alone, with no help text.
+    if (ids.length === 1) {
+      const id = ids[0];
+      dialog.classList.add('missing-level-single');
+      dialog.innerHTML = `<header><h2 id="missing-level-title">请为<span class="missing-level-who">${portrait(char(id))}<span class="game-text">${escapeValue(char(id).name)}</span></span>填写初始等级</h2></header><form novalidate><div class="setup-level-dialog-body"><div class="missing-level-field"><input id="missing-level-${id}" data-level="${id}" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input aria-labelledby="missing-level-title"></div></div><footer><button type="button" data-skip>跳过</button><button type="submit" class="primary">确定</button></footer></form>`;
+    } else {
+      dialog.setAttribute('aria-describedby', 'missing-level-help');
+      dialog.innerHTML = `<header><h2 id="missing-level-title">请填写初始等级</h2></header><form novalidate><div class="setup-level-dialog-body"><p id="missing-level-help">没有初始等级就无法反推种子，范围为 1–99。</p>${ids.map(id => `<div class="missing-level-row"><label for="missing-level-${id}">${portrait(char(id))}<span>${escapeValue(char(id).name)}</span></label><div class="missing-level-field"><input id="missing-level-${id}" data-level="${id}" type="text" inputmode="numeric" pattern="[1-9][0-9]?" maxlength="80" data-level-input placeholder="暂无"></div></div>`).join('')}</div><footer><button type="button" data-skip>跳过</button><button type="submit" class="primary">确定</button></footer></form>`;
+    }
     let result = false;
     dialog.querySelector('[data-skip]').onclick = () => { result = true; dialog.close(); };
     dialog.addEventListener('input', e => { if (e.target.matches('input')) { clearLevelError(e.target); e.target.removeAttribute('aria-invalid'); } });
@@ -384,11 +396,7 @@ function askMissingLevels(ids) {
       e.preventDefault();
       const inputs = [...dialog.querySelectorAll('input')];
       if (!inputs.every(validLevel)) { inputs.find(input => input.getAttribute('aria-invalid') === 'true')?.focus(); return; }
-      inputs.forEach(input => {
-        if (!input.value) return;
-        state.initialLevels[input.dataset.level] = input.value;
-        const cell = app.querySelector(`[data-setup-level="${input.dataset.level}"]`); if (cell) paintSetupLevel(cell);
-      });
+      inputs.forEach(input => { if (input.value) apply(input.dataset.level, input.value); });
       scheduleLocalSave(); result = true; dialog.close();
     };
     dialog.addEventListener('close', () => { retireDialog(dialog); resolve(result); }, { once: true });
@@ -895,7 +903,13 @@ app.addEventListener('click', async e => {
   }
   if (b.dataset.start) {
     rememberListPosition();
-    start(b.dataset.start);
+    const id = b.dataset.start, item = state.roster.find(r => r.id === id);
+    // No starting level means no seed. Asked on every press; 跳过 records without one, Esc does nothing.
+    if (item && (item.initialLevel === null || item.initialLevel === undefined)) {
+      if (!await askMissingLevels([id], (key, value) => { item.initialLevel = Number(value); }) || page !== 'summary') return;
+      render();
+    }
+    start(id);
   }
   updateRecordFromButton(b);
   const action = b.dataset.action;
@@ -1222,7 +1236,7 @@ app.addEventListener('change', e => {
   segment.querySelector('input:checked').focus({ preventScroll: true });
   if (!motionAllowed()) return;
   segment.animate({ transform: other ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
-    { duration: 200, easing: 'ease', pseudoElement: '::before' });
+    { duration: MOTION.large, easing: MOTION.ease, pseudoElement: '::before' });
 });
 app.addEventListener('change', e => {
   if (e.target.name !== 'part3') return;
@@ -1236,7 +1250,7 @@ app.addEventListener('change', e => {
   // The rebuilt control starts at its final state, so a CSS transition would never run.
   if (!motionAllowed()) return;
   segment.animate({ transform: on ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
-    { duration: 200, easing: 'ease', pseudoElement: '::before' });
+    { duration: MOTION.large, easing: MOTION.ease, pseudoElement: '::before' });
 });
 window.addEventListener('pagehide',saveLocalState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});

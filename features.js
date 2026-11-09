@@ -1,6 +1,6 @@
 /* Selection, expectation editing and reversible deletion. Loaded before app.js. */
 // Motion timings. styles.css mirrors them as --motion-* and --ease-standard.
-const MOTION = { fast: 100, medium: 120, base: 160, ease: 'cubic-bezier(.16,1,.3,1)' };
+const MOTION = { fast: 100, medium: 120, base: 160, large: 200, ease: 'cubic-bezier(.16,1,.3,1)' };
 function motionAllowed() { return !UI_MEDIA.reducedMotion.matches; }
 // The dialog's result is already delivered; it stays only for its CSS fade and ignores input.
 function retireDialog(dialog) {
@@ -223,11 +223,24 @@ window.addEventListener('scroll', () => {
   if (selectionBarFrame) return;
   selectionBarFrame = requestAnimationFrame(() => { selectionBarFrame = 0; updateFloatingSelectionBar(); });
 }, { passive: true });
+/* Entering or leaving multi-select swaps toolbar controls and adds the row checks. On desktop the ones that
+   appear fade in; the ones that leave go at once. Returns the call that runs the fade after the change. */
+const REVEAL_SCOPE = '.summary-top>*,.summary-top button,.toolbar>*,.toolbar button,.row-select';
+function revealAfterChange() {
+  if (!motionAllowed() || UI_MEDIA.mobileShell.matches) return null;
+  const shown = el => el.getClientRects().length > 0;
+  const before = new Set([...app.querySelectorAll(REVEAL_SCOPE)].filter(shown));
+  return () => {
+    const fresh = [...app.querySelectorAll(REVEAL_SCOPE)].filter(el => shown(el) && !before.has(el));
+    for (const el of fresh) if (!fresh.some(other => other !== el && other.contains(el))) el.animate({ opacity: [0, 1] }, { duration: MOTION.medium, easing: 'ease-out' });
+  };
+}
 function refreshRowSelection() {
   if (selectionPage !== page) { clearRowSelection(); selectionPage = page; }
   const ids = rowIds();
   for (const id of rowSelection) if (!ids.includes(id)) rowSelection.delete(id);
   if (rowSelection.size) multiSelectMode = true;
+  const reveal = app.classList.contains('multi-select-mode') !== multiSelectMode ? revealAfterChange() : null;
   app.classList.toggle('multi-select-mode', multiSelectMode);
   app.querySelectorAll('[data-sort-id]').forEach(row => {
     const selected = rowSelection.has(row.dataset.sortId);
@@ -276,6 +289,7 @@ function refreshRowSelection() {
   updateFloatingSelectionBar();
   if (page === 'summary') refreshRecordRails();
   if (page === 'levels') refreshSetupExpectationSummaries();
+  reveal?.();
 }
 function selectRow(id, event = {}) {
   const ids = rowIds(), additive = event.ctrlKey || event.metaKey;
@@ -566,7 +580,12 @@ let styledSelect = null;
 function closeStyledSelect(restore = false) {
   if (!styledSelect) return;
   const {button, list} = styledSelect;
-  styledSelect = null; list.remove(); button.setAttribute('aria-expanded','false');
+  styledSelect = null; button.setAttribute('aria-expanded','false');
+  // Desktop lists fade out like menus (motion.css); the phone shell and reduced motion close at once.
+  if (motionAllowed() && !UI_MEDIA.mobileShell.matches && list.isConnected) {
+    list.classList.add('is-leaving'); list.inert = true;
+    setTimeout(() => list.remove(), MOTION.medium);
+  } else list.remove();
   if (restore && button.isConnected) button.focus({preventScroll:true});
 }
 function enhanceSelects(root) {

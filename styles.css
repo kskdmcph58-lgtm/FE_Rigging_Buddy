@@ -134,7 +134,7 @@ html[data-input-mode="keyboard"] .recommend-slider:focus-visible {
   border-radius: inherit;
   background: var(--gold);
   opacity: .75;
-  transition: width .2s cubic-bezier(.2,0,0,1);
+  transition: width var(--motion-large) var(--ease-standard);
 }
 .recommend-stop {
   display: grid;
@@ -168,11 +168,33 @@ html[data-input-mode="keyboard"] .recommend-slider:focus-visible {
   border-radius: 50%;
   background: var(--gold);
   box-shadow: 0 0 0 1px var(--gold),0 2px 6px #0008;
-  transition: left .2s cubic-bezier(.2,0,0,1);
+  transition: left var(--motion-large) var(--ease-standard);
 }
-.recommend-dragging :is(.recommend-thumb,.recommend-fill) { transition-duration: .08s; }
+/* While dragging, the thumb is under the pointer: it jumps stop to stop with no easing. */
+.recommend-dragging :is(.recommend-thumb,.recommend-fill) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   :is(.recommend-thumb,.recommend-fill) { transition: none; }
+}
+/* Desktop: a plain macOS-style tick slider. A small flat knob, short tick lines under the track instead of
+   dots on it, the same footprint as before. Phones and tablets keep the touch-sized version above. */
+@media(min-width:1420px) {
+  .recommend-thumb {
+    top: 4px;
+    left: calc((var(--at) + .5) * var(--col) - 7px);
+    width: 14px;
+    height: 14px;
+    border: 0;
+    box-shadow: 0 1px 2px #0007;
+  }
+  .recommend-slider:hover .recommend-thumb { background: var(--accent-hover); }
+  .recommend-stop i {
+    width: 1px;
+    height: 4px;
+    border-radius: 0;
+    background: var(--control-line);
+    transform: translateY(9px);
+  }
+  .recommend-stop.in i { background: var(--gold); }
 }
 /* Part 3 segmented control: equal segments in the same outline and height as the
    buttons beside it, with a raised block marking the chosen side. */
@@ -1239,7 +1261,7 @@ button.danger {
   border-radius: 6px;
   background: var(--surface-input);
   box-shadow: inset 0 1px 1px rgb(0 0 0 / .25);
-  transition: border-color .15s, box-shadow .15s;
+  transition: border-color var(--motion-medium), box-shadow var(--motion-medium);
 }
 .level-field:focus-within {
   border-color: var(--gold);
@@ -2194,7 +2216,7 @@ header {
   }
 }
 button {
-  transition: background .14s,border-color .14s;
+  transition: background var(--motion-medium),border-color var(--motion-medium);
 }
 @media(hover:hover) and (pointer:fine) {
   button:active:not(:disabled) {
@@ -3903,6 +3925,16 @@ main.levels-page { padding-left:60px; padding-right:24px; }
 .missing-level-row label span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .missing-level-row input { width:100%; height:42px; padding:8px 12px; border:1px solid var(--control-line); border-radius:8px; background:var(--surface-input); color:var(--text); font:18px/24px var(--font-ui); text-align:center; }
 .missing-level-field { display:grid; justify-items:end; }
+.missing-level-single h2 { line-height:1.6; }
+.missing-level-who { display:inline-flex; align-items:center; gap:6px; margin:0 6px; vertical-align:bottom; }
+.missing-level-who img { width:28px; height:28px; flex:none; border-radius:6px; object-fit:cover; }
+.missing-level-who .game-text { font-family:var(--font-game); font-weight:400; }
+/* Room for the focus ring, which the multi-person list would clip while scrolling. */
+.missing-level-single .setup-level-dialog-body { overflow:visible; padding-top:8px; }
+.missing-level-single .missing-level-field { justify-items:stretch; }
+.missing-level-single .missing-level-field input { width:100%; height:42px; padding:8px 12px; border:1px solid var(--control-line); border-radius:8px; background:var(--surface-input); color:var(--text); font:16px/1.4 var(--font-ui); text-align:center; }
+/* The field is focused when the dialog opens; the ring shows only for keyboard use. */
+html:not([data-input-mode="keyboard"]) .setup-level-dialog input:focus-visible { outline:none; }
 /* The message is wider than the box: it grows leftwards under the name, never past the dialog edge. */
 .missing-level-row .level-error { width:max-content; font-size:12px; white-space:nowrap; }
 .setup-level-dialog footer {
@@ -4485,14 +4517,14 @@ html[data-input-mode="touch"] button.expectation-link {
 .tier-slider:focus-visible { box-shadow:none; }
 .tier-slider.key-focus { box-shadow:0 0 0 2px var(--gold); }
 .tier-track { position:absolute; left:9px; top:calc(var(--row) / 2); bottom:calc(var(--row) / 2); width:4px; border-radius:2px; background:var(--line); }
-.tier-fill { position:absolute; inset:calc(var(--at) * var(--row)) 0 0; border-radius:inherit; background:var(--gold); opacity:.75; transition:top .2s cubic-bezier(.2,0,0,1); }
-.tier-stop { display:grid; grid-template-columns:22px auto auto; align-items:center; gap:10px; color:var(--muted); font:13px/1 var(--font-ui); transition:color .2s; }
-.tier-stop i { justify-self:center; width:8px; height:8px; border-radius:50%; background:#3f5552; position:relative; z-index:1; transition:background-color .2s; }
+.tier-fill { position:absolute; inset:calc(var(--at) * var(--row)) 0 0; border-radius:inherit; background:var(--gold); opacity:.75; transition:top var(--motion-large) var(--ease-standard); }
+.tier-stop { display:grid; grid-template-columns:22px auto auto; align-items:center; gap:10px; color:var(--muted); font:13px/1 var(--font-ui); transition:color var(--motion-large); }
+.tier-stop i { justify-self:center; width:8px; height:8px; border-radius:50%; background:#3f5552; position:relative; z-index:1; transition:background-color var(--motion-large); }
 .tier-stop.in { color:var(--text); }
 .tier-stop.in i { background:var(--gold); }
-.tier-thumb { position:absolute; left:1px; top:calc(var(--at) * var(--row) + var(--row) / 2 - 10px); width:20px; height:20px; border-radius:50%; background:var(--gold); border:3px solid var(--surface-dialog); box-shadow:0 0 0 1px var(--gold),0 2px 6px #0008; z-index:2; transition:top .2s cubic-bezier(.2,0,0,1); }
+.tier-thumb { position:absolute; left:1px; top:calc(var(--at) * var(--row) + var(--row) / 2 - 10px); width:20px; height:20px; border-radius:50%; background:var(--gold); border:3px solid var(--surface-dialog); box-shadow:0 0 0 1px var(--gold),0 2px 6px #0008; z-index:2; transition:top var(--motion-large) var(--ease-standard); }
 /* While dragged the thumb follows the pointer stop by stop with a shorter glide. */
-.tier-slider.tier-dragging .tier-thumb, .tier-slider.tier-dragging .tier-fill { transition-duration:.1s; }
+.tier-slider.tier-dragging .tier-thumb, .tier-slider.tier-dragging .tier-fill { transition:none; }
 .better-ghost { position:absolute; z-index:3; margin:0; pointer-events:none; }
 @media (prefers-reduced-motion: reduce) {
   .tier-thumb, .tier-fill, .tier-stop, .tier-stop i { transition:none; }
@@ -4510,7 +4542,7 @@ html[data-input-mode="touch"] button.expectation-link {
 /* A result: the stats card (gain at its top right), and beside it a box with each class that gives it and
    that class's rides. Both sit on the darker input surface so the text reads clearly against the dialog. */
 .better-node { display:flex; align-items:flex-start; gap:6px; }
-.better-card, .better-ridebox { box-sizing:border-box; display:grid; align-content:start; gap:6px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--surface-input); transition:border-color .12s, background-color .12s; }
+.better-card, .better-ridebox { box-sizing:border-box; display:grid; align-content:start; gap:6px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--surface-input); transition:border-color var(--motion-medium), background-color var(--motion-medium); }
 .better-card { width:156px; }
 .better-card[data-choice] { cursor:pointer; }
 /* The gain fills the empty cell beside HP (the right column starts on the second row), so the stat
@@ -4529,7 +4561,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .better-dialog :is(button.better-class-pick, button.better-ride-name, button.better-heart) { width:auto; min-height:0; padding:0; border:0; border-radius:4px; background:transparent; color:inherit; font:inherit; text-align:left; }
 .better-dialog button.better-class-pick { justify-self:start; }
 .better-dialog button.better-ride-name { display:flex; align-items:center; gap:6px; }
-.better-dialog button.better-heart { display:inline-flex; margin-left:-3px; padding:1px; border-radius:50%; transition:filter .12s; }
+.better-dialog button.better-heart { display:inline-flex; margin-left:-3px; padding:1px; border-radius:50%; transition:filter var(--motion-medium); }
 .better-dialog button.better-heart:first-child { margin-left:0; }
 .better-pick { display:none; margin-left:26px; color:var(--gold); font:12px/16px var(--font-game); }
 /* A class picked but not its ride yet: it stays lit, the prompt shows and every ride and heart reads as clickable. */
@@ -4548,14 +4580,14 @@ html[data-input-mode="touch"] button.expectation-link {
   .better-dialog button.better-heart:hover:not(:disabled) { background:transparent; filter:brightness(1.5) drop-shadow(0 0 3px var(--gold)); }
 }
 .better-dialog :is(button.better-class-pick, button.better-ride-name, button.better-heart):focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
-.better-class { display:flex; align-items:center; gap:8px; min-height:28px; color:var(--text); font:14px/20px var(--font-game); white-space:nowrap; transition:color .12s; }
+.better-class { display:flex; align-items:center; gap:8px; min-height:28px; color:var(--text); font:14px/20px var(--font-game); white-space:nowrap; transition:color var(--motion-medium); }
 .better-class img { width:28px; height:28px; object-fit:contain; flex:none; }
-.better-rides { display:grid; gap:6px; margin-left:13px; padding:2px 0 2px 13px; border-left:1px solid var(--control-line); transition:border-color .12s; }
+.better-rides { display:grid; gap:6px; margin-left:13px; padding:2px 0 2px 13px; border-left:1px solid var(--control-line); transition:border-color var(--motion-medium); }
 /* Pointing at a class: its rides' guide turns gold and the other classes in the box step back. */
 .better-entry.hot .better-rides { border-left-color:var(--gold); }
 .better-entry.hot .better-ride { color:var(--text); }
 .better-ridebox.hot:has(.better-entry + .better-entry) .better-entry:not(.hot) { opacity:.45; }
-.better-entry { transition:opacity .12s; }
+.better-entry { transition:opacity var(--motion-medium); }
 .better-card.hot, .better-ridebox.hot { border-color:var(--gold); background:#132a2b; }
 .better-entry.hot .better-class, .better-entry.hot .better-class .game-text { color:var(--gold); }
 .better-ride { display:flex; align-items:center; gap:6px; min-width:0; color:#d3d6c9; font:12px/16px var(--font-game); white-space:nowrap; }

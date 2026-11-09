@@ -647,7 +647,8 @@ function betterDialog(title, current, groups) {
    from where they were to their new place, cards that go fade out where they stood, new ones fade in. */
 // Pixels layoutBetter leaves spare (and lockBetterSize adds back), so fractions never tip a column over.
 const BETTER_SLACK = 2;
-const BETTER_MOTION = { duration: 200, easing: 'cubic-bezier(.2,0,0,1)' };
+// MOTION.large with the standard curve; this file loads before features.js defines MOTION.
+const BETTER_MOTION = { duration: 200, easing: 'cubic-bezier(.16,1,.3,1)' };
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* The dialog keeps the size it opened at (with every result shown) while filtering: neither smaller nor larger.
    layoutBetter reads the height from max-height, so the filtered results are laid out within that same box. */
@@ -684,11 +685,11 @@ function animateBetter(dialog, before) {
   layoutBetter(dialog);
   if (reduceMotion()) return;
   dialog.append(...ghosts);
-  for (const ghost of ghosts) ghost.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.96)' }], { ...BETTER_MOTION, duration: 160, fill: 'forwards' }).finished.then(() => ghost.remove(), () => ghost.remove());
+  for (const ghost of ghosts) ghost.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.96)' }], { ...BETTER_MOTION, duration: MOTION.base, fill: 'forwards' }).finished.then(() => ghost.remove(), () => ghost.remove());
   for (const node of dialog.betterNodes) {
     if (node.hidden || !node.isConnected) continue;
     const old = before.get(node), now = node.getBoundingClientRect();
-    if (!old) node.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { ...BETTER_MOTION, delay: 60 , fill: 'backwards' });
+    if (!old) node.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], BETTER_MOTION);
     else if (Math.abs(old.left - now.left) > .5 || Math.abs(old.top - now.top) > .5) node.animate([{ transform: `translate(${old.left - now.left}px, ${old.top - now.top}px)` }, { transform: 'none' }], BETTER_MOTION);
   }
 }
