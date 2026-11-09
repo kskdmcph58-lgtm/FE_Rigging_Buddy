@@ -225,7 +225,8 @@ function cardClass(anchor) {
     return row ? { item, index, queued: true, profession: row.profession ?? null, ride: row.ride ?? null } : null;
   }
   const record = item.records[Number(anchor.dataset.recordIndex)];
-  return record ? { item, record, queued: false, profession: record.profession ?? null, ride: record.ride ?? null } : null;
+  // The class the card shows (第1-2部 shows the class before a Part 3 one), so the tip and pickers match the card.
+  return record ? { item, record, queued: false, ...window.RiggingActions.shownClass(state, item, record) } : null;
 }
 function cardClassTip(anchor) {
   const card = cardClass(anchor), name = card?.profession;
