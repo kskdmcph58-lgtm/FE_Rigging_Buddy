@@ -141,8 +141,9 @@
   #app.record-page .stat-heading>.heading-ride .ride-field::after { content: ''; position: absolute; inset: -4px 0; }
   #app.record-page .heading-ride .ride-icon { width: 26px; height: 26px; margin-right: 5px; }
   /* Friendship heart as a corner badge on the mount icon's bottom-right corner, hanging a little past it
-     (icon: 6px from the left, centred in the 34px inner height, ends at 32 x 30). */
-  #app.record-page .heading-ride .ride-level { position: absolute; left: 21px; top: 18px; width: 16px; height: 16px; }
+     (icon: 6px from the left, centred in the 34px inner height, ends at 32 x 30). The same 20px as the
+     summary card's badge: it grows up and left, its right and bottom edges (37 x 34) stay put. */
+  #app.record-page .heading-ride .ride-level { position: absolute; left: 17px; top: 14px; width: 20px; height: 20px; }
   #app.record-page .heading-ride .game-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 16px; line-height: 1.2; }
   #app.record-page .heading-ride .ride-none { font: 15px/1.2 var(--font-ui); color: var(--muted); }
   /* The mount lives in the header on mobile; the copy beside the expectation link stays unused. */
