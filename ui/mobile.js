@@ -8,6 +8,8 @@
   const shortScreen = matchMedia('(max-height:500px)');
   const header = document.querySelector('body>header');
   const TITLES = { select: '选择人物', levels: '初始设置', summary: '升级记录' };
+  // The bar shows the brand (the header's star and name) in place of a page title.
+  const BRAND_TITLE = '<span class="m-nav-brand"><svg viewBox="0 0 32 40" width="20" height="25" fill="currentColor" aria-hidden="true"><path d="M16 3C13 14 10 17 2 20c8 3 11 6 14 17 3-11 6-14 14-17C22 17 19 14 16 3Z"/></svg>Rigging Buddy</span>';
   const ICONS = {
     back: '<svg viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 2 10l8 8"/></svg>',
     add: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M10 3.5v13M3.5 10h13"/></svg>',
@@ -115,7 +117,10 @@
     if (!media.matches) { removeNav(); return; }
     buildNav();
     const title = TITLES[page] || '';
-    nav.querySelector('.m-nav-title').textContent = title;
+    // Steps 1-3 show the brand in the middle of the bar instead of a page title (the large title stays,
+    // hidden, as the heading for screen readers). Other pages have no bar title.
+    if (TITLES[page]) nav.querySelector('.m-nav-title').innerHTML = BRAND_TITLE;
+    else nav.querySelector('.m-nav-title').textContent = '';
     largeTitle.textContent = title;
     header.classList.toggle('m-compact', page === 'summary' || shortScreen.matches);
     const { leading, trailing } = navItems();
@@ -134,24 +139,54 @@
   }
   // Like UINavigationBar: the title stays centred while it clears the bar items, slides toward the wider
   // side when it does not, and truncates only when even the gap between the items is too narrow.
-  function layoutTitle() {
-    if (!nav) return;
-    const bar = nav.querySelector('.m-nav-bar'), title = nav.querySelector('.m-nav-title');
+  function titleSpan(bar, leading, trailing, need) {
     const box = bar.getBoundingClientRect();
-    if (!box.width) return;
-    const edge = (selector, side) => {
-      // The brand mark stands in for an empty leading slot.
-      const items = [...header.querySelectorAll(side === 'left' ? `${selector}>*, .brand` : `${selector}>*`)].map(item => item.getBoundingClientRect()).filter(r => r.width);
+    const edge = (host, side) => {
+      const items = [...host.children].map(item => item.getBoundingClientRect()).filter(r => r.width);
       if (!items.length) return side === 'left' ? 0 : box.width;
       return side === 'left' ? Math.max(...items.map(r => r.right)) - box.left : Math.min(...items.map(r => r.left)) - box.left;
     };
-    const start = edge('.m-nav-leading', 'left') + 8, end = edge('.m-nav-trailing', 'right') - 8;
-    title.style.maxWidth = 'none';
-    const need = title.scrollWidth, center = box.width / 2, room = Math.max(0, end - start);
+    const start = edge(leading, 'left') + 8, end = edge(trailing, 'right') - 8, room = Math.max(0, end - start);
     const half = Math.min(need, room) / 2;
-    const left = Math.min(Math.max(center, start + half), end - half);
+    return { start, end, room, half, left: Math.min(Math.max(box.width / 2, start + half), end - half) };
+  }
+  /* Where the brand sits on step 3 at this width. Steps 1 and 2 put it in the same place, so it does not move
+     between pages when step 3's bar items push it off centre. Measured on a hidden copy of step 3's bar, as
+     wide as the window (step 3 never scrolls the page, so it has no page scrollbar), in window coordinates. */
+  function summaryBrandCenter(need) {
+    const probe = document.createElement('div');
+    probe.className = 'm-nav';
+    probe.setAttribute('aria-hidden', 'true');
+    // Same insets as the real bar inside the header (the header's padding and safe areas).
+    const real = nav.querySelector('.m-nav-bar').getBoundingClientRect(), outer = header.getBoundingClientRect();
+    probe.style.cssText = `position:fixed;top:0;left:0;box-sizing:border-box;width:${window.innerWidth}px;padding:0 ${outer.right - real.right}px 0 ${real.left - outer.left}px;visibility:hidden;pointer-events:none`;
+    const bar = document.createElement('div');
+    bar.className = 'm-nav-bar';
+    const leading = document.createElement('div'), trailing = document.createElement('div');
+    leading.className = 'm-nav-leading'; trailing.className = 'm-nav-trailing';
+    leading.append(local('sort', { label: '排序' }));
+    trailing.append(...[ICONS.settings, ICONS.add, ICONS.more].map(icon => local('probe', { label: '', icon, kind: 'icon' })));
+    bar.append(leading, trailing);
+    probe.append(bar);
+    header.append(probe);
+    const center = bar.getBoundingClientRect().left + titleSpan(bar, leading, trailing, need).left;
+    probe.remove();
+    return center;
+  }
+  function layoutTitle() {
+    if (!nav) return;
+    const bar = nav.querySelector('.m-nav-bar'), title = nav.querySelector('.m-nav-title');
+    if (!bar.getBoundingClientRect().width) return;
+    title.style.maxWidth = 'none';
+    const need = title.scrollWidth;
+    const span = titleSpan(bar, nav.querySelector('.m-nav-leading'), nav.querySelector('.m-nav-trailing'), need);
+    let left = span.left;
+    if (page !== 'summary' && title.querySelector('.m-nav-brand')) {
+      const own = summaryBrandCenter(need) - bar.getBoundingClientRect().left;
+      left = Math.min(Math.max(own, span.start + span.half), span.end - span.half);
+    }
     title.style.left = `${left}px`;
-    title.style.maxWidth = `${Math.floor(room)}px`;
+    title.style.maxWidth = `${Math.floor(span.room)}px`;
   }
   function onNavClick(event) {
     const button = event.target.closest('.m-nav-button');
@@ -176,7 +211,8 @@
   }
   function updateCollapse() {
     if (!nav) return;
-    header.classList.toggle('m-collapsed', header.classList.contains('m-compact') || window.scrollY > 30);
+    // No large title to fold away any more: the bar shows its edge as soon as anything passes beneath it.
+    header.classList.toggle('m-collapsed', header.classList.contains('m-compact') || window.scrollY > 0);
   }
 
   /* ---------- Step 3: board and list modes ---------- */
@@ -241,9 +277,11 @@
   function markSignature(rail) {
     return [...rail.querySelectorAll('.record-chip')].map(chip => chip.matches('.upgraded,.skipped') ? `${chip.dataset.queue ? 'q' : ''}${chip.dataset.index}` : '').filter(Boolean).join('|');
   }
-  // How far down a card sits in its column's scroll area, its top meeting the area's top padding.
+  // How far down a card sits in its column's scroll area, its top meeting the area's top padding. The rail's
+  // box includes its top border (clientTop), which is not scrolled content: leaving it in put a marked first
+  // card 1px above where it rests unmarked.
   function cardOffset(rail, chip) {
-    return rail.scrollTop + chip.getBoundingClientRect().top - rail.getBoundingClientRect().top - (parseFloat(getComputedStyle(rail).paddingTop) || 0);
+    return rail.scrollTop + chip.getBoundingClientRect().top - rail.getBoundingClientRect().top - rail.clientTop - (parseFloat(getComputedStyle(rail).paddingTop) || 0);
   }
   function restingTop(rail) {
     const marked = [...rail.querySelectorAll('.record-chip.upgraded,.record-chip.skipped')].pop();
@@ -579,6 +617,9 @@
     applyClasses();
     refreshNav();
     layoutBoard();
+    // Locking the board page drops the page scrollbar, which widens the bar on a desktop browser: place the
+    // title again in the same frame, so the brand does not jump sideways one frame later.
+    layoutTitle();
     alignListNames();
     shadeBoardNames();
     settleBoard();

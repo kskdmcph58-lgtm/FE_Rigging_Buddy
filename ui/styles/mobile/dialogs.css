@@ -4,7 +4,8 @@
    Phone widths: tool dialogs rise from the bottom edge as sheets; short alerts (confirmations, choice,
    level input) stay centred like iOS alerts. Exit rules are unchanged everywhere: Esc or the exit button
    only, never the backdrop,
-   except the class and ride picker steps, where a tap outside acts like Esc (features.js createPickerStack). Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
+   except the class and ride picker steps and the expectation details, where a tap outside acts like Esc
+   (features.js closeOnOutsideTap). Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
 @media (max-width:1419px) {
   /* Native modal focus restoration may focus the dialog surface on iOS. Only controls carry a focus ring. */
   dialog.app-dialog:focus { outline: none; }

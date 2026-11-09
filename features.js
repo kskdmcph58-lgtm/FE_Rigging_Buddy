@@ -7,7 +7,8 @@ function retireDialog(dialog) {
   if (motionAllowed()) setTimeout(() => dialog.remove(), MOTION.fast + 40);
   else dialog.remove();
 }
-// Keep mobile pickers in the top layer until their exit finishes, preserving their open layout.
+// Keep mobile sheets (pickers, card options, expectations) in the top layer until their exit finishes,
+// preserving their open layout.
 // Every exit (including native Escape) uses the same path; close callbacks still run exactly once.
 function animateMobilePickerClose(dialog) {
   const close = dialog.close.bind(dialog);
@@ -41,6 +42,21 @@ function animateMobilePickerClose(dialog) {
     dialog.close();
   });
 }
+// Mobile only: a tap on the dimmed area outside the dialog acts like Esc (back one step). Under a stack only the
+// top step is outside the inert part, so it alone hears the tap. A drag that starts inside never counts.
+function closeOnOutsideTap(dialog, allowed = () => true) {
+  let pressedOutside = false;
+  const outside = event => {
+    const box = dialog.getBoundingClientRect();
+    return event.target === dialog && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom);
+  };
+  dialog.addEventListener('pointerdown', event => { pressedOutside = UI_MEDIA.mobileShell.matches && outside(event); });
+  dialog.addEventListener('click', event => {
+    const close = pressedOutside && outside(event);
+    pressedOutside = false;
+    if (close && allowed() && dialog.open) dialog.close();
+  });
+}
 // Each step remains mounted under the next modal. Only the root paints a dimmed backdrop.
 function createPickerStack() {
   const dialogs = [];
@@ -50,19 +66,7 @@ function createPickerStack() {
       dialogs.at(-1)?.classList.add('picker-stack-covered');
       dialog.classList.add(dialogs.length ? 'picker-stack-layer' : 'picker-stack-root');
       dialogs.push(dialog);
-      // Mobile only: a tap on the dimmed area outside this step acts like Esc (back one step). Only the top
-      // step is outside the inert part, so it alone hears the tap. A drag that starts inside never counts.
-      let pressedOutside = false;
-      const outside = event => {
-        const box = dialog.getBoundingClientRect();
-        return event.target === dialog && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom);
-      };
-      dialog.addEventListener('pointerdown', event => { pressedOutside = UI_MEDIA.mobileShell.matches && outside(event); });
-      dialog.addEventListener('click', event => {
-        const close = pressedOutside && outside(event);
-        pressedOutside = false;
-        if (close && !stack.closing && dialog.open) dialog.close();
-      });
+      closeOnOutsideTap(dialog, () => !stack.closing);
       dialog.addEventListener('close', () => {
         const index = dialogs.indexOf(dialog);
         if (index !== -1) dialogs.splice(index, 1);
@@ -405,6 +409,8 @@ function updateMarquee() {
 document.addEventListener('pointerdown', e => {
   if (e.defaultPrevented) return;
   if (e.pointerType !== 'mouse' || e.button !== 0 || !['select','levels','summary'].includes(page) || document.querySelector('dialog[open]')) return;
+  // The phone layout selects by tapping; box selection is desktop only.
+  if (UI_MEDIA.mobileShell.matches) return;
   if (e.clientX >= document.documentElement.clientWidth || e.clientY >= document.documentElement.clientHeight) return;
   const character=page==='select'&&e.target.closest('[data-character]:not(:disabled)');
   if (!character&&e.target.closest('button,input,select,textarea,a,label,summary,[role="button"],[contenteditable],.drag-grip,.menu-panel,.select-options,.selection-toolbar-backdrop')) return;
@@ -470,7 +476,7 @@ function recordExpectationMarkup() {
 }
 function openRecordExpectationDetails() {
   hideExpectationTip();
-  const dialog=document.createElement('dialog');dialog.className='app-dialog expectation-dialog';
+  const dialog=document.createElement('dialog');dialog.className='app-dialog expectation-dialog';animateMobilePickerClose(dialog);closeOnOutsideTap(dialog);
   dialog.setAttribute('aria-labelledby','record-expectation-title');
   dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
@@ -518,7 +524,7 @@ function openExpectationDetails(id) {
   hideExpectationTip();
   const item = state.roster.find(r => r.id === id);
   if (!item.expectations?.length) { openExpectationEditor([id]); return; }
-  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';
+  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';animateMobilePickerClose(dialog);closeOnOutsideTap(dialog);
   dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
@@ -637,7 +643,7 @@ function openExpectationEditor(ids) {
   const rules = ids.map(id => page === 'levels' ? state.draftExpectations?.[id] || null : page==='record' && activeRecord?.id===id ? draftRule(activeRecord) : M.ruleAt(state.roster.find(i => i.id === id), M.nextSeq(state.roster.find(i => i.id === id))));
   const mixed = rules.some(r => JSON.stringify(r) !== JSON.stringify(rules[0]));
   rule = M.copy(mixed ? null : rules[0]);
-  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';
+  const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';animateMobilePickerClose(dialog);
   dialog.setAttribute('aria-labelledby','expectation-editor-title');
   dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`}</p></div></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button data-close autofocus>返回</button><button class="primary" data-save-rule>保存期望</button></footer>`;
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }

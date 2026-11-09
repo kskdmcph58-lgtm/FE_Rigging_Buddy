@@ -29,9 +29,8 @@ window.RiggingPersistence = (() => {
       try {
         const serialized = serialize();
         if (serialized === runtime.lastSave && !runtime.issue && replace !== true) return true;
-        if (replace !== true && getStorage().getItem(key) !== runtime.lastSave) {
-          onIssue('conflict'); return false;
-        }
+        // No tab conflict: another page's save reaches this one through the storage event (app.js), and the
+        // latest write wins.
         getStorage().setItem(key, serialized); runtime.lastSave = serialized; onIssue(); return true;
       } catch {
         onIssue('write'); return false;
@@ -46,7 +45,13 @@ window.RiggingPersistence = (() => {
       }
       runtime.ready = true;
     }
-    return { schedule, save, restore };
+    // Another page saved: drop this page's pending write and take its data.
+    function follow(serialized) {
+      clearTimeout(runtime.timer);
+      runtime.lastSave = serialized;
+      try { onRestore(JSON.parse(serialized), true); onIssue(); } catch { onIssue('read'); }
+    }
+    return { schedule, save, restore, follow };
   }
   return { track, create };
 })();

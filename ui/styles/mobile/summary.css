@@ -289,11 +289,12 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
-  /* Board content width C → floor((C + 8) / (W + 8)) whole columns of at least W; below two, one W column. */
+  /* Every column is the phone's width. A wider window shows more columns, the last one perhaps in part;
+     it never makes a column wider. */
   #app.summary-page.m-board .journals { --m-col-width: 272px; }
-  @container (min-width:552px) { #app.summary-page.m-board .journal { width: calc((100cqw - 8px) / 2); } }
-  @container (min-width:832px) { #app.summary-page.m-board .journal { width: calc((100cqw - 16px) / 3); } }
-  @container (min-width:1112px) { #app.summary-page.m-board .journal { width: calc((100cqw - 24px) / 4); } }
+  /* No dragging on the board: the phone layout sorts only in its 排序 list, by the grip (app.js sortDragAllowed). */
+  #app.summary-page [data-sort-id],
+  #app.summary-page [data-sort-id]:active { cursor: auto; }
   #app.summary-page.m-board .journal>.row-select,
   #app.summary-page.m-board .journal .drag-grip,
   #app.summary-page.m-board .journal .expand-records { display: none; }
@@ -803,6 +804,7 @@
   #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal-head .drag-grip { display: none; }
   /* Reorder control at the trailing edge, as in an iOS list. */
   #app.summary-page.m-sort-mode .journal-head .drag-grip {
+    cursor: grab;
     grid-area: grip;
     position: relative;
     display: grid;

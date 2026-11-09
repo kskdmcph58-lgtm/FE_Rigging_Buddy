@@ -7,7 +7,6 @@
   :root {
     --m-gutter: 16px;
     --m-bar: 44px;
-    --m-large: 52px;
     --m-safe-top: env(safe-area-inset-top, 0px);
     --m-safe-bottom: env(safe-area-inset-bottom, 0px);
     --m-chrome: #101e20d9;
@@ -20,6 +19,9 @@
   /* Step 3 fitted to the screen (mobile.js layoutBoard): the page never scrolls or bounces; the board's columns
      and lists scroll inside. 100vh is Safari's toolbar-hidden height, so the body's and main's minimums would overflow. */
   html.m-fit, html.m-fit body { overflow: hidden; overscroll-behavior: none; }
+  /* A page that does not scroll keeps no scrollbar gutter: on a desktop browser the reserved space showed as
+     an empty strip down the right edge (phones overlay their scrollbar, so it never showed there). */
+  html.m-fit, html:has(main#app.record-page) { scrollbar-gutter: auto; }
   html.m-fit body, html.m-fit main#app { min-height: 0; }
   #app {
     --m-safe-left: env(safe-area-inset-left, 0px);
@@ -53,18 +55,8 @@
   body>header.m-header:not(.m-collapsed) { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
   body>header.m-header.m-compact+.m-large-title,
   body:has(main.record-page)>.m-large-title { display: none; }
-  body>header.m-header .brand {
-    position: absolute;
-    top: calc(var(--m-safe-top) + 6px);
-    left: calc(14px + env(safe-area-inset-left, 0px));
-    height: 32px;
-    gap: 0;
-    font-size: 0;
-  }
-  body>header.m-header .brand>span:not(.brand-mark) { display: none; }
-  body>header.m-header .brand-mark { display: flex; align-items: center; }
-  body>header.m-header .brand-mark svg { width: 20px; height: 25px; }
-  body>header.m-header:has(.m-nav-leading>*) .brand { display: none; }
+  /* The brand sits in the middle of the bar (BRAND_TITLE in ui/mobile.js), so the header's own one is hidden. */
+  body>header.m-header .brand { display: none; }
   .m-nav-bar {
     position: relative;
     display: flex;
@@ -96,14 +88,19 @@
     transition: opacity var(--motion-base, 160ms) ease;
     pointer-events: none;
   }
-  .m-header.m-collapsed .m-nav-title { opacity: 1; }
+  .m-header.m-collapsed .m-nav-title,
+  .m-nav-title:has(.m-nav-brand) { opacity: 1; }
+  /* Step 3's title: the brand, in the header's own display face. */
+  .m-nav-brand { display: inline-flex; align-items: center; gap: 8px; font: 400 18px/22px var(--font-display); }
+  .m-nav-brand svg { flex: none; color: var(--gold); }
+  /* The page title is not shown; it stays in the page as its heading for screen readers. */
   body>.m-large-title {
-    height: var(--m-large);
-    margin: 0;
-    padding: 2px calc(var(--m-gutter) + env(safe-area-inset-right, 0px)) 0 calc(var(--m-gutter) + env(safe-area-inset-left, 0px));
-    color: var(--text);
-    font: 700 30px/44px var(--font-display);
-    letter-spacing: .5px;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   /* Plain text and icon buttons, like UIBarButtonItem: no outline, gold tint, 44px hit area. */
   .m-nav-button {
@@ -280,9 +277,9 @@
   @keyframes m-sheet-out { to { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
   @keyframes m-backdrop-out { to { opacity: 0; } }
   dialog.m-sheet.m-sheet-leaving[open] { pointer-events: none; }
-  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-body { animation: m-sheet-out 260ms cubic-bezier(.4,0,.6,1) forwards; }
-  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-edge { animation: m-edge-out 260ms ease-out forwards; }
-  dialog.m-sheet.m-sheet-leaving[open]::backdrop { animation: m-backdrop-out 260ms ease-out forwards; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-body { animation: m-sheet-out 220ms cubic-bezier(.4,0,1,1) forwards; }
+  dialog.m-sheet.m-sheet-leaving[open] .m-sheet-edge { animation: m-edge-out 220ms ease-out forwards; }
+  dialog.m-sheet.m-sheet-leaving[open]::backdrop { animation: m-backdrop-out 220ms ease-out forwards; }
   /* Once closed it has already left the screen: no second fade in the centred closing geometry. */
   dialog.m-sheet.m-sheet-leaving:not([open]) { opacity: 0; transition: none; }
 }

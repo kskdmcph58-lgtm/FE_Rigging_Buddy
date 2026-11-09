@@ -11,7 +11,7 @@ let storageIssue = '';
 function setStorageIssue(issue = '') {
   const previousIssue = storageIssue;
   storageIssue = issue;
-  storageBlocked = issue === 'read' || issue === 'conflict';
+  storageBlocked = issue === 'read';
   storageWarning = issue === 'write';
   window.RiggingStorageStatus.render(issue, previousIssue, lastLocalSave);
 }
@@ -29,8 +29,9 @@ const persistence = window.RiggingPersistence.create({
   getStorage: () => localStorage,
   serialize: () => JSON.stringify(M.normalize(state)),
   onIssue: setStorageIssue,
-  onRestore(data) {
+  onRestore(data, followed = false) {
     state=trackState(validate(data));
+    if (followed) { settleFollowedPage(); return; }
     // Pending additions can coexist with an existing roster; they do not imply
     // the user was viewing the level setup page.
     page=visibleRoster().length?'summary':state.selection.length?'levels':'select';
@@ -250,20 +251,22 @@ function exportBackup(text = JSON.stringify(M.normalize(state), null, 2)) {
 }
 document.querySelector('#storage-status').addEventListener('click', e => {
   const action = e.target.closest('[data-storage-action]')?.dataset.storageAction;
-  if (action === 'save') saveLocalState(storageIssue === 'conflict');
+  if (action === 'save') saveLocalState();
   if (action === 'import') document.querySelector('#import-file').click();
   if (action === 'export') exportBackup(storageIssue === 'read' && typeof lastLocalSave === 'string' ? lastLocalSave : undefined);
 });
 function ratingIcon(happy) {
   return `<svg class="rating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r=".8" fill="currentColor" stroke="none"/><path d="${happy ? 'M8 14 Q12 19 16 14' : 'M8 17 Q12 12 16 17'}"/></svg>`;
 }
-function portrait(c, kind = 'small', sizes = '56px') {
+function portrait(c, kind = 'small', sizes = kind === 'narrow' ? '116px' : '56px') {
   const revision = document.querySelector('meta[name="app-version"]')?.content;
   const versioned = path => /^[a-f0-9]{40}$/i.test(revision || '') ? `${path}?v=${revision}` : path;
   if (kind === 'narrow') {
     const path = c.image.replace('/grid/', '/troop/');
+    // The files are 116, 232 and 348px wide. Listed by width, so a portrait shown larger than 116px on a
+    // 1x screen (the phone layout's column head) still gets a sharp file.
     const variants = c.image.includes('/grid/')
-      ? ` srcset="${[1, 2, 3].map(scale => `${versioned(scale === 1 ? path : path.replace('/troop/', `/troop/${scale}x/`))} ${scale}x`).join(', ')}"` : '';
+      ? ` srcset="${[1, 2, 3].map(scale => `${versioned(scale === 1 ? path : path.replace('/troop/', `/troop/${scale}x/`))} ${116 * scale}w`).join(', ')}" sizes="${sizes}"` : '';
     return `<img draggable="false" src="${versioned(path)}"${variants} alt="" loading="lazy" decoding="async">`;
   }
   if (kind === 'small' && c.image.includes('/grid/')) {
@@ -274,7 +277,8 @@ function portrait(c, kind = 'small', sizes = '56px') {
 }
 let renderedPage = null;
 function fadeInPage() {
-  if (!motionAllowed()) return;
+  // The phone layout swaps pages at once, as iOS does: a fade from blank read as a flash on the way back to step 3.
+  if (!motionAllowed() || UI_MEDIA.mobileShell.matches) return;
   app.getAnimations().forEach(animation => { if (animation.id === 'page-in') animation.cancel(); });
   // Opacity only: a transform on #app would re-anchor the floating selection bar.
   app.animate({ opacity: [0, 1] }, { id: 'page-in', duration: MOTION.medium, easing: 'ease-out' });
@@ -515,7 +519,7 @@ function renderLevels() {
     <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
-      <div class="setup-character">${portrait(c,'narrow')}<strong>${c.name}</strong></div>
+      <div class="setup-character">${portrait(c,'narrow','(max-width:1419px) 84px, 116px')}<strong>${c.name}</strong></div>
       <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
       <div class="setup-profession-cell">${setupProfessionButton(id)}${setupRideButton(id)}</div>${setupExpectationButton(id)}</div>`;}).join('')}
     </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
@@ -690,7 +694,7 @@ app.addEventListener('touchstart', e => {
   finishTouchSort();
   if (e.touches.length !== 1) return;
   const card = e.target.closest('.journal,.level-row');
-  if (card && e.target.closest('.drag-grip')) {
+  if (card && e.target.closest('.drag-grip') && sortDragAllowed(e.target)) {
     touchSort = { card, target: null, after: false, identifier: e.touches[0].identifier, x: e.touches[0].clientX, y: e.touches[0].clientY };
     markMoving(card.dataset.sortId);
     positionDragPreview(touchSort.x, touchSort.y);
@@ -1023,7 +1027,14 @@ function finishMouseSort(commit = false) {
   if (gesture.started) suppressGestureClickUntil = Date.now() + 400;
   mouseSort = null;
 }
+/* Desktop sorts by dragging a card or its grip. The phone layout (any pointer, below 1420px) has no direct
+   dragging on step 3: it sorts only in its 排序 list, by the grip. */
+function sortDragAllowed(target) {
+  if (!UI_MEDIA.mobileShell.matches || page !== 'summary') return true;
+  return app.classList.contains('m-sort-mode') && Boolean(target.closest('.drag-grip'));
+}
 function mouseSortTarget(target) {
+  if (!sortDragAllowed(target)) return null;
   if (target.closest('button,input,select,textarea,a,label,summary,[role="button"],[contenteditable],.record-chip')) return null;
   const card = target.closest('[data-sort-id]');
   return card && (card.matches('.journal') || target.closest('.drag-grip')) ? card : null;
@@ -1252,6 +1263,39 @@ app.addEventListener('change', e => {
   segment.animate({ transform: on ? ['translateX(0)', 'translateX(100%)'] : ['translateX(100%)', 'translateX(0)'] },
     { duration: MOTION.large, easing: MOTION.ease, pseudoElement: '::before' });
 });
+// Pages of this site follow each other: a save in one is taken up by the others. It waits while this page is
+// mid-gesture, in a dialog or typing, so nothing it holds goes stale, and applies on the next calm moment.
+let followedSave = null;
+function followBusy() {
+  return Boolean(mouseSort || touchSort || document.querySelector('dialog[open]') || document.activeElement?.matches('input,textarea,select,[contenteditable]'));
+}
+function applyFollowedSave() {
+  if (followedSave === null || (!document.hidden && followBusy())) return;
+  followedSave = null;
+  // Take what is stored now: if this page wrote after the other one, its own save is already the latest.
+  let serialized;
+  try { serialized = localStorage.getItem(LOCAL_STATE_KEY); } catch { return; }
+  if (serialized === null || serialized === lastLocalSave) return;
+  const scrollY = window.scrollY;
+  persistence.follow(serialized);
+  render();
+  window.scrollTo(0, scrollY);
+}
+function settleFollowedPage() {
+  // Keep this page's place unless the other page removed what it showed.
+  if (page === 'record' && !state.roster.some(item => item.id === activeRecord?.id && !item.deleted)) { activeRecord = null; page = 'summary'; }
+  if (page === 'summary' && !visibleRoster().length) page = state.selection.length ? 'levels' : 'select';
+  if (page === 'levels' && !state.selection.length) page = visibleRoster().length ? 'summary' : 'select';
+}
+window.addEventListener('storage', e => {
+  if (e.key !== LOCAL_STATE_KEY || e.storageArea !== localStorage || e.newValue === null) return;
+  followedSave = e.newValue;
+  applyFollowedSave();
+});
+document.addEventListener('close', () => setTimeout(applyFollowedSave), true);
+document.addEventListener('focusout', () => setTimeout(applyFollowedSave));
+document.addEventListener('pointerup', () => setTimeout(applyFollowedSave));
+document.addEventListener('visibilitychange', applyFollowedSave);
 window.addEventListener('pagehide',saveLocalState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocalState();});
 
