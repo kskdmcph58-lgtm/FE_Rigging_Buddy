@@ -8,8 +8,8 @@ const shownClass = (item, record) => window.RiggingActions.shownClass(state, ite
 const ANCHOR_MARK = '<span class="anchor-mark" aria-hidden="true"><span>锚点</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 11h8M5 14a7 7 0 0 0 14 0"/></svg></span>'; */
 // Narrow cards keep one generous touch target for class, ride and rating actions.
 function summaryClassMarkup(value, id, index, queue, better = false) {
-  if (UI_MEDIA.wideRecordRow.matches) return professionMarkup(value, true, id, index, queue, better);
-  return `<span class="card-options-field ${better ? 'has-better' : ''}" role="button" tabindex="0" data-card-options="${id}" data-character="${id}" ${queue ? 'data-queue-index' : 'data-record-index'}="${index}" aria-haspopup="dialog" aria-label="${value || '暂无兵种'}，兵种、配属与评价${better ? '，有更好的选择' : ''}"><span class="game-text">${value || '选择兵种'}</span><span class="card-options-icon" aria-hidden="true">${better ? BETTER_ICON : '···'}</span></span>`;
+  if (UI_MEDIA.wideRecordRow.matches) return professionMarkup(value, true, id, index, queue, better, '暂无兵种');
+  return `<span class="card-options-field ${better ? 'has-better' : ''}" role="button" tabindex="0" data-card-options="${id}" data-character="${id}" ${queue ? 'data-queue-index' : 'data-record-index'}="${index}" aria-haspopup="dialog" aria-label="${value || '暂无兵种'}，兵种、配属与评价${better ? '，有更好的选择' : ''}"><span class="game-text">${value || '暂无兵种'}</span><span class="card-options-icon" aria-hidden="true">${better ? BETTER_ICON : '···'}</span></span>`;
 }
 // Phone column cards: a side strip of three cells with taps of their own, never the card's 已跳过/已升级 cycle
 // (ui/mobile.js routes them): rating face (flips it, as on wide screens) · class icon (changes the class; with
@@ -46,7 +46,7 @@ function cardRatingMarkup(happy, id, index, queue) {
   const word = happy === null ? '待评价' : happy ? '满意' : '不满意';
   return `<span class="rating-toggle" role="button" tabindex="0" data-card-rating="${id}" ${queue ? 'data-queue-index' : 'data-record-index'}="${index}" aria-label="${happy ? '改为不满意' : '改为满意'}"><span class="rating-word"><span><span class="rating-text">${word}</span>${happy === null ? '' : ratingIcon(happy)}</span></span></span>`;
 }
-/* A class name (or the 选择兵种 placeholder) that would be cut short (or pushed off centre by its ⓘ mark) takes the room of the rating
+/* A class name (or the 暂无兵种 placeholder) that would be cut short (or pushed off centre by its ⓘ mark) takes the room of the rating
    word: that card shows only the face. Measured with the word in place, so a wider card gets it back. */
 function fitCardClasses(root = app) {
   for (const chip of root.querySelectorAll('.record-chip')) {

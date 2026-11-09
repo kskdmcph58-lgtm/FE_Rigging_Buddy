@@ -4,10 +4,11 @@ const ICON_QUERY = (v => /^[a-f0-9]{40}$/i.test(v || '') ? `?v=${v}` : '')(docum
 // Drawn, not an emoji: a ring with an exclamation mark, in the stroke weight of the other card marks.
 // Drawn on the rating faces' grid (24 units, r 9 circle, 1.8 stroke) so at the same size the two match.
 const BETTER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.2v6"/><circle cx="12" cy="16.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
-function professionMarkup(value, editable, id = '', index = '', queue = false, better = false) {
+// placeholder: what an empty class reads as. The record page asks (选择兵种); step 3 cards state it (暂无兵种).
+function professionMarkup(value, editable, id = '', index = '', queue = false, better = false, placeholder = '选择兵种') {
   const name = window.PROFESSIONS.names.includes(value) ? value : null;
   if (!name && !editable) return '';
-  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png${ICON_QUERY}" alt="">` : ''}<span class="${name ? 'game-text' : 'profession-placeholder'}">${name || '选择兵种'}</span>${better ? `<span class="better-mark" role="button" tabindex="0" data-better="${id}" data-better-index="${index}" aria-label="有更好的兵种或配属">${BETTER_ICON}</span>` : ''}`;
+  const content = `${name && !id ? `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png${ICON_QUERY}" alt="">` : ''}<span class="${name ? 'game-text' : 'profession-placeholder'}">${name || placeholder}</span>${better ? `<span class="better-mark" role="button" tabindex="0" data-better="${id}" data-better-index="${index}" aria-label="有更好的兵种或配属">${BETTER_ICON}</span>` : ''}`;
   // Record cards are buttons: use a separate keyboard target without nesting buttons.
   return `<span class="profession-field ${editable ? 'can-edit' : ''} ${better ? 'better' : ''}" ${editable ? `role="button" tabindex="0" data-profession data-character="${id}" ${queue ? `data-queue-index="${index}"` : `data-record-index="${index}"`} aria-label="选择兵种，${name || '暂无'}" aria-haspopup="dialog"` : ''}>${content}</span>`;
 }

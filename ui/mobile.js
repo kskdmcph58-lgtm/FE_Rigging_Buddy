@@ -747,6 +747,25 @@
   app.addEventListener('pointerdown', keepSearchFocus);
   app.addEventListener('mousedown', keepSearchFocus);
   app.addEventListener('scroll', onBoardScroll, true);
+  /* A mouse wheel over the column heads (portrait, name, buttons) moves the board sideways; the column snap
+     points turn each notch into the next column. Over a column's cards it still scrolls that column, and a
+     trackpad keeps its own sideways swipe (wheelKind, ui/summary-rails.js).
+     Notches in quick succession add up: each one moves the target a further column on from the last target,
+     not from wherever the running animation has got to, so a fast spin travels as many columns as notches. */
+  let wheelTarget = null, wheelUntil = 0;
+  app.addEventListener('wheel', event => {
+    const host = board();
+    if (!host || event.ctrlKey || !host.contains(event.target) || event.target.closest('.journal .records')) return;
+    if (Math.abs(event.deltaX) >= Math.abs(event.deltaY) || wheelKind(event) !== 'mouse') return;
+    event.preventDefault();
+    const columns = host.querySelectorAll(':scope>.journal');
+    if (columns.length < 2) return;
+    const step = columns[1].offsetLeft - columns[0].offsetLeft, end = host.scrollWidth - host.clientWidth;
+    const now = performance.now(), from = now < wheelUntil && wheelTarget !== null ? wheelTarget : host.scrollLeft;
+    wheelTarget = Math.max(0, Math.min(end, (Math.round(from / step) + Math.sign(event.deltaY)) * step));
+    wheelUntil = now + 400;
+    host.scrollTo({ left: wheelTarget, behavior: 'smooth' });
+  }, { passive: false });
   window.addEventListener('scroll', () => { if (nav) updateCollapse(); }, { passive: true });
   window.addEventListener('resize', schedule);
   // Safari's toolbars and rotation change the visible height without always firing a window resize.
