@@ -923,41 +923,65 @@ function examAnimate(dialog, change) {
     else if (Math.abs(old.left - now.left) > .5 || Math.abs(old.top - now.top) > .5) node.animate([{ transform: `translate(${old.left - now.left}px, ${old.top - now.top}px)` }, { transform: 'none' }], BETTER_MOTION);
   }
 }
-/* Desktop level range (macOS slider): a vertical track with two thumbs beside the tier slider, the end level on
+/* Desktop level range (macOS slider): a compact vertical track below the tier slider, the end level on
    top as there, each end's level written above and below in the level-up face. Dragging moves a thumb and its
-   number; the cards follow on release. Each thumb is its own slider for the keyboard. */
+   number; the cards follow on release. Relative dragging keeps at least 4px per level even on this short
+   track, with pointer capture allowing travel beyond it. Each thumb is its own slider for the keyboard. */
 function wireLevelRange(box, { min, max, get, show, commit }) {
   const track = box.querySelector('.level-range');
-  const valueAt = y => { const r = track.getBoundingClientRect(); return Math.round(max - Math.max(0, Math.min(1, (y - r.top) / r.height)) * (max - min)); };
+  const keyboardEvents = new AbortController();
+  let heldKey = null, repeatTimer = 0;
+  const stopKey = () => { clearInterval(repeatTimer); repeatTimer = 0; heldKey = null; };
+  const listen = (target, type, handler) => target.addEventListener(type, handler, { signal: keyboardEvents.signal });
+  listen(window, 'keyup', e => { if (e.key === heldKey) stopKey(); });
+  listen(window, 'blur', stopKey);
+  listen(window, 'resize', stopKey);
+  listen(document, 'visibilitychange', stopKey);
+  const thumbSize = () => box.querySelector('[data-thumb]').getBoundingClientRect().height;
+  const valueAt = y => { const r = track.getBoundingClientRect(), size = thumbSize(); return Math.round(max - Math.max(0, Math.min(1, (y - r.top - size / 2) / (r.height - size))) * (max - min)); };
   let drag = null;
   const move = y => {
-    const range = { ...get() }, at = valueAt(y);
+    const range = { ...get() }, at = Math.max(min, Math.min(max, drag.value + Math.round((drag.y - y) / drag.pixelsPerLevel)));
     if (drag.end === 'to') range.to = Math.max(range.from, at); else range.from = Math.min(range.to, at);
     show(range);
   };
   track.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
+    stopKey();
     e.preventDefault();
     const { from, to } = get(), at = valueAt(e.clientY);
     // The nearer thumb; on a tie (both thumbs on one level) the side the pointer is on.
-    const end = from === to ? (at >= to ? 'to' : 'from') : Math.abs(at - to) <= Math.abs(at - from) ? 'to' : 'from';
+    const hit = e.target.closest('[data-thumb]');
+    const end = hit ? hit.dataset.thumb : from === to ? (at >= to ? 'to' : 'from') : Math.abs(at - to) <= Math.abs(at - from) ? 'to' : 'from';
     box.querySelector(`[data-thumb="${end}"]`).focus({ preventScroll: true });
     track.setPointerCapture(e.pointerId); track.classList.add('level-dragging');
-    drag = { end };
+    drag = { end, y: e.clientY, value: hit ? get()[end] : at, pixelsPerLevel: Math.max(4, (track.getBoundingClientRect().height - thumbSize()) / (max - min)) };
     move(e.clientY);
   });
   track.addEventListener('pointermove', e => { if (drag) move(e.clientY); });
   const release = () => { if (!drag) return; drag = null; track.classList.remove('level-dragging'); commit(get()); };
   track.addEventListener('pointerup', release);
   track.addEventListener('pointercancel', release);
-  for (const thumb of box.querySelectorAll('[data-thumb]')) thumb.addEventListener('keydown', e => {
+  const stepKey = (thumb, key) => {
     const end = thumb.dataset.thumb, range = { ...get() }, value = range[end];
-    const next = { ArrowUp: value + 1, ArrowRight: value + 1, ArrowDown: value - 1, ArrowLeft: value - 1, PageUp: value + 10, PageDown: value - 10, Home: min, End: max }[e.key];
-    if (next === undefined) return;
-    e.preventDefault(); e.stopPropagation();
+    const next = { ArrowUp: value + 1, ArrowRight: value + 1, ArrowDown: value - 1, ArrowLeft: value - 1, PageUp: value + 10, PageDown: value - 10, Home: min, End: max }[key];
     if (end === 'to') range.to = Math.max(range.from, Math.min(max, next)); else range.from = Math.max(min, Math.min(range.to, next));
     show(range); commit(range);
-  });
+  };
+  for (const thumb of box.querySelectorAll('[data-thumb]')) {
+    listen(thumb, 'blur', stopKey);
+    listen(thumb, 'keydown', e => {
+      if (!['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) return;
+      e.preventDefault(); e.stopPropagation();
+      // Ignore OS auto-repeat: a held key uses the same cadence from the first step onward.
+      if (e.repeat) return;
+      stopKey();
+      heldKey = e.key;
+      stepKey(thumb, heldKey);
+      repeatTimer = setInterval(() => stepKey(thumb, heldKey), 60);
+    });
+  }
+  return () => { stopKey(); keyboardEvents.abort(); };
 }
 /* Phones (iOS picker): one wheel per value (阶级, or 开始 and 结束) side by side under one selection band. Each
    column scrolls and snaps on its own; when it settles, its value counts. A mouse can scroll it, drag it or
@@ -1059,14 +1083,14 @@ function examDialog(item, c, stats) {
     const levelOptions = counted ? stats.levels.map(row => ({ value: row.level, label: level(row.level) })) : [];
     // Narrow layout: two compact buttons showing the choice; each opens its wheels in a bottom sheet.
     const chevron = '<svg class="exam-pick-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span>${chevron}</button>` : ''}</div>`;
+    const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span></span>${chevron}</button>` : ''}</div>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog exam-dialog';
     animateMobilePickerClose(dialog);
     const stack = createPickerStack();
     stack.add(dialog);
     dialog.setAttribute('aria-labelledby', 'exam-title');
-    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2></header><div class="exam-map"><aside class="exam-side"><div class="exam-filters">${slider}${levelSlider}</div>${picks}</aside><section class="exam-col exam-locked"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
+    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2></header><div class="exam-map"><aside class="exam-side"><div class="exam-filters">${slider}${levelSlider}</div>${picks}<h3 class="better-caption exam-collapse-caption"><button type="button" class="exam-collapse" aria-expanded="true" aria-controls="exam-locked-list">未解锁${chevron}</button></h3></aside><section class="exam-col exam-locked" id="exam-locked-list"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
     const track = dialog.querySelector('.tier-slider');
     const filter = () => {
       for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
@@ -1116,7 +1140,7 @@ function examDialog(item, c, stats) {
       examAnimate(dialog, () => { compute(); draw(); });
     };
     if (track) wireTierSlider(track, highest, () => cap, setCap);
-    if (levels) wireLevelRange(levels, { min: stats.min, max: stats.max, get: () => shown, show: showRange, commit: commitRange });
+    const disposeLevelRange = levels ? wireLevelRange(levels, { min: stats.min, max: stats.max, get: () => shown, show: showRange, commit: commitRange }) : null;
     /* The sheet (iOS picker in a bottom sheet): its wheels side by side under one selection band. The wheels
        only pick; 完成 applies the choice, and closing any other way leaves it as it was. */
     const openSheet = name => {
@@ -1158,7 +1182,32 @@ function examDialog(item, c, stats) {
       if (UI_MEDIA.coarseInput.matches) { sheet.tabIndex = -1; sheet.style.outline = 'none'; sheet.focus({ preventScroll: true }); }
       else wheelOf(tier ? 'tier' : 'from')?.focus({ preventScroll: true });
     };
+    const collapseAnimations = new Set();
+    const stopCollapseAnimation = () => { for (const animation of collapseAnimations) animation.cancel(); collapseAnimations.clear(); };
+    const animateCollapse = (node, frames) => {
+      const animation = node.animate(frames, BETTER_MOTION);
+      collapseAnimations.add(animation);
+      animation.finished.then(() => collapseAnimations.delete(animation), () => collapseAnimations.delete(animation));
+    };
     dialog.addEventListener('click', e => {
+      const collapse = e.target.closest('.exam-collapse');
+      if (collapse) {
+        // Read the visible height before cancelling, so rapid reversals continue from the current frame.
+        const height = dialog.getBoundingClientRect().height;
+        const arrow = collapse.querySelector('.exam-pick-chevron'), rotation = getComputedStyle(arrow).transform;
+        stopCollapseAnimation();
+        const collapsed = collapse.getAttribute('aria-expanded') === 'true';
+        collapse.setAttribute('aria-expanded', String(!collapsed));
+        dialog.classList.toggle('exam-locked-collapsed', collapsed);
+        if (!reduceMotion()) {
+          const nextHeight = dialog.getBoundingClientRect().height;
+          // Animate real height, keeping the sheet's bottom edge and text size stable as its top moves.
+          if (Math.abs(height - nextHeight) > .5) animateCollapse(dialog, [{ height: `${height}px` }, { height: `${nextHeight}px` }]);
+          animateCollapse(arrow, [{ transform: rotation }, { transform: getComputedStyle(arrow).transform }]);
+          animateCollapse(dialog.querySelector(collapsed ? '.exam-unlocked' : '.exam-locked'), [{ opacity: .4 }, { opacity: 1 }]);
+        }
+        return;
+      }
       const pick = e.target.closest('[data-pick]');
       if (pick) { openSheet(pick.dataset.pick); return; }
       const unlock = e.target.closest('[data-unlock]');
@@ -1171,9 +1220,9 @@ function examDialog(item, c, stats) {
       }
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
-    const mobile = () => dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches);
+    const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);
