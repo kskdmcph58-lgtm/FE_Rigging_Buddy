@@ -988,7 +988,7 @@ function wireLevelRange(box, { min, max, get, show, commit }) {
    click a row, and the keyboard steps it, so a narrow desktop window works as well. */
 const WHEEL_ROW = 32;
 function wheelMarkup(name, label, options, value) {
-  return `<div class="wheel-column"><span class="wheel-caption" id="wheel-${name}">${label}</span><div class="wheel" data-wheel="${name}" role="spinbutton" tabindex="0" aria-labelledby="wheel-${name}" aria-valuemin="${options[0].value}" aria-valuemax="${options.at(-1).value}">${options.map(option => `<span class="wheel-item${option.value === value ? ' selected' : ''}" data-value="${option.value}">${option.label}</span>`).join('')}</div></div>`;
+  return `<div class="wheel-column"><span class="wheel-caption" id="wheel-${name}"${name === 'tier' ? ' hidden' : ''}>${label}</span><div class="wheel" data-wheel="${name}" role="spinbutton" tabindex="0" aria-labelledby="wheel-${name}" aria-valuemin="${options[0].value}" aria-valuemax="${options.at(-1).value}">${options.map(option => `<span class="wheel-item${option.value === value ? ' selected' : ''}" data-value="${option.value}">${option.label}</span>`).join('')}</div></div>`;
 }
 function wireWheel(wheel, { settle }) {
   const items = [...wheel.querySelectorAll('.wheel-item')], values = items.map(item => Number(item.dataset.value));
@@ -1112,7 +1112,7 @@ function examDialog(item, c, stats) {
         track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
         for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
       }
-      if (pickValue('tier')) pickValue('tier').textContent = `到${TIER_LABELS[cap]}`;
+      if (pickValue('tier')) pickValue('tier').innerHTML = `<span class="exam-tier-prefix">到</span><span class="exam-tier-name">${TIER_LABELS[cap]}</span>`;
       if (animate) examAnimate(dialog, filter); else filter();
     };
     // Shows a range on the slider without counting it yet (while a thumb is dragged).

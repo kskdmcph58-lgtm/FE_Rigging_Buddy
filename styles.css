@@ -4733,14 +4733,18 @@ html[data-input-mode="touch"] button.expectation-link {
 .exam-dialog.better-mobile .exam-pick[data-pick="tier"] { flex:none; }
 .exam-pick { display:flex; align-items:center; gap:6px; min-width:0; min-height:44px; margin:0; padding:0 10px; border:1px solid var(--control-line); border-radius:var(--control-radius); background:var(--surface-input); color:var(--text); text-align:left; cursor:pointer; }
 .exam-pick-text { display:flex; align-items:baseline; gap:6px; flex:1; min-width:0; }
+.exam-pick[data-pick="tier"] .exam-pick-text { gap:38px; }
 .exam-pick-label { flex:none; color:var(--muted); font:13px/20px var(--font-ui); }
-.exam-pick[data-pick="tier"] .exam-pick-value { display:grid; flex:none; }
-.exam-pick[data-pick="tier"] .exam-pick-value::after { content:'到最上级'; visibility:hidden; grid-area:1/1; height:0; }
-.exam-pick-value { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:16px/20px var(--font-game); text-align:right; }
-.exam-pick-value.better-level { margin:0; font:400 18px/20px var(--font-level-up); overflow:visible; text-overflow:clip; }
-@media (max-width:420px) { .exam-pick-value { font-size:14px; } .exam-pick-value.better-level { font-size:16px; } .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
+.exam-pick[data-pick="tier"] .exam-pick-value { display:flex; align-items:baseline; justify-content:flex-end; column-gap:.5em; min-width:calc(3.5em + 13px); flex:none; }
+.exam-tier-prefix { font:13px/20px var(--font-ui); }
+.exam-tier-name { text-align:right; }
+.exam-pick-value { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:17px/20px var(--font-game); text-align:right; }
+.exam-pick-value.better-level { margin:0; font:400 19px/20px var(--font-level-up); overflow:visible; text-overflow:clip; }
+@media (max-width:420px) { .exam-pick-value { font-size:15px; } .exam-pick-value.better-level { font-size:17px; } .exam-dialog .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
+@media (max-width:420px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:32px; } }
 @media (max-width:390px) { .exam-pick .exam-pick-chevron { display:none; } }
-@media (max-width:359px) { .exam-pick-value { font-size:12px; } .exam-pick-label { font-size:12px; } .exam-pick-value.better-level { font-size:15px; } .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
+@media (max-width:359px) { .exam-pick-value { font-size:13px; } .exam-pick-label,.exam-tier-prefix { font-size:12px; } .exam-pick-value.better-level { font-size:16px; } .exam-dialog .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
+@media (max-width:359px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:27px; } }
 .exam-pick-chevron { flex:none; align-self:center; width:12px; height:12px; color:var(--muted); }
 .exam-pick:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
 /* The sheet (iOS picker): the wheels side by side, five rows each, the middle row under one shared selection
@@ -4758,7 +4762,8 @@ html[data-input-mode="touch"] button.expectation-link {
 .wheel:is([data-wheel="from"],[data-wheel="to"]) .wheel-item { font:400 20px/1 var(--font-level-up); }
 .wheel:is([data-wheel="from"],[data-wheel="to"]) .wheel-item.selected { color:var(--gold); }
 .wheel-band { position:absolute; left:0; right:0; bottom:calc(var(--wheel-row) * 2); height:var(--wheel-row); border-radius:8px; background:#ffffff14; pointer-events:none; }
-.exam-dialog.better-mobile .exam-col + .exam-col { margin-top:24px; }
+.exam-dialog.better-mobile .exam-col + .exam-col { margin-top:16px; }
+.exam-dialog.better-mobile.exam-locked-collapsed .exam-unlocked { margin-top:4px; }
 .exam-dialog.better-mobile .exam-nodes { display:grid; gap:12px; }
 .exam-dialog.better-mobile .exam-node { display:flex; align-items:flex-start; gap:6px; width:100%; }
 .exam-dialog.better-mobile .exam-node .better-card { flex:none; width:188px; }
