@@ -227,7 +227,16 @@ window.RiggingActions = (() => {
     return true;
   }
 
-  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
+  /* 考试推荐's level range for a person. Only an end the user moved off the full range is kept, so the range
+     follows new 已升级 marks and the level cap where the user left it alone; nothing moved, nothing stored. */
+  function setExamRange(item, { from, to }, { min, max }) {
+    const range = {};
+    if (from !== min) range.from = from;
+    if (to !== max) range.to = to;
+    if (Object.keys(range).length) item.examRange = range; else delete item.examRange;
+  }
+
+  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

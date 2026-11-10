@@ -899,64 +899,273 @@ function examMiniStats(entry) {
     return `<span class="mini-stat ${gain ? 'active more' : loss ? 'less' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}"><span>${stat}</span><b>${text}</b></span>`;
   }).join('')}</span>`;
 }
+/* Filtering and level changes animate like 其他选择 (about 0.2s, nothing under Reduce Motion): cards that stay
+   slide to their new place, cards that go fade out where they stood, new ones fade in. Cards are matched by
+   class and rides, since a level change draws them afresh. */
+function examAnimate(dialog, change) {
+  const frame = dialog.getBoundingClientRect(), before = new Map();
+  for (const node of dialog.querySelectorAll('.exam-node')) if (!node.hidden) before.set(node.dataset.key, { node, box: node.getBoundingClientRect() });
+  change();
+  if (reduceMotion()) return;
+  const shown = new Map([...dialog.querySelectorAll('.exam-node')].filter(node => !node.hidden).map(node => [node.dataset.key, node]));
+  for (const [key, { node, box }] of before) {
+    if (shown.has(key)) continue;
+    const ghost = node.cloneNode(true);
+    ghost.removeAttribute('hidden');
+    ghost.classList.add('better-ghost');
+    Object.assign(ghost.style, { left: `${box.left - frame.left}px`, top: `${box.top - frame.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+    dialog.append(ghost);
+    ghost.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.96)' }], { ...BETTER_MOTION, duration: MOTION.base, fill: 'forwards' }).finished.then(() => ghost.remove(), () => ghost.remove());
+  }
+  for (const [key, node] of shown) {
+    const old = before.get(key)?.box, now = node.getBoundingClientRect();
+    if (!old) node.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], BETTER_MOTION);
+    else if (Math.abs(old.left - now.left) > .5 || Math.abs(old.top - now.top) > .5) node.animate([{ transform: `translate(${old.left - now.left}px, ${old.top - now.top}px)` }, { transform: 'none' }], BETTER_MOTION);
+  }
+}
+/* Desktop level range (macOS slider): a vertical track with two thumbs beside the tier slider, the end level on
+   top as there, each end's level written above and below in the level-up face. Dragging moves a thumb and its
+   number; the cards follow on release. Each thumb is its own slider for the keyboard. */
+function wireLevelRange(box, { min, max, get, show, commit }) {
+  const track = box.querySelector('.level-range');
+  const valueAt = y => { const r = track.getBoundingClientRect(); return Math.round(max - Math.max(0, Math.min(1, (y - r.top) / r.height)) * (max - min)); };
+  let drag = null;
+  const move = y => {
+    const range = { ...get() }, at = valueAt(y);
+    if (drag.end === 'to') range.to = Math.max(range.from, at); else range.from = Math.min(range.to, at);
+    show(range);
+  };
+  track.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const { from, to } = get(), at = valueAt(e.clientY);
+    // The nearer thumb; on a tie (both thumbs on one level) the side the pointer is on.
+    const end = from === to ? (at >= to ? 'to' : 'from') : Math.abs(at - to) <= Math.abs(at - from) ? 'to' : 'from';
+    box.querySelector(`[data-thumb="${end}"]`).focus({ preventScroll: true });
+    track.setPointerCapture(e.pointerId); track.classList.add('level-dragging');
+    drag = { end };
+    move(e.clientY);
+  });
+  track.addEventListener('pointermove', e => { if (drag) move(e.clientY); });
+  const release = () => { if (!drag) return; drag = null; track.classList.remove('level-dragging'); commit(get()); };
+  track.addEventListener('pointerup', release);
+  track.addEventListener('pointercancel', release);
+  for (const thumb of box.querySelectorAll('[data-thumb]')) thumb.addEventListener('keydown', e => {
+    const end = thumb.dataset.thumb, range = { ...get() }, value = range[end];
+    const next = { ArrowUp: value + 1, ArrowRight: value + 1, ArrowDown: value - 1, ArrowLeft: value - 1, PageUp: value + 10, PageDown: value - 10, Home: min, End: max }[e.key];
+    if (next === undefined) return;
+    e.preventDefault(); e.stopPropagation();
+    if (end === 'to') range.to = Math.max(range.from, Math.min(max, next)); else range.from = Math.max(min, Math.min(range.to, next));
+    show(range); commit(range);
+  });
+}
+/* Phones (iOS picker): one wheel per value (阶级, or 开始 and 结束) side by side under one selection band. Each
+   column scrolls and snaps on its own; when it settles, its value counts. A mouse can scroll it, drag it or
+   click a row, and the keyboard steps it, so a narrow desktop window works as well. */
+const WHEEL_ROW = 32;
+function wheelMarkup(name, label, options, value) {
+  return `<div class="wheel-column"><span class="wheel-caption" id="wheel-${name}">${label}</span><div class="wheel" data-wheel="${name}" role="spinbutton" tabindex="0" aria-labelledby="wheel-${name}" aria-valuemin="${options[0].value}" aria-valuemax="${options.at(-1).value}">${options.map(option => `<span class="wheel-item${option.value === value ? ' selected' : ''}" data-value="${option.value}">${option.label}</span>`).join('')}</div></div>`;
+}
+function wireWheel(wheel, { settle }) {
+  const items = [...wheel.querySelectorAll('.wheel-item')], values = items.map(item => Number(item.dataset.value));
+  const clampIndex = index => Math.max(0, Math.min(items.length - 1, index));
+  const indexOf = value => Math.max(0, values.indexOf(value));
+  const current = () => clampIndex(Math.round(wheel.scrollTop / WHEEL_ROW));
+  const mark = index => {
+    items.forEach((item, i) => item.classList.toggle('selected', i === index));
+    wheel.setAttribute('aria-valuenow', String(values[index]));
+    wheel.setAttribute('aria-valuetext', items[index].textContent);
+  };
+  let timer = 0, quiet = false, drag = null, moved = false;
+  // Moves the wheel to a value; a quiet move (from the program) does not count as the user's choice.
+  const go = (value, smooth) => {
+    const top = indexOf(value) * WHEEL_ROW;
+    mark(indexOf(value));
+    if (Math.abs(wheel.scrollTop - top) < 1) return;
+    quiet = !smooth;
+    wheel.scrollTo({ top, behavior: smooth && !reduceMotion() ? 'smooth' : 'auto' });
+  };
+  wheel.addEventListener('scroll', () => {
+    mark(current());
+    clearTimeout(timer);
+    if (quiet) { if (Math.abs(wheel.scrollTop - current() * WHEEL_ROW) < 1) quiet = false; return; }
+    if (!drag) timer = setTimeout(() => settle(values[current()]), 140);
+  });
+  wheel.addEventListener('click', e => { const item = e.target.closest('.wheel-item'); if (item && !moved) go(Number(item.dataset.value), true); });
+  wheel.addEventListener('keydown', e => {
+    // From the row shown, which may be ahead of the value still settling.
+    const index = indexOf(Number(wheel.getAttribute('aria-valuenow'))), next = { ArrowUp: index - 1, ArrowDown: index + 1, PageUp: index - 5, PageDown: index + 5, Home: 0, End: items.length - 1 }[e.key];
+    if (next === undefined) return;
+    e.preventDefault(); e.stopPropagation();
+    go(values[clampIndex(next)], true);
+  });
+  // Touch scrolls natively; a mouse drags the column the same way.
+  wheel.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = { y: e.clientY, top: wheel.scrollTop, id: e.pointerId }; moved = false;
+  });
+  // Captured only once it really drags, so a plain click still lands on its row.
+  wheel.addEventListener('pointermove', e => {
+    if (!drag) return;
+    if (!moved && Math.abs(e.clientY - drag.y) > 3) { moved = true; wheel.setPointerCapture(drag.id); wheel.classList.add('wheel-dragging'); }
+    if (moved) wheel.scrollTop = drag.top - (e.clientY - drag.y);
+  });
+  const release = () => {
+    if (!drag) return;
+    drag = null;
+    wheel.classList.remove('wheel-dragging');
+    if (!moved) return;
+    // Snap to the nearest row; a drag that already ends on one scrolls no further, so it counts from here.
+    go(values[current()], true);
+    clearTimeout(timer);
+    timer = setTimeout(() => settle(values[current()]), 200);
+  };
+  wheel.addEventListener('pointerup', release);
+  wheel.addEventListener('pointercancel', release);
+  return { go };
+}
 function examDialog(item, c, stats) {
   return new Promise(resolve => {
-    const actions = window.RiggingActions, highest = stats.part3 || state.part3 === true || c.part3Only === true ? 5 : 3;
+    const actions = window.RiggingActions, seed = window.RiggingSeed, highest = stats.part3 || state.part3 === true || c.part3Only === true ? 5 : 3;
     const icon = name => `<img src="assets/classes/${window.PROFESSIONS.icons[name]}.png${ICON_QUERY}" alt="" draggable="false">`;
     const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
-    const entries = stats.entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id) }));
+    const counted = stats.levels.length > 0, ranged = counted && stats.min < stats.max;
+    let range = counted ? seed.examRange(item, stats) : { from: null, to: null };
+    let entries = [];
+    const compute = () => {
+      entries = counted ? seed.examEntries(stats, range.from, range.to).entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id), key: encodeURIComponent(`${entry.profession}|${JSON.stringify(entry.rides)}`) })) : [];
+    };
+    compute();
     const node = (entry, unlocked) => {
       const base = window.PROFESSIONS.base.includes(entry.profession);
       const toggle = base ? '' : `<button type="button" class="exam-unlock" data-unlock="${entry.profession}" aria-pressed="${unlocked}">${unlocked ? '取消已解锁' : '标为已解锁'}</button>`;
-      return `<div class="better-node exam-node" data-tier="${entry.tier}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry"><span class="better-class">${icon(entry.profession)}<span class="game-text">${entry.profession}</span></span>${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
+      return `<div class="better-node exam-node" data-tier="${entry.tier}" data-key="${entry.key}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry"><span class="better-class">${icon(entry.profession)}<span class="game-text">${entry.profession}</span></span>${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
     };
     const column = unlocked => {
       const list = entries.filter(entry => actions.classUnlocked(item, entry.profession) === unlocked);
-      return `<h3 class="better-caption">${unlocked ? '已解锁' : '未解锁'}</h3><div class="exam-nodes">${list.map(entry => node(entry, unlocked)).join('')}</div><p class="better-none exam-none" hidden>${unlocked ? '没有已解锁的职业' : '没有未解锁的职业'}</p>`;
+      const none = !counted && !unlocked ? '没有可以统计的预测' : unlocked ? '没有已解锁的职业' : '没有未解锁的职业';
+      return `<h3 class="better-caption">${unlocked ? '已解锁' : '未解锁'}</h3><div class="exam-nodes">${list.map(entry => node(entry, unlocked)).join('')}</div><p class="better-none exam-none" hidden>${none}</p>`;
     };
-    const kept = tier => entries.filter(entry => entry.tier <= tier).length;
-    const filterable = new Set(entries.map(entry => entry.tier)).size > 1;
-    const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="exam-tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="exam-tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${highest + 1}"><span class="tier-track"><span class="tier-fill"></span></span>${Array.from({ length: highest + 1 }, (_, i) => highest - i).map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
-    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter exam-mobile-filter"><span>筛选</span><select aria-label="筛选职业等级">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
-    const range = stats.rows ? `${levelLabel(item, stats.from)}–${levelLabel(item, stats.to)}，共 ${stats.rows} 级` : '没有可以统计的预测';
+    // The tier filter shows when the full range spans two tiers or more, so a level change never removes it.
+    const filterable = counted && new Set(seed.examEntries(stats, stats.min, stats.max).entries.map(entry => entry.tier)).size > 1;
+    const stopsDown = Array.from({ length: highest + 1 }, (_, i) => highest - i);
+    // 阶级: the game's own word for the class tiers (考试菜单 MID_ClassTrialMenu_JobRank).
+    const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="exam-tier-caption">阶级</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="exam-tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${highest + 1}"><span class="tier-track"><span class="tier-fill"></span></span>${stopsDown.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true"></small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
+    const level = value => levelLabel(item, value);
+    const thumb = (end, label) => `<span class="level-thumb" data-thumb="${end}" role="slider" tabindex="0" aria-label="${label}" aria-orientation="vertical" aria-valuemin="${stats.min}" aria-valuemax="${stats.max}"></span>`;
+    // The two levels stand to the right of the track, end at its top and start at its bottom, and stay there.
+    const levelSlider = !ranged ? '' : `<div class="exam-levels"><h3 class="better-caption">等级</h3><div class="level-body"><div class="level-range"><span class="level-track"><span class="level-fill"></span></span>${thumb('to', '结束等级')}${thumb('from', '开始等级')}</div><div class="level-values"><span class="better-level exam-level-value" data-end="to"></span><span class="better-level exam-level-value" data-end="from"></span></div></div></div>`;
+    let cap = filterable ? Math.min(seed.recommendCap(state, highest === 5), highest) : highest;
+    const levelOptions = counted ? stats.levels.map(row => ({ value: row.level, label: level(row.level) })) : [];
+    // Narrow layout: two compact buttons showing the choice; each opens its wheels in a bottom sheet.
+    const chevron = '<svg class="exam-pick-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span>${chevron}</button>` : ''}</div>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog exam-dialog';
     animateMobilePickerClose(dialog);
     const stack = createPickerStack();
     stack.add(dialog);
     dialog.setAttribute('aria-labelledby', 'exam-title');
-    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2><p>${range}</p></header><div class="exam-map"><aside class="exam-side">${mobileFilter}${slider}</aside><section class="exam-col exam-locked"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
+    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2></header><div class="exam-map"><aside class="exam-side"><div class="exam-filters">${slider}${levelSlider}</div>${picks}</aside><section class="exam-col exam-locked"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
     const track = dialog.querySelector('.tier-slider');
-    let cap = filterable ? Math.min(window.RiggingSeed.recommendCap(state, highest === 5), highest) : highest;
-    const draw = () => {
-      dialog.querySelector('.exam-locked').innerHTML = column(false);
-      dialog.querySelector('.exam-unlocked').innerHTML = column(true);
-      filter();
-    };
     const filter = () => {
       for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
       for (const col of dialog.querySelectorAll('.exam-col')) col.querySelector('.exam-none').hidden = Boolean(col.querySelector('.exam-node:not([hidden])'));
     };
-    const setCap = value => {
+    const draw = () => {
+      dialog.querySelector('.exam-locked').innerHTML = column(false);
+      dialog.querySelector('.exam-unlocked').innerHTML = column(true);
+      // How many cards each tier stop keeps, in the levels now chosen.
+      if (track) for (const stop of track.querySelectorAll('.tier-stop')) stop.querySelector('.tier-count').textContent = String(entries.filter(entry => entry.tier <= Number(stop.dataset.tier)).length);
+      filter();
+    };
+    const pickValue = name => dialog.querySelector(`[data-pick-value="${name}"]`);
+    const setCap = (value, animate = true) => {
       cap = Math.max(0, Math.min(highest, value));
-      const select = dialog.querySelector('.exam-mobile-filter select');
-      if (select) select.value = String(cap);
       if (track) {
         track.style.setProperty('--at', String(highest - cap));
         track.setAttribute('aria-valuenow', String(cap));
         track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
         for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
       }
-      filter();
+      if (pickValue('tier')) pickValue('tier').textContent = `到${TIER_LABELS[cap]}`;
+      if (animate) examAnimate(dialog, filter); else filter();
+    };
+    // Shows a range on the slider without counting it yet (while a thumb is dragged).
+    const levels = dialog.querySelector('.exam-levels');
+    let shown = { ...range };
+    const showRange = next => {
+      shown = { ...next };
+      if (pickValue('levels')) pickValue('levels').textContent = next.from === next.to ? level(next.from) : `${level(next.from)}–${level(next.to)}`;
+      if (!levels) return;
+      const at = value => (value - stats.min) / (stats.max - stats.min);
+      levels.style.setProperty('--lo', String(at(next.from)));
+      levels.style.setProperty('--hi', String(at(next.to)));
+      for (const end of ['from', 'to']) {
+        levels.querySelector(`.exam-level-value[data-end="${end}"]`).textContent = level(next[end]);
+        const knob = levels.querySelector(`[data-thumb="${end}"]`);
+        knob.setAttribute('aria-valuenow', String(next[end]));
+        knob.setAttribute('aria-valuetext', level(next[end]));
+      }
+    };
+    const commitRange = next => {
+      showRange(next);
+      if (next.from === range.from && next.to === range.to) return;
+      range = { ...next };
+      actions.setExamRange(item, range, stats);
+      examAnimate(dialog, () => { compute(); draw(); });
     };
     if (track) wireTierSlider(track, highest, () => cap, setCap);
-    dialog.querySelector('.exam-mobile-filter select')?.addEventListener('change', e => setCap(Number(e.target.value)));
+    if (levels) wireLevelRange(levels, { min: stats.min, max: stats.max, get: () => shown, show: showRange, commit: commitRange });
+    /* The sheet (iOS picker in a bottom sheet): its wheels side by side under one selection band. The wheels
+       only pick; 完成 applies the choice, and closing any other way leaves it as it was. */
+    const openSheet = name => {
+      const tier = name === 'tier';
+      const sheet = document.createElement('dialog');
+      sheet.className = 'app-dialog ride-picker exam-wheel-sheet';
+      animateMobilePickerClose(sheet);
+      stack.add(sheet);
+      sheet.setAttribute('aria-labelledby', 'exam-sheet-title');
+      const wheels = tier ? wheelMarkup('tier', '阶级', TIER_LABELS.slice(0, highest + 1).map((label, t) => ({ value: t, label })), cap)
+        : wheelMarkup('from', '开始', levelOptions, range.from) + wheelMarkup('to', '结束', levelOptions, range.to);
+      sheet.innerHTML = `<div class="ride-titlebar"><h2 id="exam-sheet-title">${tier ? '阶级' : '等级'}</h2></div><div class="exam-wheels">${wheels}<span class="wheel-band" aria-hidden="true"></span></div><div class="profession-footer"><button type="button" class="primary" data-done>完成</button></div>`;
+      const wheelOf = key => sheet.querySelector(`.wheel[data-wheel="${key}"]`);
+      let pickedCap = cap, picked = { ...range }, wheelFrom = null, wheelTo = null;
+      const wheelTier = tier ? wireWheel(wheelOf('tier'), { settle: value => { pickedCap = value; } }) : null;
+      if (!tier) {
+        // A start past the end (or an end before the start) takes the other wheel with it, as iOS date wheels do.
+        wheelFrom = wireWheel(wheelOf('from'), { settle: value => {
+          picked = { from: value, to: Math.max(value, picked.to) };
+          wheelTo.go(picked.to, false);
+        } });
+        wheelTo = wireWheel(wheelOf('to'), { settle: value => {
+          picked = { from: Math.min(value, picked.from), to: value };
+          wheelFrom.go(picked.from, false);
+        } });
+      }
+      let done = false;
+      sheet.addEventListener('click', e => { if (e.target.closest('[data-done]')) { done = true; sheet.close(); } });
+      sheet.addEventListener('close', () => {
+        retireDialog(sheet);
+        if (done) { if (tier) { if (pickedCap !== cap) setCap(pickedCap); } else commitRange(picked); }
+        if (!stack.closing && !UI_MEDIA.coarseInput.matches) dialog.querySelector(`[data-pick="${name}"]`)?.focus({ preventScroll: true });
+      }, { once: true });
+      document.body.append(sheet);
+      sheet.showModal();
+      // Wheels find their rows once laid out.
+      wheelTier?.go(cap, false); wheelFrom?.go(range.from, false); wheelTo?.go(range.to, false);
+      // Touch opens with nothing ringed (as the dialog itself does); keyboard and mouse land on the first wheel.
+      if (UI_MEDIA.coarseInput.matches) { sheet.tabIndex = -1; sheet.style.outline = 'none'; sheet.focus({ preventScroll: true }); }
+      else wheelOf(tier ? 'tier' : 'from')?.focus({ preventScroll: true });
+    };
     dialog.addEventListener('click', e => {
+      const pick = e.target.closest('[data-pick]');
+      if (pick) { openSheet(pick.dataset.pick); return; }
       const unlock = e.target.closest('[data-unlock]');
       if (unlock) {
         const name = unlock.dataset.unlock;
         actions.setClassUnlocked(item, name, !actions.classUnlocked(item, name));
-        draw();
+        examAnimate(dialog, draw);
         dialog.querySelector(`[data-unlock="${CSS.escape(name)}"]`)?.focus({ preventScroll: true });
         return;
       }
@@ -967,7 +1176,8 @@ function examDialog(item, c, stats) {
     dialog.addEventListener('close', () => { window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
-    setCap(cap);
+    setCap(cap, false);
+    showRange(range);
     document.body.append(dialog);
     dialog.showModal();
     if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }

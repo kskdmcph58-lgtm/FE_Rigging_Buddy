@@ -2907,6 +2907,23 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     margin-left: 2px;
     font-size: 12px;
   }
+  /* ≥ over the %, centred on it. Drawn out of flow so it never widens the column or moves 及格率. */
+  .summary-page .queue-exam-ge {
+    grid-area: 1 / 2;
+    align-self: stretch;
+    justify-self: stretch;
+    position: relative;
+    margin-left: 2px;
+  }
+  .summary-page .queue-exam-ge::before {
+    content: '≥';
+    position: absolute;
+    inset: 0 auto auto 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    line-height: 16px;
+    opacity: .85;
+  }
   /* Anchor records carry their mark where a forecast carries its pass rate, in the card's own colour. */
   .summary-page .record-chip .anchor-mark {
     position: absolute;
@@ -4657,11 +4674,25 @@ html[data-input-mode="touch"] button.expectation-link {
    the passed ones, each column most gain first. The body scrolls; the dialog keeps a
    fixed width so marking a class does not resize it. */
 .better-dialog.exam-dialog { width:min(1400px,calc(100% - 32px)); max-width:calc(100% - 32px); }
-.exam-dialog header p { margin:4px 0 0; color:var(--muted); font:12px/16px var(--font-ui); }
-.exam-map { display:grid; grid-template-columns:130px minmax(0,1fr) 400px; align-items:start; gap:28px; flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; padding:20px 24px; }
+.exam-map { display:grid; grid-template-columns:auto minmax(0,1fr) 400px; align-items:start; gap:28px; flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; padding:20px 24px; }
 .exam-side { position:sticky; top:0; display:grid; gap:8px; }
 .exam-side .tier-filter { margin-top:0; padding-top:0; border-top:0; }
-.exam-dialog.better-mobile .exam-side:empty { display:none; }
+/* Desktop filters side by side: the tier slider, then the level range (macOS slider: a track, a gold span
+   between two thumbs, each end's level above and below it in the level-up face). */
+.exam-filters { display:flex; align-items:flex-start; gap:28px; }
+.exam-levels { display:grid; gap:8px; }
+/* The levels stand right of the track and stay put: the end beside its top, the start beside its bottom. */
+.level-body { display:grid; grid-template-columns:28px auto; column-gap:10px; }
+.level-values { display:flex; flex-direction:column; justify-content:space-between; }
+.exam-levels .better-level { margin:0; min-width:4.2em; font-size:20px; line-height:20px; white-space:nowrap; }
+.level-range { --thumb:20px; position:relative; width:28px; height:clamp(160px, calc(100dvh - 440px), 340px); cursor:pointer; touch-action:none; user-select:none; }
+.level-track { position:absolute; left:12px; top:calc(var(--thumb) / 2); bottom:calc(var(--thumb) / 2); width:4px; border-radius:2px; background:var(--line); }
+.level-fill { position:absolute; left:0; right:0; top:calc((1 - var(--hi)) * 100%); bottom:calc(var(--lo) * 100%); border-radius:inherit; background:var(--gold); opacity:.75; }
+.level-thumb { position:absolute; left:4px; box-sizing:border-box; width:var(--thumb); height:var(--thumb); border-radius:50%; background:var(--gold); border:3px solid var(--surface-dialog); box-shadow:0 0 0 1px var(--gold),0 2px 6px #0008; outline:none; }
+.level-thumb[data-thumb="to"] { top:calc((1 - var(--hi)) * (100% - var(--thumb))); }
+.level-thumb[data-thumb="from"] { top:calc((1 - var(--lo)) * (100% - var(--thumb))); }
+.level-thumb:focus-visible { box-shadow:0 0 0 1px var(--gold),0 0 0 4px #d8c39466,0 2px 6px #0008; }
+.exam-picks { display:none; }
 .exam-col { display:grid; align-content:start; gap:16px; min-width:0; }
 .exam-unlocked .better-caption { color:var(--muted); }
 .exam-none[hidden] { display:none; }
@@ -4683,10 +4714,38 @@ html[data-input-mode="touch"] button.expectation-link {
 .exam-dialog button.exam-unlock { justify-self:start; width:auto; min-height:28px; margin-top:2px; padding:2px 10px; border-radius:8px; font:12px/16px var(--font-ui); }
 .exam-dialog button.exam-unlock[aria-pressed="true"] { color:var(--muted); }
 /* Narrow windows: one column, the filter as a menu, passed classes after the rest. */
+/* A narrow layout in a wide window stays a column, not stretched; phones keep the full-width sheet. */
+@media (min-width:601px) { .better-dialog.exam-dialog.better-mobile { width:min(560px,calc(100% - 24px)); max-width:calc(100% - 24px); } }
 .exam-dialog.better-mobile .exam-map { display:block; padding:12px 16px 20px; overflow-x:hidden; overflow-y:auto; }
 .exam-dialog.better-mobile .exam-side { position:static; margin-bottom:16px; }
-.exam-dialog.better-mobile .exam-side .tier-filter { display:none; }
-.exam-dialog.better-mobile .exam-mobile-filter { grid-column:auto; display:grid; gap:4px; padding:0; color:var(--muted); font:13px/18px var(--font-ui); }
+.exam-dialog.better-mobile .exam-filters { display:none; }
+/* Phones and narrow windows: two compact buttons show the choice; each opens its wheels in a bottom sheet. */
+.exam-dialog.better-mobile .exam-picks { display:flex; gap:8px; }
+/* 阶级 keeps only what it needs, so 等级 has room for its widest range (LV +98–LV +99). */
+.exam-dialog.better-mobile .exam-pick { flex:1 1 0; }
+.exam-dialog.better-mobile .exam-pick[data-pick="tier"] { flex:none; }
+.exam-pick { display:flex; align-items:center; gap:6px; min-width:0; min-height:44px; margin:0; padding:0 10px; border:1px solid var(--control-line); border-radius:var(--control-radius); background:var(--surface-input); color:var(--text); text-align:left; cursor:pointer; }
+.exam-pick-label { flex:none; color:var(--muted); font:13px/18px var(--font-ui); }
+.exam-pick-value { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:16px/20px var(--font-game); text-align:right; }
+.exam-pick-value.better-level { margin:0; font:400 18px/20px var(--font-level-up); overflow:visible; text-overflow:clip; }
+@media (max-width:359px) { .exam-pick-value { font-size:14px; } .exam-pick-value.better-level { font-size:15px; } .exam-pick { padding:0 8px; } .exam-pick-chevron { display:none; } }
+.exam-pick-chevron { flex:none; width:12px; height:12px; color:var(--muted); }
+.exam-pick:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+/* The sheet (iOS picker): the wheels side by side, five rows each, the middle row under one shared selection
+   band; rows fade toward the edges. Level rows use the level-up face, the chosen one gold. */
+@media (min-width:601px) { .app-dialog.ride-picker.exam-wheel-sheet { width:min(400px,calc(100vw - 24px)); } }
+.exam-wheel-sheet .exam-wheels { margin:12px 16px 16px; --wheel-row:32px; position:relative; display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); column-gap:4px; }
+.wheel-column { position:relative; z-index:1; display:grid; min-width:0; }
+.wheel-caption { margin-bottom:4px; color:var(--muted); font:12px/16px var(--font-ui); text-align:center; }
+.wheel { box-sizing:border-box; height:calc(var(--wheel-row) * 5); padding-block:calc(var(--wheel-row) * 2); overflow-y:auto; overscroll-behavior:contain; scroll-snap-type:y mandatory; scrollbar-width:none; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 65%,transparent); mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 65%,transparent); border-radius:8px; outline:none; cursor:grab; touch-action:pan-y; user-select:none; }
+.wheel::-webkit-scrollbar { display:none; }
+.wheel.wheel-dragging { cursor:grabbing; scroll-snap-type:none; }
+.wheel:focus-visible { box-shadow:inset 0 0 0 2px var(--gold); }
+.wheel-item { display:flex; align-items:center; justify-content:center; height:var(--wheel-row); scroll-snap-align:center; color:var(--muted); font:16px/1 var(--font-game); white-space:nowrap; transition:color var(--motion-medium); }
+.wheel-item.selected { color:var(--text); }
+.wheel:is([data-wheel="from"],[data-wheel="to"]) .wheel-item { font:400 20px/1 var(--font-level-up); }
+.wheel:is([data-wheel="from"],[data-wheel="to"]) .wheel-item.selected { color:var(--gold); }
+.wheel-band { position:absolute; left:0; right:0; bottom:calc(var(--wheel-row) * 2); height:var(--wheel-row); border-radius:8px; background:#ffffff14; pointer-events:none; }
 .exam-dialog.better-mobile .exam-col + .exam-col { margin-top:24px; }
 .exam-dialog.better-mobile .exam-nodes { display:grid; gap:12px; }
 .exam-dialog.better-mobile .exam-node { display:flex; align-items:flex-start; gap:6px; width:100%; }

@@ -172,6 +172,13 @@ window.RiggingModel = (() => {
         if (new Set(item.unlockedClasses).size !== item.unlockedClasses.length || item.unlockedClasses.some(name => !window.PROFESSIONS.names.includes(name))) throw Error('已解锁兵种不正确');
         if (!item.unlockedClasses.length) delete item.unlockedClasses;
       }
+      // 考试推荐's level range: either end may be left out (the full range there), never both.
+      if (item.examRange !== undefined) {
+        const r = item.examRange, level = v => v === undefined || (Number.isInteger(v) && v >= 1 && v <= 99);
+        if (!r || typeof r !== 'object' || Array.isArray(r) || Object.keys(r).some(key => !['from', 'to'].includes(key)) || !level(r.from) || !level(r.to)
+          || (r.from !== undefined && r.to !== undefined && r.from > r.to)) throw Error('考试推荐等级范围不正确');
+        if (r.from === undefined && r.to === undefined) delete item.examRange;
+      }
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
       ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed);

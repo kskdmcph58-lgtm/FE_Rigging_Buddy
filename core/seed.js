@@ -100,40 +100,60 @@ window.RiggingSeed = (() => {
   }
 
   /* 考试推荐: which classes beat the forecast most, to take their exam first. The rows are those after the
-     newest 已升级 (or all of them) up to the level cap, skipped rows left out. An option is a class with one
-     ride at one friendship level. Its points are the rows where it beats the row's class (betterChoices); on
-     those rows only, what each stat gains over the row and what it loses are summed apart, a +2 counting 2.
-     A row's 强烈推荐 are its better choices with the most points; strong counts those rows.
-     Within one class an option goes when another is at least as good everywhere (every gain as high, every
-     loss as low, as many rows and strong rows) and better somewhere; options that come out the same share one entry.
-     Runs a slice at a time so the page can show progress. */
+     newest 已升级 (or all of them) up to the level cap, skipped rows left out; the user may narrow them to a
+     level range within that. An option is a class with one ride at one friendship level. Its points are the
+     rows where it beats the row's class (betterChoices); on those rows only, what each stat gains over the
+     row and what it loses are summed apart, a +2 counting 2. A row's 强烈推荐 are its better choices with
+     the most points; strong counts those rows. Within one class an option goes when another is at least as
+     good everywhere (every gain as high, every loss as low, as many rows and strong rows) and better
+     somewhere; options that come out the same share one entry.
+     examStats runs the slow part once, a slice at a time so the page can show progress: every level's better
+     choices and their differences. examEntries then sums any level range of it at once. */
   async function examStats(state, item, c, { onProgress } = {}) {
     if (!ready() || !item.seed || !eligible(item, c) || hasCorrection(item)) return null;
     const all = queueRows(state, item, c, 0, Infinity);
     const start = all.findLastIndex(row => row.status === 'upgraded') + 1;
     const rows = all.slice(start).filter(row => row.status === 'normal');
     const amount = (r, stat) => r.plus2.includes(stat) ? 2 : r.stats.includes(stat) ? 1 : 0;
-    const options = new Map();
+    const points = r => r.stats.length + r.plus2.length;
+    const levels = [];
     let slice = Date.now();
     for (const [n, row] of rows.entries()) {
-      const choices = betterChoices(state, item, c, row), points = r => r.stats.length + r.plus2.length;
+      const choices = betterChoices(state, item, c, row);
       // 强烈推荐: the choices that raise the most points on this level, one or several.
       const most = Math.max(...choices.map(points));
-      for (const choice of choices) {
-        const key = `${choice.profession}|${choice.ride?.id ?? ''}|${choice.ride?.level ?? 0}`;
-        if (!options.has(key)) options.set(key, { profession: choice.profession, ride: choice.ride, count: 0, strong: 0, levels: [], gain: model.stats.map(() => 0), loss: model.stats.map(() => 0) });
-        const option = options.get(key);
-        option.count++; option.levels.push(row.displayLevel);
-        if (points(choice) === most) option.strong++;
-        model.stats.forEach((stat, i) => {
-          const diff = amount(choice, stat) - amount(row, stat);
-          if (diff > 0) option.gain[i] += diff; else option.loss[i] -= diff;
-        });
-      }
+      levels.push({ level: row.displayLevel, options: choices.map(choice => {
+        const diff = model.stats.map(stat => amount(choice, stat) - amount(row, stat));
+        return { key: `${choice.profession}|${choice.ride?.id ?? ''}|${choice.ride?.level ?? 0}`, profession: choice.profession, ride: choice.ride, strong: points(choice) === most,
+          gain: diff.map(d => Math.max(0, d)), loss: diff.map(d => Math.max(0, -d)) };
+      }) });
       if (Date.now() - slice > 12) {
         onProgress?.({ ratio: (n + 1) / rows.length });
         await new Promise(resolve => setTimeout(resolve));
         slice = Date.now();
+      }
+    }
+    return { levels, min: levels[0]?.level ?? null, max: levels.at(-1)?.level ?? null, part3: rows.some(row => row.part3) };
+  }
+  // The user's level range for a person, kept inside what examStats found; null ends mean the full range.
+  function examRange(item, stats) {
+    const saved = item.examRange || {}, clamp = value => Math.max(stats.min, Math.min(stats.max, value));
+    const from = clamp(saved.from ?? stats.min), to = clamp(saved.to ?? stats.max);
+    return from <= to ? { from, to } : { from: stats.min, to: stats.max };
+  }
+  function examEntries(stats, from, to) {
+    const options = new Map();
+    let rows = 0;
+    for (const { level, options: list } of stats.levels) {
+      if (level < from || level > to) continue;
+      rows++;
+      for (const choice of list) {
+        if (!options.has(choice.key)) options.set(choice.key, { profession: choice.profession, ride: choice.ride, count: 0, strong: 0, gain: model.stats.map(() => 0), loss: model.stats.map(() => 0) });
+        const option = options.get(choice.key);
+        option.count++;
+        if (choice.strong) option.strong++;
+        choice.gain.forEach((v, i) => { option.gain[i] += v; });
+        choice.loss.forEach((v, i) => { option.loss[i] += v; });
       }
     }
     const atLeast = (a, b) => a.count >= b.count && a.strong >= b.strong && a.gain.every((v, i) => v >= b.gain[i]) && a.loss.every((v, i) => v <= b.loss[i]);
@@ -160,7 +180,7 @@ window.RiggingSeed = (() => {
       }
     }
     entries.sort((a, b) => b.gainTotal - a.gainTotal || a.lossTotal - b.lossTotal || b.count - a.count);
-    return { rows: rows.length, from: rows[0]?.displayLevel ?? null, to: rows.at(-1)?.displayLevel ?? null, part3: rows.some(row => row.part3), entries };
+    return { rows, entries };
   }
 
   // Null when the class is unknown, so nothing can be calculated for this row.
@@ -556,6 +576,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, examStats, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, examStats, examRange, examEntries, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

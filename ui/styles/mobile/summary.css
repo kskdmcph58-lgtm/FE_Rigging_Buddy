@@ -608,6 +608,9 @@
   #app.summary-page.m-board .record-chip .queue-exam-label { grid-area: 1 / 1; font-size: 11px; line-height: 14px; opacity: .85; }
   #app.summary-page.m-board .record-chip .queue-exam-rate b { grid-area: 2 / 1; font: 400 22px/1 var(--font-number); }
   #app.summary-page.m-board .record-chip .queue-exam-percent { grid-area: 2 / 2; margin-left: 2px; font-size: 11px; }
+  /* ≥ over the %, centred on it, out of flow so 及格率 and the digits keep their places. */
+  #app.summary-page.m-board .record-chip .queue-exam-ge { grid-area: 1 / 2; align-self: stretch; justify-self: stretch; position: relative; margin-left: 2px; }
+  #app.summary-page.m-board .record-chip .queue-exam-ge::before { content: '≥'; position: absolute; inset: 0 auto auto 50%; transform: translateX(-50%); font-size: 11px; line-height: 14px; opacity: .85; }
   #app.summary-page.m-board .record-chip>.anchor-mark {
     display: grid;
     justify-items: center;
