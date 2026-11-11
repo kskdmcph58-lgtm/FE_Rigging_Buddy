@@ -4676,8 +4676,9 @@ html[data-input-mode="touch"] button.expectation-link {
 .better-mobile .better-root { display:grid; grid-template-columns:156px minmax(0,1fr); grid-template-rows:auto 1fr; column-gap:6px; row-gap:12px; align-items:start; }
 .better-mobile .better-root>.better-card { grid-row:1 / span 2; }
 .better-mobile .better-root>.better-ridebox { grid-column:2; }
-.better-mobile .better-mobile-filter { grid-column:2; display:grid; gap:4px; padding:0 2px; color:var(--muted); font:13px/18px var(--font-ui); }
-.better-mobile-filter select { width:100%; min-height:44px; padding:6px 10px; border:1px solid var(--control-line); border-radius:var(--control-radius); background:var(--surface-input); color:var(--text); font:13px/20px var(--font-ui); }
+.better-mobile .better-mobile-filter { grid-column:2; display:grid; gap:4px; color:var(--muted); font:13px/18px var(--font-ui); }
+/* Fills the column under the class box: 阶级 at the left, the tier at the right beside the arrow. */
+.better-mobile-filter .exam-pick-text { justify-content:space-between; }
 .better-mobile .better-entry { min-width:0; }
 .better-mobile .better-side-others :is(.better-rides,.better-pick) { display:none !important; }
 .better-mobile .better-root .better-rides { margin-left:0; padding-left:0; border-left:0; }
@@ -4762,10 +4763,10 @@ html[data-input-mode="touch"] button.expectation-link {
 .exam-tier-name { text-align:right; }
 .exam-pick-value { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:17px/20px var(--font-game); text-align:right; }
 .exam-pick-value.better-level { margin:0; font:400 19px/20px var(--font-level-up); overflow:visible; text-overflow:clip; }
-@media (max-width:420px) { .exam-pick-value { font-size:15px; } .exam-pick-value.better-level { font-size:17px; } .exam-dialog .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
+@media (max-width:420px) { .exam-pick-value { font-size:15px; } .exam-pick-value.better-level { font-size:17px; } .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
 @media (max-width:420px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:32px; } }
 @media (max-width:390px) { .exam-pick .exam-pick-chevron { display:none; } }
-@media (max-width:359px) { .exam-pick-value { font-size:13px; } .exam-pick-label,.exam-tier-prefix { font-size:12px; } .exam-pick-value.better-level { font-size:16px; } .exam-dialog .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
+@media (max-width:359px) { .exam-pick-value { font-size:13px; } .exam-pick-label,.exam-tier-prefix { font-size:12px; } .exam-pick-value.better-level { font-size:16px; } .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
 @media (max-width:359px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:27px; } }
 .exam-pick-chevron { flex:none; align-self:center; width:12px; height:12px; color:var(--muted); }
 .exam-pick:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }

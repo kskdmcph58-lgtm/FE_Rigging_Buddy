@@ -388,6 +388,34 @@ function miniStats(stats, plus2, base = null) {
    a box beside it listing the classes that give it and their rides. The layout (layoutBetter) keeps every
    stat card in view without scrolling the dialog; only a class box that cannot fit scrolls inside itself. */
 const TIER_LABELS = ['基础', '初级', '中级', '上级', '最上级', '神将'];
+// The phone pick button's arrow, shared by 其他选择 and 考试推荐.
+const PICK_CHEVRON = '<svg class="exam-pick-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+// What a phone tier button shows: 到 and the highest tier kept.
+const tierPickValue = cap => `<span class="exam-tier-prefix">到</span><span class="exam-tier-name">${TIER_LABELS[cap]}</span>`;
+/* Phones: the tier cap as one wheel in a bottom sheet, as 考试推荐's 阶级. The wheel only picks; 完成 applies
+   it, and closing any other way leaves the cap as it was. */
+function openTierSheet({ stack, title, highest, cap, apply, button }) {
+  const sheet = document.createElement('dialog');
+  sheet.className = 'app-dialog ride-picker exam-wheel-sheet';
+  animateMobilePickerClose(sheet);
+  stack.add(sheet);
+  sheet.setAttribute('aria-labelledby', 'tier-sheet-title');
+  sheet.innerHTML = `<div class="ride-titlebar"><h2 id="tier-sheet-title">${title}</h2></div><div class="exam-wheels">${wheelMarkup('tier', title, TIER_LABELS.slice(0, highest + 1).map((label, t) => ({ value: t, label })), cap)}<span class="wheel-band" aria-hidden="true"></span></div><div class="profession-footer"><button type="button" class="primary" data-done>完成</button></div>`;
+  const wheel = sheet.querySelector('.wheel[data-wheel="tier"]');
+  let picked = cap, done = false;
+  const control = wireWheel(wheel, { settle: value => { picked = value; } });
+  sheet.addEventListener('click', e => { if (e.target.closest('[data-done]')) { done = true; sheet.close(); } });
+  sheet.addEventListener('close', () => {
+    retireDialog(sheet);
+    if (done && picked !== cap) apply(picked);
+    if (!stack.closing && !UI_MEDIA.coarseInput.matches) button?.focus({ preventScroll: true });
+  }, { once: true });
+  document.body.append(sheet);
+  sheet.showModal();
+  control.go(cap, false);
+  if (UI_MEDIA.coarseInput.matches) { sheet.tabIndex = -1; sheet.style.outline = 'none'; sheet.focus({ preventScroll: true }); }
+  else wheel.focus({ preventScroll: true });
+}
 // The vertical tier slider's pointer and keyboard handling, shared by 其他选择 and 考试推荐.
 function wireTierSlider(track, highest, getCap, setCap) {
   const stops = highest + 1;
@@ -444,8 +472,8 @@ function betterDialog(title, current, groups) {
     // How many result cards each stop keeps: a card stays while any of its classes is within the cap.
     const kept = tier => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier)).length;
     const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
-    // Phones: the same filter as a menu, under the current class's box (not inside it).
-    const mobileFilter = !filterable ? '' : `<label class="better-mobile-filter"><span>筛选</span><select aria-label="筛选兵种推荐范围">${TIER_LABELS.slice(0, highest + 1).map((label, tier) => `<option value="${tier}">到${label}</option>`).join('')}</select></label>`;
+    // Phones: the same filter as 考试推荐's 阶级 button, under the current class's box (not inside it).
+    const mobileFilter = !filterable ? '' : `<div class="better-mobile-filter"><span>筛选</span><button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${PICK_CHEVRON}</button></div>`;
     const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span>${mobileFilter}</div>${slider}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
@@ -481,8 +509,8 @@ function betterDialog(title, current, groups) {
       if (!track) return;
       const before = relayout ? betterSnapshot(dialog) : null;
       cap = Math.max(0, Math.min(highest, value));
-      const select = dialog.querySelector('.better-mobile-filter select');
-      if (select) select.value = String(cap);
+      const pickValue = dialog.querySelector('.better-mobile-filter [data-pick-value]');
+      if (pickValue) pickValue.innerHTML = tierPickValue(cap);
       track.style.setProperty('--at', String(highest - cap));
       track.setAttribute('aria-valuenow', String(cap));
       track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
@@ -494,7 +522,7 @@ function betterDialog(title, current, groups) {
       }
       if (relayout) { pinned = null; animateBetter(dialog, before); }
     };
-    dialog.querySelector('.better-mobile-filter select')?.addEventListener('change', e => setCap(Number(e.target.value)));
+    dialog.querySelector('.better-mobile-filter .exam-pick')?.addEventListener('click', e => openTierSheet({ stack, title: '阶级', highest, cap, apply: setCap, button: e.currentTarget }));
     if (track) wireTierSlider(track, highest, () => cap, setCap);
     /* Compact layout (layoutBetter): a card's class box floats beside it, inside the dialog, while the card
        or its box is pointed at or focused; a click on the card pins it so the pointer can travel there. */
@@ -1082,7 +1110,7 @@ function examDialog(item, c, stats) {
     let cap = filterable ? Math.min(seed.recommendCap(state, highest === 5), highest) : highest;
     const levelOptions = counted ? stats.levels.map(row => ({ value: row.level, label: level(row.level) })) : [];
     // Narrow layout: two compact buttons showing the choice; each opens its wheels in a bottom sheet.
-    const chevron = '<svg class="exam-pick-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const chevron = PICK_CHEVRON;
     const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span></span>${chevron}</button>` : ''}</div>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog exam-dialog';
@@ -1112,7 +1140,7 @@ function examDialog(item, c, stats) {
         track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
         for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
       }
-      if (pickValue('tier')) pickValue('tier').innerHTML = `<span class="exam-tier-prefix">到</span><span class="exam-tier-name">${TIER_LABELS[cap]}</span>`;
+      if (pickValue('tier')) pickValue('tier').innerHTML = tierPickValue(cap);
       if (animate) examAnimate(dialog, filter); else filter();
     };
     // Shows a range on the slider without counting it yet (while a thumb is dragged).
