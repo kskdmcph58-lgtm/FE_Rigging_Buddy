@@ -772,6 +772,8 @@ function showExpectationTip(b) {
     if(row?.dataset.tipStep==='better'){const mark=b.querySelector('[data-better]');if(mark)openBetterChoices(mark);}
     else if(row) openCardClass(b,row.dataset.tipStep);
   });
+  // Other previews have nothing to click inside, so a click there is a near-miss on the owner: treat it as one.
+  else expectationTip.addEventListener('click',()=>{hideExpectationTip();if(b.isConnected)b.click();});
 }
 document.addEventListener('pointerover',e=>{
   const b=e.target.closest(TIP_OWNERS);
