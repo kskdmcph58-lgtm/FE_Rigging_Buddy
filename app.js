@@ -769,7 +769,8 @@ document.addEventListener('click', clearTouchPress, true);
 document.addEventListener('touchmove', clearTouchPress, { passive: true, capture: true });
 window.addEventListener('blur', clearTouchPress);
 document.addEventListener('click', e => {
-  if (page !== 'summary' || Date.now() < suppressGestureClickUntil || e.target.closest('.profession-picker')) return;
+  // A click that lands on a hover preview (e.g. 属性期望) is a near-miss on its owner: keep edit mode so the user can retry.
+  if (page !== 'summary' || Date.now() < suppressGestureClickUntil || e.target.closest('.profession-picker,.expectation-tip')) return;
   const control = e.target.closest('button,input,select,textarea,label,summary,a,[role="button"],[contenteditable]');
   const rowId = control ? e.target.closest('.journal')?.dataset.sortId : null;
   let changed = false;

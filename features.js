@@ -759,9 +759,13 @@ function showExpectationTip(b) {
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
   expectationTip.innerHTML=classOwner ? cardClassTip(b) : rideOwner ? `<p class="rule-default">${rideText(setupRide(rideOwner))}</p>` : setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
-  const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect();
-  expectationTip.style.left=`${Math.max(12,Math.min(innerWidth-tip.width-12,r.left))}px`;
-  expectationTip.style.top=`${Math.max(12,Math.min(innerHeight-tip.height-12,r.bottom+8))}px`;
+  // Below the owner, or above when it does not fit; never clamped back over the owner, which would block its click.
+  const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect(),gap=8,edge=12;
+  const below=innerHeight-r.bottom-gap-edge,above=r.top-gap-edge,useBelow=tip.height<=below||(tip.height>above&&below>=above);
+  if(tip.height>(useBelow?below:above))expectationTip.style.maxHeight=`${Math.max(0,useBelow?below:above)}px`;
+  const height=Math.min(tip.height,useBelow?below:above);
+  expectationTip.style.left=`${Math.max(edge,Math.min(innerWidth-tip.width-edge,r.left))}px`;
+  expectationTip.style.top=`${useBelow?r.bottom+gap:r.top-gap-height}px`;
   expectationTip.addEventListener('pointerleave',hideExpectationTip);
   if(classOwner) expectationTip.addEventListener('click',e=>{
     const row=e.target.closest('[data-tip-step]');
