@@ -3418,6 +3418,28 @@ body.marquee-selecting,body.marquee-selecting * {
 .expectation-tip:has(>.class-tip) {
   padding: 10px 12px;
 }
+/* The preview's edit action sits at the end of the first range heading, adding no height. */
+.expectation-tip .expectation-range:first-child h3:has(>.tip-edit) {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.expectation-tip .tip-edit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font: inherit;
+  line-height: inherit;
+}
+@media(hover:hover) and (pointer:fine) {
+  .expectation-tip .tip-edit:hover:not(:disabled) {
+    background: transparent;
+    -webkit-text-stroke: .2px currentColor;
+    color: #f2dfac;
+  }
+}
 .class-tip {
   display: grid;
   gap: 8px;

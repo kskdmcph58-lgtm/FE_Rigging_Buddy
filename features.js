@@ -758,6 +758,8 @@ function showExpectationTip(b) {
   const item=setup||rideOwner||classOwner?null:state.roster.find(i=>i.id===b.dataset.expectationDetail);if(!setup&&!rideOwner&&!classOwner&&!item)return;
   expectationTip=document.createElement('div');expectationTip.id='expectation-tooltip';expectationTip.className='expectation-tip';expectationTip.setAttribute('role','tooltip');
   expectationTip.innerHTML=classOwner ? cardClassTip(b) : rideOwner ? `<p class="rule-default">${rideText(setupRide(rideOwner))}</p>` : setup ? (setupExpectationRule(setup)?ruleMarkup(setupExpectationRule(setup)):`<p class="rule-default">${defaultRuleText}</p>`) : b.hasAttribute('data-record-expectation') ? recordExpectationMarkup() : expectationRanges(item);document.body.append(expectationTip);
+  // The first range heading carries an explicit edit action; the rest of the preview still clicks through to its owner.
+  if(item)expectationTip.querySelector('.expectation-range h3')?.insertAdjacentHTML('beforeend',`<button type="button" class="tip-edit" data-tip-edit="${item.id}">编辑期望</button>`);
   expectationTipOwner=b;b.setAttribute('aria-describedby',expectationTip.id);
   // Below the owner, or above when it does not fit; never clamped back over the owner, which would block its click.
   const r=b.getBoundingClientRect(),tip=expectationTip.getBoundingClientRect(),gap=8,edge=12;
@@ -773,7 +775,11 @@ function showExpectationTip(b) {
     else if(row) openCardClass(b,row.dataset.tipStep);
   });
   // Other previews have nothing to click inside, so a click there is a near-miss on the owner: treat it as one.
-  else expectationTip.addEventListener('click',()=>{hideExpectationTip();if(b.isConnected)b.click();});
+  else expectationTip.addEventListener('click',e=>{
+    const edit=e.target.closest('[data-tip-edit]')?.dataset.tipEdit;
+    hideExpectationTip();
+    if(edit)openExpectationEditor([edit]);else if(b.isConnected)b.click();
+  });
 }
 document.addEventListener('pointerover',e=>{
   const b=e.target.closest(TIP_OWNERS);
