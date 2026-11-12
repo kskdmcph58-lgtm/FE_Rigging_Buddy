@@ -33,7 +33,7 @@ button:active:not(:disabled) {
   pointer-events: none;
 }
 /* These set their column layout only on [open], which ends when the fade starts. */
-:is(.expectation-dialog,.ride-picker,.profession-picker):not([open]) {
+:is(.expectation-dialog,.ride-picker,.profession-picker,.better-dialog):not([open]) {
   flex-direction: column;
 }
 .app-dialog:not([open])::backdrop {
