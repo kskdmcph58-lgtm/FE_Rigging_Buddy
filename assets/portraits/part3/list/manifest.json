@@ -1,0 +1,1065 @@
+{
+  "size": [
+    116,
+    172
+  ],
+  "scales": [
+    1,
+    2,
+    3
+  ],
+  "count": 50,
+  "description": "Desktop list art: the troop portrait window (same face position and scale) extended down on the Spine bust; FaceMask_List on both sides as in the troop pane; top and bottom cut at the card inner edges, starting 14px above the troop window.",
+  "entries": [
+    {
+      "fid": "FID_コウカ３部",
+      "faceCode": "107",
+      "file": "assets/portraits/part3/list/hong-hua.png",
+      "troopWindow": [
+        0.03700000047683716,
+        0.23600001633167267,
+        0.8370000123977661,
+        0.6460000276565552
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.984,
+      "sha256": {
+        "1x": "e05c374c8dbf23004c3bff0e8c2438b0cb9b2f2e6c6c2bc9becba0b8a131ea77",
+        "2x": "830d6881106019e8d63bce904b43b55b0c14699f580709b560b793275db339cf",
+        "3x": "9b6c6b3a9208703cc91fcd555faf93f4d38dd389848b7743ab63738966fcb62c"
+      }
+    },
+    {
+      "fid": "FID_カイ３部",
+      "faceCode": "017Later5y",
+      "file": "assets/portraits/part3/list/cai.png",
+      "troopWindow": [
+        0.02899998426437378,
+        0.22500000894069672,
+        0.8289999961853027,
+        0.6349999904632568
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.967,
+      "sha256": {
+        "1x": "1f86f1b22108c5be286d9ac5056414aa55f33fbe298a514e2a035d7c669c588a",
+        "2x": "34bb322ec25d90c485c3e3ac9db72e81410ebc4e6583eaf265953edf24bea9df",
+        "3x": "0e3bdd58ce31e9dea01cef51c32d50139e36be09aa57801a3fc3a4e6132fa924"
+      }
+    },
+    {
+      "fid": "FID_ティアラ３部",
+      "faceCode": "025Later5y",
+      "file": "assets/portraits/part3/list/tialla.png",
+      "troopWindow": [
+        0.0690000057220459,
+        0.24899999797344208,
+        0.8690000176429749,
+        0.6589999794960022
+      ],
+      "headOffset": [
+        1,
+        0
+      ],
+      "headMatch": 0.968,
+      "sha256": {
+        "1x": "9df5320cf228938cdc7bbcb9e43576ddb9e26934053d7aff6d6d2877ec7671c0",
+        "2x": "e526c9506145a87f07e99fbffe09e90498a7d71d9e85f4855fab379435185498",
+        "3x": "2acda3bc35e25de905fed51a7f1aca7539d372b9570dac0c1c4e20ffa42c1449"
+      }
+    },
+    {
+      "fid": "FID_ピーテル３部",
+      "faceCode": "026Later5y",
+      "file": "assets/portraits/part3/list/peter.png",
+      "troopWindow": [
+        0.041999995708465576,
+        0.23099999129772186,
+        0.8420000076293945,
+        0.640999972820282
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.976,
+      "sha256": {
+        "1x": "b0b1cf06690a93adaeaa93ddb97ad22519fbceb9c55640084ef2726bf520aace",
+        "2x": "717a0232868ab7eefa9a2c83a044a1936b45606860d2b310086a9aa131a8390e",
+        "3x": "e372dd92bfac464f91d5fa4258158f5ed3dcf96f0f476adb547f6200349a6f26"
+      }
+    },
+    {
+      "fid": "FID_ウルタンド３部",
+      "faceCode": "027Later5y",
+      "file": "assets/portraits/part3/list/ultand.png",
+      "troopWindow": [
+        0.057999998331069946,
+        0.23099999129772186,
+        0.8580000400543213,
+        0.640999972820282
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.973,
+      "sha256": {
+        "1x": "83420ed81aa5b977dd05b7f94352f7679af6568406fcae757f402bd061da406d",
+        "2x": "b2538b3022a7fa75ab9fcf558f005bb4af1d46fe1979c9691e5a196524a9e229",
+        "3x": "2c1405388a389dcedff4f4658cc09fa5f227e67e6b4fae8183be01b46f35bf43"
+      }
+    },
+    {
+      "fid": "FID_ディートリヒ３部",
+      "faceCode": "019Later5y",
+      "file": "assets/portraits/part3/list/dietrich.png",
+      "troopWindow": [
+        0.04899999499320984,
+        0.2110000103712082,
+        0.8489999771118164,
+        0.6209999918937683
+      ],
+      "headOffset": [
+        1,
+        0
+      ],
+      "headMatch": 0.971,
+      "sha256": {
+        "1x": "67cd9bdf98970cd873cdbdb8a261ef67c0225a8dd97062f5005d320bbc305321",
+        "2x": "3aa200e2fe1651e9cfa12e3937a7be29d51ec9150b2a07478b5cc06891c4026d",
+        "3x": "8259265552b9060b74a61f8a3fcb9b70518f8f28e7d2f0c4a1d7235c7b8503cb"
+      }
+    },
+    {
+      "fid": "FID_ファビオ３部",
+      "faceCode": "032",
+      "file": "assets/portraits/part3/list/fabio.png",
+      "troopWindow": [
+        0.03700000047683716,
+        0.1810000091791153,
+        0.8370000123977661,
+        0.5910000205039978
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.985,
+      "sha256": {
+        "1x": "087d1fd2dfb906bc57bf0dbcfa7c9afdd4a2cd9772e4652f6b541f4f94fe72a6",
+        "2x": "50c5d147112b277775fd2011d5912127c1313961ddb6e7d982de4b8d9d637747",
+        "3x": "46458db80078290aeb38ffc8fcb894eb0555b982df81dff2808c19879d9dc033"
+      }
+    },
+    {
+      "fid": "FID_エスメラルダ３部",
+      "faceCode": "033Later5y",
+      "file": "assets/portraits/part3/list/esmeralda.png",
+      "troopWindow": [
+        0.025999993085861206,
+        0.23099999129772186,
+        0.8259999752044678,
+        0.640999972820282
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.971,
+      "sha256": {
+        "1x": "957f2272922eb6e44435ccbc1fcef24cf9f0abb00b88a5fcc970880a9c55b49b",
+        "2x": "2f12edf444515aa97dbffa5bb448c3d7f85130f88fca05e5b7a8981f68ed32a1",
+        "3x": "b1e8fa2a3ff2aa908d5a6ac7a8baa69987c42c6bd5548150f4b6c95032e95d0a"
+      }
+    },
+    {
+      "fid": "FID_ミカエラ３部",
+      "faceCode": "049Later5y",
+      "file": "assets/portraits/part3/list/mikaela.png",
+      "troopWindow": [
+        0.025000005960464478,
+        0.21400000154972076,
+        0.8250000476837158,
+        0.6240000128746033
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.976,
+      "sha256": {
+        "1x": "a79ed3be48de7834f7b8c27b42a0e90119983013379e06eef60274b51bec0f04",
+        "2x": "ebac4902adbda1ca1c9f2b90820e01729fe8d35952447703854fef5f5ffb7010",
+        "3x": "70cfe5a016d2b92c7368b51ebfef869bd8bcc71876575361f5234969913a238d"
+      }
+    },
+    {
+      "fid": "FID_セオドラ３部",
+      "faceCode": "022Later5y",
+      "file": "assets/portraits/part3/list/theodora.png",
+      "troopWindow": [
+        0.04100000858306885,
+        0.2149999886751175,
+        0.8410000205039978,
+        0.625
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.969,
+      "sha256": {
+        "1x": "2b4a734c254c7de6f625dfc6efc4fa2c1aa3a5635d9889e2ff22ae8744a37b17",
+        "2x": "ae69094ff26ee2f1d02450fb856e77c8b0872f9874f49d22dd18b22769fc8379",
+        "3x": "1726d9d376ca1891a35c64f2d8b1a2894ad921e4eeb840eff51682528093052e"
+      }
+    },
+    {
+      "fid": "FID_ボナパルテ３部",
+      "faceCode": "042Later5y",
+      "file": "assets/portraits/part3/list/bonaventure.png",
+      "troopWindow": [
+        0.019999980926513672,
+        0.18699999153614044,
+        0.8199999928474426,
+        0.597000002861023
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.975,
+      "sha256": {
+        "1x": "0ef8933b05b367feeb5b1731fb7cde60ca6502a228f81a3cf57218b2c5d26735",
+        "2x": "b999aa69c6cc39faa6df6abed74196804c5795482f1b343dd4b4bb8854ce1219",
+        "3x": "a5fa55ec21501b571e1dcf43afe23c79a70c927db4b0e63a2b6f078db0f3c3d8"
+      }
+    },
+    {
+      "fid": "FID_トビヤス３部",
+      "faceCode": "043Later5y",
+      "file": "assets/portraits/part3/list/tobias.png",
+      "troopWindow": [
+        0.041999995708465576,
+        0.1860000044107437,
+        0.8420000076293945,
+        0.5960000157356262
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.964,
+      "sha256": {
+        "1x": "66441b25d38e3b87cd7895c3c4899b632b14f3b121ff0bca96b9375905c15347",
+        "2x": "012fd39ebd3086b5600d47b81c823e8123e44ef3fd39f0a08b88f0d168b78761",
+        "3x": "ac2ca87166c771705fb9151e361a22e1aa3673958885596a91052b9407437b9a"
+      }
+    },
+    {
+      "fid": "FID_リリアン３部",
+      "faceCode": "044Later5y",
+      "file": "assets/portraits/part3/list/lilian.png",
+      "troopWindow": [
+        0.0339999794960022,
+        0.2540000081062317,
+        0.8339999914169312,
+        0.6639999747276306
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.968,
+      "sha256": {
+        "1x": "94df4d26be88cbae3cd9aa050dec670173deca5b737f0e9db0a09ba65be13f2c",
+        "2x": "9e7d25c1de07d79da734eba6b9ce7b9ff3aa262255ebd4694771d71071fc99e1",
+        "3x": "6816a0db2ac67256fd0611cbd94bb76f1dec60cf3cf83e24d2df220f732c906b"
+      }
+    },
+    {
+      "fid": "FID_ライサンダー３部",
+      "faceCode": "045Later5y",
+      "file": "assets/portraits/part3/list/lysander.png",
+      "troopWindow": [
+        0.030000001192092896,
+        0.2110000103712082,
+        0.8300000429153442,
+        0.6209999918937683
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.98,
+      "sha256": {
+        "1x": "e1d056dd23a494125426f4766b19f1799f4be59cd9e9cf73ece369fc30bc480c",
+        "2x": "ab78786ac27d70fc5ef5531e6c3ef099ce1139c5b847efeb9c87217f6d26d6ba",
+        "3x": "5798d1068a570821c875aba8ad46aa4bf628ab6c90be728db988363d6c27a384"
+      }
+    },
+    {
+      "fid": "FID_レダ３部",
+      "faceCode": "023Later5y",
+      "file": "assets/portraits/part3/list/leda.png",
+      "troopWindow": [
+        0.03200000524520874,
+        0.23000000417232513,
+        0.8320000171661377,
+        0.6399999856948853
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.968,
+      "sha256": {
+        "1x": "d3b8468bfce559d621c996b3a89d16a8cf9bdece2bb1add821a06fd04443c432",
+        "2x": "94600459a9c68bf1e2126873eb3cfdadb8873015fe2b08cfd68cffdc91c9847f",
+        "3x": "166c8d1a76cf6a8e76b3628c8f1543f54661f1836c5e397f5c18fbc61223c7f6"
+      }
+    },
+    {
+      "fid": "FID_バッカニア３部",
+      "faceCode": "046Later5y",
+      "file": "assets/portraits/part3/list/buccar.png",
+      "troopWindow": [
+        0.05300000309944153,
+        0.17600001394748688,
+        0.8530000448226929,
+        0.5860000252723694
+      ],
+      "headOffset": [
+        1,
+        0
+      ],
+      "headMatch": 0.977,
+      "sha256": {
+        "1x": "d96337761d1c37ffe9cb7b8f02685f73eb25561e4296f30ef6610d4185a3f53f",
+        "2x": "ef31d30c499b9750ffe61328799454133db7a0eafcfce81c725d99b1b362793b",
+        "3x": "7348f0452bca0e889fb2ea7de802104466bb7f47c86a2e7641bb8ce8c2aa4fbd"
+      }
+    },
+    {
+      "fid": "FID_シロッコ３部",
+      "faceCode": "047Later5y",
+      "file": "assets/portraits/part3/list/sirocco.png",
+      "troopWindow": [
+        0.020999997854232788,
+        0.2070000022649765,
+        0.8209999799728394,
+        0.6169999837875366
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.981,
+      "sha256": {
+        "1x": "624879c48af98e848d1658d65cfba2a1c6f09d6acf4a002b391814433a3b19bf",
+        "2x": "a6595581ad58a65031917b9ad56af0ec4c7da74494fcbbcd4cf61b68de94d9ed",
+        "3x": "afaa59f2bc44643a35ef76e6bca0f480580221116c08a274dd22b9dc03dfa4ec"
+      }
+    },
+    {
+      "fid": "FID_ムウ３部",
+      "faceCode": "048Later5y",
+      "file": "assets/portraits/part3/list/mu.png",
+      "troopWindow": [
+        0.0339999794960022,
+        0.22700001299381256,
+        0.8339999914169312,
+        0.6370000243186951
+      ],
+      "headOffset": [
+        -1,
+        0
+      ],
+      "headMatch": 0.976,
+      "sha256": {
+        "1x": "e78e9bb1bf3a4b8ab4440c9447f1a3683ec721305e1913ba1a16cd206a622660",
+        "2x": "579ff5712286ccff43088a5d205eb159ac59a72916b51420685038d4435936fd",
+        "3x": "7e81457226fec1cc5c6c359709449b153f4001635ccb1b366a539c393defbac5"
+      }
+    },
+    {
+      "fid": "FID_オリンピア３部",
+      "faceCode": "050Later5y",
+      "file": "assets/portraits/part3/list/olympia.png",
+      "troopWindow": [
+        0.046000003814697266,
+        0.23200000822544098,
+        0.8460000157356262,
+        0.6420000195503235
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.973,
+      "sha256": {
+        "1x": "83614e1374dd626526feb83ee62d9b5751797667281d0d299e9943c5ad8cbea9",
+        "2x": "ee384fbfead8ca8c6aa184d291f64febc531d6a8c2a3c3c3eadc2e55aa46c9bd",
+        "3x": "37abf6260ae38aa9ad20ece0b859339d6c05f3bf8c419bfcc35077a9ed4edac0"
+      }
+    },
+    {
+      "fid": "FID_ベルトラン３部",
+      "faceCode": "018Later5y",
+      "file": "assets/portraits/part3/list/bertrand.png",
+      "troopWindow": [
+        0.018999993801116943,
+        0.2160000056028366,
+        0.8190000057220459,
+        0.6259999871253967
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.978,
+      "sha256": {
+        "1x": "c9b5d5ef57faf691cb5ad973edb749180aea54068b75f636047a69c7c3c34564",
+        "2x": "e596d042360afd2bd38ce604f64056978ec59b6709fffeca8a09977b31cd3fc1",
+        "3x": "66a4417c5e7938e3fdeb80535fa0a69293cac565de17456105f243aaca6e9edb"
+      }
+    },
+    {
+      "fid": "FID_ゲイツ３部",
+      "faceCode": "030Later5y",
+      "file": "assets/portraits/part3/list/gaitz.png",
+      "troopWindow": [
+        0.014999985694885254,
+        0.20799998939037323,
+        0.8149999976158142,
+        0.6179999709129333
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.98,
+      "sha256": {
+        "1x": "523067df4f0c81f7811488384b7b1dc41363a73c990e72c722e1a80e1420c7fc",
+        "2x": "01e6fdbc58d26f9b7d7912d358663051ea268b709c8c82caff461fd389e93199",
+        "3x": "73fb8266a61017fe90d0dccede1824e358cb34de821a4d554ffa3c04ee46dfae"
+      }
+    },
+    {
+      "fid": "FID_ゴライアス３部",
+      "faceCode": "029Later5y",
+      "file": "assets/portraits/part3/list/goliath.png",
+      "troopWindow": [
+        0.030000001192092896,
+        0.1990000158548355,
+        0.8300000429153442,
+        0.609000027179718
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.967,
+      "sha256": {
+        "1x": "c2a2f9fe33d9eddecb2beefcd4de4d018be11d327369fdcebcf70a42569e9a33",
+        "2x": "266dd77273bbdb766ec8b869de7eaaefc51f6a95309d0b53e1e42d62c7a741f9",
+        "3x": "f41e396aae4b30cf37a5de815a90edc8bb8376648c8f7a31b39ef9c4743266a3"
+      }
+    },
+    {
+      "fid": "FID_マクシム３部",
+      "faceCode": "028Later5y",
+      "file": "assets/portraits/part3/list/maxim.png",
+      "troopWindow": [
+        0.039000004529953,
+        0.2149999886751175,
+        0.8389999866485596,
+        0.625
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.975,
+      "sha256": {
+        "1x": "9e8185c3f73eba71a80c19c1256cc8553472c41221840a5390258bd755c3aecc",
+        "2x": "f156b264856356a2b43a8a6649a8e55a8e7333d26d5d2f807311e765d12f9f94",
+        "3x": "c32c4d7ab501e68f78a4dbba8f5ce854d248472170a076672dbd8b8be5d91ba8"
+      }
+    },
+    {
+      "fid": "FID_ダンテ３部",
+      "faceCode": "031Later5y",
+      "file": "assets/portraits/part3/list/dante.png",
+      "troopWindow": [
+        0.07400000095367432,
+        0.22199998795986176,
+        0.8740000128746033,
+        0.6319999694824219
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.981,
+      "sha256": {
+        "1x": "e1019b99c5fbba21b6cb47bf50c7ede750967f93818e4b061b3ad908e4741071",
+        "2x": "03b5597b6153968e40402b8e0153857e84e92df9460dc53a5b8a917885b9cf53",
+        "3x": "5b4a9047d05f76ce1a398046f0a64ab979b72ca953b97c68df10c47160411381"
+      }
+    },
+    {
+      "fid": "FID_オルヘル３部",
+      "faceCode": "021Later5y",
+      "file": "assets/portraits/part3/list/orchel.png",
+      "troopWindow": [
+        0.04100000858306885,
+        0.2329999953508377,
+        0.8410000205039978,
+        0.6430000066757202
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.97,
+      "sha256": {
+        "1x": "7657ec1ee397751985856d6a6893cca93447081a638860b2dc6406e037407bd6",
+        "2x": "ad791cac59828eea4eb705986bd839add37186451f4048abc6e19f08aebbfa57",
+        "3x": "f8f09bd26e499591c4d01e22a59d5ccb6cf97c8fe9654de99bd15ed310162504"
+      }
+    },
+    {
+      "fid": "FID_ディエゴ３部",
+      "faceCode": "038Later5y",
+      "file": "assets/portraits/part3/list/diego.png",
+      "troopWindow": [
+        0.030000001192092896,
+        0.23000000417232513,
+        0.8300000429153442,
+        0.6399999856948853
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.981,
+      "sha256": {
+        "1x": "0f97b08bf0585a3853126926166aad20525b1b19fe8ba122f994d134832bda63",
+        "2x": "25cbf8c74548a2602404728a30904b049e0fd1493fc4c62351b6ed1a438d95d1",
+        "3x": "3788faaaa34378bacb1a06eb71aba359e8017cb42294b3721592709cc8f40c4d"
+      }
+    },
+    {
+      "fid": "FID_ロレッタ３部",
+      "faceCode": "039Later5y",
+      "file": "assets/portraits/part3/list/loretta.png",
+      "troopWindow": [
+        0.023000001907348633,
+        0.25199997425079346,
+        0.8230000138282776,
+        0.6620000004768372
+      ],
+      "headOffset": [
+        1,
+        -4
+      ],
+      "headMatch": 0.942,
+      "sha256": {
+        "1x": "bbde53adff6afbd78399752ce4030b67f9b93c4b56ac3f5db42f31bdcf073b14",
+        "2x": "ea81465140772b18c669a3d56d5b265ec087591ac1ee17fa4fce8e3065ae7586",
+        "3x": "cf7568ed334bee58ea3d12368226e78ab180053187d5ef29c67b6498b167d37b"
+      }
+    },
+    {
+      "fid": "FID_セテス３部",
+      "faceCode": "040",
+      "file": "assets/portraits/part3/list/seteth.png",
+      "troopWindow": [
+        0.026999980211257935,
+        0.21699999272823334,
+        0.8270000219345093,
+        0.6269999742507935
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.979,
+      "sha256": {
+        "1x": "57cf5eacf96e87336d6fd60e154da5c55830ab4519de519de076faed9e018634",
+        "2x": "f479e59efee4a85bb60b020f046c742cce38ddc7ea1edb011767299723cca4b1",
+        "3x": "cdbb67bdf7b711b65db620feeab4e6804bfe4a99bbd4ae92563e26e39168a233"
+      }
+    },
+    {
+      "fid": "FID_タリムーン３部",
+      "faceCode": "020Later5y",
+      "file": "assets/portraits/part3/list/talimun.png",
+      "troopWindow": [
+        0.05300000309944153,
+        0.18300001323223114,
+        0.8530000448226929,
+        0.5929999947547913
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.973,
+      "sha256": {
+        "1x": "5ee79bb882911365dbd830d3b25c1a7c8c377d9af06fffe4057595efdf516269",
+        "2x": "b5bcad987b9128aa1956bae8e0558f87b840289995fd3a1011d3d68478cd7047",
+        "3x": "ace9a7fbf236d4100e92450f49b36de6ddea0693aa3372d370ce390754a70e3b"
+      }
+    },
+    {
+      "fid": "FID_ウーシュラ３部",
+      "faceCode": "034Later5y",
+      "file": "assets/portraits/part3/list/ursula.png",
+      "troopWindow": [
+        0.019999980926513672,
+        0.19599999487400055,
+        0.8199999928474426,
+        0.6060000061988831
+      ],
+      "headOffset": [
+        0,
+        1
+      ],
+      "headMatch": 0.975,
+      "sha256": {
+        "1x": "c7c3914e26ac29bb1e1ba06c702f324805dbbd154918b11d2569a413cf93390d",
+        "2x": "7e406d1a47d4837b2da5db36518cffe1aa7c5fdc39386a2edb5b066b8f9b6c2d",
+        "3x": "bc7502a4b3b3115d3ec2d0716cd82a428afcab84c0910a444a3313deb0e12a04"
+      }
+    },
+    {
+      "fid": "FID_シモン３部",
+      "faceCode": "035Later5y",
+      "file": "assets/portraits/part3/list/simon.png",
+      "troopWindow": [
+        0.042999982833862305,
+        0.2029999941587448,
+        0.8429999947547913,
+        0.6129999756813049
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.976,
+      "sha256": {
+        "1x": "db95a50c5169a2df50b1fe5be0a79e53532c94868ab49f3102819ef485d7fd0d",
+        "2x": "b129de9e66988f7c72e8e639b7af44e7091be1baeb8216003868f9c8e7d0b93b",
+        "3x": "e0378f7f49cb3897575c2c7a0b79a7d309ee0290275f7bc06305396ed763a87c"
+      }
+    },
+    {
+      "fid": "FID_ルルディヤー３部",
+      "faceCode": "036Later5y",
+      "file": "assets/portraits/part3/list/ludia.png",
+      "troopWindow": [
+        0.03599998354911804,
+        0.2410000115633011,
+        0.8359999656677246,
+        0.6510000228881836
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.974,
+      "sha256": {
+        "1x": "1aa0e85d3a582c7fafa48589ffb481b63919a562b61aa9d88fcebaadd1d99650",
+        "2x": "eb6eb5e730f3e79f21c4cca05d19956dbeebe246c0a43f83a79b61ffb61178bd",
+        "3x": "40052461ee17d6e3da6c83c5744e9fda595f78ee6d4d3c71223ab0b383349218"
+      }
+    },
+    {
+      "fid": "FID_フィアナ３部",
+      "faceCode": "037Later5y",
+      "file": "assets/portraits/part3/list/fianna.png",
+      "troopWindow": [
+        0.03799998760223389,
+        0.23099999129772186,
+        0.8379999995231628,
+        0.640999972820282
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.979,
+      "sha256": {
+        "1x": "349ad0f94c082146dbfcbdc234391a4ebb6be3b9a337f5380a82778d59a0baac",
+        "2x": "b71ee8766569a8d2a08286ec3292e7f04b22296a95de90b4e3b45d999c0d95b4",
+        "3x": "e5419f4e0195ffc01d9ee0aaa8984097ef566f59e9b4df97bf7d63223086c30e"
+      }
+    },
+    {
+      "fid": "FID_アナトリア３部",
+      "faceCode": "024Later5y",
+      "file": "assets/portraits/part3/list/anatolia.png",
+      "troopWindow": [
+        0.0729999840259552,
+        0.2280000001192093,
+        0.8730000257492065,
+        0.6380000114440918
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.969,
+      "sha256": {
+        "1x": "da1587e03faaff9efaf05a07e10bc42a28d2746df5159603b20688e6e8d1c2fd",
+        "2x": "f1b8f3f263e07ccf32bcabc45dbdf0f45909f83a02791153344f222d7bb9708d",
+        "3x": "fc4a10f67d88aeb751fce1e708ece077efeb6087b12189075314fd960b548717"
+      }
+    },
+    {
+      "fid": "FID_サラン３部",
+      "faceCode": "052Later5y",
+      "file": "assets/portraits/part3/list/sha-lan.png",
+      "troopWindow": [
+        0.009000003337860107,
+        0.2239999920129776,
+        0.8090000152587891,
+        0.6340000033378601
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.97,
+      "sha256": {
+        "1x": "bd28e8a5279640d9d3aeea9795b21c398bf33715809fc72773a1d02b3c3269eb",
+        "2x": "e61461daac211f18de358c50e68de7345d4353c484ec3e10ee38bed1a69feb5f",
+        "3x": "5a0703faa54536a5097bb88754f027e060376d035305c0e9094f5bdf1d1e1222"
+      }
+    },
+    {
+      "fid": "FID_ナジャ３部",
+      "faceCode": "051Later5y",
+      "file": "assets/portraits/part3/list/nezha.png",
+      "troopWindow": [
+        0.021999984979629517,
+        0.19500000774860382,
+        0.8220000267028809,
+        0.6050000190734863
+      ],
+      "headOffset": [
+        1,
+        0
+      ],
+      "headMatch": 0.968,
+      "sha256": {
+        "1x": "6944af400621399cc95e473671bf466325547e826f574353d3c1ed2458b3e0c2",
+        "2x": "24631478fc376d2a1e75d2cd4d7b56d93b499f1312e4a62b46b0d96505fe6a9f",
+        "3x": "005df63d4ce48a4859fdda2e14122a5412520cc57b0f2d26fbc77542fc218470"
+      }
+    },
+    {
+      "fid": "FID_ダイトウ３部",
+      "faceCode": "053Later5y",
+      "file": "assets/portraits/part3/list/dadao.png",
+      "troopWindow": [
+        0.014999985694885254,
+        0.19099999964237213,
+        0.8149999976158142,
+        0.6010000109672546
+      ],
+      "headOffset": [
+        -1,
+        0
+      ],
+      "headMatch": 0.967,
+      "sha256": {
+        "1x": "fd6dfb8e1bf85d18ae620c0409c2843c40c5e4cb6285517714be4799ee52f6d3",
+        "2x": "f901dd94bf97dcddff916d18e029a3f85cd86e1b73bcbbd97a718defad6059d8",
+        "3x": "2357bdfa2e4bd3c21973a7232cbfddbad5a652fd7ef15a428d5a84658c31b43e"
+      }
+    },
+    {
+      "fid": "FID_ハルヴィン３部",
+      "faceCode": "054Later5y",
+      "file": "assets/portraits/part3/list/halvin.png",
+      "troopWindow": [
+        0.02899998426437378,
+        0.22500000894069672,
+        0.8289999961853027,
+        0.6349999904632568
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.974,
+      "sha256": {
+        "1x": "6646a02a8ffaf44b030e0731bdcb36a0b07465a3384dc0693d203ad7290a87f5",
+        "2x": "1769462b66ff4612bd8c5e4053e8f694fe53445a81f0999618253197ba210086",
+        "3x": "71febc057a9b2ca695482dd3166dcd02426620a443de9ce091ad2ac566c70f4c"
+      }
+    },
+    {
+      "fid": "FID_カターニャ３部",
+      "faceCode": "092Later5y",
+      "file": "assets/portraits/part3/list/catania.png",
+      "troopWindow": [
+        0.014999985694885254,
+        0.25599998235702515,
+        0.8149999976158142,
+        0.6660000085830688
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.977,
+      "sha256": {
+        "1x": "de7c62dcfa5ce7ece28cc9c5da6ba2024a95a54fcc9a16d44590ec777cccb952",
+        "2x": "ac1fb7da54451aa38f9a1b6610c70cf1065e7a5db035790dc009999b342f301f",
+        "3x": "1aab306421012e9529dbad16a850dc3442131a5e287042836e12f0f63f8aff08"
+      }
+    },
+    {
+      "fid": "FID_ヌディーヌ３部",
+      "faceCode": "093Later5y",
+      "file": "assets/portraits/part3/list/nydine.png",
+      "troopWindow": [
+        0.0339999794960022,
+        0.2370000034570694,
+        0.8339999914169312,
+        0.6470000147819519
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.982,
+      "sha256": {
+        "1x": "88ac8a114604b694c1d2c18b0e78e0f458b754c7fb292743371794f5ce0b9ef0",
+        "2x": "a113b2a4d0816655f58b8791239c4874d4a2f5b472561f66b542d02f972131ed",
+        "3x": "2931d8f7a67694362f0e9f7d48896d30790015059b476891fc165ee45e09cb96"
+      }
+    },
+    {
+      "fid": "FID_イオ３部",
+      "faceCode": "088Later5y",
+      "file": "assets/portraits/part3/list/io.png",
+      "troopWindow": [
+        0.03200000524520874,
+        0.21400000154972076,
+        0.8320000171661377,
+        0.6240000128746033
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.98,
+      "sha256": {
+        "1x": "98fdb690b0be0edb000bff51ae2b6e527f86ffa5a7aa57e210c258b4fdd044d9",
+        "2x": "d8857b3dd5573ccb0cd2b97f50767bbce1f9e9657c468f85e30b02e9671e25de",
+        "3x": "f8e88568b8c7e9e388512114fc33da7140be79f61a66302522549b4edf0d4525"
+      }
+    },
+    {
+      "fid": "FID_ノクチュラ３部",
+      "faceCode": "090Later5y",
+      "file": "assets/portraits/part3/list/noctula.png",
+      "troopWindow": [
+        0.03599998354911804,
+        0.23999999463558197,
+        0.8359999656677246,
+        0.6499999761581421
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.972,
+      "sha256": {
+        "1x": "919685ea203221cdcf7e0cfb55f0842b08f0696e2548a13573e5d44269d25e6b",
+        "2x": "67b98f22fd30efb52fa8fa4dbe1709126899d506d998a0c1f00e2bb6ffe18888",
+        "3x": "442117997e497e3298fb2cfe8db6514c4f325501c370e8052183a84142dc4756"
+      }
+    },
+    {
+      "fid": "FID_ソフィア３部",
+      "faceCode": "091Later5y",
+      "file": "assets/portraits/part3/list/sofia.png",
+      "troopWindow": [
+        0.0169999897480011,
+        0.22899998724460602,
+        0.8170000314712524,
+        0.6389999985694885
+      ],
+      "headOffset": [
+        -1,
+        0
+      ],
+      "headMatch": 0.967,
+      "sha256": {
+        "1x": "2bef390f938690c0806113ddd9f38ce2c705b7794e752110247aa32c31565da7",
+        "2x": "2548ea12abe410f59673ec2c4d1f003751e50870af028d3a5f6cd20f2504ec1e",
+        "3x": "822ca7e1079931da0a8b51cf076652d16daad5b5e61ffccbbe9c06c6f149555d"
+      }
+    },
+    {
+      "fid": "FID_ペペ３部",
+      "faceCode": "089Later5y",
+      "file": "assets/portraits/part3/list/peppe.png",
+      "troopWindow": [
+        0.02399998903274536,
+        0.1979999989271164,
+        0.8240000009536743,
+        0.6079999804496765
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.979,
+      "sha256": {
+        "1x": "9ab97a692b78e569ebaa02962ac78d9da9e349dc7abc079a30230b1fe3c64b00",
+        "2x": "9bbdd3468e22dab5a091549d5957a9407b62c00695b7d8a9b254eebfaceb4e65",
+        "3x": "47f346de8b519fc2d37f7e4314c9b7eebf07b195eb55f6ebe2fc696f46cf4c53"
+      }
+    },
+    {
+      "fid": "FID_アレキサンドラ３部",
+      "faceCode": "099Later5y",
+      "file": "assets/portraits/part3/list/alexandra.png",
+      "troopWindow": [
+        0.07199999690055847,
+        0.22199998795986176,
+        0.871999979019165,
+        0.6319999694824219
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.978,
+      "sha256": {
+        "1x": "479eca1076b000e36d5daa33fd4b1cc1d5a331943582265dbda482495477292d",
+        "2x": "55776d82c9b57eeff2fadae44f555a49fca1fe362790b863dad3c6012b973a05",
+        "3x": "b0b2de8d33601e571d3e3deadda1cda43ba2a61595ce7f9f2e271237a0dacdb4"
+      }
+    },
+    {
+      "fid": "FID_イニオニ３部",
+      "faceCode": "097Later5y",
+      "file": "assets/portraits/part3/list/inyoni.png",
+      "troopWindow": [
+        0.01600000262260437,
+        0.20799998939037323,
+        0.8159999847412109,
+        0.6179999709129333
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.981,
+      "sha256": {
+        "1x": "69e81413fa686b6a58ee17c70d1e3dadfcec3d958e0d5e4c2839c5839d7014fb",
+        "2x": "45a45e91c9f0e65614332a789da4e96e2ed5ae648e734a97998963b7d3b58631",
+        "3x": "3661dad2bb2063abecd153c04d73bc1685e3e308efdcb58652b33dc9de846307"
+      }
+    },
+    {
+      "fid": "FID_クレオブロス",
+      "faceCode": "100",
+      "file": "assets/portraits/part3/list/cleobulus.png",
+      "troopWindow": [
+        0.05199998617172241,
+        0.1990000158548355,
+        0.8519999980926514,
+        0.609000027179718
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.973,
+      "sha256": {
+        "1x": "4928a989c40f8b79b10efba59b7a28b389153826f11e9cf0bc9456fc4acbc21b",
+        "2x": "1e27089638ea85a034448ee8a2dbb71049d1b359ce9419b1b50dbf8d95c85513",
+        "3x": "1e42ece470dca242c1e937d209aa6e9e98eb4b730376e0d4049e7b38fb5b1c4b"
+      }
+    },
+    {
+      "fid": "FID_ミュソン",
+      "faceCode": "101",
+      "file": "assets/portraits/part3/list/myson.png",
+      "troopWindow": [
+        0.04399999976158142,
+        0.2110000103712082,
+        0.843999981880188,
+        0.6209999918937683
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.974,
+      "sha256": {
+        "1x": "d595357664c3cf55e9f4d43eb14e37446d42790d19b37893e0fedf0f89a4abb0",
+        "2x": "b0bbb60a556ca5784f58cb73dafa30af5f2b57436ca1e3a32881717b1a8c00fc",
+        "3x": "c6a345346c0a0a6a7f8e2030333a24708a51d6f2d0194de733c80fcd0a0b9f00"
+      }
+    },
+    {
+      "fid": "FID_グルジン仮面無し",
+      "faceCode": "119_MaskOff",
+      "file": "assets/portraits/part3/list/gladius.png",
+      "troopWindow": [
+        0.0040000081062316895,
+        0.18800000846385956,
+        0.8040000200271606,
+        0.5979999899864197
+      ],
+      "headOffset": [
+        0,
+        1
+      ],
+      "headMatch": 0.955,
+      "sha256": {
+        "1x": "6de3323e508e63ca68b3e4eabca704079d02bff9761da0fae256ccca93e932db",
+        "2x": "573553b412e3d504ac67882df067822b1368e9ce559ed64cbaaf19769e3978fa",
+        "3x": "a83555e12915679f3ff0c3d54776bcf2b3cda1c63fcb805471edc9bc89059644"
+      }
+    },
+    {
+      "fid": "FID_クレール",
+      "faceCode": "006",
+      "file": "assets/portraits/part3/list/credna.png",
+      "troopWindow": [
+        0.01600000262260437,
+        0.2160000056028366,
+        0.8159999847412109,
+        0.6259999871253967
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.966,
+      "sha256": {
+        "1x": "29cb30da5275a3e01f06e1e98309665c6e6373f684ef4821aca41aa236a936d8",
+        "2x": "f70098161bf5ffa743344a1f392b4180db89e5648abcff9357a4bae74b8bf22a",
+        "3x": "9d3bdd2d2dfca680cc28ba6eab03eb615fbbf95781d3a76332557e2e480ac1b6"
+      }
+    }
+  ]
+}

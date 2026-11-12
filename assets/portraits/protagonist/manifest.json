@@ -1,0 +1,171 @@
+{
+  "description": "Protagonist portraits (Eshmel, male and female) at the game defaults. The game renders these heads at runtime from the skeleton Render frame; the 350x350 head is that frame, cropped with the same native rules as everyone.",
+  "entries": [
+    {
+      "fid": "FID_イシュマール男A",
+      "faceCode": "015_AHoodOff",
+      "slug": "eshmel-male",
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3919999897480011,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.421999990940094,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.421999990940094,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.021999984979629517,
+            0.27399998903274536,
+            0.8220000267028809,
+            0.5640000104904175
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.421999990940094,
+            0.4189999997615814
+          ],
+          "clamped_center": [
+            0.421999990940094,
+            0.4189999997615814
+          ],
+          "uv_rect": [
+            0.021999984979629517,
+            0.21400000154972076,
+            0.8220000267028809,
+            0.6240000128746033
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "sha256": {
+        "grid": "9813dd8493d65a50027eda764a4c91520df22029d69237f83b38a2736e7ca808",
+        "narrow": "b02de1eb39199f9a1f941a171ab6c35498d6ebef19b45f98915523629f0c9726",
+        "troop": "e9dc284663b7d99b550c3c74b5d26790142d48882c5953b9f270918cf43092a6",
+        "small/56": "3f47e500d9a656a0ce603e0fbff32ecbb1e986919b45f7d52797c4cd3d37a701",
+        "small/112": "4f5ae491f56ac4dd9da89811b078a6145444fbb4c7b79c2a6b02d1b08d072518",
+        "small/168": "ac4b00089d3c137efa070b5775195e4704af47db99a8621001aa8b95d2552694",
+        "troop/2x": "3fe5386023f9c2288297e2e567f8e8353667dc04a51eb52f3b3442acf73a5897",
+        "troop/3x": "440c35d43e5441966a7135db0398934a53fb43e0befce249175520013acbf71b",
+        "head": "a390d5f794639d5190172620aea21c43a59398e401cd201246d1203dfc66e18e",
+        "bust": "c08b9cde49e1bcf5242d9600301043174603dde1416afeb8fb602ddaa423eb70"
+      },
+      "source": {
+        "folder": "UI/Face/015",
+        "skin": "AHoodOff",
+        "appearance": "game default: head A, skin 1, hair 1",
+        "colors": {
+          "skin": "f5dabf",
+          "hair": "fbfaf9",
+          "lip": "efc5a6"
+        }
+      }
+    },
+    {
+      "fid": "FID_イシュマール女A",
+      "faceCode": "016_AHoodOff",
+      "slug": "eshmel-female",
+      "windows": {
+        "grid": {
+          "center_type": "FaceCenter",
+          "selected_center": [
+            0.3919999897480011,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.4650000035762787,
+            0.4350000023841858
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.9300000071525574,
+            0.8700000047683716
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "narrow": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43799999356269836,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.43799999356269836,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.03799998760223389,
+            0.2760000228881836,
+            0.8379999995231628,
+            0.5659999847412109
+          ],
+          "native_function": "main+0x1874de0"
+        },
+        "troop": {
+          "center_type": "EyeLevel",
+          "selected_center": [
+            0.43799999356269836,
+            0.42100000381469727
+          ],
+          "clamped_center": [
+            0.43799999356269836,
+            0.42100000381469727
+          ],
+          "uv_rect": [
+            0.03799998760223389,
+            0.2160000056028366,
+            0.8379999995231628,
+            0.6259999871253967
+          ],
+          "native_function": "main+0x1874de0"
+        }
+      },
+      "sha256": {
+        "grid": "9e29da4e4a48c62b81cade2f1718cbbd57c1472bd9e2ebf17a2dbc31027a36c5",
+        "narrow": "39c009cd81eeba913b4cd8b448cc2f935f1d8444e2093e85b4698d6dd6562940",
+        "troop": "20c3a522df96964862feb88f2fa4c1df606873acabfab43c5d0c07e00ade09bd",
+        "small/56": "d9f917bf2fba059818bfc4da8d84dda7e3e5cd0bdbd8162e988f3ba427503391",
+        "small/112": "4c074a5746a844485c8497ff384107def799a08775d9c127f2618c4c6ebd5d68",
+        "small/168": "e0bf5d11875639a5de8e117bb393e4424b9cce9afc75d891d69b5f2a775fe446",
+        "troop/2x": "4625472dddbfb447983159de330daae8059b6892694c16dc4055a3ed21cbefa5",
+        "troop/3x": "2497e032329332770556f1e1a26d0920db1baa36c31b47fce50cf53c16b10ccd",
+        "head": "36a8b99b4677bdb52e79a072b28e77170b61fd5b13628416841a53de3119f702",
+        "bust": "d847da24f892718a9a588f335376506b1755702553da7c09e4ad7361b7128c33"
+      },
+      "source": {
+        "folder": "UI/Face/016",
+        "skin": "AHoodOff",
+        "appearance": "game default: head A, skin 1, hair 1",
+        "colors": {
+          "skin": "f5dabf",
+          "hair": "fbfaf9",
+          "lip": "f6b7a4"
+        }
+      }
+    }
+  ]
+}

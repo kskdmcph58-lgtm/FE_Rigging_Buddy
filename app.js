@@ -269,6 +269,13 @@ function portrait(c, kind = 'small', sizes = kind === 'narrow' ? '116px' : '56px
       ? ` srcset="${[1, 2, 3].map(scale => `${versioned(scale === 1 ? path : path.replace('/troop/', `/troop/${scale}x/`))} ${116 * scale}w`).join(', ')}" sizes="${sizes}"` : '';
     return `<img draggable="false" src="${versioned(path)}"${variants} alt="" loading="lazy" decoding="async">`;
   }
+  if (kind === 'list') {
+    // Desktop step 3: the troop window extended down the half-body (116x150, plus 2x and 3x). The face sits
+    // exactly where the troop portrait puts it, so this lies over the same 116x60 box.
+    if (!c.image.includes('/grid/')) return '';
+    const path = scale => versioned(c.image.replace('/grid/', scale === 1 ? '/list/' : `/list/${scale}x/`));
+    return `<img class="journal-bust" draggable="false" src="${path(1)}" srcset="${[1, 2, 3].map(scale => `${path(scale)} ${scale}x`).join(', ')}" alt="" loading="lazy" decoding="async">`;
+  }
   if (kind === 'small' && c.image.includes('/grid/')) {
     const variant = size => versioned(c.image.replace('/grid/', `/small/${size}/`));
     return `<img draggable="false" src="${variant(56)}" srcset="${[56, 112, 168].map(size => `${variant(size)} ${size}w`).join(', ')}" sizes="${sizes}" alt="" loading="lazy" decoding="async">`;
@@ -1239,6 +1246,16 @@ restoreLocalState();
 restoreAfterAppUpdate();
 restoreRecordPage();
 render();
+/* On load, the desktop record rails of people with a seed are placed on their records first and again once the
+   engine adds the forecast rows, which showed the wrong cards for a moment. The summary stays hidden until the
+   engine is ready (or fails, or takes too long), so it appears once, already in place. After render(), so its
+   own redraw on load runs before this reveal. */
+if (page === 'summary' && desktopRecords.matches && !window.RiggingSeed.ready() && visibleRoster().some(item => item.seed)) {
+  app.classList.add('awaiting-seed');
+  const reveal = () => app.classList.remove('awaiting-seed');
+  window.RiggingSeed.load(seedVersion()).then(reveal, reveal);
+  setTimeout(reveal, 1500);
+}
 app.addEventListener('change', e => {
   if (e.target.name !== 'route') return;
   const other = e.target.value === 'other';

@@ -3,7 +3,14 @@ window.CHARACTERS = [
     "id": "c001",
     "name": "伊修玛尔",
     "part3Only": true,
-    "image": "assets/portraits/eshmel.png",
+    "image": "assets/portraits/protagonist/grid/eshmel-male.png",
+    "englishName": "Eshmel"
+  },
+  {
+    "id": "c078",
+    "name": "伊修玛尔",
+    "part3Only": true,
+    "image": "assets/portraits/protagonist/grid/eshmel-female.png",
     "englishName": "Eshmel"
   },
   {

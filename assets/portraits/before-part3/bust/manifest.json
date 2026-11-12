@@ -1,0 +1,1232 @@
+{
+  "story": "before-part3",
+  "expression": "default",
+  "count": 68,
+  "description": "Half-body portraits: Spine setup pose of each person's default face (same face as grid/narrow), no expression animation, no mask/hood/costume variant.",
+  "entries": [
+    {
+      "fid": "FID_コウカ",
+      "faceCode": "107",
+      "characterId": "c002",
+      "file": "assets/portraits/before-part3/bust/hong-hua.png",
+      "width": 512,
+      "height": 527,
+      "sha256": "ab8f60fdb2046ee7b903aa15d212d02ae36172d90bd3bd971f7bb0f25884be0f",
+      "source": {
+        "folder": "UI/Face/107",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.964
+      }
+    },
+    {
+      "fid": "FID_トロイア",
+      "faceCode": "145",
+      "characterId": "c003",
+      "file": "assets/portraits/before-part3/bust/troy.png",
+      "width": 464,
+      "height": 525,
+      "sha256": "cd05ff8ae0aa389e1379164971b946acfd0f14236b23527d7290c296e5f4aef2",
+      "source": {
+        "folder": "UI/Face/145",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.977
+      }
+    },
+    {
+      "fid": "FID_カイ",
+      "faceCode": "017",
+      "characterId": "c004",
+      "file": "assets/portraits/before-part3/bust/cai.png",
+      "width": 379,
+      "height": 537,
+      "sha256": "5d5e0ed01b33646807942f60d289247b0f9bc8f3d88b367bfba08c4b8bf2e5f5",
+      "source": {
+        "folder": "UI/Face/017",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.974
+      }
+    },
+    {
+      "fid": "FID_ティアラ",
+      "faceCode": "025",
+      "characterId": "c005",
+      "file": "assets/portraits/before-part3/bust/tialla.png",
+      "width": 430,
+      "height": 518,
+      "sha256": "6c44b2a5cea1eb652795758923bfda88d6e4886dcd152ab9978cc6aa589a7bdb",
+      "source": {
+        "folder": "UI/Face/025",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.971
+      }
+    },
+    {
+      "fid": "FID_ピーテル",
+      "faceCode": "026",
+      "characterId": "c006",
+      "file": "assets/portraits/before-part3/bust/peter.png",
+      "width": 338,
+      "height": 514,
+      "sha256": "53203f0f769ffde86e570dd1e30d9afd2a11d0969164bf97ce7ee1746b4a88ad",
+      "source": {
+        "folder": "UI/Face/026",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.966
+      }
+    },
+    {
+      "fid": "FID_ウルタンド",
+      "faceCode": "027",
+      "characterId": "c007",
+      "file": "assets/portraits/before-part3/bust/ultand.png",
+      "width": 536,
+      "height": 519,
+      "sha256": "42c1429ab10b83eee94722faf6f2ccc36f2140393a8b62ebcd4726157bfac49d",
+      "source": {
+        "folder": "UI/Face/027",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.959
+      }
+    },
+    {
+      "fid": "FID_ディートリヒ",
+      "faceCode": "019",
+      "characterId": "c008",
+      "file": "assets/portraits/before-part3/bust/dietrich.png",
+      "width": 505,
+      "height": 564,
+      "sha256": "7ad2b782807495efaf4986ce5282f82361ba946addcc2f173d7e8f4ab9a76240",
+      "source": {
+        "folder": "UI/Face/019",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.987
+      }
+    },
+    {
+      "fid": "FID_ファビオ",
+      "faceCode": "032",
+      "characterId": "c009",
+      "file": "assets/portraits/before-part3/bust/fabio.png",
+      "width": 482,
+      "height": 532,
+      "sha256": "750157c28746c5b343357bd89d65bde67871283bc93983ceb0e2d6d868baaf45",
+      "source": {
+        "folder": "UI/Face/032",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.982
+      }
+    },
+    {
+      "fid": "FID_エスメラルダ",
+      "faceCode": "033",
+      "characterId": "c010",
+      "file": "assets/portraits/before-part3/bust/esmeralda.png",
+      "width": 501,
+      "height": 552,
+      "sha256": "c1ca8457819e5c553adf9b8bfeee8388a0d9c68669390b313fef36e89854c8ea",
+      "source": {
+        "folder": "UI/Face/033",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.958
+      }
+    },
+    {
+      "fid": "FID_ミカエラ",
+      "faceCode": "049",
+      "characterId": "c011",
+      "file": "assets/portraits/before-part3/bust/mikaela.png",
+      "width": 547,
+      "height": 537,
+      "sha256": "78f1901c50585f47004d1e4cf3c8cb9c528dc0b549196c261176a75c3a19e6b9",
+      "source": {
+        "folder": "UI/Face/049",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.958
+      }
+    },
+    {
+      "fid": "FID_セオドラ",
+      "faceCode": "022",
+      "characterId": "c012",
+      "file": "assets/portraits/before-part3/bust/theodora.png",
+      "width": 473,
+      "height": 577,
+      "sha256": "9c10ffb2c272087543af698cffa5ea2e5e96caac4531d35cd5bb5630b9bb4cd6",
+      "source": {
+        "folder": "UI/Face/022",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.972
+      }
+    },
+    {
+      "fid": "FID_ボナパルテ",
+      "faceCode": "042",
+      "characterId": "c013",
+      "file": "assets/portraits/before-part3/bust/bonaventure.png",
+      "width": 543,
+      "height": 632,
+      "sha256": "e06e83801ab262887d407ec6b1f5aca5cd71a07112df185af744669888f5679c",
+      "source": {
+        "folder": "UI/Face/042",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.973
+      }
+    },
+    {
+      "fid": "FID_トビヤス",
+      "faceCode": "043",
+      "characterId": "c014",
+      "file": "assets/portraits/before-part3/bust/tobias.png",
+      "width": 668,
+      "height": 566,
+      "sha256": "d60cf2f39c6413a94f8e52b54a30111b103e5c3b3c94200fb74fa66e4bd4adb2",
+      "source": {
+        "folder": "UI/Face/043",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.97
+      }
+    },
+    {
+      "fid": "FID_リリアン",
+      "faceCode": "044",
+      "characterId": "c015",
+      "file": "assets/portraits/before-part3/bust/lilian.png",
+      "width": 451,
+      "height": 528,
+      "sha256": "4b4fa7300461bd1f848c11382bd49b1bf8e76125002f758a3ab759b3d62e0e53",
+      "source": {
+        "folder": "UI/Face/044",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.964
+      }
+    },
+    {
+      "fid": "FID_ライサンダー",
+      "faceCode": "045",
+      "characterId": "c016",
+      "file": "assets/portraits/before-part3/bust/lysander.png",
+      "width": 467,
+      "height": 556,
+      "sha256": "419267eba3a8311e43d4043c84c76c3f51583566afac7ff6bd24c231a322fe0a",
+      "source": {
+        "folder": "UI/Face/045",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.966
+      }
+    },
+    {
+      "fid": "FID_レダ",
+      "faceCode": "023",
+      "characterId": "c017",
+      "file": "assets/portraits/before-part3/bust/leda.png",
+      "width": 473,
+      "height": 527,
+      "sha256": "2e5af9d690edbfece5d318387d89532fef000524d9231cb0e3f1c63a4bc3e0c9",
+      "source": {
+        "folder": "UI/Face/023",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.948
+      }
+    },
+    {
+      "fid": "FID_バッカニア",
+      "faceCode": "046",
+      "characterId": "c018",
+      "file": "assets/portraits/before-part3/bust/buccar.png",
+      "width": 662,
+      "height": 576,
+      "sha256": "c67e3c18ab4bcee2b793315eb375939636e0655dfe7b5ec968f1cc8c908bac94",
+      "source": {
+        "folder": "UI/Face/046",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.961
+      }
+    },
+    {
+      "fid": "FID_シロッコ",
+      "faceCode": "047",
+      "characterId": "c019",
+      "file": "assets/portraits/before-part3/bust/sirocco.png",
+      "width": 524,
+      "height": 574,
+      "sha256": "d989a18aeb1128bfda13c82b03946576acbdefd7b21767275c529541b98cb8e5",
+      "source": {
+        "folder": "UI/Face/047",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.957
+      }
+    },
+    {
+      "fid": "FID_ムウ",
+      "faceCode": "048",
+      "characterId": "c020",
+      "file": "assets/portraits/before-part3/bust/mu.png",
+      "width": 321,
+      "height": 531,
+      "sha256": "d030897d065fa9bac9dc052aa0345b7565efdd98d3241ee26b8d8c5cdb033aae",
+      "source": {
+        "folder": "UI/Face/048",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.979
+      }
+    },
+    {
+      "fid": "FID_オリンピア",
+      "faceCode": "050",
+      "characterId": "c021",
+      "file": "assets/portraits/before-part3/bust/olympia.png",
+      "width": 519,
+      "height": 548,
+      "sha256": "cf273ee79f0414930af29634ce483f59e8d09960e71bd5fca651a6b68d9a637e",
+      "source": {
+        "folder": "UI/Face/050",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.94
+      }
+    },
+    {
+      "fid": "FID_ベルトラン",
+      "faceCode": "018_Normal",
+      "characterId": "c022",
+      "file": "assets/portraits/before-part3/bust/bertrand.png",
+      "width": 479,
+      "height": 579,
+      "sha256": "1a8f622757103963269bc20ab1c4ef27e2b838b2aaf6155f8289b5016de3a3a9",
+      "source": {
+        "folder": "UI/Face/018",
+        "skin": "Normal",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.971
+      }
+    },
+    {
+      "fid": "FID_ゲイツ",
+      "faceCode": "030",
+      "characterId": "c023",
+      "file": "assets/portraits/before-part3/bust/gaitz.png",
+      "width": 548,
+      "height": 551,
+      "sha256": "fc7ab09acff0425a2c5ca87feb68fd1f744ee7c1a6bbbce79bb4f4cda61f82b7",
+      "source": {
+        "folder": "UI/Face/030",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.97
+      }
+    },
+    {
+      "fid": "FID_ゴライアス",
+      "faceCode": "029",
+      "characterId": "c024",
+      "file": "assets/portraits/before-part3/bust/goliath.png",
+      "width": 734,
+      "height": 711,
+      "sha256": "410cfca9306319820e49f8b65af1966ee6e78a61d49321a3d329a366f0120646",
+      "source": {
+        "folder": "UI/Face/029",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.947
+      }
+    },
+    {
+      "fid": "FID_ジェスター",
+      "faceCode": "055",
+      "characterId": "c025",
+      "file": "assets/portraits/before-part3/bust/jester.png",
+      "width": 454,
+      "height": 579,
+      "sha256": "806de21aa107a25416df31b5d4bf30b994b3a2d2c628f2d1ce81ce7db688dd67",
+      "source": {
+        "folder": "UI/Face/055",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.981
+      }
+    },
+    {
+      "fid": "FID_ダンテ",
+      "faceCode": "031",
+      "characterId": "c026",
+      "file": "assets/portraits/before-part3/bust/dante.png",
+      "width": 288,
+      "height": 554,
+      "sha256": "15dfc1cad657766a98c4cdbf8bfeb1e40efae4e97e27d7ed3d038df6fbcdc9af",
+      "source": {
+        "folder": "UI/Face/031",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.976
+      }
+    },
+    {
+      "fid": "FID_オルヘル",
+      "faceCode": "021",
+      "characterId": "c027",
+      "file": "assets/portraits/before-part3/bust/orchel.png",
+      "width": 337,
+      "height": 541,
+      "sha256": "25d68abaa8945415881e2a52726845826133a998b2e12e295949ef6d9cec68fb",
+      "source": {
+        "folder": "UI/Face/021",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.978
+      }
+    },
+    {
+      "fid": "FID_ディエゴ",
+      "faceCode": "038",
+      "characterId": "c028",
+      "file": "assets/portraits/before-part3/bust/diego.png",
+      "width": 441,
+      "height": 570,
+      "sha256": "26ea31c57d4debf0e9ad6d6d443e7caa2597201fd49e0ec82f5f69f4b1bfe635",
+      "source": {
+        "folder": "UI/Face/038",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.971
+      }
+    },
+    {
+      "fid": "FID_ロレッタ",
+      "faceCode": "039",
+      "characterId": "c029",
+      "file": "assets/portraits/before-part3/bust/loretta.png",
+      "width": 367,
+      "height": 520,
+      "sha256": "36613537b171b33079fa27e0c8cf57a3bf77c2dbb803e021eb094e0d45f4c304",
+      "source": {
+        "folder": "UI/Face/039",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.962
+      }
+    },
+    {
+      "fid": "FID_セテス",
+      "faceCode": "040_TarbanOn",
+      "characterId": "c030",
+      "file": "assets/portraits/before-part3/bust/seteth.png",
+      "width": 486,
+      "height": 551,
+      "sha256": "eb4d4ce9782eac22749cf4a0d42f0a2def8da7cfbc5bf06d1b12240f011127f9",
+      "source": {
+        "folder": "UI/Face/040",
+        "skin": "TarbanOn",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.962
+      }
+    },
+    {
+      "fid": "FID_ニネ",
+      "faceCode": "041",
+      "characterId": "c031",
+      "file": "assets/portraits/before-part3/bust/ninae.png",
+      "width": 501,
+      "height": 572,
+      "sha256": "333054fe6f4bda994efb718a10f2d2830a9bd48de46759e13f93da850e08f64c",
+      "source": {
+        "folder": "UI/Face/041",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.975
+      }
+    },
+    {
+      "fid": "FID_タリムーン",
+      "faceCode": "020_CinnamonOn",
+      "characterId": "c032",
+      "file": "assets/portraits/before-part3/bust/talimun.png",
+      "width": 492,
+      "height": 558,
+      "sha256": "008e452bc5592cb7d771cd592575796c69dd64be9e0d7f93686aafdeafc09201",
+      "source": {
+        "folder": "UI/Face/020",
+        "skin": "CinnamonOn",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.948
+      }
+    },
+    {
+      "fid": "FID_ウーシュラ",
+      "faceCode": "034",
+      "characterId": "c033",
+      "file": "assets/portraits/before-part3/bust/ursula.png",
+      "width": 454,
+      "height": 541,
+      "sha256": "346c1f633e305f2fc3cc2fc9096f1c31971e1f6e8d8b3e370aa38faabeed8243",
+      "source": {
+        "folder": "UI/Face/034",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.944
+      }
+    },
+    {
+      "fid": "FID_シモン",
+      "faceCode": "035",
+      "characterId": "c034",
+      "file": "assets/portraits/before-part3/bust/simon.png",
+      "width": 532,
+      "height": 569,
+      "sha256": "2d60b1fea0faff10d5e0d09c80317cc42b87b8c9bbc403b2df88d131a845c259",
+      "source": {
+        "folder": "UI/Face/035",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.965
+      }
+    },
+    {
+      "fid": "FID_ルルディヤー",
+      "faceCode": "036",
+      "characterId": "c035",
+      "file": "assets/portraits/before-part3/bust/ludia.png",
+      "width": 429,
+      "height": 535,
+      "sha256": "335dd7771352a10b50f3726140b1567748af6b49ef4a16b75ea28de328ca119e",
+      "source": {
+        "folder": "UI/Face/036",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.969
+      }
+    },
+    {
+      "fid": "FID_フィアナ",
+      "faceCode": "037_Fianna",
+      "characterId": "c036",
+      "file": "assets/portraits/before-part3/bust/fianna.png",
+      "width": 536,
+      "height": 546,
+      "sha256": "b4c9e1aefe9e3d7575dfaa77cb383801acf73f505a4b3bf7e019e7920d75c7d3",
+      "source": {
+        "folder": "UI/Face/037",
+        "skin": "Fianna",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.961
+      }
+    },
+    {
+      "fid": "FID_アナトリア",
+      "faceCode": "024_VeilOn",
+      "characterId": "c037",
+      "file": "assets/portraits/before-part3/bust/anatolia.png",
+      "width": 470,
+      "height": 548,
+      "sha256": "ae3cdad6ee402dfe3ab8a0c02b028cec667a89ca57796196b05c0863a340290d",
+      "source": {
+        "folder": "UI/Face/024",
+        "skin": "VeilOn",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.977
+      }
+    },
+    {
+      "fid": "FID_サラン",
+      "faceCode": "052",
+      "characterId": "c038",
+      "file": "assets/portraits/before-part3/bust/sha-lan.png",
+      "width": 402,
+      "height": 514,
+      "sha256": "0379a5b24e03d2870b2ec738052b6148222b8296b73e18696a3dd8e3e958f79d",
+      "source": {
+        "folder": "UI/Face/052",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.959
+      }
+    },
+    {
+      "fid": "FID_ナジャ",
+      "faceCode": "051",
+      "characterId": "c039",
+      "file": "assets/portraits/before-part3/bust/nezha.png",
+      "width": 431,
+      "height": 520,
+      "sha256": "98aa58d84b20b673ff3c5aa0a71993ae58ecce4b10417c62ffcfb5bb833c13ad",
+      "source": {
+        "folder": "UI/Face/051",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.97
+      }
+    },
+    {
+      "fid": "FID_ダイトウ",
+      "faceCode": "053",
+      "characterId": "c040",
+      "file": "assets/portraits/before-part3/bust/dadao.png",
+      "width": 572,
+      "height": 562,
+      "sha256": "d96abbbbe377daf519011c9f9bb003912bdefea9113cf102ee588603a2ed7288",
+      "source": {
+        "folder": "UI/Face/053",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.969
+      }
+    },
+    {
+      "fid": "FID_ハルヴィン",
+      "faceCode": "054",
+      "characterId": "c041",
+      "file": "assets/portraits/before-part3/bust/halvin.png",
+      "width": 582,
+      "height": 514,
+      "sha256": "5bf13a14288f1eae786d4a4ef641360c96b80de1bdaa906c0b6d37f8e7b3ac04",
+      "source": {
+        "folder": "UI/Face/054",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.963
+      }
+    },
+    {
+      "fid": "FID_カターニャ",
+      "faceCode": "092",
+      "characterId": "c042",
+      "file": "assets/portraits/before-part3/bust/catania.png",
+      "width": 473,
+      "height": 529,
+      "sha256": "8d71803786abb13a5af8b2341244bec0dabde928e708ae02f5ff869a22865f16",
+      "source": {
+        "folder": "UI/Face/092",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.963
+      }
+    },
+    {
+      "fid": "FID_ヌディーヌ",
+      "faceCode": "093",
+      "characterId": "c043",
+      "file": "assets/portraits/before-part3/bust/nydine.png",
+      "width": 551,
+      "height": 562,
+      "sha256": "b518e7ed97c029cce860bc6d061bd59d91e3b0a38ea342d28ff8b44917e5920f",
+      "source": {
+        "folder": "UI/Face/093",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.946
+      }
+    },
+    {
+      "fid": "FID_イオ",
+      "faceCode": "088",
+      "characterId": "c044",
+      "file": "assets/portraits/before-part3/bust/io.png",
+      "width": 426,
+      "height": 524,
+      "sha256": "95e0690be36ff6e30fb2ce42b24374522418567a664b8eb0638fa6a974dbc58f",
+      "source": {
+        "folder": "UI/Face/088",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.973
+      }
+    },
+    {
+      "fid": "FID_グザラン",
+      "faceCode": "086",
+      "characterId": "c045",
+      "file": "assets/portraits/before-part3/bust/guzran.png",
+      "width": 564,
+      "height": 566,
+      "sha256": "1c75dd035928ccbbdd90232ddcf615493aa0bbf889bbb604f43372173a718900",
+      "source": {
+        "folder": "UI/Face/086",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.967
+      }
+    },
+    {
+      "fid": "FID_ヨーカイ",
+      "faceCode": "087",
+      "characterId": "c046",
+      "file": "assets/portraits/before-part3/bust/yang-jie.png",
+      "width": 488,
+      "height": 556,
+      "sha256": "b5e51ca86d6fd1e8c9ae680d96a7e2fff9683c11ee09ee28bd283705c0386b7c",
+      "source": {
+        "folder": "UI/Face/087",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.961
+      }
+    },
+    {
+      "fid": "FID_マジーデ",
+      "faceCode": "095",
+      "characterId": "c047",
+      "file": "assets/portraits/before-part3/bust/majide.png",
+      "width": 611,
+      "height": 553,
+      "sha256": "1b8e59e64ea71d7e2e9b44c6fd07e645ce1882af9b4e97ac72d84bf1957dfb0a",
+      "source": {
+        "folder": "UI/Face/095",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.959
+      }
+    },
+    {
+      "fid": "FID_ノクチュラ",
+      "faceCode": "090",
+      "characterId": "c048",
+      "file": "assets/portraits/before-part3/bust/noctula.png",
+      "width": 422,
+      "height": 547,
+      "sha256": "b08b9adbfcb2a297ff87ca2f11c20d5d0f48ea13eb804cf65c5a452837e945d3",
+      "source": {
+        "folder": "UI/Face/090",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.957
+      }
+    },
+    {
+      "fid": "FID_ヌッツォ",
+      "faceCode": "136",
+      "characterId": "c049",
+      "file": "assets/portraits/before-part3/bust/nuzzuo.png",
+      "width": 536,
+      "height": 554,
+      "sha256": "54be48b04e618362c971649a228417665b1c71922647227c91fc0c3311ca4ce2",
+      "source": {
+        "folder": "UI/Face/136",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.966
+      }
+    },
+    {
+      "fid": "FID_ソフィア",
+      "faceCode": "091",
+      "characterId": "c050",
+      "file": "assets/portraits/before-part3/bust/sofia.png",
+      "width": 361,
+      "height": 552,
+      "sha256": "12ad901e2638654a986d8f65bda32d09cca2cb7da712c7569955312f4474777a",
+      "source": {
+        "folder": "UI/Face/091",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.979
+      }
+    },
+    {
+      "fid": "FID_ペペ",
+      "faceCode": "089",
+      "characterId": "c051",
+      "file": "assets/portraits/before-part3/bust/peppe.png",
+      "width": 515,
+      "height": 562,
+      "sha256": "625622bea44b75d7e729d5d1151e55111bf62013309c15242fa71066d081ac35",
+      "source": {
+        "folder": "UI/Face/089",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.958
+      }
+    },
+    {
+      "fid": "FID_ザーコネ",
+      "faceCode": "094",
+      "characterId": "c052",
+      "file": "assets/portraits/before-part3/bust/zarcone.png",
+      "width": 543,
+      "height": 557,
+      "sha256": "b675a51f288a930c1b8cb32a3e71206d0f23c56ab0b96972263313ea58976725",
+      "source": {
+        "folder": "UI/Face/094",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.971
+      }
+    },
+    {
+      "fid": "FID_ベンディッツ",
+      "faceCode": "096",
+      "characterId": "c053",
+      "file": "assets/portraits/before-part3/bust/benditz.png",
+      "width": 601,
+      "height": 551,
+      "sha256": "584dfe7ddff8bfe303c945be160d66e68e1ed7393bee7a7077befc5d46fafa57",
+      "source": {
+        "folder": "UI/Face/096",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.953
+      }
+    },
+    {
+      "fid": "FID_アレキサンドラ",
+      "faceCode": "099",
+      "characterId": "c054",
+      "file": "assets/portraits/before-part3/bust/alexandra.png",
+      "width": 536,
+      "height": 518,
+      "sha256": "64a551fe6557231bc33868ff931cd519a23304ef2b2aa3980bb402632c559048",
+      "source": {
+        "folder": "UI/Face/099",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.955
+      }
+    },
+    {
+      "fid": "FID_キロイカ",
+      "faceCode": "120",
+      "characterId": "c055",
+      "file": "assets/portraits/before-part3/bust/kiroc.png",
+      "width": 439,
+      "height": 380,
+      "sha256": "0310e262da358d2f500c7092414bffe2b36713661b7d016f76a606e62821c46d",
+      "source": {
+        "folder": "UI/Face/120",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.942
+      }
+    },
+    {
+      "fid": "FID_ジャスミン",
+      "faceCode": "098",
+      "characterId": "c056",
+      "file": "assets/portraits/before-part3/bust/jasmine.png",
+      "width": 584,
+      "height": 549,
+      "sha256": "84a6c97250e5c96c1d939e8de16d711372bd4ac9c69413fa1256aec685a3447a",
+      "source": {
+        "folder": "UI/Face/098",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.97
+      }
+    },
+    {
+      "fid": "FID_イニオニ",
+      "faceCode": "097",
+      "characterId": "c057",
+      "file": "assets/portraits/before-part3/bust/inyoni.png",
+      "width": 412,
+      "height": 610,
+      "sha256": "2b8ca537c65d932fef3c7e7894caaa30fcc74d6d61d6c3dd49fe4b8d20707b4e",
+      "source": {
+        "folder": "UI/Face/097",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.963
+      }
+    },
+    {
+      "fid": "FID_キリーク",
+      "faceCode": "118",
+      "characterId": "c058",
+      "file": "assets/portraits/before-part3/bust/creek.png",
+      "width": 482,
+      "height": 556,
+      "sha256": "c7a3e206026a6601f343eca12ae97d37c4fd4514d757ffdce6abda3e6c30a6ce",
+      "source": {
+        "folder": "UI/Face/118",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.957
+      }
+    },
+    {
+      "fid": "FID_ネイサン",
+      "faceCode": "117",
+      "characterId": "c059",
+      "file": "assets/portraits/before-part3/bust/nathan.png",
+      "width": 487,
+      "height": 554,
+      "sha256": "6c2625d067a7b37ad714078b146408e41095ab8628894152461ec1f0c14c2e81",
+      "source": {
+        "folder": "UI/Face/117",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.951
+      }
+    },
+    {
+      "fid": "FID_セントリオン",
+      "faceCode": "112",
+      "characterId": "c060",
+      "file": "assets/portraits/before-part3/bust/centurio.png",
+      "width": 589,
+      "height": 523,
+      "sha256": "f21a161abfb54b6ec8a2df84a48cb7a53c221e9d408e35032cbb19cdef39f007",
+      "source": {
+        "folder": "UI/Face/112",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.957
+      }
+    },
+    {
+      "fid": "FID_アスワン",
+      "faceCode": "113",
+      "characterId": "c061",
+      "file": "assets/portraits/before-part3/bust/aswan.png",
+      "width": 365,
+      "height": 538,
+      "sha256": "c70cde44202d3290285146119837614cae6014620e799d9d35d36c64aee32587",
+      "source": {
+        "folder": "UI/Face/113",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.936
+      }
+    },
+    {
+      "fid": "FID_タホウニア",
+      "faceCode": "114",
+      "characterId": "c062",
+      "file": "assets/portraits/before-part3/bust/tahonia.png",
+      "width": 497,
+      "height": 547,
+      "sha256": "f906c27a24ee5823bc299c179dacf65693049e298c75e5f7989db9d518c7749d",
+      "source": {
+        "folder": "UI/Face/114",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.964
+      }
+    },
+    {
+      "fid": "FID_クラプカ",
+      "faceCode": "138",
+      "characterId": "c063",
+      "file": "assets/portraits/before-part3/bust/klapka.png",
+      "width": 588,
+      "height": 573,
+      "sha256": "424348016809f812c6a0321bdd611f8cbc999df9e67068505a5ba6174c51002d",
+      "source": {
+        "folder": "UI/Face/138",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.958
+      }
+    },
+    {
+      "fid": "FID_アンナ",
+      "faceCode": "163",
+      "characterId": "c064",
+      "file": "assets/portraits/before-part3/bust/anna.png",
+      "width": 407,
+      "height": 549,
+      "sha256": "36a4646299005dac4c9aff7fb4df3324ce8644b64ae0e7e97021845a0ccb5af2",
+      "source": {
+        "folder": "UI/Face/163",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.946
+      }
+    },
+    {
+      "fid": "FID_カーラ",
+      "faceCode": "007",
+      "characterId": "c066",
+      "file": "assets/portraits/before-part3/bust/kalla.png",
+      "width": 495,
+      "height": 535,
+      "sha256": "78b9e36b8ae12db25621cd9691d796447c613ddb95268989c202024ac6ad49f1",
+      "source": {
+        "folder": "UI/Face/007",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.95
+      }
+    },
+    {
+      "fid": "FID_マーズ",
+      "faceCode": "004",
+      "characterId": "c067",
+      "file": "assets/portraits/before-part3/bust/mars.png",
+      "width": 647,
+      "height": 581,
+      "sha256": "e63bab10c84866146d90274817bdb3fbe28f418910bf569571376ca9ba76d233",
+      "source": {
+        "folder": "UI/Face/004",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.962
+      }
+    },
+    {
+      "fid": "FID_ジュラ",
+      "faceCode": "002",
+      "characterId": "c074",
+      "file": "assets/portraits/before-part3/bust/jurah.png",
+      "width": 541,
+      "height": 568,
+      "sha256": "e48b695caf31701f2e066e53cfb71605470ddccd1556eb7b4398a2a01e420467",
+      "source": {
+        "folder": "UI/Face/002",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.975
+      }
+    },
+    {
+      "fid": "FID_スミルノス",
+      "faceCode": "005",
+      "characterId": "c075",
+      "file": "assets/portraits/before-part3/bust/smyrnos.png",
+      "width": 451,
+      "height": 559,
+      "sha256": "fca24541123bbb086d098697873f440f6e9c0859ac59d2df3e5727b8fbe9181a",
+      "source": {
+        "folder": "UI/Face/005",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.953
+      }
+    },
+    {
+      "fid": "FID_アウロラ",
+      "faceCode": "010",
+      "characterId": "c077",
+      "file": "assets/portraits/before-part3/bust/aurora.png",
+      "width": 574,
+      "height": 539,
+      "sha256": "3ef954a91ade7026b478d7e877a2c5fe98c1f1b93d471628885635e9464dcfc5",
+      "source": {
+        "folder": "UI/Face/010",
+        "skin": "default",
+        "pose": "setup",
+        "skeletonScale": 0.24
+      },
+      "headMatch": {
+        "correlation": 0.961
+      }
+    }
+  ]
+}

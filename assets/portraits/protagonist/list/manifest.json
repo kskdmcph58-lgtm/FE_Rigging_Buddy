@@ -1,0 +1,55 @@
+{
+  "size": [
+    116,
+    172
+  ],
+  "scales": [
+    1,
+    2,
+    3
+  ],
+  "count": 2,
+  "description": "Desktop list art: the troop portrait window (same face position and scale) extended down on the Spine bust; FaceMask_List on both sides as in the troop pane; top and bottom cut at the card inner edges, starting 14px above the troop window.",
+  "entries": [
+    {
+      "fid": "FID_イシュマール男A",
+      "faceCode": "015_AHoodOff",
+      "file": "assets/portraits/protagonist/list/eshmel-male.png",
+      "troopWindow": [
+        0.021999984979629517,
+        0.21400000154972076,
+        0.8220000267028809,
+        0.6240000128746033
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "sha256": {
+        "1x": "5e50c8e7238984093a9d3ef702da3408615b5fd0ad09f52229490995b12ea0e1",
+        "2x": "4dd9e970a9516245a61de03c7c4b7c1d97e818eb3b37ed57ec72712725ad9efd",
+        "3x": "cae780e006d1979be0e22bb4c30f77074c6ae4900d4328a08077516d9051dc13"
+      }
+    },
+    {
+      "fid": "FID_イシュマール女A",
+      "faceCode": "016_AHoodOff",
+      "file": "assets/portraits/protagonist/list/eshmel-female.png",
+      "troopWindow": [
+        0.03799998760223389,
+        0.2160000056028366,
+        0.8379999995231628,
+        0.6259999871253967
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "sha256": {
+        "1x": "ff5af1a3246d204354576fbe5034d967249b19123e4104bd6531ab6033bf2734",
+        "2x": "f92d85a84e14b5ea7ad53cbdf24c16956b16bd76d60de36b0e823633e06da487",
+        "3x": "e7aa2b2fee9a1cdaa8f5e789e265975484212b24949e5c342fa767b1db524ec8"
+      }
+    }
+  ]
+}
