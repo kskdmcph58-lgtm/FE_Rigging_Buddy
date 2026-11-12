@@ -2897,7 +2897,7 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
     line-height: 16px;
     opacity: .85;
   }
-  /* Stats stay clear of the rate; on narrow cards they may wrap to a third line. */
+  /* Stats stay clear of the rate and wrap below it when long. */
   .summary-page .record-chip.queue-row>p {
     padding-right: 50px;
   }
@@ -2953,17 +2953,6 @@ input[data-level-input][aria-invalid="true"]:focus-visible {
   }
   .summary-page .record-chip.anchor .stat-line {
     flex-wrap: wrap;
-  }
-  @media(max-width:1849px) {
-    /* Tighter spacing makes room for that third line at the same card height. */
-    .summary-page .record-chip>strong {
-      margin-top: 8px;
-      line-height: 28px;
-    }
-    .summary-page .record-chip p {
-      min-height: 61.6px;
-      padding-top: 4px;
-    }
   }
 }
 /* Touch and pointer never paint a focus ring, including on elements focused by script when a dialog opens
