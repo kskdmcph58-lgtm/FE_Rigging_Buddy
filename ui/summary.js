@@ -78,11 +78,13 @@ document.addEventListener('keydown', e => {
 }, true);
 function renderSummary() {
   const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
-  const happy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && x.status !== 'skipped' && !x.ratingPending).length, 0);
+  // The two counters count what the board holds: live records plus the forecast rows loaded as cards (see setMetrics).
+  let boardTotal = total;
+  let boardHappy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && x.status !== 'skipped' && !x.ratingPending).length, 0);
   const canUndo = storyRoster().some(item => item.deleted || item.records.some(record => record.deleted));
   const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.status === 'skipped'));
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b>${visibleRoster().length}</b><span>人物</span></div><div><b>${total}</b><span>升级记录</span></div><div><b>${happy}</b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b></b><span>人物</span></div><div><b></b><span>升级记录</span></div><div><b></b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const phone = UI_MEDIA.mobileShell.matches;
       const editing = editingCharacters.has(c.id);
@@ -90,6 +92,8 @@ function renderSummary() {
       const previousRail = app.querySelector(`.journal[data-sort-id="${c.id}"] .records`);
       const compact = compactRecords(item) || (desktopRecords.matches && previousRail && railState(previousRail).retiring);
       const queue = window.RiggingSeed.queueRows(state, item, c, forecastLengths.get(c.id));
+      boardTotal += queue.length;
+      for (const row of queue) if (row.happy && row.status !== 'skipped') boardHappy++;
       const canSeed = window.RiggingSeed.eligible(item, c);
       const startLabel = !canSeed ? '记录升级' : M.live(item).length ? '继续反推' : '开始反推';
       const mainAction = item.seed ? (window.RiggingSeed.hasCorrection(item) ? `<button class="primary" data-reseed="${c.id}">重新反推</button>` : `<button class="primary" data-exam="${c.id}">考试推荐</button>`) : `<button class="primary" data-start="${c.id}">${startLabel}</button>`;
@@ -103,7 +107,115 @@ function renderSummary() {
     template.innerHTML = markup;
     syncChildren(app, template.content);
   } else app.innerHTML = markup;
+  // While the font gate hides the page (startup) a change cannot be seen, so it swaps without rolling.
+  setMetrics([visibleRoster().length, boardTotal, boardHappy], document.documentElement.classList.contains('fonts-loading'));
   refreshRowSelection();
+}
+/* The step 3 counters. Each number is written in place (the summary is never redrawn for it) and, when it changes
+   while the page is shown, its changed digits roll like Apple's numericText: an increase brings the new digit up
+   from below and sends the old one up and out (a decrease is the reverse). The new digit and the leaving one are
+   absolutely placed inside a column that is exactly one line tall, so the box keeps the static layout; at rest the
+   <b> holds plain text again. Retargeting reads each moving digit's progress from its animation, never the layout. */
+const metricStates = new WeakMap();
+const ROLL = { duration: 300, easing: 'cubic-bezier(.16,1,.3,1)' };
+function setMetrics(values, quiet) {
+  app.querySelectorAll('.summary-top .metrics>div>b').forEach((b, index) => setMetric(b, values[index], quiet));
+}
+function setMetric(b, value, quiet) {
+  const text = String(value);
+  let state = metricStates.get(b);
+  if (!state) { metricStates.set(b, { value: text, columns: null, running: new Set() }); b.textContent = text; return; }
+  if (state.value === text) return;
+  if (quiet || !motionAllowed() || document.hidden || !b.isConnected) { rollStop(b, state); state.value = text; b.textContent = text; return; }
+  const up = Number(text) > Number(state.value), old = state.value;
+  if (!state.columns) {
+    b.textContent = '';
+    state.real = document.createElement('roll-part');
+    state.real.className = 'roll-real';
+    b.append(state.real);
+    state.columns = [...old].map(digit => rollColumn(digit));
+    b.append(...state.columns.map(column => column.el));
+  }
+  state.real.textContent = text;
+  state.value = text;
+  const next = [];
+  for (let k = 0; k < Math.max(old.length, text.length); k++) {
+    const column = state.columns[state.columns.length - 1 - k], digit = text[text.length - 1 - k];
+    if (digit === undefined) {
+      // A leading digit that is gone: its column keeps no width and the digit rolls out where it stood.
+      column.el.style.width = '0';
+      rollOut(state, column.cur, up, true, column);
+    } else if (!column) {
+      const added = rollColumn(digit);
+      b.insertBefore(added.el, next[0].el);
+      rollIn(state, added.cur, up);
+      next.unshift(added);
+      continue;
+    } else if (column.digit !== digit) {
+      rollOut(state, column.cur, up, false, column);
+      column.cur = rollDigit(digit); column.digit = digit;
+      column.el.append(column.cur);
+      rollIn(state, column.cur, up);
+    }
+    if (column && digit !== undefined) next.unshift(column);
+  }
+  state.columns = next;
+}
+function rollColumn(digit) {
+  const el = document.createElement('roll-part');
+  el.className = 'roll-col';
+  el.setAttribute('aria-hidden', 'true');
+  const cur = rollDigit(digit);
+  el.append(cur);
+  return { el, cur, digit };
+}
+function rollDigit(digit) {
+  const el = document.createElement('roll-part');
+  el.className = 'roll-digit';
+  el.textContent = digit;
+  return el;
+}
+// Where a digit's running animation stands, as a fraction of one line and an opacity.
+function rollNow(el) {
+  const progress = el.rollAnimation?.effect.getComputedTiming().progress;
+  if (progress == null) return { y: 0, opacity: 1 };
+  return { y: el.rollFrom * (1 - progress), opacity: el.rollOpacity + (1 - el.rollOpacity) * progress };
+}
+function rollTrack(state, animation, done) {
+  state.running.add(animation);
+  const end = () => { state.running.delete(animation); done?.(); if (!state.running.size) rollRest(state); };
+  animation.onfinish = end;
+  animation.oncancel = () => state.running.delete(animation);
+}
+function rollIn(state, el, up) {
+  const from = up ? 1 : -1;
+  el.rollFrom = from; el.rollOpacity = 0;
+  el.rollAnimation = el.animate([
+    { transform: `translateY(${from * 100}%)`, opacity: 0 },
+    { transform: 'translateY(0)', opacity: 1 }
+  ], { duration: ROLL.duration, easing: ROLL.easing });
+  rollTrack(state, el.rollAnimation);
+}
+function rollOut(state, el, up, remove, column) {
+  const now = rollNow(el), to = up ? -1 : 1;
+  el.rollAnimation?.cancel();
+  el.rollAnimation = null;
+  el.classList.add(remove ? 'roll-lost' : 'roll-leaving');
+  const animation = el.animate([
+    { transform: `translateY(${now.y * 100}%)`, opacity: now.opacity },
+    { transform: `translateY(${to * 100}%)`, opacity: 0 }
+  ], { duration: ROLL.duration, easing: ROLL.easing });
+  rollTrack(state, animation, () => { el.remove(); if (remove) column.el.remove(); });
+}
+function rollRest(state) {
+  const b = state.real?.parentElement;
+  if (!b || state.running.size) return;
+  b.textContent = state.value;
+  state.columns = null; state.real = null;
+}
+function rollStop(b, state) {
+  state.running.forEach(animation => { animation.onfinish = animation.oncancel = null; animation.cancel(); });
+  state.running.clear(); state.columns = null; state.real = null;
 }
 // Reconcile summary changes in place, retaining keyed journals and their images.
 function syncChildren(current, desired) {
@@ -139,7 +251,8 @@ function syncChildren(current, desired) {
         // Rail sizing is measured at runtime; retain it through record updates.
         if (chipWidth) node.style.setProperty('--chip-width', chipWidth);
         if (recordColumns) node.style.setProperty('--record-columns', recordColumns);
-        syncChildren(node, next);
+        // The counters keep their own digits (setMetric).
+        if (!node.matches('.metrics>div>b')) syncChildren(node, next);
       } else if (node.nodeValue !== next.nodeValue) node.nodeValue = next.nodeValue;
     }
     cursor = node.nextSibling;

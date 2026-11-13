@@ -91,3 +91,28 @@ button:active:not(:disabled) {
     transition: none;
   }
 }
+
+/* Step 3 counters (ui/summary.js setMetric): while a number changes, its <b> holds one column per digit, each exactly
+   one line tall, so the box keeps the static layout; the real number stays as visually hidden text and the moving
+   digits are aria-hidden. At rest the <b> is plain text again. Reduced motion never gets here: JS swaps the text. */
+.metrics b .roll-real {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.metrics b .roll-col {
+  display: inline-block;
+  position: relative;
+  clip-path: inset(0 -1em);
+}
+.metrics b .roll-digit {
+  display: inline-block;
+}
+.metrics b .roll-leaving {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
