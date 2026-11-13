@@ -4,7 +4,7 @@
    older narrow-screen layers in styles.css without !important.
    Tool chrome (search, segments, tool buttons, bottom bar) follows iOS; the character grid and the setup
    rows keep the game's frames, portraits and fonts. */
-@media (max-width:1749px) {
+@media (width < 1750px) {
   /* ---------- Shared tool buttons on both pages: 36px visual, 44px hit area ---------- */
   #app:is(.select-page,.levels-page) .toolbar button,
   #app.levels-page .selection-toolbar button {
@@ -436,14 +436,14 @@
   }
 
   /* Wider coarse screens (landscape phones, tablets): the same row, with 属性期望 moved up beside the class. */
-  @media (min-width:601px) {
+  @media (width > 600px) {
     #app.select-page>.toolbar { grid-template-columns: minmax(0,1fr) 220px 220px; }
     #app.select-page>.toolbar>.search-box { grid-column: 1; }
     #app.select-page>.toolbar>.part3-segment { grid-column: 2; grid-row: 1; }
     #app.select-page>.toolbar>.route-segment { grid-column: 3; grid-row: 1; }
     #app.select-page .character-grid { grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); }
     #app.select-page .bottom-bar #choose-next { flex: 0 1 320px; }
-    @media (max-height:500px) { #app.select-page .character-grid { grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); } }
+    @media (height <= 500px) { #app.select-page .character-grid { grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); } }
 
     #app.levels-page .setup-toolbar>:is(.part3-segment,.route-segment) { flex: 0 0 200px; }
     #app.levels-page .setup-toolbar:not(:has(>.route-segment))>.part3-segment { margin-right: 0; }

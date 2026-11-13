@@ -8,7 +8,7 @@
      height in every column whatever each column is showing. Inside a head the portrait and name never move:
      the name lies on the portrait; level and 属性期望 share one fixed 32px line, so editing the level moves nothing.
    - list view (sorting, multi-select): one row per person, checkbox leading, reorder grip trailing, both centred. */
-@media (max-width:1749px) {
+@media (width < 1750px) {
   /* ---------- Step 3: header strip ---------- */
   #app.summary-page { padding-top: 0; }
   #app.summary-page .summary-top {
@@ -123,7 +123,7 @@
   #app.summary-page.multi-select-mode .summary-top [data-action="batch-expectation"] { grid-row: 3; grid-column: 1 / 4; }
   #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-row: 3; grid-column: 4 / 7; }
   /* Tablets: one line — count, the five actions, then 完成多选 at the trailing gutter. */
-  @media (min-width:601px) {
+  @media (width > 600px) {
     #app.summary-page.multi-select-mode .summary-top .selection-toolbar {
       grid-template-columns: max-content repeat(5, max-content) minmax(0, 1fr) max-content;
     }
@@ -242,7 +242,7 @@
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: max-content;
-    /* head · buttons · cards · 查看更多预测: shared by every column (subgrid), so they line up. */
+    /* head · buttons · cards (rows 3–4): shared by every column (subgrid), so they line up. */
     grid-template-rows: auto auto minmax(0, 1fr) auto;
     gap: 0 8px;
     height: var(--m-board-height, 70dvh);
@@ -508,9 +508,7 @@
     content: '';
     flex: 0 0 max(0px, calc(100% - 104px));
   }
-  /* 查看更多预测 is the column's last row, so it sits clear of the home indicator in the same way. */
-  #app.summary-page.m-board .journal .forecast-more { padding-bottom: calc(10px + var(--m-safe-bottom)); }
-  /* Without 查看更多预测 the cards use its row too. */
+  /* The fourth row (once 查看更多预测, now removed) is taken by the cards too. */
   #app.summary-page.m-board .journal .records:last-child { grid-row: 3 / 5; }
   #app.summary-page.m-board .journal .records::-webkit-scrollbar { display: none; }
   #app.summary-page.m-board .journal .records>.empty { margin: 0; text-align: center; }
@@ -654,7 +652,7 @@
   html[data-input-mode="keyboard"] #app.summary-page.m-board .m-side-cell[role="button"]:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 4px; }
   /* Marked cards, as on wide screens: the mask covers the whole card with its word in the middle. 已升级 keeps
      LV, class, growth and stats readable above it in muted gold; 已跳过 shows everything faintly through it.
-     This replaces the narrow phone layout's moved growth number (styles.css, max-width:600px). */
+     This replaces the narrow phone layout's moved growth number (styles.css, width <= 600px). */
   #app.summary-page.m-board .record-chip:is(.upgraded,.skipped)::after { content: none; }
   #app.summary-page.m-board .record-chip:is(.upgraded,.skipped)>:is(strong,p) { visibility: visible; }
   #app.summary-page.m-board .record-chip.upgraded>div>.m-card-class { visibility: visible; }
@@ -699,7 +697,7 @@
     overflow: visible;
   }
   #app.summary-page.multi-select-mode .journal { grid-template-columns: 44px minmax(0, 1fr); column-gap: 4px; padding-left: 4px; }
-  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal :is(.records,.forecast-more,.journal-actions) { display: none; }
+  #app.summary-page:is(.m-sort-mode,.multi-select-mode) .journal :is(.records,.journal-actions) { display: none; }
   #app.summary-page.multi-select-mode .journal.row-selected {
     box-shadow: inset 0 0 0 1.5px var(--gold);
     background: color-mix(in srgb, var(--gold) 8%, var(--panel));

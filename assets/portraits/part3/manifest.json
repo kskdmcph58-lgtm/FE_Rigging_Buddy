@@ -92,20 +92,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/alexandra.png",
-        "narrow": "assets/portraits/part3/narrow/alexandra.png",
-        "troop": "assets/portraits/part3/troop/alexandra.png",
-        "small/56": "assets/portraits/part3/small/56/alexandra.png",
-        "small/112": "assets/portraits/part3/small/112/alexandra.png",
-        "small/168": "assets/portraits/part3/small/168/alexandra.png"
+        "grid": "assets/portraits/part3/grid/alexandra.webp",
+        "narrow": "assets/portraits/part3/narrow/alexandra.webp",
+        "troop": "assets/portraits/part3/troop/alexandra.webp",
+        "small/56": "assets/portraits/part3/small/56/alexandra.webp",
+        "small/112": "assets/portraits/part3/small/112/alexandra.webp",
+        "small/168": "assets/portraits/part3/small/168/alexandra.webp"
       },
       "sha256": {
-        "grid": "874ac36676e74856df57cbca3d9c54c7099c056d62625c0a61d4f2011ade6ced",
-        "narrow": "34241148e3d934c45ec8d3b693216d61ea0b01de50cdabac387e4935477487ba",
-        "troop": "b46844f801cc99056f7dce864ba7342c29c738c8620925bca3dc50dde57c7eb4",
-        "small/56": "4b2e57387a2aa58638c325cf8ebda5562d736e29bf36ab455dce8ab72d853e2d",
-        "small/112": "dbe8a08169a400e938108fbafe086e548e2d50b884c7bf89f8f43037a369898f",
-        "small/168": "8ce3939c2e611e2a9859eb32683312384153f8f88c1372446161f946a4fd5bdd"
+        "grid": "d6f3f7ac3a6f18f18d81ee106d4dab4df1a78cc542bd2a18b060226ce08f221e",
+        "narrow": "2294cb309bacc1e6ef9205366b8f38b31b0ba4cccfe7599483e906b6315f3d27",
+        "troop": "9382df3b74d6910b87e7da61ef34063f3811aad23162612c248ee83a234b8370",
+        "small/56": "9043ef4d94ac5b6d365689e7edb48f898131efb9cad128d54522da79fa3c3b1e",
+        "small/112": "b8e951162e569216fb059de19943831b756fe68cb41ad1f7d75fda0f8f3eafd7",
+        "small/168": "5f48eb4a3674e1b29231ea0b93a2ac6ad8c6b751e6cb09ac14d1b10ba847092a"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -200,20 +200,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/anatolia.png",
-        "narrow": "assets/portraits/part3/narrow/anatolia.png",
-        "troop": "assets/portraits/part3/troop/anatolia.png",
-        "small/56": "assets/portraits/part3/small/56/anatolia.png",
-        "small/112": "assets/portraits/part3/small/112/anatolia.png",
-        "small/168": "assets/portraits/part3/small/168/anatolia.png"
+        "grid": "assets/portraits/part3/grid/anatolia.webp",
+        "narrow": "assets/portraits/part3/narrow/anatolia.webp",
+        "troop": "assets/portraits/part3/troop/anatolia.webp",
+        "small/56": "assets/portraits/part3/small/56/anatolia.webp",
+        "small/112": "assets/portraits/part3/small/112/anatolia.webp",
+        "small/168": "assets/portraits/part3/small/168/anatolia.webp"
       },
       "sha256": {
-        "grid": "796ebebacb611a17dcf5606fe5c59b6117a4871d8c091e9108d306a95099f310",
-        "narrow": "481ec98f8036391d768de16ae6a96f35f16829dff2ff80fcefc372e6e4a47e72",
-        "troop": "38faac4b896d3248a7126162e820d73f77e8a1ea4b41636579f43cdc5f8b9b42",
-        "small/56": "d9f974a3acfa7f552b07857054e67884b3f5d5a458fe01db5849240e2ac62b0f",
-        "small/112": "c66d1682d7a4ed2cf812a17cca64c89383d5a2513ed2d8ffc876befa96c285d2",
-        "small/168": "79a76a29493c014b709099801a7ecac1aba024484e2e0df8a4f06b5d2a7d6110"
+        "grid": "8080b1d46560204a0da27e0a26c520ae3b10a110d551b2707729a2b7e52729be",
+        "narrow": "93aba510abe206f01041e8ed9301961ba276489bb858367267e3908994e24dea",
+        "troop": "41f96d88433e501cffd3c4d9d4749b7d5fc86ba1c7a577b75e999cb933d08638",
+        "small/56": "11a27135309a2854328193699fec79d28634fa6e025fa1ef7724f016f0d856fb",
+        "small/112": "035e4f4b0a2a730219acfa8533aaff24ca6005a166918f9b68e909ba9ab6ee09",
+        "small/168": "c74a88a2ca68ddc513837f7eae34f0ae8073e984ff517c1ccada876b015c11f9"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -308,20 +308,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/bertrand.png",
-        "narrow": "assets/portraits/part3/narrow/bertrand.png",
-        "troop": "assets/portraits/part3/troop/bertrand.png",
-        "small/56": "assets/portraits/part3/small/56/bertrand.png",
-        "small/112": "assets/portraits/part3/small/112/bertrand.png",
-        "small/168": "assets/portraits/part3/small/168/bertrand.png"
+        "grid": "assets/portraits/part3/grid/bertrand.webp",
+        "narrow": "assets/portraits/part3/narrow/bertrand.webp",
+        "troop": "assets/portraits/part3/troop/bertrand.webp",
+        "small/56": "assets/portraits/part3/small/56/bertrand.webp",
+        "small/112": "assets/portraits/part3/small/112/bertrand.webp",
+        "small/168": "assets/portraits/part3/small/168/bertrand.webp"
       },
       "sha256": {
-        "grid": "925223b5848ed88721d52a9bb01e5cf688122564d52a458a53096a1444cda242",
-        "narrow": "f3f83e4c5b7b6b0d0b481210ad517a9bb3a1736d11b411424d797538ac80c12f",
-        "troop": "41676002d96f78ffd127be3f713334e97ca1e3f9e1d54c4b5e79cacfa379709f",
-        "small/56": "397919286676680f01bca5ff16dcb34d0f12e22f2d4d26f244ba5a25820e0f80",
-        "small/112": "8c1d69c6b0baea151dee51ed6f70fea43b549e7f83b3f244a1c8358c1dae520a",
-        "small/168": "4bf19d57171f014ba8054384fce36ed9def9eb3f243ff31be872f9b72acbc0a9"
+        "grid": "52f8dbb8fa01effdc3a1fde03b2a37394a30a5c87c3ea949d1d2888feb92378c",
+        "narrow": "afb22da414ce7a057c5b1aa6a01926e47528f4343444621c6093a017a3c6fc57",
+        "troop": "55de912a27816e1107d8ea4f2200cd54404c18237130982216554e4cae2c48db",
+        "small/56": "cde3118ce4cdc9520b2be4b88912e19d33357a5a186e71bf9078855450d31abc",
+        "small/112": "acb7ccee39c90d188d0cdef8b70ed458f6970a324bdb3debdb30a0a2b14ea31c",
+        "small/168": "732ccf5077d24e113be29d9d1d878ebac03255900d226ceb5a4c294b4f280640"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -416,20 +416,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/bonaventure.png",
-        "narrow": "assets/portraits/part3/narrow/bonaventure.png",
-        "troop": "assets/portraits/part3/troop/bonaventure.png",
-        "small/56": "assets/portraits/part3/small/56/bonaventure.png",
-        "small/112": "assets/portraits/part3/small/112/bonaventure.png",
-        "small/168": "assets/portraits/part3/small/168/bonaventure.png"
+        "grid": "assets/portraits/part3/grid/bonaventure.webp",
+        "narrow": "assets/portraits/part3/narrow/bonaventure.webp",
+        "troop": "assets/portraits/part3/troop/bonaventure.webp",
+        "small/56": "assets/portraits/part3/small/56/bonaventure.webp",
+        "small/112": "assets/portraits/part3/small/112/bonaventure.webp",
+        "small/168": "assets/portraits/part3/small/168/bonaventure.webp"
       },
       "sha256": {
-        "grid": "48097b113a6416cc0ac954eed2c1b75e31486ee7e09ffbe71b1c5823483ca56b",
-        "narrow": "fc913738bf2ebca2f2d7fd5fd443045b71d7ff32fe6fb9b1320640746047d93c",
-        "troop": "c4ba67ec047669e4ce5a67170f39baf0a04c14376c955f8b19269cca61422143",
-        "small/56": "56dff7cb0f95d115d6cf3aadde21a1c84719e15aeebb310c379864440801ebc0",
-        "small/112": "e16457b7ddc1881e7db40b002392b554ac149a9ba1f0344ec1d7d582192fc87b",
-        "small/168": "7323b1d02c6edf2797bba25172b61b2eb1229d090d96eea9989f094d67877bdf"
+        "grid": "3a2131f07b3c27abd16df967c0a39363b921a5f5098080e110acc435c6fb8b1a",
+        "narrow": "4d8cce14fa2bdd2ede22a05ee59d7b6e413b774c8a221f85db1016ec86447415",
+        "troop": "30e5a802cf8c9f0bda357fe40792ba6dc632e4c728ed6d7cc3980a3fe2ba0a4f",
+        "small/56": "490e25682dc5e0bcf4ec8d00926c2d7e769aab119592987caeb8fc68eaf33a4f",
+        "small/112": "6d97223a379156adef7a75bd96c62447f224c8a4ac0835224fad78fd858344e0",
+        "small/168": "10a34ef49d00b34f925510f62a0284cb723f445931ee362e41c6587a653ad160"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -524,20 +524,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/buccar.png",
-        "narrow": "assets/portraits/part3/narrow/buccar.png",
-        "troop": "assets/portraits/part3/troop/buccar.png",
-        "small/56": "assets/portraits/part3/small/56/buccar.png",
-        "small/112": "assets/portraits/part3/small/112/buccar.png",
-        "small/168": "assets/portraits/part3/small/168/buccar.png"
+        "grid": "assets/portraits/part3/grid/buccar.webp",
+        "narrow": "assets/portraits/part3/narrow/buccar.webp",
+        "troop": "assets/portraits/part3/troop/buccar.webp",
+        "small/56": "assets/portraits/part3/small/56/buccar.webp",
+        "small/112": "assets/portraits/part3/small/112/buccar.webp",
+        "small/168": "assets/portraits/part3/small/168/buccar.webp"
       },
       "sha256": {
-        "grid": "94012366200e1dd151bdf4eeaf215b8c4b9b2fcc6eaa92fea9f38e7d11d50bea",
-        "narrow": "93106e6627fc1abf7c88cff67d2a61db3957c914f9930e856faa898cf628838e",
-        "troop": "1eab841c67f6491a3567828ae868af64501dba16950b6fd6fd2954e3d9dea716",
-        "small/56": "03221a137e9b54518ebd35f6b561bc825550d9c61566df1d6078deaf9c4c1713",
-        "small/112": "331b14f1b6e27d0da55e05e420379bb03b149ad540c7c937a4f50366aac69a3c",
-        "small/168": "100d2ebba3547d48eba2639919b5112a8663e969d3b5116240253beacf825968"
+        "grid": "25c291afbe5c2711c1898488a93524ab0fcc6e0c9c2028e044b23e1b6bad889b",
+        "narrow": "916f63e17fca0e730bd2790dfb457952c4f043c93c1e14ff5b6a1028de71897b",
+        "troop": "eab06e98d210d21a01af4935973b064c275e34a4a06d83bc00f8cc475417c9e2",
+        "small/56": "ac1f1e3c31899f579a6fb054262e2539e9d11ec370d8bf5c384ea80e5ef86029",
+        "small/112": "42707d6671cdc635219cbe70c4361e85f66fe5dbad5edb28583f11db07b4497b",
+        "small/168": "386d8e5a0d19aa928d8fe93f379536c96d6320f49ef0d55450ef9dde27ae6583"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -632,20 +632,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/cai.png",
-        "narrow": "assets/portraits/part3/narrow/cai.png",
-        "troop": "assets/portraits/part3/troop/cai.png",
-        "small/56": "assets/portraits/part3/small/56/cai.png",
-        "small/112": "assets/portraits/part3/small/112/cai.png",
-        "small/168": "assets/portraits/part3/small/168/cai.png"
+        "grid": "assets/portraits/part3/grid/cai.webp",
+        "narrow": "assets/portraits/part3/narrow/cai.webp",
+        "troop": "assets/portraits/part3/troop/cai.webp",
+        "small/56": "assets/portraits/part3/small/56/cai.webp",
+        "small/112": "assets/portraits/part3/small/112/cai.webp",
+        "small/168": "assets/portraits/part3/small/168/cai.webp"
       },
       "sha256": {
-        "grid": "1a07193a808edc51999ac6fa773efbb802dfb3e330f9bcb8b357a8354692a101",
-        "narrow": "884059e3e9406ae73139b91accf2c89f2e67873aa41404aaefd8feb4d440f53a",
-        "troop": "ec5fe03f5d818a39f52ea6071cdadfca9d697d45af192aa6353959ae371c66d2",
-        "small/56": "4195abb32b20f1f2b58242fadfb4a4bf6e74bb6c60246a43374867b6ed517f5a",
-        "small/112": "c46f31082f8baced623e24021e1b2f8b814de9807248b839d07a4c7ea0b92689",
-        "small/168": "eb70611443335efc55b5a8fd11a90113e40161936c38703b8802534314f51361"
+        "grid": "e5f507ae1e928200cfe5a21bc3add44b6917c3d6e505c83238fb2d10e97f3674",
+        "narrow": "c289e586b0661731424bfc478490212241e9077a80a242da0872e6499415236c",
+        "troop": "570bbef67440d4f28c979d34e81c0385c13bbf565eee815d0a1ec4912a6fa965",
+        "small/56": "e73bc6ad9b40bccd872d433c566246f1929e09ffc985d272313c19afc5a6a3b3",
+        "small/112": "3e384dd4bdb98f6d57d2c8afeb37cf95abec15418baab9500bc54771aa6b8cfd",
+        "small/168": "52ce894a1b3d47306e80a65d11772e2e264fc271d241434842e5c7d04748dbba"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -740,20 +740,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/catania.png",
-        "narrow": "assets/portraits/part3/narrow/catania.png",
-        "troop": "assets/portraits/part3/troop/catania.png",
-        "small/56": "assets/portraits/part3/small/56/catania.png",
-        "small/112": "assets/portraits/part3/small/112/catania.png",
-        "small/168": "assets/portraits/part3/small/168/catania.png"
+        "grid": "assets/portraits/part3/grid/catania.webp",
+        "narrow": "assets/portraits/part3/narrow/catania.webp",
+        "troop": "assets/portraits/part3/troop/catania.webp",
+        "small/56": "assets/portraits/part3/small/56/catania.webp",
+        "small/112": "assets/portraits/part3/small/112/catania.webp",
+        "small/168": "assets/portraits/part3/small/168/catania.webp"
       },
       "sha256": {
-        "grid": "ea8eb9585e0822e66c9c96ef89e5ae02a5e7810e1f3b3ac1405ca60604e97676",
-        "narrow": "31eaaa1e2df88342ca9a654e9042f603fdfdb880fe91be1ac20aa0003374d58f",
-        "troop": "361b1a0c6a2b265d0c94cc8250fde3f38fd298a188c433f05830af099e724318",
-        "small/56": "b259b379d33c17c6faf676636b30a8e591c515153217d2de493dec29f15cb3e6",
-        "small/112": "eb9b22a00272bc9938fe3210db6fe21f319eb3d6caf76a5aab0afcb0724ce732",
-        "small/168": "bb37a423d0056ea2e3ef56dc15ea1c8ba5b79b8ae13d50a4ed3c02bf6d34fc84"
+        "grid": "c1fb0d3391cd5a97ef7a6333b9b1f74f2463742c525cc694c5eae8229570331a",
+        "narrow": "a4b11146cd830027d4e96fb66b0ae31286e4515f5bc26109ba74f2909834885d",
+        "troop": "efa0da77be4ebd36e72fcd00f021ed08cb25c2277c80e17e972fc16355e7ceb9",
+        "small/56": "d46f1bba05c5007f39d23b09d90bd804c6c62d12841a580f625e313804c7b76b",
+        "small/112": "f0ac579de57090e5eb18d64bca335fc16379efc1dcc45a5e60fc15a513badaa2",
+        "small/168": "a91a0e1b126150af293c4b87bfb8ff817e9a69384111cfd8bf545b89fb16e58e"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -848,20 +848,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/cleobulus.png",
-        "narrow": "assets/portraits/part3/narrow/cleobulus.png",
-        "troop": "assets/portraits/part3/troop/cleobulus.png",
-        "small/56": "assets/portraits/part3/small/56/cleobulus.png",
-        "small/112": "assets/portraits/part3/small/112/cleobulus.png",
-        "small/168": "assets/portraits/part3/small/168/cleobulus.png"
+        "grid": "assets/portraits/part3/grid/cleobulus.webp",
+        "narrow": "assets/portraits/part3/narrow/cleobulus.webp",
+        "troop": "assets/portraits/part3/troop/cleobulus.webp",
+        "small/56": "assets/portraits/part3/small/56/cleobulus.webp",
+        "small/112": "assets/portraits/part3/small/112/cleobulus.webp",
+        "small/168": "assets/portraits/part3/small/168/cleobulus.webp"
       },
       "sha256": {
-        "grid": "f5c6bdb3a76eed99df32535627fa44307feeb460c16cde64e99bf3e61c8af38b",
-        "narrow": "406b3fe6c46fdde3d5c29a472ae1a6b4a87a6371afade27af00d9064a674db26",
-        "troop": "cc57518d6ac67dc0617476ab9c83a581d61b23aa6ece9ac005a28c253a5a35fa",
-        "small/56": "3236f32fc4c4bb4b27d4f79b2139bef706d84db6462fe57d0adf70530328759a",
-        "small/112": "ec93d2572e888f3f6a914b7a2834f34c1116e75bec74caeb34af9905fb322ecf",
-        "small/168": "9e7fe5f52ce210addd6e1367394ec8c37f14e08ad5f5fac89bb6e8a5de6044f6"
+        "grid": "79be9f7226e5334eba1a62e57a814e199c602fd680dab1c2fd9898050fe324a7",
+        "narrow": "11433e6a12720992146353529c50bb489323b764d0782ee45ff5ae4a6b67a955",
+        "troop": "91ed62fd4772f046c1f32d9a2867a8feb0c89be2510bfb236af0ac07c644789a",
+        "small/56": "62e8da4cd240fdf82c967d058fbcc2fa06ce796bb995b3dd53ba10cdb9e0a6de",
+        "small/112": "5e7ee61c6b816a7ce462833087fc622f64e1a4c917543ab149a86fe8640de397",
+        "small/168": "2fe8865130c7a42de7fc02d33ff5078ef918b96c3884d95ece351e0036e0881f"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -956,20 +956,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/credna.png",
-        "narrow": "assets/portraits/part3/narrow/credna.png",
-        "troop": "assets/portraits/part3/troop/credna.png",
-        "small/56": "assets/portraits/part3/small/56/credna.png",
-        "small/112": "assets/portraits/part3/small/112/credna.png",
-        "small/168": "assets/portraits/part3/small/168/credna.png"
+        "grid": "assets/portraits/part3/grid/credna.webp",
+        "narrow": "assets/portraits/part3/narrow/credna.webp",
+        "troop": "assets/portraits/part3/troop/credna.webp",
+        "small/56": "assets/portraits/part3/small/56/credna.webp",
+        "small/112": "assets/portraits/part3/small/112/credna.webp",
+        "small/168": "assets/portraits/part3/small/168/credna.webp"
       },
       "sha256": {
-        "grid": "a53fef93bdc672f4eb0752b4f6ee2bc4177820279627e34353c58ff391af4036",
-        "narrow": "de88c6d2ed9235d2977f6d5d89837d80bb42602aae349a3959defaa3cfe3e89d",
-        "troop": "5ac4f7c883b3280f24b17b5c15a4b04b1a0b59188a060ada558150f64875367b",
-        "small/56": "08808eadfce66d2007605f10e21ef659f05e7bbe5e4f0f0b3ccb9a2f9565577b",
-        "small/112": "6f99a66c609ea1829ecf9cd32364c3e944bc31c62e832ecafdb8ea424ad1342b",
-        "small/168": "c7a8b20b7fd8e5ad4c4dbbabdfd46b63348df0e567f97692686cc9cf30b150a6"
+        "grid": "0da20b6bfe38a6f7119030a78bed00fb40bc7e1d4559e9626c41a3a56422acd2",
+        "narrow": "2ea857c8596c81558914f1e707a6be247c723b8896a7f4fa1f4ac1556472ad8f",
+        "troop": "9f3ec937afff87c5c320c5f1f7649ba7e166a251a586f181206eb702d5083a98",
+        "small/56": "37d81ad245834b31fbfa381c72a2bf284c85dc8c0b91035e15f9c57e45bc7ef1",
+        "small/112": "b0785101516a3d36c79f3ef654ace61ea4be2f5140f66e3b102a99fa0247fe91",
+        "small/168": "56421ca3ab6960dd85f7ddca2d57d075ef46945bfe2bc6accadf672abc05480d"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1064,20 +1064,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/dadao.png",
-        "narrow": "assets/portraits/part3/narrow/dadao.png",
-        "troop": "assets/portraits/part3/troop/dadao.png",
-        "small/56": "assets/portraits/part3/small/56/dadao.png",
-        "small/112": "assets/portraits/part3/small/112/dadao.png",
-        "small/168": "assets/portraits/part3/small/168/dadao.png"
+        "grid": "assets/portraits/part3/grid/dadao.webp",
+        "narrow": "assets/portraits/part3/narrow/dadao.webp",
+        "troop": "assets/portraits/part3/troop/dadao.webp",
+        "small/56": "assets/portraits/part3/small/56/dadao.webp",
+        "small/112": "assets/portraits/part3/small/112/dadao.webp",
+        "small/168": "assets/portraits/part3/small/168/dadao.webp"
       },
       "sha256": {
-        "grid": "a33e6547550b52f446509ecbdc1d54b513b5c7ec8c6573276e0211fe1e13516d",
-        "narrow": "b42a490ef4033157bfb81d5ac33de069c4a6d1453e2640a6a8e0e934d981541d",
-        "troop": "c142cafac2e522ecd46393c1af8467103183641720520a5771d76a0a65101e14",
-        "small/56": "c588367522c2e5ecb1623959e1556dc2eb6976076f7b6152aff11eb6ef49d6c8",
-        "small/112": "d9d6ce5573817c16f776af79adfb8b281222633af0f90464faaac0ade2aa5782",
-        "small/168": "c2a4a099d0c60476d4d722459a7aecddf5295178ec22e700854224e350c278c6"
+        "grid": "c92f224c341540c55aa9eb777c635043ed0af8b31b432290ed69424338b142e0",
+        "narrow": "ca18d9472172ba592079e7dd3662fc7b14b603ad08f59ee69121b18a99271216",
+        "troop": "b238e1dfb82ba12d109d92fcf3c64179563f4e0ddf7a56d90338972ab1594fa7",
+        "small/56": "969c8d5b2579cfe23a63e9f47eb09470033b46f0b4fdeb689e63cb9d8f091726",
+        "small/112": "aebdb53c7cc79ca4e29db4b6e8fb1ac36a6882769be855a012b304b99f147bea",
+        "small/168": "1e736757a7184e60cd39b6b193cae3de92ceb0408bb4054d272ea2dbd348d01f"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1172,20 +1172,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/dante.png",
-        "narrow": "assets/portraits/part3/narrow/dante.png",
-        "troop": "assets/portraits/part3/troop/dante.png",
-        "small/56": "assets/portraits/part3/small/56/dante.png",
-        "small/112": "assets/portraits/part3/small/112/dante.png",
-        "small/168": "assets/portraits/part3/small/168/dante.png"
+        "grid": "assets/portraits/part3/grid/dante.webp",
+        "narrow": "assets/portraits/part3/narrow/dante.webp",
+        "troop": "assets/portraits/part3/troop/dante.webp",
+        "small/56": "assets/portraits/part3/small/56/dante.webp",
+        "small/112": "assets/portraits/part3/small/112/dante.webp",
+        "small/168": "assets/portraits/part3/small/168/dante.webp"
       },
       "sha256": {
-        "grid": "27c2523b299756d9e19f04f9213bc5a0993324c3167e88778241dfa5367e1805",
-        "narrow": "2960ee11c534f115fcee58bc14f9cbdb98f251757a5e857e75c34b662a763378",
-        "troop": "2ac83249d8c3605877c34e7cda5a46ba69ab60c4edc2fd4a3466e6303aff6c6f",
-        "small/56": "9e595a0f79264c723952b98b3b64117c07ede63d68d835b7c263309b0992e59e",
-        "small/112": "0f7858ab53794f75590017c9457beabdedf4adc612ba9785f872608f6fb65046",
-        "small/168": "7fb551d00f8df86f9d90a68b5743a40a97bccf5ca44fd0c077959321bf3275e8"
+        "grid": "9c5bb9816c417b383249f17fbac0fc1bb372e38d778a71e0b1ac17544af740b7",
+        "narrow": "d1cad3706bedd3521b929a51d2e776ae67beb2f8ce733bdf68d03deecc0c1fba",
+        "troop": "5ab77d0c7d8cf1d4ba2c8a26c77ae708a4737e93e3e7e28d01bee441afe6a37d",
+        "small/56": "e88353442f8d61fd300bd4b90ef460c7533c04f6e94f65a34b7861ba1b2fae06",
+        "small/112": "0388f30c0b6c5a9dc0338edc6582904a59df0b2c23a9f47b5898e38ce06a4ebc",
+        "small/168": "f8305866eede4362f15a90ba80eaffb4190ad6b66dd07d38f9ed07aea2ac8550"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1280,20 +1280,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/diego.png",
-        "narrow": "assets/portraits/part3/narrow/diego.png",
-        "troop": "assets/portraits/part3/troop/diego.png",
-        "small/56": "assets/portraits/part3/small/56/diego.png",
-        "small/112": "assets/portraits/part3/small/112/diego.png",
-        "small/168": "assets/portraits/part3/small/168/diego.png"
+        "grid": "assets/portraits/part3/grid/diego.webp",
+        "narrow": "assets/portraits/part3/narrow/diego.webp",
+        "troop": "assets/portraits/part3/troop/diego.webp",
+        "small/56": "assets/portraits/part3/small/56/diego.webp",
+        "small/112": "assets/portraits/part3/small/112/diego.webp",
+        "small/168": "assets/portraits/part3/small/168/diego.webp"
       },
       "sha256": {
-        "grid": "0c02363f9f48cec26ea4405b263147e62ae34659bb255233e108dddcd0dda2be",
-        "narrow": "3b1342526919ff846711e9cb0288a6f8d40c05412d494b5fa1f71e6e0518bb81",
-        "troop": "67949bf5b1c2457112aae70876c330b8ee7e9c42693b34ff36d54cdafdca8250",
-        "small/56": "2732807b8a1cc4d91fbebbc4e42560ffdcb7fe3727842bafe76ba9d8fbd3aab9",
-        "small/112": "d39437a9f7229cd129abe7ae700c5ab657623b76832c5772002a1a915ca4c21f",
-        "small/168": "10e0813e149c617334158ba06407543119e9fc6f901bdcfc8643b280366eb972"
+        "grid": "64152991e9131074b2c132349677e03e522798dcc06738f6d842d042bf55397f",
+        "narrow": "327a2630e7051fbfee4831009ffaeb93872ff50aa641b6207e86760534ac76e3",
+        "troop": "30e579058fd2e4cbcaf8fb4e7c5546c29d057959198a3d50b426f20684662ceb",
+        "small/56": "886497d7e7b002ba4c3506a53e8cf6823e7f4261b02f504cb0a115638d166b09",
+        "small/112": "5340bc4fbdbafc09c23b898d1060858dacbe129d5884234ef69b98578b8d9a4f",
+        "small/168": "e2e2f191c70ebe6c3c23177852bd2ced2b916763f00264610e24dfb8c3f89a7f"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1388,20 +1388,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/dietrich.png",
-        "narrow": "assets/portraits/part3/narrow/dietrich.png",
-        "troop": "assets/portraits/part3/troop/dietrich.png",
-        "small/56": "assets/portraits/part3/small/56/dietrich.png",
-        "small/112": "assets/portraits/part3/small/112/dietrich.png",
-        "small/168": "assets/portraits/part3/small/168/dietrich.png"
+        "grid": "assets/portraits/part3/grid/dietrich.webp",
+        "narrow": "assets/portraits/part3/narrow/dietrich.webp",
+        "troop": "assets/portraits/part3/troop/dietrich.webp",
+        "small/56": "assets/portraits/part3/small/56/dietrich.webp",
+        "small/112": "assets/portraits/part3/small/112/dietrich.webp",
+        "small/168": "assets/portraits/part3/small/168/dietrich.webp"
       },
       "sha256": {
-        "grid": "a17af8d1e61cb43cba1359521abcb87fe6ea20c15c7b473cb8a81fa08ab004bd",
-        "narrow": "14b993c6e5d3e50044ed2cd7201ce4d2c973469ea267c9e8de791d91feee1f3f",
-        "troop": "cdce528daf73c99a89cb089a25ab30107467e0d2ad50b8048f453534bc1c54d9",
-        "small/56": "426770de611d87958df40f764a6b5db4632d222674e1a5daa35b3ee8d40ff731",
-        "small/112": "39b951b2131a27fb049e46d17e20f103efa7ab13cf5d9722e81f8092707255aa",
-        "small/168": "9314f0c3ddb7ee24cc5ad561695e3a47baa44f762cd34cd425a6e7fee522bff4"
+        "grid": "f0dd7be263bfabb2a2eef73036fc1fd7573d4c20bd1fef0682b6f9e0d9bebac3",
+        "narrow": "a5a5b580de98ef6207a89963549a47d07f234f46c3ecb5d166e1b108ef12de4e",
+        "troop": "b7d81e15ea5ecc7a5aead2c42f3edb455def5e8e64bb7e1ff1f432c644a6fec5",
+        "small/56": "770e025fdbe569af2becdbc901e52d26d02ae3474ddbe42793e5987ba83ac892",
+        "small/112": "33715676a30d9b2a122a1d3ee72b39d0d52f804974349f7a8dea3840c589ee59",
+        "small/168": "8c989f6154f897c8d9901534e84f7dc0da385f0cf5d4fe27ab3ea672ff1d7bcc"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1496,20 +1496,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/esmeralda.png",
-        "narrow": "assets/portraits/part3/narrow/esmeralda.png",
-        "troop": "assets/portraits/part3/troop/esmeralda.png",
-        "small/56": "assets/portraits/part3/small/56/esmeralda.png",
-        "small/112": "assets/portraits/part3/small/112/esmeralda.png",
-        "small/168": "assets/portraits/part3/small/168/esmeralda.png"
+        "grid": "assets/portraits/part3/grid/esmeralda.webp",
+        "narrow": "assets/portraits/part3/narrow/esmeralda.webp",
+        "troop": "assets/portraits/part3/troop/esmeralda.webp",
+        "small/56": "assets/portraits/part3/small/56/esmeralda.webp",
+        "small/112": "assets/portraits/part3/small/112/esmeralda.webp",
+        "small/168": "assets/portraits/part3/small/168/esmeralda.webp"
       },
       "sha256": {
-        "grid": "388a1bfb1aaa0a5641203c81b4cdc3f2fcb522635c87825c678f76ecded70c5e",
-        "narrow": "66002602674baff54c874ffc43f7216404d7fcecf48eb3b596eb19cf29677bcc",
-        "troop": "707940f2c861481156fe0a142f3db43ac263af60b19c00c7d5c71bb99b3ca1e9",
-        "small/56": "cdddfa7eabd4e45a4b569f2e0768b58c9a161c97f3caf5ecbb8d3e1abeb3b25e",
-        "small/112": "0fb92c8ea6c7121da8257239e7ab75a4437b9eedbaa25df6d3530c84f879ed39",
-        "small/168": "8b1746f2be735d6d8883bf585a5f99b0f2ab78f8c4d0f63b84f6971667f1f72e"
+        "grid": "fa07ee83d96513cc12fabc4905950a6c3e4db4d7826eb493e1ff38dd3346f8ef",
+        "narrow": "154fbbe7a2730fd78689c74e35e185a4e6df74365f65296d6c4b47bd2ee092a8",
+        "troop": "33a0f8bbcecbff060d8149a81a25b98b0308075475d45f5c61e72703d1434033",
+        "small/56": "9bec618b739965bca4c5a4b916a58e193eb55a876658e8b8dc60b20452fa910c",
+        "small/112": "b7862d79c9916fa45631e7c622a757ac5f232754e108abb89e39174ef07199ab",
+        "small/168": "85bff1b056adac4668ffab5f27c55e3f80ff9c003a97452dbca6043b48827f08"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1604,20 +1604,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/fabio.png",
-        "narrow": "assets/portraits/part3/narrow/fabio.png",
-        "troop": "assets/portraits/part3/troop/fabio.png",
-        "small/56": "assets/portraits/part3/small/56/fabio.png",
-        "small/112": "assets/portraits/part3/small/112/fabio.png",
-        "small/168": "assets/portraits/part3/small/168/fabio.png"
+        "grid": "assets/portraits/part3/grid/fabio.webp",
+        "narrow": "assets/portraits/part3/narrow/fabio.webp",
+        "troop": "assets/portraits/part3/troop/fabio.webp",
+        "small/56": "assets/portraits/part3/small/56/fabio.webp",
+        "small/112": "assets/portraits/part3/small/112/fabio.webp",
+        "small/168": "assets/portraits/part3/small/168/fabio.webp"
       },
       "sha256": {
-        "grid": "4f51ef797339ddbe0261db8ef6444ad7f355518a7d36cff9c052cc817bbc946c",
-        "narrow": "2d6c6fc223888835deadec752017dab741641694f4958b2a3cb75bc28a8d63e8",
-        "troop": "0a16dfc36715466c24f7ce25d36919f5f4fac880265ed4bf2890d376f69c1313",
-        "small/56": "83a6af137161de3cf832ba29cfdce2e2637305bb15ff4b3ca53b704a734bf40b",
-        "small/112": "02b20600931d4536f0cf9bbda1a335e628e830428a737bdf5fa77f8547cf85df",
-        "small/168": "abf2bf98eb81c7d33938748a04e9ca3f350c15ef48f07a20f2dbc94010e97bcd"
+        "grid": "ee6835b617293d5c854169fea6fc3b0d14f25f66aca4b445e0fad2d88692f712",
+        "narrow": "ba0f21531b9b3c0a465054429f592d32fb80347e4c5a8591d07e280f7538d9d7",
+        "troop": "b97edc509d23f1b86921891b3a733d0ee4e7e0fd5d0c4f2510ee1317e6804764",
+        "small/56": "3d5a33880d7f7feb449db67a2d82ac61e6c02e6bc1fc76fe3bdd49d1773449c4",
+        "small/112": "95e7e7560724dd7f389790943ac3615e90e23f1533800332c8d77a8b110a6943",
+        "small/168": "d659f5f2a7ebe02f4cd473a21a7ca912081e4af3fa0bdd244d6935b9582192a7"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1712,20 +1712,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/fianna.png",
-        "narrow": "assets/portraits/part3/narrow/fianna.png",
-        "troop": "assets/portraits/part3/troop/fianna.png",
-        "small/56": "assets/portraits/part3/small/56/fianna.png",
-        "small/112": "assets/portraits/part3/small/112/fianna.png",
-        "small/168": "assets/portraits/part3/small/168/fianna.png"
+        "grid": "assets/portraits/part3/grid/fianna.webp",
+        "narrow": "assets/portraits/part3/narrow/fianna.webp",
+        "troop": "assets/portraits/part3/troop/fianna.webp",
+        "small/56": "assets/portraits/part3/small/56/fianna.webp",
+        "small/112": "assets/portraits/part3/small/112/fianna.webp",
+        "small/168": "assets/portraits/part3/small/168/fianna.webp"
       },
       "sha256": {
-        "grid": "5981d2891e5013ce4bed0456da0b34539bcdb7e94d03dd0bc8b97832b9153e86",
-        "narrow": "c6a486766d708cbaf6795e419f42aedc0f174974b1368acc736c0f2b0ba14234",
-        "troop": "71a2a8d5fa9ec72574b2e397f0a3551f0974d288460fa601694c8c455ec47249",
-        "small/56": "24e636b78e41cec559a52ad24ff56a507182e7ec97a7720a265bac4c91fb80e4",
-        "small/112": "8e3e17f1643b55ec16fe96c6b6f53c76c86118ce8b749f3e0ad8c2187e1ca1e0",
-        "small/168": "c108cb8e2e8fe39b136a4626f5c6d24786bb1a507c5e0f30676b1e56d8762fc4"
+        "grid": "a585f92ef27252b2b532be4ae518c52b2f8ced72f99fb8ed64191de4430f0a56",
+        "narrow": "1aa17ea41d93d21dc9b6f8ba534a8323eb629d88e2d5894666f4773ba8db8851",
+        "troop": "6c1c7d06d8b774253c7700bcc108c8218ff02d120ac8ce869937c694cfb4e9a6",
+        "small/56": "1753a7d50bf0286886a2304cbc9d5d3c289f267852c2b00de9fcc88ecc18c98f",
+        "small/112": "9e8041456899616ad5e7673ef57ca9b36a346332795363e23b185c46c4b0186e",
+        "small/168": "c4c3c4eab55ad717f80a369c1409ae73fafe01fbc6b4fbb505fde4b204da7f71"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1820,20 +1820,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/gaitz.png",
-        "narrow": "assets/portraits/part3/narrow/gaitz.png",
-        "troop": "assets/portraits/part3/troop/gaitz.png",
-        "small/56": "assets/portraits/part3/small/56/gaitz.png",
-        "small/112": "assets/portraits/part3/small/112/gaitz.png",
-        "small/168": "assets/portraits/part3/small/168/gaitz.png"
+        "grid": "assets/portraits/part3/grid/gaitz.webp",
+        "narrow": "assets/portraits/part3/narrow/gaitz.webp",
+        "troop": "assets/portraits/part3/troop/gaitz.webp",
+        "small/56": "assets/portraits/part3/small/56/gaitz.webp",
+        "small/112": "assets/portraits/part3/small/112/gaitz.webp",
+        "small/168": "assets/portraits/part3/small/168/gaitz.webp"
       },
       "sha256": {
-        "grid": "f444508e5f59e515fd042844831bddefa3d2307016df60f1e4bd742d422f1efc",
-        "narrow": "f31fa1856337bf3218f9e6cd825409cfda5543e1daffa7c927b9e6a9502cc738",
-        "troop": "87d6addf2b71b5d79b75975cf40954c81e4d7f0a926703c734d0e3cdce67f5e6",
-        "small/56": "1b3bb7c79d871f2ce0a8243d0663c345a90e6bb946257fcf7ee2eeee86bbf973",
-        "small/112": "4bf9a5d8be8792364b6804bd01df36ae194a63f27f0a2960a96eaa95a9209d87",
-        "small/168": "98f199024a45f8bee0923ce8170d9cf04d7b39a68ba60958d38d8e529d193108"
+        "grid": "0de830fa491396a3472d46206080b5a1fd20f834c3414346029802b78c8f1751",
+        "narrow": "1a3e0ace541751fed807c3d67aa78bca7a9a11e671b74e3659125d58d99fd571",
+        "troop": "8c3f637af035bc390d31098f619a2a178b412c6860791606c228ffacf7222df8",
+        "small/56": "9e758986f3069c9eab55b32b7b3c72c8bb11ac22a212cabaffd846823ef5ba08",
+        "small/112": "c3a4f068891ca8d0d01a78f2c0c3d51267f1c33df60fbc1b8c8e99e8877c37c9",
+        "small/168": "cf858fd743ff01ce3efe387bb5a0f310311550514f2b5bcc348301fbf2fdebb8"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -1928,20 +1928,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/gladius.png",
-        "narrow": "assets/portraits/part3/narrow/gladius.png",
-        "troop": "assets/portraits/part3/troop/gladius.png",
-        "small/56": "assets/portraits/part3/small/56/gladius.png",
-        "small/112": "assets/portraits/part3/small/112/gladius.png",
-        "small/168": "assets/portraits/part3/small/168/gladius.png"
+        "grid": "assets/portraits/part3/grid/gladius.webp",
+        "narrow": "assets/portraits/part3/narrow/gladius.webp",
+        "troop": "assets/portraits/part3/troop/gladius.webp",
+        "small/56": "assets/portraits/part3/small/56/gladius.webp",
+        "small/112": "assets/portraits/part3/small/112/gladius.webp",
+        "small/168": "assets/portraits/part3/small/168/gladius.webp"
       },
       "sha256": {
-        "grid": "9e3d8f2adee1e6912dad83d35d322be431d6872258072a15dfd0a21f4888b197",
-        "narrow": "ac76efbd285a872d26f7a1fc93403f8272eee6ee47b15c910413ad9a370eb596",
-        "troop": "6da97e5bb3c3ded7666fd0ea442e2ac78900b32059eff1d38d493c2e933c2153",
-        "small/56": "a96300de8a616d85fe15bd7b4a8d358dd58227c14e153fbf73eae81175382e81",
-        "small/112": "05ff3efc2ee299707ab193719444fa90e0b84e445472bba63d6bc2e189b5991e",
-        "small/168": "5cb8e78f5aeb44b1b9b7a75129ec89d4794d41ec19952d6cf6ee52606e018c04"
+        "grid": "97d24c15e8df6b5a689de65babea183de87f2edbb3a639da1b066983cb19bf90",
+        "narrow": "372cb0a91c21bd4fc4174a2ef5a853faaac2ab55686a8749be2240f9335dcce8",
+        "troop": "3067f800d3b05acf0f261bc97887bff8db684a9558291f02b86ac002f320ba86",
+        "small/56": "25a682e2f62c70bb1dddb8405f65ef5e58a1c61f72856e34adab3c3ee786d89f",
+        "small/112": "762865088753dc55850bf577ab716c63ad96014dd80ba61ac7bb6a6b805c68a6",
+        "small/168": "0f41dd08dd0256df63a5e6cba2e2937d44924f4edc4e5f7ddfd608d1ade5b7ab"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2036,20 +2036,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/goliath.png",
-        "narrow": "assets/portraits/part3/narrow/goliath.png",
-        "troop": "assets/portraits/part3/troop/goliath.png",
-        "small/56": "assets/portraits/part3/small/56/goliath.png",
-        "small/112": "assets/portraits/part3/small/112/goliath.png",
-        "small/168": "assets/portraits/part3/small/168/goliath.png"
+        "grid": "assets/portraits/part3/grid/goliath.webp",
+        "narrow": "assets/portraits/part3/narrow/goliath.webp",
+        "troop": "assets/portraits/part3/troop/goliath.webp",
+        "small/56": "assets/portraits/part3/small/56/goliath.webp",
+        "small/112": "assets/portraits/part3/small/112/goliath.webp",
+        "small/168": "assets/portraits/part3/small/168/goliath.webp"
       },
       "sha256": {
-        "grid": "a946ada5c7452b6d8f7c109dfac400de98e55dba40075b125f75a5cb23124361",
-        "narrow": "836c56e085e5e631bbed61d27a35306c6564d5e4834bac257fc33b26c1088896",
-        "troop": "51a3d4b2df66fc961e842eaec97e1fac213de7938cf50faa5badff3d225bf8d7",
-        "small/56": "e32bfd7842f7f4a2ee1e2878fbc50e67928fe2717c0b59952fa9639d5268b6b1",
-        "small/112": "af18584fac1f1aed514144d32ee31990f1aaba15690fee4f2f4a042da99fc57c",
-        "small/168": "ed0dd944e5e9d22ee5338d470ca2f95e7ef4d648f992525dd87d432cee964680"
+        "grid": "40a8e1d37111d7539bb08b66b19c77511cbb50a1e9c8bfe88b1a0bc69a29c3a9",
+        "narrow": "78347a1fc88b8e2ff06db433ef9df9f2786c75e5ff53c2d6633925286d3358e9",
+        "troop": "b13299bfb89e7613f708e87a4f284846d01c11be7b3640481f2a008e3ced619b",
+        "small/56": "606728d7a79bb0b0dc93661e0a0288eb407ea6c35842f23333e15e28d65ad349",
+        "small/112": "7ed84ce82d17e929a0fb7947acbe26bc4b3da7d96f412c6aad7f750eb7a628cc",
+        "small/168": "a119babef7f5d68da728c956bac401aab8577fc6da2c1c94415b891c25853292"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2144,20 +2144,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/halvin.png",
-        "narrow": "assets/portraits/part3/narrow/halvin.png",
-        "troop": "assets/portraits/part3/troop/halvin.png",
-        "small/56": "assets/portraits/part3/small/56/halvin.png",
-        "small/112": "assets/portraits/part3/small/112/halvin.png",
-        "small/168": "assets/portraits/part3/small/168/halvin.png"
+        "grid": "assets/portraits/part3/grid/halvin.webp",
+        "narrow": "assets/portraits/part3/narrow/halvin.webp",
+        "troop": "assets/portraits/part3/troop/halvin.webp",
+        "small/56": "assets/portraits/part3/small/56/halvin.webp",
+        "small/112": "assets/portraits/part3/small/112/halvin.webp",
+        "small/168": "assets/portraits/part3/small/168/halvin.webp"
       },
       "sha256": {
-        "grid": "9a069d1870954c2f60bbe2d387c1ff1e8a429424c782b7534dca5a18a42bd0e8",
-        "narrow": "97471253e1e97d145bd4308186c0f902bb30c626005248e6bce4217360dfaf77",
-        "troop": "ac0be515bcc35a278fb8d89fe307de6c45fd3646f851880df4f44bff117becf4",
-        "small/56": "d04365092d5cc69341feedfe5357e30d640e46c9454aa55146345c335ea529dd",
-        "small/112": "bfbb1ea0526d2f49c692d2d01b8fbf470d69fe8359358697bf740e30676352f1",
-        "small/168": "cf57ab768c277123d4ec1c88cc9aed73b02845b81a5e0e7eed7aeaff73d9533b"
+        "grid": "047ec2494486a1d8cb0aeabbcb7a0086726f054f1b8885f322658be81c1bfe36",
+        "narrow": "228edd2fd1670ac1d7cbcf517bb42e3740d96d69d730fbc7b848e5fa2f7adecf",
+        "troop": "60afdcd5b195b5a658599f219674f8490e3a1fe219abd0e02365a5f235f39258",
+        "small/56": "95c658aa24eb3f9668dec774e3e6e14e8c7c8d477cab33178c15bd276e3a6b72",
+        "small/112": "6d2f70ff2d5c8f68e48a96426f256905f382f1bee7cfabc33e629a1c2494ff93",
+        "small/168": "c36892fa99cf262ce941d18e7744122ab86a89cdbe55d5de40fd05da700fd982"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2252,20 +2252,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/hong-hua.png",
-        "narrow": "assets/portraits/part3/narrow/hong-hua.png",
-        "troop": "assets/portraits/part3/troop/hong-hua.png",
-        "small/56": "assets/portraits/part3/small/56/hong-hua.png",
-        "small/112": "assets/portraits/part3/small/112/hong-hua.png",
-        "small/168": "assets/portraits/part3/small/168/hong-hua.png"
+        "grid": "assets/portraits/part3/grid/hong-hua.webp",
+        "narrow": "assets/portraits/part3/narrow/hong-hua.webp",
+        "troop": "assets/portraits/part3/troop/hong-hua.webp",
+        "small/56": "assets/portraits/part3/small/56/hong-hua.webp",
+        "small/112": "assets/portraits/part3/small/112/hong-hua.webp",
+        "small/168": "assets/portraits/part3/small/168/hong-hua.webp"
       },
       "sha256": {
-        "grid": "3dc3a18e59f6f7ac9525ee492d7c30d2d40a381b51095eb944df2adebb0e3b79",
-        "narrow": "ac464f7008655cd0c9416886b7523ef3227bf2ceae46e4d433c4c0938f77f642",
-        "troop": "26f0cfdb2e9ae825d93607af1e37e251ed106f9879a620aba74c32ade18b6702",
-        "small/56": "6665f7e3fe8c43810d643d15dd7c594eac835846f384c3d08c5892e38657afef",
-        "small/112": "1f13fdf71241dbbf6be736458e7a2ddc70a6042beeb7993f27870940ddb8fec9",
-        "small/168": "1659884444511e7fdf7328d5e2cdb24897ed0b600839e858cc5974844dcef4a4"
+        "grid": "4aab7147ba6ccddc3bd2a177a0f772782dcb58cae74cd9ba018c5f2141b85803",
+        "narrow": "f7dc45ce96befaacceeb3be6f0ed08689dd13d1ec4e1ae794e915850544d2ef2",
+        "troop": "f3c17e725ee31301c7677b0ff9cd57fdc475bd1d38e148603204862c539c0572",
+        "small/56": "1785d1a46aebd5770f1ca383be9ff9174d035bb2d920563236831b2a8bf72c11",
+        "small/112": "c1265aa3daecfba6b656aa38cb5c76efae0028f8b5d0b472b68077f8eae20ff4",
+        "small/168": "fc0648473f0525249c777e05127795596b17bcd892fa1b73d7a7f592e2ac9a9b"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2360,20 +2360,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/inyoni.png",
-        "narrow": "assets/portraits/part3/narrow/inyoni.png",
-        "troop": "assets/portraits/part3/troop/inyoni.png",
-        "small/56": "assets/portraits/part3/small/56/inyoni.png",
-        "small/112": "assets/portraits/part3/small/112/inyoni.png",
-        "small/168": "assets/portraits/part3/small/168/inyoni.png"
+        "grid": "assets/portraits/part3/grid/inyoni.webp",
+        "narrow": "assets/portraits/part3/narrow/inyoni.webp",
+        "troop": "assets/portraits/part3/troop/inyoni.webp",
+        "small/56": "assets/portraits/part3/small/56/inyoni.webp",
+        "small/112": "assets/portraits/part3/small/112/inyoni.webp",
+        "small/168": "assets/portraits/part3/small/168/inyoni.webp"
       },
       "sha256": {
-        "grid": "5b57f6c0e425c55ac44cc7f36342f19d9335b1c0b516f842672cea46eba07bfb",
-        "narrow": "08ca0fdbc97308b657565037299c4863709b9ea232b85757be4722e036d5dee5",
-        "troop": "34156caa5fd925f4b2f01b1b449f950657f8d2f9b6961e135cc88d19a23c9956",
-        "small/56": "d3a4ffe62ebec23965e63c1c453b201c15e0af1890c2fbe427539dc70a5c1e5d",
-        "small/112": "142188d5e41ca34f27d8ef326fc897c1ba3299a7ee3185c7d6a1306b3c2e1a0e",
-        "small/168": "411f76e6d1663195297eca00ddd1123ff9b44db29cc5d86906ae0a49e933e1e7"
+        "grid": "fe6a74f3b24efb6d74a800988dad0c6b9fdd3882026bc230db9b78be3811f381",
+        "narrow": "901783ced3f0a9efee78d9c1efd579e95ca0b9da70b7c1fd116a9d90b8f699ba",
+        "troop": "487b63194e82bda7e9aa526af6d985d3011ac7ad00b67791c3ba23c733f8599c",
+        "small/56": "735ed53ffd12c21cea8f6c9d47967b53b9cc2124b10305d103eecb148fcfb922",
+        "small/112": "81dbd7540b9d26b4426db6ee5a46c4368820dfcad1aa4db43689e08472981bd8",
+        "small/168": "0c5617639f5fcf3814f855fe1ac5604134b5ad9a9308a45c1d981e19f5e70887"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2468,20 +2468,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/io.png",
-        "narrow": "assets/portraits/part3/narrow/io.png",
-        "troop": "assets/portraits/part3/troop/io.png",
-        "small/56": "assets/portraits/part3/small/56/io.png",
-        "small/112": "assets/portraits/part3/small/112/io.png",
-        "small/168": "assets/portraits/part3/small/168/io.png"
+        "grid": "assets/portraits/part3/grid/io.webp",
+        "narrow": "assets/portraits/part3/narrow/io.webp",
+        "troop": "assets/portraits/part3/troop/io.webp",
+        "small/56": "assets/portraits/part3/small/56/io.webp",
+        "small/112": "assets/portraits/part3/small/112/io.webp",
+        "small/168": "assets/portraits/part3/small/168/io.webp"
       },
       "sha256": {
-        "grid": "bf7a1431b545a457d0cf36d107719211404baa4ebeefaaba065cc6d9c57cc28a",
-        "narrow": "e408ea7c0cdeca7cca83ed580d5492b8c5a7e2f9774488aebd042f850903750a",
-        "troop": "1b6c13ed9e70a27c7c8892c7e1ece8cacca2da0584b58fbbc882e4b9aea0c516",
-        "small/56": "15f66550ecd818c2d927020fb965ddd379fd60a2cf570ad285fce966de50f79b",
-        "small/112": "a0132b6903ce9e47e3e7227541a5a27fd8e3ba021a1828c4acdaf7a4967faf2d",
-        "small/168": "d6de2d29372182729091624bcaf38ec2efcfae9fe5a154713e15a8cd1a5793b2"
+        "grid": "0d62531685c2afa8f424ee8376a4fd6a6a3b0a2d9b44d1dd85a4229433f92b55",
+        "narrow": "5c34113bae9d367ec40f6657e386921ef4e3f400f5ca9bcd7fd5e8d650c94277",
+        "troop": "0c8b4a2054817cf33fd45d9dd7ecd70cb22f5cd88295dcc050b53e47afdd424c",
+        "small/56": "393322aa66d9dc08a16d343fbd1215e3be6d7a4ed94d4efe52564813458669d3",
+        "small/112": "b7308248c48d0264ffa26df71bf4895352fadf46a490c0a7cdb47efeaf59a0a4",
+        "small/168": "9a112434f1b7e06e2f534f1c01292a79f8f34e486a6f780112db9d848a50bc34"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2576,20 +2576,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/leda.png",
-        "narrow": "assets/portraits/part3/narrow/leda.png",
-        "troop": "assets/portraits/part3/troop/leda.png",
-        "small/56": "assets/portraits/part3/small/56/leda.png",
-        "small/112": "assets/portraits/part3/small/112/leda.png",
-        "small/168": "assets/portraits/part3/small/168/leda.png"
+        "grid": "assets/portraits/part3/grid/leda.webp",
+        "narrow": "assets/portraits/part3/narrow/leda.webp",
+        "troop": "assets/portraits/part3/troop/leda.webp",
+        "small/56": "assets/portraits/part3/small/56/leda.webp",
+        "small/112": "assets/portraits/part3/small/112/leda.webp",
+        "small/168": "assets/portraits/part3/small/168/leda.webp"
       },
       "sha256": {
-        "grid": "3bb52d3f32b02f39b809a5e8c20669f1305c201fac813f3da1599edfd5806416",
-        "narrow": "2d8ecc7143ac185cbb907996599130e68a3115118cac2495ee428765b7e8c4e0",
-        "troop": "4e7d07187a6699cd2c31e7e4db9e22a73f9d1f11cbd99bc32ae0fb1e915e5c28",
-        "small/56": "de81fb15d96b118197836037fd7c8de715deed54c9ee4fd4a7dd5ae8dff89fc2",
-        "small/112": "b469f1a4d01527653a2b5ff1d6e946f7bb9d96b078ba68059c91e491f46b2845",
-        "small/168": "d7d9b639256e64f23bcfa4f0bd90c81e0ae7a6697ddf6b2fb9413b383aecdd2f"
+        "grid": "70ccfb6106927298743fcd451fdfb2872f609b13954e4495c758f112a34df095",
+        "narrow": "68847cd17ca8503f7c490d6b86fa17eba139cb66b33879a39bb6cd19aff9633a",
+        "troop": "0bed23a5862180bc7db62c2a86279df923dca9974f4905dc1478df6cc221de56",
+        "small/56": "e6318653fc8d876b6d33dc547355ba5ec34bb37ab4812a95f6eec41724065e2f",
+        "small/112": "652ff76cc5a49c702b24df42de4260afefaecfee7e75eb5935081e4f3809f503",
+        "small/168": "97409822626b70f3079c379d8e3adfc7efd4e68223e00d72584b9b9cc318a7f2"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2684,20 +2684,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/lilian.png",
-        "narrow": "assets/portraits/part3/narrow/lilian.png",
-        "troop": "assets/portraits/part3/troop/lilian.png",
-        "small/56": "assets/portraits/part3/small/56/lilian.png",
-        "small/112": "assets/portraits/part3/small/112/lilian.png",
-        "small/168": "assets/portraits/part3/small/168/lilian.png"
+        "grid": "assets/portraits/part3/grid/lilian.webp",
+        "narrow": "assets/portraits/part3/narrow/lilian.webp",
+        "troop": "assets/portraits/part3/troop/lilian.webp",
+        "small/56": "assets/portraits/part3/small/56/lilian.webp",
+        "small/112": "assets/portraits/part3/small/112/lilian.webp",
+        "small/168": "assets/portraits/part3/small/168/lilian.webp"
       },
       "sha256": {
-        "grid": "7415cd67392ffbcd167fa0e5c606369b7c36af21a4e0c23349ac36a4a4f2ad37",
-        "narrow": "3f8ee499ff3ef18d4be312441b451b363aa9bf1f15269eb94b1e6640cff3d364",
-        "troop": "53b2d7af6a0ef66b45fa8e81c349e88e8e7961cca0d0adff5627970ac66f1e9f",
-        "small/56": "349e08c154a2074adba1147f20bd45f5340f80f55fa57bcc13922493b6b72827",
-        "small/112": "bbd2984c921d0d5b483e6c6422da75acb0f44bb3b58779720becda861085f31d",
-        "small/168": "11d8208ee9c51d53dbf28f513723506672a2aaecc6fb8349335555ad42c60549"
+        "grid": "ba24f9f34981f2210ee935fcb39850e8b93db36821d047dee83a22bb42a82514",
+        "narrow": "742a31e42c8c052e043a0dd7938a6d3ea8b4d250a07c3431540de0fa1b209910",
+        "troop": "dd4698a43037adcaa309fdf7693c9c69ee41a54241ddc423cbdc32b2b4494b25",
+        "small/56": "4d06d3d12b66833ef7bf0e3ca23938d10e97965eb4c4d4600814ff5f2ddcc71c",
+        "small/112": "f930e9cafed9ceb8ecb3f8f5132e3d8a6279a8dc2e132c9b56a3530d2b1f7a2d",
+        "small/168": "292252be112ed610aa5ee85d525ced62225c565ea5a0f7356a85daead10679de"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2792,20 +2792,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/loretta.png",
-        "narrow": "assets/portraits/part3/narrow/loretta.png",
-        "troop": "assets/portraits/part3/troop/loretta.png",
-        "small/56": "assets/portraits/part3/small/56/loretta.png",
-        "small/112": "assets/portraits/part3/small/112/loretta.png",
-        "small/168": "assets/portraits/part3/small/168/loretta.png"
+        "grid": "assets/portraits/part3/grid/loretta.webp",
+        "narrow": "assets/portraits/part3/narrow/loretta.webp",
+        "troop": "assets/portraits/part3/troop/loretta.webp",
+        "small/56": "assets/portraits/part3/small/56/loretta.webp",
+        "small/112": "assets/portraits/part3/small/112/loretta.webp",
+        "small/168": "assets/portraits/part3/small/168/loretta.webp"
       },
       "sha256": {
-        "grid": "bdf91ca9353efd72d38ea254a1cabb45d4fa9fefca2d1761e8f7847af8d6c1ac",
-        "narrow": "29eb32a19fec07cb1eebf92519b3a68150cb59c95b396a25554510a4b186691c",
-        "troop": "bc993c901f23d99b053a6ecd072846fb7a7f0f1c3d3315aa6a7bb65c501eba2f",
-        "small/56": "30227accb1dd64b0ccff4b4cec93da6f67ab1c20c811d8c88defc7c0f5c97831",
-        "small/112": "2f92e44712b42999aa980110bb97f820ec5c8fbdf1f2053504d79bcd45a6a280",
-        "small/168": "f14e3eb72347e07c6187362b6229dd2f5faf5099e7a56ad873a1be6d0d4b3636"
+        "grid": "26bd0a13bb19562f53ddb5e5e6e4310c0a3830b824d0122ac2e6166b695f4052",
+        "narrow": "c75dcdb1d619970844a8647388b3c149282e3ef36a429de80f26721c16bcd648",
+        "troop": "d9b806f6cced54155789cd877d9e96e5e9a27eeb4c00826127981d22b411e65d",
+        "small/56": "1d7fd798fd7821166f1d806795e0fb987c82048d0629b9379da150ffb23ebbfb",
+        "small/112": "8b4ee381fd18522c35ad5db56826ef8e673479e9900676c9c3c5e188be5c670e",
+        "small/168": "053982004a71bac9b371e9e31d898c021bb1f5df30794fefff66b78143e279d9"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -2900,20 +2900,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/ludia.png",
-        "narrow": "assets/portraits/part3/narrow/ludia.png",
-        "troop": "assets/portraits/part3/troop/ludia.png",
-        "small/56": "assets/portraits/part3/small/56/ludia.png",
-        "small/112": "assets/portraits/part3/small/112/ludia.png",
-        "small/168": "assets/portraits/part3/small/168/ludia.png"
+        "grid": "assets/portraits/part3/grid/ludia.webp",
+        "narrow": "assets/portraits/part3/narrow/ludia.webp",
+        "troop": "assets/portraits/part3/troop/ludia.webp",
+        "small/56": "assets/portraits/part3/small/56/ludia.webp",
+        "small/112": "assets/portraits/part3/small/112/ludia.webp",
+        "small/168": "assets/portraits/part3/small/168/ludia.webp"
       },
       "sha256": {
-        "grid": "975416e20994cb983d518a8fad1918a805464355721508613dfed6b088606d9a",
-        "narrow": "f0250d98cf1863cccbb4e63719fc25b527f31127b39a4724be8c1449f5332a87",
-        "troop": "730c65742819f2f8670f8c74b0b92898c4f2a3cf787470c4afc3b75277750467",
-        "small/56": "17620578cda92371de484cc05354ee290c20d7c662943dc70e3fad761f28526c",
-        "small/112": "2b23cb1d1c2f999ebae11e15cc07798f9e05cc5d77582b3483a893b23cec6cc5",
-        "small/168": "8b69bdc810cc4ce433f9114d99c80c398e1c218c3edff5afbb6ea5cea3c7c850"
+        "grid": "1a18c71625e06855ed573ee281f1d3aee32e6ffe6230353c2493ea929466d6e1",
+        "narrow": "d0c8333176f4b02772f5ab0c33f80e99676acb63d8cb357642515ed93daa5fe5",
+        "troop": "6d107597e22a97031c64b6c443a8da37a9f380130eff6c444544bd40ccd6a45c",
+        "small/56": "b06d26c08d2d061917d56d59345a6c2da3dbb3c6dfbab816b63f6ef909159e92",
+        "small/112": "0b0561452d788911403b5c0d29a55be827e1e6ad06510716c2c8140da1fd41c8",
+        "small/168": "23498f3b17890c2291c7c48d8e00d433b03112fc1a01c1fab68f217dc09afbf4"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3008,20 +3008,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/lysander.png",
-        "narrow": "assets/portraits/part3/narrow/lysander.png",
-        "troop": "assets/portraits/part3/troop/lysander.png",
-        "small/56": "assets/portraits/part3/small/56/lysander.png",
-        "small/112": "assets/portraits/part3/small/112/lysander.png",
-        "small/168": "assets/portraits/part3/small/168/lysander.png"
+        "grid": "assets/portraits/part3/grid/lysander.webp",
+        "narrow": "assets/portraits/part3/narrow/lysander.webp",
+        "troop": "assets/portraits/part3/troop/lysander.webp",
+        "small/56": "assets/portraits/part3/small/56/lysander.webp",
+        "small/112": "assets/portraits/part3/small/112/lysander.webp",
+        "small/168": "assets/portraits/part3/small/168/lysander.webp"
       },
       "sha256": {
-        "grid": "2fa50ed35f10ea6588767579517ca21add5c2cd5e69fe9844de3ebdad968045d",
-        "narrow": "a0e464f4fa8250ed75d8a160b9b9cdc2dac84f09b50f0a16e10dc9badb226874",
-        "troop": "50b0ace182212909c6dd747858ccb21257a409a3492847f3e2424f3a430ca5ec",
-        "small/56": "ff38cdbf211e3dd2a27132fb5412b4739c5e6928246d6850f13c50656b108bee",
-        "small/112": "1b8bd8caaabf1dc07fe829fc2c51463de8e84ebc39c37fb42245e65cdc87c873",
-        "small/168": "d95033177911dca843eea63af1cf6f184d73752569eec59bfffb0912329b2d6b"
+        "grid": "d1276657947549ea4c091017b34c354cad345e85124ed89f776a0382471bc4c1",
+        "narrow": "5752061107d35021c9457d129e47ec6faf34e63734b6751ee90ea330051db50c",
+        "troop": "2be0cded499bf0fbb4d39d05d7c69d77d8f1a03eff22ba533cb49d457d92e692",
+        "small/56": "b41000567314b731ac0ae359891248aa84e8352c47983120d528d74cc22829b9",
+        "small/112": "c7e4bd72a83e9952719b335c11301e56ba7e58094094947f1252fc051431df6c",
+        "small/168": "9eaaf2c607c1a93481c393b78cc4fb52d2e08f33ad8ed037260db0605fe9283c"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3116,20 +3116,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/maxim.png",
-        "narrow": "assets/portraits/part3/narrow/maxim.png",
-        "troop": "assets/portraits/part3/troop/maxim.png",
-        "small/56": "assets/portraits/part3/small/56/maxim.png",
-        "small/112": "assets/portraits/part3/small/112/maxim.png",
-        "small/168": "assets/portraits/part3/small/168/maxim.png"
+        "grid": "assets/portraits/part3/grid/maxim.webp",
+        "narrow": "assets/portraits/part3/narrow/maxim.webp",
+        "troop": "assets/portraits/part3/troop/maxim.webp",
+        "small/56": "assets/portraits/part3/small/56/maxim.webp",
+        "small/112": "assets/portraits/part3/small/112/maxim.webp",
+        "small/168": "assets/portraits/part3/small/168/maxim.webp"
       },
       "sha256": {
-        "grid": "ab9a55748c4f5a8181674b724f758d5e16b1d8af50510732068a68d0028c93e6",
-        "narrow": "7cacbc286f2ed61edaca938f5d432271d7f9aa5653c05fb7d9ee0219d317db9b",
-        "troop": "9d1ad7bb9de2fe9160d45b72ec64d8a1436937862366f0d0445679e3922b02e3",
-        "small/56": "081b0426f9532cada900b1c2a88b7b095a7c19e04da86e357b6fea7eb23f9dfd",
-        "small/112": "963d5309fba334e137ea497368f962de3d89eeecff5cfb0cb32f73fb272de1b9",
-        "small/168": "d09a4c13706d4c6a1c04aa7dc22a0be9642e263bd5499f6aa51c410e92fec4e4"
+        "grid": "e0e622b901c46811fb604729126713528fa62978ca02bea33b56b7d44b73ff73",
+        "narrow": "aae985f5b106020db9d1b6d339cccfe960265f94da9f8329a9566718d451bb6e",
+        "troop": "d5b1e3568e4170685a685cb2208e3a82abf3d77f132740334233800ad62cac44",
+        "small/56": "fba85825d9ca31809c17def28c9e6f5547a0549d31e213a910b98ebbc7caf10a",
+        "small/112": "b7cdf6347875f7b1960ab0075b16c5825b2df522ea12344c8d603b9bc5b3bdca",
+        "small/168": "2cedb0d2368da0606fcac0dca76132fa9f025177062bc9aa4ea08b7300a0c70b"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3224,20 +3224,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/mikaela.png",
-        "narrow": "assets/portraits/part3/narrow/mikaela.png",
-        "troop": "assets/portraits/part3/troop/mikaela.png",
-        "small/56": "assets/portraits/part3/small/56/mikaela.png",
-        "small/112": "assets/portraits/part3/small/112/mikaela.png",
-        "small/168": "assets/portraits/part3/small/168/mikaela.png"
+        "grid": "assets/portraits/part3/grid/mikaela.webp",
+        "narrow": "assets/portraits/part3/narrow/mikaela.webp",
+        "troop": "assets/portraits/part3/troop/mikaela.webp",
+        "small/56": "assets/portraits/part3/small/56/mikaela.webp",
+        "small/112": "assets/portraits/part3/small/112/mikaela.webp",
+        "small/168": "assets/portraits/part3/small/168/mikaela.webp"
       },
       "sha256": {
-        "grid": "fabfc43fb7c838a8969a2a9981a6f6c9e9f5d7e87f48f741e23d7e97d0d878bf",
-        "narrow": "8c19e046c9c414096c38349ca1c603079dfce1fc48c4f4eb7427340600122c42",
-        "troop": "233f65122c6aedf5b58c83c771be6e1b801623f163383235ea54604fd963de53",
-        "small/56": "ba836908ee680888b38adeaff9ffd3cd8e0e9d4f976ac2ac42bbf65bc00383ea",
-        "small/112": "a0e42cad428f6a7ccfc01c7f0621756d770b4b03904ca8d244a2740dcde71b0c",
-        "small/168": "88e97e536b3cdcf5da4a70989d6f3a565a2bb9db0901a02a37fa008cbc5de3b6"
+        "grid": "fe6c8b061ef0e03b098dacfe4993136b78fbb159400859750bd634f93111d48a",
+        "narrow": "2589b2b63ae3df4f06c8995c9f4a429c0ec97c8f9e2b7f85c5713ba06220fdd9",
+        "troop": "26e3a3accfd36b551f6754de19dc591302d3638f047ff73b27bf712efbd8f175",
+        "small/56": "f03e35bd08ea7482bb307bd86bc5b62ca2be6db321bb35b3f1abf6aaf280ce48",
+        "small/112": "5dcab9eec9112cd548cac632f31241154a2974ae0e9f634ab25f8301e7e938e3",
+        "small/168": "d1faa5561ad40265e82cd26f85ea34c9b71883b45c1976f00f27c651defa1971"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3332,20 +3332,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/mu.png",
-        "narrow": "assets/portraits/part3/narrow/mu.png",
-        "troop": "assets/portraits/part3/troop/mu.png",
-        "small/56": "assets/portraits/part3/small/56/mu.png",
-        "small/112": "assets/portraits/part3/small/112/mu.png",
-        "small/168": "assets/portraits/part3/small/168/mu.png"
+        "grid": "assets/portraits/part3/grid/mu.webp",
+        "narrow": "assets/portraits/part3/narrow/mu.webp",
+        "troop": "assets/portraits/part3/troop/mu.webp",
+        "small/56": "assets/portraits/part3/small/56/mu.webp",
+        "small/112": "assets/portraits/part3/small/112/mu.webp",
+        "small/168": "assets/portraits/part3/small/168/mu.webp"
       },
       "sha256": {
-        "grid": "42524723fa8944311db64115547b02f63feae9e5d378f0f573ba1ba8e0ada700",
-        "narrow": "659b20c9662ed4bb3e1562c3786856e9d02752ae96e2066926acccbb1b3c28f6",
-        "troop": "11ac715d6ea84c24c0df710bfe524e34bdeb10c108ba7d0b84de110114afac2e",
-        "small/56": "2fef78b8a218e7a6e5c59944d47829d67b0c43bcfd01bed463611684723570fc",
-        "small/112": "d561166d94c54c8bb7dc8c4f6817f6bad20aec334e50203a6180941d6c914fda",
-        "small/168": "7652f7b43e8e08fa2af70de5c66185db75e43722f9c25ba093a01bee05e76c9f"
+        "grid": "a4683a7ff4d5a1cd8d7eae65a79ef00277b21fc66a5b0b6769bec6a00e822dd6",
+        "narrow": "c8efb5d13077e289c3714714161feb42333c20a33fccb0b1a04ee7c2553b8859",
+        "troop": "7e92297e1ea59aef5afdca6aa20809ae5528601e3b3f4ebad704e899460aa882",
+        "small/56": "00ae7adaa7c285e692c93e4deef33a34ea4e6d550c213b843914fae21b20893c",
+        "small/112": "89cea587015ab7808802dc12154d80c0297e6900924e12bae2792590b25cf43d",
+        "small/168": "85ffc0104b51e690e28a341b4b22c6b6cd02f0493881decdc0ee05b51c52711e"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3440,20 +3440,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/myson.png",
-        "narrow": "assets/portraits/part3/narrow/myson.png",
-        "troop": "assets/portraits/part3/troop/myson.png",
-        "small/56": "assets/portraits/part3/small/56/myson.png",
-        "small/112": "assets/portraits/part3/small/112/myson.png",
-        "small/168": "assets/portraits/part3/small/168/myson.png"
+        "grid": "assets/portraits/part3/grid/myson.webp",
+        "narrow": "assets/portraits/part3/narrow/myson.webp",
+        "troop": "assets/portraits/part3/troop/myson.webp",
+        "small/56": "assets/portraits/part3/small/56/myson.webp",
+        "small/112": "assets/portraits/part3/small/112/myson.webp",
+        "small/168": "assets/portraits/part3/small/168/myson.webp"
       },
       "sha256": {
-        "grid": "2a5eaa7120e0a979393de1e6ecd1b0f9257a6b17f9cd752e729e337912b1232a",
-        "narrow": "7fb9f10510cfd6a4798abc72eca9954698fa4febe32a6209087f6e275862eaae",
-        "troop": "1604b9166b2e1e029ab8e5097026199edf437c61443dfeedadd5c1194b404b14",
-        "small/56": "400df5b4fe3e86cdbf9bdb024874c15ea7ca11cf7cb8b871ace5512670af8c04",
-        "small/112": "f943faa75e840c3d859a210af41a92b37676a37ec73da09873f73d4c8c6527b1",
-        "small/168": "e05b545a5ac563907b6e9ab6d19f7f29df193cc2b93d1493fc0b34df91c07816"
+        "grid": "9822d1cf3bc0a59e9558efed68f1505a994c01ddc4dbf431b241f5dacc5dc95b",
+        "narrow": "41b3dd839f1ef56009ab85a91d72a790b48a99c64358d13310cb975013a7e0f9",
+        "troop": "c4029d7c39116eb6dff0adaa20f7f2874f70daeb9edd61bb3ad8df106cc5b787",
+        "small/56": "7482aa782520c64be5f9d108de9a3914bd70fa5b7fb88f488d4629ebe1cae8be",
+        "small/112": "0f46ba0026b31fbcb7f0e3d7a2641ae918ddf68702b5e9ddcea0a8119d992809",
+        "small/168": "863752249e432e0cfd6abec26871451cc2443568257dc36601dbfe99cefee767"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3548,20 +3548,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/nezha.png",
-        "narrow": "assets/portraits/part3/narrow/nezha.png",
-        "troop": "assets/portraits/part3/troop/nezha.png",
-        "small/56": "assets/portraits/part3/small/56/nezha.png",
-        "small/112": "assets/portraits/part3/small/112/nezha.png",
-        "small/168": "assets/portraits/part3/small/168/nezha.png"
+        "grid": "assets/portraits/part3/grid/nezha.webp",
+        "narrow": "assets/portraits/part3/narrow/nezha.webp",
+        "troop": "assets/portraits/part3/troop/nezha.webp",
+        "small/56": "assets/portraits/part3/small/56/nezha.webp",
+        "small/112": "assets/portraits/part3/small/112/nezha.webp",
+        "small/168": "assets/portraits/part3/small/168/nezha.webp"
       },
       "sha256": {
-        "grid": "d594b3d8962fa9e6ae5b1b2ef8f45ac137aec3da54746b72e99bc72473e5f8a5",
-        "narrow": "4e02d8e54bbd910c69ebda3723d7ff730531da54ed39554758148a18a2076e52",
-        "troop": "02a0d28573a45cf080f2c57589c444fb974625b014435efb498dc12e37a4a064",
-        "small/56": "5c6d12e529358fdc0d93004d508589bbb4e210e40b8412dc4970dfbb4b1bbdef",
-        "small/112": "c32aa34411aa7d88a59a0b0c4139621b9303bf0b9b0d33bafa54ab0a2418fc55",
-        "small/168": "1fdcdc79d5f46f4e342c1770dba1aab115e3a95ccfdfc0df7d59bccc5eaa35fc"
+        "grid": "bfe2c401a5ea5ef54ba8d78287ebbf373c55f2a1caab4c10d4d1dcf339566b23",
+        "narrow": "277e5fe1d88308a086e0f92f869869f418d02f944cd4a6d3f680a0166b5f2c50",
+        "troop": "469f06e7cae76f27217c356273f892f80626c7f7d1d2837c6782727af3da53f4",
+        "small/56": "31645031eede6121518d7e0297d76693fc8124e14fb9bd6cef7485b87293b1c7",
+        "small/112": "d4b853d3908d15e7c7c832e071070da13ff0838d5c37935a8ab7d671f6643114",
+        "small/168": "f30a45ee50e0abd78a75e8d1b7af0166aac1c28c9a0edb4c759459e09a07576c"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3656,20 +3656,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/noctula.png",
-        "narrow": "assets/portraits/part3/narrow/noctula.png",
-        "troop": "assets/portraits/part3/troop/noctula.png",
-        "small/56": "assets/portraits/part3/small/56/noctula.png",
-        "small/112": "assets/portraits/part3/small/112/noctula.png",
-        "small/168": "assets/portraits/part3/small/168/noctula.png"
+        "grid": "assets/portraits/part3/grid/noctula.webp",
+        "narrow": "assets/portraits/part3/narrow/noctula.webp",
+        "troop": "assets/portraits/part3/troop/noctula.webp",
+        "small/56": "assets/portraits/part3/small/56/noctula.webp",
+        "small/112": "assets/portraits/part3/small/112/noctula.webp",
+        "small/168": "assets/portraits/part3/small/168/noctula.webp"
       },
       "sha256": {
-        "grid": "5de4922ac513d83dcae1e577a0d016fb73db35ab9d2ecdde35a358598c26d0f9",
-        "narrow": "0d812553b43790e91bbb2aec2e2737400724087a9bb94baf0f18112b7ce31459",
-        "troop": "388c6a5aa42366c8f8f37a2a9c3563ceb90cacdd178639d18f39deda3e119581",
-        "small/56": "ac25e1cc445f7399b234ba06147431f663f2143bfa91446544a26809110d1de2",
-        "small/112": "7598edfedf33ca24c12e4b612dc85307252c03b80149a9d1debc89678f1493e3",
-        "small/168": "4876d08d51affc2c76ddacd02de59dd72913ad6754cac8eadad7fe31a0b4a78d"
+        "grid": "0fb22afb56e58f1d47d03afc4a4bfa8edb6eb2e6b17c3cb4372b5a85e54f32c0",
+        "narrow": "efde5ebf5cdc7f60eadc5047b726ce91bfa4a18826056e762763f9f7519ae990",
+        "troop": "4b8b3fac3191e5f851a3b22b20aaf9fc3bfc7cf71b9484f65ab5447f5ba0a4cf",
+        "small/56": "40a8d32d16849de49d86c892151b9e6c38f37eeee200f7084083702702a0fc33",
+        "small/112": "148e8279d756fc1ad931539afebd0881afd5185be8c1e0a8650f7362d2659a2b",
+        "small/168": "9847d93ad4de3f60917b798aa154761c196583b645cd10d5d7fb75c21e491917"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3764,20 +3764,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/nydine.png",
-        "narrow": "assets/portraits/part3/narrow/nydine.png",
-        "troop": "assets/portraits/part3/troop/nydine.png",
-        "small/56": "assets/portraits/part3/small/56/nydine.png",
-        "small/112": "assets/portraits/part3/small/112/nydine.png",
-        "small/168": "assets/portraits/part3/small/168/nydine.png"
+        "grid": "assets/portraits/part3/grid/nydine.webp",
+        "narrow": "assets/portraits/part3/narrow/nydine.webp",
+        "troop": "assets/portraits/part3/troop/nydine.webp",
+        "small/56": "assets/portraits/part3/small/56/nydine.webp",
+        "small/112": "assets/portraits/part3/small/112/nydine.webp",
+        "small/168": "assets/portraits/part3/small/168/nydine.webp"
       },
       "sha256": {
-        "grid": "3ae001759c8dca34e03936b6c5f38ef61760f279bfcb41e835d8d9575cfe7495",
-        "narrow": "67f1a552bccb5291ece3e44a1f5f3f508914018c41188c4e856c01bd896aa265",
-        "troop": "1a9ade83e092defdc6285e0aa1380e5b671ebd33a88e9d82ebc63797415b88d8",
-        "small/56": "1800a30935b58ec373aea8deb3a31e36a3e2e9111236c2c6777eb3a6763bf0bd",
-        "small/112": "846d595344cf809efca800b9a3accee9ac0cff4b25c860fe4042515bff1c8bd8",
-        "small/168": "21ae47ccd2d324e8f26f3fb0222c80a3cc2b8e87da5ce72a85264b88e47fc107"
+        "grid": "ad33855c9b249819c2237f3f5fa298dcad688966b1b66a476c87cb48a63214fe",
+        "narrow": "3911a19e5b77cbdda28d828b0ce06f8cfe489a8286f666b0423c3906120a731b",
+        "troop": "76c80c21612991b019f447f98d4df598a481c43e700f9e0f49747992e87462c6",
+        "small/56": "9efdcb4feec753386ded07231f9925552c6ce9da45ff445198ca9de1f9e32ed4",
+        "small/112": "f676d9890ce2c210065e29dba475ba21db37d56401369ace1d14bc8ef09fb5d9",
+        "small/168": "6fef3672a64c55fe3d9e5f2d6a9ea4c8dffa209abd34f0b8b459b64ad5d9009e"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3872,20 +3872,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/olympia.png",
-        "narrow": "assets/portraits/part3/narrow/olympia.png",
-        "troop": "assets/portraits/part3/troop/olympia.png",
-        "small/56": "assets/portraits/part3/small/56/olympia.png",
-        "small/112": "assets/portraits/part3/small/112/olympia.png",
-        "small/168": "assets/portraits/part3/small/168/olympia.png"
+        "grid": "assets/portraits/part3/grid/olympia.webp",
+        "narrow": "assets/portraits/part3/narrow/olympia.webp",
+        "troop": "assets/portraits/part3/troop/olympia.webp",
+        "small/56": "assets/portraits/part3/small/56/olympia.webp",
+        "small/112": "assets/portraits/part3/small/112/olympia.webp",
+        "small/168": "assets/portraits/part3/small/168/olympia.webp"
       },
       "sha256": {
-        "grid": "d27044b13ed1ed5c04b731dd532eddd4cc3e047cf9e1568f837482dbc79bf911",
-        "narrow": "41cf0bb0a53a352fea2609e2f071e4193518be644ae5203e3d79f9a0ba01974b",
-        "troop": "9a6eabefa6720d58af819468a7e9d15381dbb3c9da8fef19bb512e7b40d47a3d",
-        "small/56": "cf02e717e8071bda0b4f3bf3880cd281f73db4d0a463564667ddb07462a9d495",
-        "small/112": "6c3d4d419dbb9ff9346fb0cf8defc6d48b97cb2a0ea1f81d10f56b004984b558",
-        "small/168": "7030db1d64bc1d0104cf038c39e343e8de52852d4a9660ec18c1b6d9593547ac"
+        "grid": "01e65dce681a82891cacc46d0cde7e0e04e35a1e57a093c0150bde2723589376",
+        "narrow": "6ef1fdfe0d40170528b560dd9f40a0c2d1adf2c5225f6e9bfa705db638dde80f",
+        "troop": "9dc2f586d2912eda24e4eb2457a4a5bf5c39f21f9212a24a3bf793fa6496d914",
+        "small/56": "1670133aa93ef9542dfcd9b76de479fca561dc8c128dde23338288c68f31ba5b",
+        "small/112": "878f4f84d30e70206023c7dfead46dc961f388bdb03e72f485f5d69e5f3fd3fe",
+        "small/168": "d086fbbc898b6049f6e35b16e84c0f5a130b2098500cc9a74529572723fa9110"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -3980,20 +3980,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/orchel.png",
-        "narrow": "assets/portraits/part3/narrow/orchel.png",
-        "troop": "assets/portraits/part3/troop/orchel.png",
-        "small/56": "assets/portraits/part3/small/56/orchel.png",
-        "small/112": "assets/portraits/part3/small/112/orchel.png",
-        "small/168": "assets/portraits/part3/small/168/orchel.png"
+        "grid": "assets/portraits/part3/grid/orchel.webp",
+        "narrow": "assets/portraits/part3/narrow/orchel.webp",
+        "troop": "assets/portraits/part3/troop/orchel.webp",
+        "small/56": "assets/portraits/part3/small/56/orchel.webp",
+        "small/112": "assets/portraits/part3/small/112/orchel.webp",
+        "small/168": "assets/portraits/part3/small/168/orchel.webp"
       },
       "sha256": {
-        "grid": "26d0e391216461c81adf19118643d9f161e407b35934f764719de39827aee78c",
-        "narrow": "5692e7079448210cd8c31170deddcd6b55511b2e7330361140fc8d1136987cc0",
-        "troop": "ca6b4a5e87d267fbc789bbafa40e4703badd76da4e2fb19278b9b2d8620afa8d",
-        "small/56": "ac3124dfce9be445610c4c0ba40682b0878e8de77c4dc54c83fe557257abc2e7",
-        "small/112": "e2019c814aff85599341ee75e168c674f7af6fe95d13739c92eb8aef4436a999",
-        "small/168": "145d159719a6eb993558e82538b988ed2c96fe86040c6f20a53aaef53a43bfb4"
+        "grid": "fecd7313fd50b7950231d49a7b8c097c80d462d8b31af9ba62f21f74314a2351",
+        "narrow": "090817501eb406ce4bfe431fa153191a87b40f2ae1591a74f3c433308d11c89b",
+        "troop": "0ae869c835338cf38e5b91ece353657c532d58e02001816224ef569f575c0f61",
+        "small/56": "cdad1bb09d5253cd8f06f80c7c95907ca0d0f37f9264841059bf3a9d457e360b",
+        "small/112": "fdb1b3ea396a0e99f848f589e9b26ff0facbdd16c453ea1b99dde5825cfefe7e",
+        "small/168": "84573e2c329c052057f38dd92ac9ca9276c60d1a3cfd9e9cfc1418a9a69d045d"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4088,20 +4088,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/peppe.png",
-        "narrow": "assets/portraits/part3/narrow/peppe.png",
-        "troop": "assets/portraits/part3/troop/peppe.png",
-        "small/56": "assets/portraits/part3/small/56/peppe.png",
-        "small/112": "assets/portraits/part3/small/112/peppe.png",
-        "small/168": "assets/portraits/part3/small/168/peppe.png"
+        "grid": "assets/portraits/part3/grid/peppe.webp",
+        "narrow": "assets/portraits/part3/narrow/peppe.webp",
+        "troop": "assets/portraits/part3/troop/peppe.webp",
+        "small/56": "assets/portraits/part3/small/56/peppe.webp",
+        "small/112": "assets/portraits/part3/small/112/peppe.webp",
+        "small/168": "assets/portraits/part3/small/168/peppe.webp"
       },
       "sha256": {
-        "grid": "55780947a26318374685272c7e09da9e33e40430a6243522b199a2968e780712",
-        "narrow": "e8b6cd89cd5731faf1a91db4229bdc646bcc698f59a82fdda99f9810b29e462c",
-        "troop": "67011942a7b19c7dcf491fd92099f988d4688e07e4515096fc873932784fe3a9",
-        "small/56": "da86674c46287a7c4e7b5ffe58f2bb5d77d9064b58f5c9e11966b4d53d8ff631",
-        "small/112": "1a953f83a4e692e678d1e0ff13f825f54f4ee428ef741b25f10f619ce0deda33",
-        "small/168": "abe21a79e51a328daee13091017b28874f01583b22b4c9079da7a252c977cea3"
+        "grid": "abeefc28ecff9ea789f44fd93915cd27732422780bfb1ca3daa6a6c3e3fe402f",
+        "narrow": "12181df359d3e0b2632b3015bdecf315e4634ff251d9739a3c9c82735171a6fb",
+        "troop": "ce46de773d7713955deac752f437268ff9ea509da2fd69e3d8e9f9bd9a0449da",
+        "small/56": "e675ff571b84e2e2383567faaf61fa8600f45b07528ba59f19a84d0bcd935e3f",
+        "small/112": "4b18a13dfa7c65a2958f9ac9faa51ee707bbe5188e5cf019397fbefae7effc60",
+        "small/168": "0300695b0ec8a2f635aeff841e029a88e72cf27b10b1386a1a651c567728f56a"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4196,20 +4196,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/peter.png",
-        "narrow": "assets/portraits/part3/narrow/peter.png",
-        "troop": "assets/portraits/part3/troop/peter.png",
-        "small/56": "assets/portraits/part3/small/56/peter.png",
-        "small/112": "assets/portraits/part3/small/112/peter.png",
-        "small/168": "assets/portraits/part3/small/168/peter.png"
+        "grid": "assets/portraits/part3/grid/peter.webp",
+        "narrow": "assets/portraits/part3/narrow/peter.webp",
+        "troop": "assets/portraits/part3/troop/peter.webp",
+        "small/56": "assets/portraits/part3/small/56/peter.webp",
+        "small/112": "assets/portraits/part3/small/112/peter.webp",
+        "small/168": "assets/portraits/part3/small/168/peter.webp"
       },
       "sha256": {
-        "grid": "a63e141295cfa03de9f0a34b740b5add5dc5d162c74666353147d77ce491ded1",
-        "narrow": "18519c994ba90010415730afafdfddbc25d9e899d05bf1132f13a00eda977c2a",
-        "troop": "6dd0538c5e6d054381093d7b2c720b279149bc2a12b94b421e9be414191cd8eb",
-        "small/56": "74af1c050c0e2da31786ab5968a0fb06fd5868e4a32a89d1b94b8a6ce04cfa05",
-        "small/112": "e20f41604fd8cbe1dae931c1e7d7ecfca044e8c2efc327488f1810a340730ce5",
-        "small/168": "a184ae10d6b9d3c09167b1d51e3f23f333f356053fc0a043269208a4912cc693"
+        "grid": "2ec4d0fafdbdef4bbcac9c92857e7c3a3767a0c62d3aca93115334d02b8b47bc",
+        "narrow": "a4ddd01dc61da65f33b24b46efaacc811ff8d070d6aafcbc0b94b35a0c85e90f",
+        "troop": "346cafef479b88d73587711a91fcb3c5cb9f61a625e4ad1ddf7f61d251738d68",
+        "small/56": "9ae60bed5bad94d2cdded5b69f1270c24df5fac8045f5a3eebf82ae1a8f3a176",
+        "small/112": "00700461ea27033cbc732a1503292003c156ad22eb73a1481b945466a18c3d2f",
+        "small/168": "729781244e3d2b1d162080ce788921ad1352e42b182f047338434ba4424900b5"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4304,20 +4304,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/seteth.png",
-        "narrow": "assets/portraits/part3/narrow/seteth.png",
-        "troop": "assets/portraits/part3/troop/seteth.png",
-        "small/56": "assets/portraits/part3/small/56/seteth.png",
-        "small/112": "assets/portraits/part3/small/112/seteth.png",
-        "small/168": "assets/portraits/part3/small/168/seteth.png"
+        "grid": "assets/portraits/part3/grid/seteth.webp",
+        "narrow": "assets/portraits/part3/narrow/seteth.webp",
+        "troop": "assets/portraits/part3/troop/seteth.webp",
+        "small/56": "assets/portraits/part3/small/56/seteth.webp",
+        "small/112": "assets/portraits/part3/small/112/seteth.webp",
+        "small/168": "assets/portraits/part3/small/168/seteth.webp"
       },
       "sha256": {
-        "grid": "b96857781815ed6c133f097afd0d65c81869fc6f632775d59594d51008f3d2b9",
-        "narrow": "e48e059d669cbba87fb90336e70939a95d18021bf5995f7dec666dc9bdc0bb4b",
-        "troop": "5dde27250660620ae599a9b63548a507161ec39f9cc52cd5f66aebb603c7c850",
-        "small/56": "1de955e28aa651313ab7cc98c7111152d786e0181907c16c015aae55b74e118c",
-        "small/112": "df9abaafbb036b1677c35e2eef3ffaa08654ef70ee9769a5bda77fd7e049c79b",
-        "small/168": "1d3c823415a2ba28464e4a09598e36c92c03cebcb4edfe8a37f64dedf960c6ad"
+        "grid": "e6e234c980368bd487af2ea86e645d2a75952f2903768c2dc202287c528cf75e",
+        "narrow": "560abf63a53ab56596ae1406c64595e643d6826e455dc8572833a933039b0abf",
+        "troop": "96b4b1674b34328bde28983a694b72b050a29333fdf50502001c4e9b3a1b159b",
+        "small/56": "9842235a77a561bfee1a851e48a99eac5eb722b611a4d4fe74727b8212df30af",
+        "small/112": "5a98420471751c7c7fa0f340b8d69cf837e5a2147969c97b68ab502131570f0e",
+        "small/168": "db4a453d7ba67ac2ca26bd51a5a031b636e302795577be969210bcf0d3db3fb9"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4412,20 +4412,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/sha-lan.png",
-        "narrow": "assets/portraits/part3/narrow/sha-lan.png",
-        "troop": "assets/portraits/part3/troop/sha-lan.png",
-        "small/56": "assets/portraits/part3/small/56/sha-lan.png",
-        "small/112": "assets/portraits/part3/small/112/sha-lan.png",
-        "small/168": "assets/portraits/part3/small/168/sha-lan.png"
+        "grid": "assets/portraits/part3/grid/sha-lan.webp",
+        "narrow": "assets/portraits/part3/narrow/sha-lan.webp",
+        "troop": "assets/portraits/part3/troop/sha-lan.webp",
+        "small/56": "assets/portraits/part3/small/56/sha-lan.webp",
+        "small/112": "assets/portraits/part3/small/112/sha-lan.webp",
+        "small/168": "assets/portraits/part3/small/168/sha-lan.webp"
       },
       "sha256": {
-        "grid": "88787c0211126b278e1dfa9cc2917f5574bfb1539705aef21854535ddc779946",
-        "narrow": "e3030e76d1a10332118225f01facb0ea43edd8283d460f93176c652f19cc62f0",
-        "troop": "1e95e6de7bbae33e9526986d929ddcc8a0a1c6a1f58cffc87aa17bbbaac0fa50",
-        "small/56": "10e2ac7ede364a39e0e01a212af910b703e7a45579a3aac4f7fc982185a7a617",
-        "small/112": "9c4a75fd969ed1695ee2c8f3bba6cf232618a1cfb92900f9af958e859ddbf579",
-        "small/168": "25ea39dba638b504cd8e17f6234b96d301ec8dc80b22b732842cce9f3eda74b1"
+        "grid": "7c6b2b0efbecdc82b23e3ba8e7863a297296583c7be0ecfc627ad2a7747344f8",
+        "narrow": "9563cd8d17913a864730654a9f12e040bc6bb7761425cc221fda12a50de1ca15",
+        "troop": "a1e26dfa43bb4a457f499959878b4cdce38832d33145a4bcdd9a25ec460a3c5a",
+        "small/56": "a360b94ab598cfac084905dc8db3f8e3a2e115021d63bed04a4c5bff5d7443a6",
+        "small/112": "4aa8283c2c4606dffe414679c351c2dffe03d2ceaa0a02e46d6740260f0b53c2",
+        "small/168": "1dc3dab1c7570ac599b69b59b7cbe48d27f582bf630ea0d54d264b2dcba4708d"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4520,20 +4520,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/simon.png",
-        "narrow": "assets/portraits/part3/narrow/simon.png",
-        "troop": "assets/portraits/part3/troop/simon.png",
-        "small/56": "assets/portraits/part3/small/56/simon.png",
-        "small/112": "assets/portraits/part3/small/112/simon.png",
-        "small/168": "assets/portraits/part3/small/168/simon.png"
+        "grid": "assets/portraits/part3/grid/simon.webp",
+        "narrow": "assets/portraits/part3/narrow/simon.webp",
+        "troop": "assets/portraits/part3/troop/simon.webp",
+        "small/56": "assets/portraits/part3/small/56/simon.webp",
+        "small/112": "assets/portraits/part3/small/112/simon.webp",
+        "small/168": "assets/portraits/part3/small/168/simon.webp"
       },
       "sha256": {
-        "grid": "08748035da318eb5e901208b254ad788e3ca73cdf4bc6f0693fd7924c4299fd2",
-        "narrow": "6217ccd092bbe02b37294d3fa1eaafe4d93c9ed8bd7f4338917ac0a7f24fb149",
-        "troop": "a4885a935d7f68c212859b76f7ce7fd7417b24a7c27538df7cda593a9c63ae33",
-        "small/56": "899a9bb624e1340324ffee1be469139af1909414b1a135c58c63ad70aac1578a",
-        "small/112": "3945d3cac1560d116bdf00f02a6ebfe71511d401852a34bd7750c9e7903e61d5",
-        "small/168": "403555844b26b52ed0f854c30010e7251788b00d4ea4b4943a093c5cc0220296"
+        "grid": "6b3a478c0123c36b7bea579de022820409232582404b474072e0e5d12ccfefbd",
+        "narrow": "51533b8cc212bccd76c263b0022d14614ab643a64444a3e9e041dc3ff41b8f54",
+        "troop": "6ddc8ea819c2eace35855aad82d2dbd7e9e453d03ae1a91f5729a1ad8f017afc",
+        "small/56": "cebd377bbd78bea56115ed47397b0b943642bd89517319243b90e9f0edf29273",
+        "small/112": "eafadb77a329afee703b9284ab7fa66a46e691db8bb9a2c59b8abb02bc7bd5f1",
+        "small/168": "bc34507e877b76fa9e44bfc6b8cfe41a5b9667b2cfaf5a655a977da6b8f6e48f"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4628,20 +4628,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/sirocco.png",
-        "narrow": "assets/portraits/part3/narrow/sirocco.png",
-        "troop": "assets/portraits/part3/troop/sirocco.png",
-        "small/56": "assets/portraits/part3/small/56/sirocco.png",
-        "small/112": "assets/portraits/part3/small/112/sirocco.png",
-        "small/168": "assets/portraits/part3/small/168/sirocco.png"
+        "grid": "assets/portraits/part3/grid/sirocco.webp",
+        "narrow": "assets/portraits/part3/narrow/sirocco.webp",
+        "troop": "assets/portraits/part3/troop/sirocco.webp",
+        "small/56": "assets/portraits/part3/small/56/sirocco.webp",
+        "small/112": "assets/portraits/part3/small/112/sirocco.webp",
+        "small/168": "assets/portraits/part3/small/168/sirocco.webp"
       },
       "sha256": {
-        "grid": "433b994b640a824c55c358335164c35f3d09d5ac1aca4a492c91ae2bfb0dee20",
-        "narrow": "ac63ff883fa3667eba6344a40c09efba2ac3947bc362f29b5bd8c83d612b8df0",
-        "troop": "5a0798bff6faa1191961710b96d8e4b1bd0425b7e9025ae1571cc8af8d48ea19",
-        "small/56": "b7ba63adf6cbb2fad3813627394ad10cc2e121e10837f7be8155dba6a9c3e9bb",
-        "small/112": "fcdc9269b8845d673f8e4c927e9176f6cf755a0e38e2b8647fb4aac6e4037a82",
-        "small/168": "98ed5b71c80faf99f8e21636c62f3b9142e876265fc0e7c096566d70f912fc71"
+        "grid": "727b6ee00bd3acedbb5a1c4c8c46d5bd1d82d920639cffd41ce1b4279636f01a",
+        "narrow": "227b08bdd273034a00d00636627bddcfcf1b22cd6f641461a7299d59184b3eb1",
+        "troop": "65bc58445477e57ef7597cb55f1546482a084bcac63dc80023e11549d5eecc43",
+        "small/56": "d02e6fe990e1389f5bc81f29fd47e57a9064b73a8695a98300a0e0aaf8794335",
+        "small/112": "c22f0cfe1bff2eee555c16ad76f31be3dcd2cbbdbe8ca6359fcf7c1016244d9e",
+        "small/168": "4fb71184617be85b6f72f67549066b542488faba4d18fb5bb0f3500fe4184072"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4736,20 +4736,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/sofia.png",
-        "narrow": "assets/portraits/part3/narrow/sofia.png",
-        "troop": "assets/portraits/part3/troop/sofia.png",
-        "small/56": "assets/portraits/part3/small/56/sofia.png",
-        "small/112": "assets/portraits/part3/small/112/sofia.png",
-        "small/168": "assets/portraits/part3/small/168/sofia.png"
+        "grid": "assets/portraits/part3/grid/sofia.webp",
+        "narrow": "assets/portraits/part3/narrow/sofia.webp",
+        "troop": "assets/portraits/part3/troop/sofia.webp",
+        "small/56": "assets/portraits/part3/small/56/sofia.webp",
+        "small/112": "assets/portraits/part3/small/112/sofia.webp",
+        "small/168": "assets/portraits/part3/small/168/sofia.webp"
       },
       "sha256": {
-        "grid": "6f8549a98eca7ea458903eed73bba27235bd444d6ea014bb77b078d5cda94bc2",
-        "narrow": "e3a76030cf0c15923a959e9a273829dc13c5dcfc4af97aa1c76a9f265bd01520",
-        "troop": "079930af1b7e8770116f0ec6c7d1d969b204726ffd436fc926d8ab8bbfb11c82",
-        "small/56": "dfe5c29fda546b7036011ac3b6bfec5e5994e26c272ddd811311571cd481b2be",
-        "small/112": "df929cb01cc3411675597d75af919ac847f4502ec8ad16a9db9977747cb37c3e",
-        "small/168": "0d7441677628b6f59ed90b2bf18452724d7f199f8087879afe0c8bece7acb0f6"
+        "grid": "540411738d428650814d43f2901cdb780e0ebf7b1daef02ce69684ec9c8e9e08",
+        "narrow": "19ed4d242ac673c0da4bed221662a9a5fb1abe0cbad54e5648932cf87122b3f5",
+        "troop": "b34bd917597dd460ea5893eef4514a3de2d9fed75fc1fa5c19cbdbe6bbc8e414",
+        "small/56": "0b25dcd9e41ab104eca6582d141802ad1578af89c45e566185f3a20930e3bc77",
+        "small/112": "446fce813ad475fc82672a5d7eff56835981be561c0fbaa50775325c0a3bd13a",
+        "small/168": "ef9fe3f3f1a609986fc0df6c0a8315b0f2ecb5da2db07fb6f4fdf5c31ad134c9"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4844,20 +4844,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/talimun.png",
-        "narrow": "assets/portraits/part3/narrow/talimun.png",
-        "troop": "assets/portraits/part3/troop/talimun.png",
-        "small/56": "assets/portraits/part3/small/56/talimun.png",
-        "small/112": "assets/portraits/part3/small/112/talimun.png",
-        "small/168": "assets/portraits/part3/small/168/talimun.png"
+        "grid": "assets/portraits/part3/grid/talimun.webp",
+        "narrow": "assets/portraits/part3/narrow/talimun.webp",
+        "troop": "assets/portraits/part3/troop/talimun.webp",
+        "small/56": "assets/portraits/part3/small/56/talimun.webp",
+        "small/112": "assets/portraits/part3/small/112/talimun.webp",
+        "small/168": "assets/portraits/part3/small/168/talimun.webp"
       },
       "sha256": {
-        "grid": "8672006a92183d5e9b98865847356b2fa3996c5d26b7633dc31eb6691df9c86b",
-        "narrow": "0bc16b6fc447cca6938b68c44c7bc8e9de60cf6d161cdd6bcf7fd6e77d9d9165",
-        "troop": "5fe3490b69c57da8c053b4dd01801b55cd4d0096178840223f0de8969adf5947",
-        "small/56": "ef0eeb7f1bfc4c90fb22a436b7c880047c31804b42497ed46eb00f9f58fe6391",
-        "small/112": "902b790f64d37d2838d3574fa2aea15c4124f111e48ddc2ac685e1d316db3155",
-        "small/168": "294c717d2e6ee9dbdf382ea6608b3b523905b321ba0cb8365f27844959e44153"
+        "grid": "1dedd4c98d6e171d956fdcfcceafd71e1589559c0fcc8b6859d77af2b0f8722f",
+        "narrow": "d894769b8b67c74887dbca671bfd85bca00481b69bbca9dddcc391356bb58193",
+        "troop": "7e4576617a40e8a6dc13edd32fc1a3964a9219efbf46127ad790ce252ff773e4",
+        "small/56": "fb46e9db2b2e10c2483a336a0c3ad26cd612e98ba9e51b30256610e6c5f00f94",
+        "small/112": "8a89c22970e7432325cd4e32182501f0cd904b3ec547be581f213d18d2bfe1b2",
+        "small/168": "c6775ff7b4b8357ad16adc3d750dffee67d6fcc623e8b27b32e73539fbaa71c1"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -4952,20 +4952,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/theodora.png",
-        "narrow": "assets/portraits/part3/narrow/theodora.png",
-        "troop": "assets/portraits/part3/troop/theodora.png",
-        "small/56": "assets/portraits/part3/small/56/theodora.png",
-        "small/112": "assets/portraits/part3/small/112/theodora.png",
-        "small/168": "assets/portraits/part3/small/168/theodora.png"
+        "grid": "assets/portraits/part3/grid/theodora.webp",
+        "narrow": "assets/portraits/part3/narrow/theodora.webp",
+        "troop": "assets/portraits/part3/troop/theodora.webp",
+        "small/56": "assets/portraits/part3/small/56/theodora.webp",
+        "small/112": "assets/portraits/part3/small/112/theodora.webp",
+        "small/168": "assets/portraits/part3/small/168/theodora.webp"
       },
       "sha256": {
-        "grid": "c95e6d08a0ea22ca7c86b380c99c31d645c1b50359f77dbcd1fa9040513ebaa2",
-        "narrow": "8d195dae4aaa784d1b618d9aa636ba28b05dbe5f1deb374cb46a5586f06e4cbb",
-        "troop": "218beea309f778d6e8d6ea4aead8d2a1d60617b554846c7a97f910ad76a33475",
-        "small/56": "0378da0a0446549527dd7a0ff1397d571e060d70d15f7633fcbae7b2dbd68013",
-        "small/112": "24406d38c13700f88cffd97a535913e6421d6855e84e7ed03dd45fc3bfad11f5",
-        "small/168": "8e3da2f091d8f74ae7a9d8bcba21c539b9fb8352951671cc86fba94612f809dc"
+        "grid": "049246e2570397543e4175b08ae71cbc0d1415544a6a485c6f3fc89c696e0f7f",
+        "narrow": "26309a049d68b2f3fc8cf82354a15cd65e03c68cf2c0132f398d83cb7ee9e4d1",
+        "troop": "9471e49506a07eb3c2730a2d782ba65f8ac49aa3b79415a8dd763ea0595a2216",
+        "small/56": "cfdb9407a21821127785c645a8ffb9f04f600c8168c9907955373158eaf8e606",
+        "small/112": "6cf3b5d6dadb4c668c937911842e959cca5417b92531a3bf2fd4b3ab4495b521",
+        "small/168": "163d74218baeda1c9aa499a601113f869d7cc372e05a66c7ad0f36b1ef921ed2"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -5060,20 +5060,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/tialla.png",
-        "narrow": "assets/portraits/part3/narrow/tialla.png",
-        "troop": "assets/portraits/part3/troop/tialla.png",
-        "small/56": "assets/portraits/part3/small/56/tialla.png",
-        "small/112": "assets/portraits/part3/small/112/tialla.png",
-        "small/168": "assets/portraits/part3/small/168/tialla.png"
+        "grid": "assets/portraits/part3/grid/tialla.webp",
+        "narrow": "assets/portraits/part3/narrow/tialla.webp",
+        "troop": "assets/portraits/part3/troop/tialla.webp",
+        "small/56": "assets/portraits/part3/small/56/tialla.webp",
+        "small/112": "assets/portraits/part3/small/112/tialla.webp",
+        "small/168": "assets/portraits/part3/small/168/tialla.webp"
       },
       "sha256": {
-        "grid": "ea11e9e94cfb05a1f940adf3458104ab90819bdfdfd50eec99c7cfe185d1b897",
-        "narrow": "092d0ee04f866b130bf64930e913a171406597cb908ea8f400186736431104e2",
-        "troop": "ed82c2e5dfd516c40d52c59180aabcace50b6cbc7b216021b244f262cd533d3b",
-        "small/56": "956496a3ad58b2526c8d634933958298780720019faa7cb8d6560c538ecca77e",
-        "small/112": "c647c9488c2c5d88cca8936114f32b4dc2bc7c71a706371af70b03090d6bc854",
-        "small/168": "bc2c04168648e2be3ccfcf271a8a002a03a990ddddbe40dad5853bb6c5935823"
+        "grid": "4355b26b10f717414d3632875dfa524a2339a172e2be3a8b9b9548eb4498fc9f",
+        "narrow": "8042f6b11a876f047c86e72aa124e8f156e33e3439f681098132ddfa6780bfe7",
+        "troop": "91854f25d4c0cbfd5a5d1112d027239a8923e13ae23e770eb45aedd85c3d36e4",
+        "small/56": "0a82bbffbe3ab67bbb856dce2fad87c098d5ded2070d9f67f1584c1f62251973",
+        "small/112": "ca2a4566832642d35f4109d5aba55b8e80df5f0d2ed48cf856dbd900487850b9",
+        "small/168": "40ca38a51fc64e85e602156889bba26d0fd3b3852ce162d57f3b1f9bba25126d"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -5168,20 +5168,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/tobias.png",
-        "narrow": "assets/portraits/part3/narrow/tobias.png",
-        "troop": "assets/portraits/part3/troop/tobias.png",
-        "small/56": "assets/portraits/part3/small/56/tobias.png",
-        "small/112": "assets/portraits/part3/small/112/tobias.png",
-        "small/168": "assets/portraits/part3/small/168/tobias.png"
+        "grid": "assets/portraits/part3/grid/tobias.webp",
+        "narrow": "assets/portraits/part3/narrow/tobias.webp",
+        "troop": "assets/portraits/part3/troop/tobias.webp",
+        "small/56": "assets/portraits/part3/small/56/tobias.webp",
+        "small/112": "assets/portraits/part3/small/112/tobias.webp",
+        "small/168": "assets/portraits/part3/small/168/tobias.webp"
       },
       "sha256": {
-        "grid": "39998ba03337779226a428d24461acd8e048563de8e547d300c1c5804920e910",
-        "narrow": "65e4b0e8fe3844ca007a424256d3c01921e8834a46e95d5af1c26acc1a40b8e8",
-        "troop": "ed64f3cac8767e3ea8a4cc45c9f99f03a07c000493ac7f0a17b7c91d70d34384",
-        "small/56": "b51534c2e957cca058eebeaab2b42e104a8ade1cc03188d7d1269ea15822b528",
-        "small/112": "bc770e9f3b171ce2be7f6c4e6e14d3f3b4a171cab8061734a194cd3b5fee0c84",
-        "small/168": "597914c571f4aced601654a4e3e0b73d13282344b6e198767fdf82faf5bde9a7"
+        "grid": "61b5dca7f1ebf131a62f0172463e0f2d2cea45aab928054d4f619ea73f35a41e",
+        "narrow": "c7f92fa38db257ac5d91c5893fe195335cec5c25d561da4f1838da8a027ae757",
+        "troop": "1d47e17717919065ea4f7e972b93c1370f2cfde288ac3e46e899a855ce7f878e",
+        "small/56": "82aa1dc848147ad43caad7bd2eb0b525d6c4c151e200dc23a91146c3e5387036",
+        "small/112": "55d14adf74783ce88acdf3eb70af2ea17966983d87bd4e7c2e5b8f11dbf7add5",
+        "small/168": "7181e7274d06cf69fd9840685dc5ccdd86839c41a163dfa435cb1b78246dc199"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -5276,20 +5276,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/ultand.png",
-        "narrow": "assets/portraits/part3/narrow/ultand.png",
-        "troop": "assets/portraits/part3/troop/ultand.png",
-        "small/56": "assets/portraits/part3/small/56/ultand.png",
-        "small/112": "assets/portraits/part3/small/112/ultand.png",
-        "small/168": "assets/portraits/part3/small/168/ultand.png"
+        "grid": "assets/portraits/part3/grid/ultand.webp",
+        "narrow": "assets/portraits/part3/narrow/ultand.webp",
+        "troop": "assets/portraits/part3/troop/ultand.webp",
+        "small/56": "assets/portraits/part3/small/56/ultand.webp",
+        "small/112": "assets/portraits/part3/small/112/ultand.webp",
+        "small/168": "assets/portraits/part3/small/168/ultand.webp"
       },
       "sha256": {
-        "grid": "02c7a81c4168d916ced734750f03fed48e2af24ebd67e38cc43f714112911830",
-        "narrow": "fc50733059287150516f6a8128e84fabadfd8aa776797a43d9c45635371fe07d",
-        "troop": "97b99eafb120d431650c4cef932d6312cea0329f0e777a8bdfc6d7efb5defb3f",
-        "small/56": "802b0e6e089d474a44acec966afd9f9893f4f2a3946e269b4dca8ea15bebb475",
-        "small/112": "5ba1b7d11833761c6bf59bcc3597d60f3447e4e7cf712dc7e8bced524bcc6e80",
-        "small/168": "de1a73785f6ba74678659d3518638b810c567ebfde46cb74b7b75d4e822b667a"
+        "grid": "352ec273af38cc8991afb0fd15bc47ae694d9da54a17db3e42febe8c5d6a7c9a",
+        "narrow": "2f4d89f80ec8362ac221245f97d3ad3d4d0f9bc5124d7258153d1da7ced1d7b3",
+        "troop": "cf3a3597653dfe06fa552d2306bb59d8afc6e7af35f4167b8a4afc7413a8cda0",
+        "small/56": "f0a3c19e48853ff56b09e795a0af6f95c5427c05e89ee1bc83a381d8ecf21295",
+        "small/112": "d42146a32f6b20ce9e6e4feca9e756abd925230b180f9955c914fda0f3d7dc99",
+        "small/168": "537de1541a47a706dc11df86f70ed8bdae2a5d7c8cf5bf806a750d8a132dea03"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",
@@ -5384,20 +5384,20 @@
         }
       },
       "files": {
-        "grid": "assets/portraits/part3/grid/ursula.png",
-        "narrow": "assets/portraits/part3/narrow/ursula.png",
-        "troop": "assets/portraits/part3/troop/ursula.png",
-        "small/56": "assets/portraits/part3/small/56/ursula.png",
-        "small/112": "assets/portraits/part3/small/112/ursula.png",
-        "small/168": "assets/portraits/part3/small/168/ursula.png"
+        "grid": "assets/portraits/part3/grid/ursula.webp",
+        "narrow": "assets/portraits/part3/narrow/ursula.webp",
+        "troop": "assets/portraits/part3/troop/ursula.webp",
+        "small/56": "assets/portraits/part3/small/56/ursula.webp",
+        "small/112": "assets/portraits/part3/small/112/ursula.webp",
+        "small/168": "assets/portraits/part3/small/168/ursula.webp"
       },
       "sha256": {
-        "grid": "dd09e8a905c8b046246a83e47040671cddfc111f83a7d577c59fe38cec0744a4",
-        "narrow": "8636370630113416a2b0ce41b0627eca4b96783df531f13f366d64aae199e53b",
-        "troop": "e7fa22edff46eeea66d798ff5b5b5ca0d8448bc029c6bcf931e724e050d7438b",
-        "small/56": "81cdd7a846ba224a57992b52179687dcbbab8fb10c44b9d6375827bbd5dabc5d",
-        "small/112": "b8c985c8ef3140e85d41d4b34d325496b71d3eb1f32b9c1c33769b1e1411372c",
-        "small/168": "cd0b10e43a488f09f97b58cc2fea73f051388cc49c221f7548524c8102d4f159"
+        "grid": "c62b65d94d801653de36c96e96e558c6539cde47e196c13536bd3faf1351163a",
+        "narrow": "d013a2137313548370f4d5332c91e4d9ce043ced961a99f0d448aafd025a7273",
+        "troop": "6b3575e1ec31724889511b88b7000350b6b29d043f18a7d381212dc1e5d3813d",
+        "small/56": "4abe2b62b7b9cb38d460eb864d06b349ea2123ad8cd31aa50fb8704b23f1351a",
+        "small/112": "7a8c61e495754758326d6e212499dab9e3fd2c2ddf271f463e13152159d78b74",
+        "small/168": "ec1efb593f36748c04e2ee7beebc33761fb9c31435ccb13bd0d7279c6fc49229"
       },
       "source": {
         "archive": "Layout/Textures/Face1.arc.zst",

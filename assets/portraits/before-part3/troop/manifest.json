@@ -33,7 +33,7 @@
   "entries": [
     {
       "fid": "FID_アレキサンドラ",
-      "file": "assets/portraits/before-part3/troop/alexandra.png",
+      "file": "assets/portraits/before-part3/troop/alexandra.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -52,11 +52,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f109247c4cee6651b548967cc8546c939f52b4a6e53e8f19a18914d6768cdc1d"
+      "sha256": "ddbda9ce1f69b11c61865ebdaeed15bbccf1aea3f3055b8a76503417e19468e9"
     },
     {
       "fid": "FID_アナトリア",
-      "file": "assets/portraits/before-part3/troop/anatolia.png",
+      "file": "assets/portraits/before-part3/troop/anatolia.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -75,11 +75,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "33d6ae858bfd535144a86b7c85e9f52906ff50d0c93b0fc362d2aac81b24d531"
+      "sha256": "d4e6f56e9e28dd2144011aedaeabfb488eaff62e07ce43ff9586a6a679cc4a7d"
     },
     {
       "fid": "FID_アンナ",
-      "file": "assets/portraits/before-part3/troop/anna.png",
+      "file": "assets/portraits/before-part3/troop/anna.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -98,11 +98,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "a4f2fe011251b971df9c3619fbdea88f8b18d3962e824aeebc0cc59f38a6c3c1"
+      "sha256": "b1ad3db5f62f2aa4f08a77e8399849e6f12aac8602d39416622ddbf66d4d4f71"
     },
     {
       "fid": "FID_アスワン",
-      "file": "assets/portraits/before-part3/troop/aswan.png",
+      "file": "assets/portraits/before-part3/troop/aswan.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -121,11 +121,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "32c89e46c13e0b15a3a4c904d5a4e67def1a132b2f664c8f514f451f69db781d"
+      "sha256": "afeb519c213d3213839b719c87c1592107633eff6ca5265cfcf712dd9d62a902"
     },
     {
       "fid": "FID_アウロラ",
-      "file": "assets/portraits/before-part3/troop/aurora.png",
+      "file": "assets/portraits/before-part3/troop/aurora.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -144,11 +144,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f190a8fb9cbd7d825c12be33790a39ca33f60ca9d1f58cab849f7c48af3d412e"
+      "sha256": "21732852dae0732d68c7f6de7dc14f2e5d45a6122a8811cb43c331c519ca5a3c"
     },
     {
       "fid": "FID_ベンディッツ",
-      "file": "assets/portraits/before-part3/troop/benditz.png",
+      "file": "assets/portraits/before-part3/troop/benditz.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -167,11 +167,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f19b7854ade8aa263f9d17b3fbd3daff96902ba37e856e461f299d561d89c008"
+      "sha256": "b22fddaedefc5c1babfe9936c0feb61a2a81ce30568da1d44887e93827ff62e8"
     },
     {
       "fid": "FID_ベルトラン",
-      "file": "assets/portraits/before-part3/troop/bertrand.png",
+      "file": "assets/portraits/before-part3/troop/bertrand.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -190,11 +190,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "6561b5aa8cab9aff7ee4332e608720f8e184f2eca8c53613a20c5e9d098ee3b2"
+      "sha256": "4b535475508e6548d236ff77cdbe36c01a099351d193f720c76654723ffcea7b"
     },
     {
       "fid": "FID_ボナパルテ",
-      "file": "assets/portraits/before-part3/troop/bonaventure.png",
+      "file": "assets/portraits/before-part3/troop/bonaventure.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -213,11 +213,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "17d82478c82e72254f5cedcef7e7782a3a598d47504249587d4934c526c38474"
+      "sha256": "046cabaec00b6215a7e8b1b260fe5acd824f7ca87a27b690629261aa9db04a58"
     },
     {
       "fid": "FID_バッカニア",
-      "file": "assets/portraits/before-part3/troop/buccar.png",
+      "file": "assets/portraits/before-part3/troop/buccar.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -236,11 +236,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "1f2527acbd3d655205dffe26f239cc7f6377a9ac52a77f9dd17df2bedd19616e"
+      "sha256": "a708d5dafdf9c41678f84f8cdd99afb27314b069edf1813c55b29c515c1a3663"
     },
     {
       "fid": "FID_カイ",
-      "file": "assets/portraits/before-part3/troop/cai.png",
+      "file": "assets/portraits/before-part3/troop/cai.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -259,11 +259,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "a7155833007c8ac5d3b8e0461b7a20c3dafb32d8e92fa787d5c1679ee2d7213e"
+      "sha256": "0c2960a6037a6f539bf45f2ed02dbb5f09ab54c742c13b74d44c966e92cd502e"
     },
     {
       "fid": "FID_カターニャ",
-      "file": "assets/portraits/before-part3/troop/catania.png",
+      "file": "assets/portraits/before-part3/troop/catania.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -282,11 +282,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "b80024bf1d48a9718db0f151e46e578e0ed8fda295986cd79fb54c67b6416a35"
+      "sha256": "ea2fddeb9903de79eb7711b763cc01a4b472017f6e5aaddcb782a154bffd8331"
     },
     {
       "fid": "FID_セントリオン",
-      "file": "assets/portraits/before-part3/troop/centurio.png",
+      "file": "assets/portraits/before-part3/troop/centurio.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -305,11 +305,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "2301ec9cf922730e9e83a2f1c57f4c5d915178eecec260f9e23ff6c0bd536108"
+      "sha256": "5554a9127c20adf17de812f024f705479b85cccf55e4ced27ae05fd8a61ee1c7"
     },
     {
       "fid": "FID_キリーク",
-      "file": "assets/portraits/before-part3/troop/creek.png",
+      "file": "assets/portraits/before-part3/troop/creek.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -328,11 +328,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f5421164ca964003720b3d291504085ff98f721b2087f9098a7c1e527b3055a4"
+      "sha256": "cd9ee0712c143f313a32b4a579ed92f1411f6bbab777a0722e22328be50e0db4"
     },
     {
       "fid": "FID_ダイトウ",
-      "file": "assets/portraits/before-part3/troop/dadao.png",
+      "file": "assets/portraits/before-part3/troop/dadao.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -351,11 +351,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "cb537eed91383700075fd0a208c4f279d6ae70b98f6ff0a5ce2d3aa78b437e52"
+      "sha256": "27dd035630b03e693d8cc83e4cfed95897d93bf14034790d1ea79f21baa056af"
     },
     {
       "fid": "FID_ダンテ",
-      "file": "assets/portraits/before-part3/troop/dante.png",
+      "file": "assets/portraits/before-part3/troop/dante.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -374,11 +374,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "0b657ce3b6ac5bd7d05b0b0e959694028c5bba28cba6b6a30fff57c61624936d"
+      "sha256": "8084e1a67f9be41d6fb84e01b65f678cc0a772f7780065bf51ba3195a0607189"
     },
     {
       "fid": "FID_ディエゴ",
-      "file": "assets/portraits/before-part3/troop/diego.png",
+      "file": "assets/portraits/before-part3/troop/diego.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -397,11 +397,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "b118158a1261877d699aae7407c4876a51f3cc4816e4f813afc6e73c2e0082e8"
+      "sha256": "e9be804dcf9e8c2749fdd001d9dc80f800f491c318daab4aa65399c21397625c"
     },
     {
       "fid": "FID_ディートリヒ",
-      "file": "assets/portraits/before-part3/troop/dietrich.png",
+      "file": "assets/portraits/before-part3/troop/dietrich.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -420,11 +420,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "e9c269e97095ad6d9ec378e710776da5e27d1dbe65d1d3a61e462e0cf5543ae3"
+      "sha256": "e2607b33d7c7bc140c72cc4baecb74b4cd19d12ea17d5dffa2a95a5d9c81d2fe"
     },
     {
       "fid": "FID_エスメラルダ",
-      "file": "assets/portraits/before-part3/troop/esmeralda.png",
+      "file": "assets/portraits/before-part3/troop/esmeralda.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -443,11 +443,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "8e2ba554bce22558054946505d056abd9eb66149f538cb9c8a48dcc6b55fd413"
+      "sha256": "6a6e48553a641fc809a72613fe51fa27f3fccb0caad7a10f1fbdb79103e1d47c"
     },
     {
       "fid": "FID_ファビオ",
-      "file": "assets/portraits/before-part3/troop/fabio.png",
+      "file": "assets/portraits/before-part3/troop/fabio.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -466,11 +466,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "0a16dfc36715466c24f7ce25d36919f5f4fac880265ed4bf2890d376f69c1313"
+      "sha256": "b97edc509d23f1b86921891b3a733d0ee4e7e0fd5d0c4f2510ee1317e6804764"
     },
     {
       "fid": "FID_ファティマ",
-      "file": "assets/portraits/before-part3/troop/fatima.png",
+      "file": "assets/portraits/before-part3/troop/fatima.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -489,11 +489,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "464afa29959155648ef969ae793481263d407d303c044c7f59dbb841024a6f40"
+      "sha256": "2d93259d75a84d64bc3596a60b1e824866256f51d20f832d1bf6b03dfc7179fd"
     },
     {
       "fid": "FID_フィアナ",
-      "file": "assets/portraits/before-part3/troop/fianna.png",
+      "file": "assets/portraits/before-part3/troop/fianna.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -512,11 +512,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "3f8066cdaca6237d636568bb727faac55d68a902bca79c9080022f3576c11d26"
+      "sha256": "9d126d6912977e973a266c0ed56fb59ddb71b1a5298ba8b9c25a6c088cd640fa"
     },
     {
       "fid": "FID_フォトナ",
-      "file": "assets/portraits/before-part3/troop/fortuna.png",
+      "file": "assets/portraits/before-part3/troop/fortuna.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -535,11 +535,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "ab63eab50e432dfdf3d42a8fc4ed767ff55117ccd927fbacaf004ad7d47d44d4"
+      "sha256": "3560afe77cbda6094a78cc4ff107f0c85be361190dce0dfa80a66d6db809954a"
     },
     {
       "fid": "FID_ゲイツ",
-      "file": "assets/portraits/before-part3/troop/gaitz.png",
+      "file": "assets/portraits/before-part3/troop/gaitz.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -558,11 +558,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "3efa7a25f14bd22e6b50688de91936a78216dd36e65f02be3d51805603fbcc1f"
+      "sha256": "e6fad77d7f0bd06b2be0382b9e79f12a1107c5bf3fa8e9491da05dfe81dc67fe"
     },
     {
       "fid": "FID_ゴライアス",
-      "file": "assets/portraits/before-part3/troop/goliath.png",
+      "file": "assets/portraits/before-part3/troop/goliath.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -581,11 +581,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "68cf3db14c5d3a1c774927a9bdb11879fb41635f3aec0af615d1eeca315fcaab"
+      "sha256": "5846378949df7acf22f5cdb25a2677f2c044d80234bb6eb37f43ea3d39f77de6"
     },
     {
       "fid": "FID_グザラン",
-      "file": "assets/portraits/before-part3/troop/guzran.png",
+      "file": "assets/portraits/before-part3/troop/guzran.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -604,11 +604,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "d0cc63c18293ed7235229e26f5f67a4901a603f4a137a35d3650d4aed8206c99"
+      "sha256": "8659df850d1752319d4a229a0a153d9ed3edd8180fa4033b4d575d763d438ec5"
     },
     {
       "fid": "FID_ハルヴィン",
-      "file": "assets/portraits/before-part3/troop/halvin.png",
+      "file": "assets/portraits/before-part3/troop/halvin.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -627,11 +627,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "18401cc33559f8543f55822841480d88804cbd93dd87d1f29fff7cbf4c39c159"
+      "sha256": "69de64b45763bff369aebdedf79d5f291ac4800b8b8ddc9eba22b0b2a2de2c9f"
     },
     {
       "fid": "FID_コウカ",
-      "file": "assets/portraits/before-part3/troop/hong-hua.png",
+      "file": "assets/portraits/before-part3/troop/hong-hua.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -650,11 +650,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "26f0cfdb2e9ae825d93607af1e37e251ed106f9879a620aba74c32ade18b6702"
+      "sha256": "f3c17e725ee31301c7677b0ff9cd57fdc475bd1d38e148603204862c539c0572"
     },
     {
       "fid": "FID_イリアナ",
-      "file": "assets/portraits/before-part3/troop/iliana.png",
+      "file": "assets/portraits/before-part3/troop/iliana.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -673,11 +673,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "720200f1eec4ad6d3d6a7df5caacd4e1ae330eb4034fc287d5709d2d1e2ae9d4"
+      "sha256": "2cdcd7cd986c8ded7f0ba169b476dac692d928810fcb06d1cbb46d85c8faadf5"
     },
     {
       "fid": "FID_イニオニ",
-      "file": "assets/portraits/before-part3/troop/inyoni.png",
+      "file": "assets/portraits/before-part3/troop/inyoni.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -696,11 +696,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "ffbb2cfe9d45913d2a0ec9449a005d78322569d51535b6b80cd70081e01f2ed7"
+      "sha256": "a0f849ec0a983f40dfa8c8748fb49e9cf9cac30148f9594f4962b1287cd22400"
     },
     {
       "fid": "FID_イオ",
-      "file": "assets/portraits/before-part3/troop/io.png",
+      "file": "assets/portraits/before-part3/troop/io.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -719,11 +719,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "bc287bc19fec703a0189ff5993fd4650d205dde024c8a82ed7d4f6a37760df74"
+      "sha256": "6f06e12b9da58036ef617ef28e4b8b458db770187d19eff33ec4760cb0fd5871"
     },
     {
       "fid": "FID_ジャスミン",
-      "file": "assets/portraits/before-part3/troop/jasmine.png",
+      "file": "assets/portraits/before-part3/troop/jasmine.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -742,11 +742,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "1247e436428320729e0432cb1409a6d651d722d15c537d75c5db403ebc1607d3"
+      "sha256": "a3dd25f7290c39918d89c639c7befaacb6c393103cf37fc481fc7ef7509b95ba"
     },
     {
       "fid": "FID_ジェスター",
-      "file": "assets/portraits/before-part3/troop/jester.png",
+      "file": "assets/portraits/before-part3/troop/jester.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -765,11 +765,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "dbbf6895e8896f0b73a701a831989ea842c84c8e93589caf2fe67ba9df3a5559"
+      "sha256": "36a38bae48456cea1e69e1d1384bf11136bae820c52fa1a75acc7f3a0ed465e7"
     },
     {
       "fid": "FID_ジュラ",
-      "file": "assets/portraits/before-part3/troop/jurah.png",
+      "file": "assets/portraits/before-part3/troop/jurah.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -788,11 +788,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "7aad9eef1d7ccfbdd4c7805594fb5f0fa94e3e4f8e38dbdb1dedfd38a7a06cd4"
+      "sha256": "8600d93e20a4802514ebc5a3a64093c560e7a31c33ec7b5cc71502c4a49c4456"
     },
     {
       "fid": "FID_カーラ",
-      "file": "assets/portraits/before-part3/troop/kalla.png",
+      "file": "assets/portraits/before-part3/troop/kalla.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -811,11 +811,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "6dca49243c6de66bbc827f38a83f6da25ce4c066175d698068fd2fb0207a3789"
+      "sha256": "810a114c72a7aa90d46dbee92cc9cc2bdab27347004579d69be61cbc15876d81"
     },
     {
       "fid": "FID_キロイカ",
-      "file": "assets/portraits/before-part3/troop/kiroc.png",
+      "file": "assets/portraits/before-part3/troop/kiroc.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -834,11 +834,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "64c5e49d1d02d88be8185eb64bce8c13c1959772ac424e4d0495229565b2c5ad"
+      "sha256": "b08b9ba56b92af71c851d6c7b0949ca92197432be28d4f9a0f186fc3f901c16f"
     },
     {
       "fid": "FID_クラプカ",
-      "file": "assets/portraits/before-part3/troop/klapka.png",
+      "file": "assets/portraits/before-part3/troop/klapka.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -857,11 +857,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "60d18be179763cb23b96959299fbb93ba01457cce098ea880091430b2b167963"
+      "sha256": "3c868023f6cd0981efef7fd9bcb774969556f8d25dd2e08110a1ee37d47d7c31"
     },
     {
       "fid": "FID_レダ",
-      "file": "assets/portraits/before-part3/troop/leda.png",
+      "file": "assets/portraits/before-part3/troop/leda.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -880,11 +880,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "584a23a6bc6d4fbc1d7705e0997f25737ca9c9b78ed5bc7b68f54915b446112a"
+      "sha256": "97ac9bf436ef0b280ca24b398afd360ee12c84523652d0e2c05dbb5d2424bb13"
     },
     {
       "fid": "FID_リリアン",
-      "file": "assets/portraits/before-part3/troop/lilian.png",
+      "file": "assets/portraits/before-part3/troop/lilian.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -903,11 +903,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f368105721b9a08bcd69f5d18078a796e64a82ee48080ba02108ec7f09dfc166"
+      "sha256": "da448a4bc68c3cd728b9adba7ac50a0736297ca51452ff81be013116ef869579"
     },
     {
       "fid": "FID_ロレッタ",
-      "file": "assets/portraits/before-part3/troop/loretta.png",
+      "file": "assets/portraits/before-part3/troop/loretta.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -926,11 +926,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "28612ac5e5fc35296c576ce86b3d6eae83f74b7b90e4fb84048c92ddac14d060"
+      "sha256": "9f9e4e61be503e1980104b7304847fcd6ed328fba2032770ad4700564553ab8f"
     },
     {
       "fid": "FID_ルルディヤー",
-      "file": "assets/portraits/before-part3/troop/ludia.png",
+      "file": "assets/portraits/before-part3/troop/ludia.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -949,11 +949,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "73b3ccb25bc309047ee72445e2e6cea5d8e5ec8feb38a604b7b6a143b03f1eb2"
+      "sha256": "07d8025b053d7cf4584a53c0666c58321d8c91c5e23721fe6d6af43147b55a5e"
     },
     {
       "fid": "FID_ライサンダー",
-      "file": "assets/portraits/before-part3/troop/lysander.png",
+      "file": "assets/portraits/before-part3/troop/lysander.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -972,11 +972,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "75fd2c3a20c425aa5ab90b65404cb56520c0b11abd5e43f6eef65030024340be"
+      "sha256": "3280aca344febee388e465cf8177353664d3214408c4efb882c0dd0f3b4adfbd"
     },
     {
       "fid": "FID_マジーデ",
-      "file": "assets/portraits/before-part3/troop/majide.png",
+      "file": "assets/portraits/before-part3/troop/majide.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -995,11 +995,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "81bf87a4ffc70ad4e767d4f4ab2a5fb3ebf273e73a015bb0a1bd0f3531bb121a"
+      "sha256": "346925d3fe085ee044c67053d852c299c110f0cb0f27dd88e99ab57179e2a973"
     },
     {
       "fid": "FID_マーズ",
-      "file": "assets/portraits/before-part3/troop/mars.png",
+      "file": "assets/portraits/before-part3/troop/mars.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1018,11 +1018,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "388cbf018610b123765d672d88b1df2d255f48ead925716be7fad74899674bcb"
+      "sha256": "448b4351f68838dfa4b613463bed22d4379b0336aced7fb71440a350e793644b"
     },
     {
       "fid": "FID_マクシム",
-      "file": "assets/portraits/before-part3/troop/maxim.png",
+      "file": "assets/portraits/before-part3/troop/maxim.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1041,11 +1041,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "5b212f2fbbfd3d23629103e12fb4b20d5c64ff03d0fea2676e2b2b20e3b82f65"
+      "sha256": "d6202de36a07795b4e1207b4a83defea0d91e3bc7962fdb7338b4632d92d45d5"
     },
     {
       "fid": "FID_ミカエラ",
-      "file": "assets/portraits/before-part3/troop/mikaela.png",
+      "file": "assets/portraits/before-part3/troop/mikaela.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1064,11 +1064,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "eb875cff3af4c85352fc019efa3493860506a5112f869bfb3e6c07275672b8df"
+      "sha256": "98827c17731aab1a1de88852e741493d54d6f6ca88c07733827126cb308d38f6"
     },
     {
       "fid": "FID_ムウ",
-      "file": "assets/portraits/before-part3/troop/mu.png",
+      "file": "assets/portraits/before-part3/troop/mu.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1087,11 +1087,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "e952a1cc476ec3b8055857149a042a82bb28fadb1e2721b79deba8f2104f9fdc"
+      "sha256": "ff044f9494f2f7e7ad2e76ce0ee0c080795e847a206b4764860b5bc1eceaf0da"
     },
     {
       "fid": "FID_ネイサン",
-      "file": "assets/portraits/before-part3/troop/nathan.png",
+      "file": "assets/portraits/before-part3/troop/nathan.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1110,11 +1110,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "3797029010888b5f1d44133cdf339b7d2b61b67a818458ef1980fddfa5a2adc8"
+      "sha256": "b1c39dbccdb5ee09cecbf482dac33977970d341053d5843d7862bbcb12a1e0fc"
     },
     {
       "fid": "FID_ナジャ",
-      "file": "assets/portraits/before-part3/troop/nezha.png",
+      "file": "assets/portraits/before-part3/troop/nezha.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1133,11 +1133,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "9cd97158add9f4db5bddb29c30b979d228c01be508436a49157cbbb2a8efdd31"
+      "sha256": "1d0fd5b930137e778cfa17ce80802a00a1b16dec7d693235afaa48a86c77eb1a"
     },
     {
       "fid": "FID_ニネ",
-      "file": "assets/portraits/before-part3/troop/ninae.png",
+      "file": "assets/portraits/before-part3/troop/ninae.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1156,11 +1156,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "09a4bd6c5fe09b9946c8546f6ea3803582dbc3e9e2c912e1315b0ac0978debb0"
+      "sha256": "4704545294028c42094a2beb82eb55b420ebe02ceb72f846407ed365c1f91466"
     },
     {
       "fid": "FID_ノクチュラ",
-      "file": "assets/portraits/before-part3/troop/noctula.png",
+      "file": "assets/portraits/before-part3/troop/noctula.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1179,11 +1179,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "1dd943fe71bfab841e196668e5b9d82b5f8c180c8f29170e40cd49340efcd721"
+      "sha256": "8fb8b2bb8c849a397b1e1e2744c1d69daf794eda4cd235bd6ba082dee0be000e"
     },
     {
       "fid": "FID_ヌッツォ",
-      "file": "assets/portraits/before-part3/troop/nuzzuo.png",
+      "file": "assets/portraits/before-part3/troop/nuzzuo.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1202,11 +1202,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f28f9780ab1966ec43bcd598ad3126464b4186c06b420a9e7709324a8a0900f8"
+      "sha256": "6e1a15713b5a6a0aa8478e04d083d17374178380e2bfa4b88bb905486900d5b1"
     },
     {
       "fid": "FID_ヌディーヌ",
-      "file": "assets/portraits/before-part3/troop/nydine.png",
+      "file": "assets/portraits/before-part3/troop/nydine.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1225,11 +1225,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "000a8c9b87b88dd6fc2dcbdd4e8bd90d063a643ab5337a7c8aff03e526be755d"
+      "sha256": "68e14cdc259e0fe0c1cf42436704a93c581776f13684430e09643b45f55d8021"
     },
     {
       "fid": "FID_オリンピア",
-      "file": "assets/portraits/before-part3/troop/olympia.png",
+      "file": "assets/portraits/before-part3/troop/olympia.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1248,11 +1248,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "b6f6b46d3873b7212b2b977d801d89161efdc47b3fd70043409ad480492f1f50"
+      "sha256": "39be2d51f35afa99a1b2a34990ac5b01cd0f7a125cf45d3ef32fabc4ad5cbfe5"
     },
     {
       "fid": "FID_オルヘル",
-      "file": "assets/portraits/before-part3/troop/orchel.png",
+      "file": "assets/portraits/before-part3/troop/orchel.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1271,11 +1271,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "2886c50f9256705be68a941d89a70248e3ebf45e6592de2e781b3d756744ccce"
+      "sha256": "b6eead614aa1b4c4aa5d11c8bcbb896742b4c06c846cae62893b1114779cb00f"
     },
     {
       "fid": "FID_ペペ",
-      "file": "assets/portraits/before-part3/troop/peppe.png",
+      "file": "assets/portraits/before-part3/troop/peppe.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1294,11 +1294,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "8325cb834f98cecd5fc1f2fc2db5b98bf776df5e0abedd032bc4169f2c7c4963"
+      "sha256": "0c611d0f5c05a0aacd71310aaa19a7634ea05bb5575ab321a8e0a0bb2f9a1f1e"
     },
     {
       "fid": "FID_ピーテル",
-      "file": "assets/portraits/before-part3/troop/peter.png",
+      "file": "assets/portraits/before-part3/troop/peter.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1317,11 +1317,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "f2a7844928c1867d20470ead108f6dc4aa6ed77139254399a4f60c1325ffcbed"
+      "sha256": "7459b7a003e3d433737c26c8325ac0936557f1ee52beafe7be53f1c6c5ac8a47"
     },
     {
       "fid": "FID_ラクシャ",
-      "file": "assets/portraits/before-part3/troop/raksha.png",
+      "file": "assets/portraits/before-part3/troop/raksha.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1340,11 +1340,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "66682b4786cd1e7980582e8df17869c5cd246d75e9862c58a1e90984227200c6"
+      "sha256": "a27028e4d19f31f76e03e1bce23454ce25d69328776ebdf10793d99e76a30bb7"
     },
     {
       "fid": "FID_セテス",
-      "file": "assets/portraits/before-part3/troop/seteth.png",
+      "file": "assets/portraits/before-part3/troop/seteth.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1363,11 +1363,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "58b5c538f0ab1dea77dd735b3d81388f8d9c34a1d7ac498049c791db904b978d"
+      "sha256": "dfde901e2e94065271e54bc7968a01029a0430e6acdbfbf1ee381cba876c4c7d"
     },
     {
       "fid": "FID_サラン",
-      "file": "assets/portraits/before-part3/troop/sha-lan.png",
+      "file": "assets/portraits/before-part3/troop/sha-lan.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1386,11 +1386,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "defbec9ec3d9bd1be1fccc7d0d64ec63d18d405aa82890ca114341dde52ece79"
+      "sha256": "43320f3769239e265577dba609fc86636e972124a9e4b590a5cc7f5ec1346c30"
     },
     {
       "fid": "FID_シモン",
-      "file": "assets/portraits/before-part3/troop/simon.png",
+      "file": "assets/portraits/before-part3/troop/simon.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1409,11 +1409,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "41a3dc5b29ba5ff9a33d8b7c2e2347a411759af00f66def811c04e6f3b8847e4"
+      "sha256": "3956f28b7a2e811ab2e0a7df0dc45d314c9b189ca802406d48dc1d50df326fe0"
     },
     {
       "fid": "FID_シロッコ",
-      "file": "assets/portraits/before-part3/troop/sirocco.png",
+      "file": "assets/portraits/before-part3/troop/sirocco.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1432,11 +1432,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "4b6bc848b54b9c8404043e72a50a57bfc4b388670128890816e4efdca2d0c692"
+      "sha256": "e3acba77530e5c39a18e6c7f620506550e98281f371e59803328054542320ba5"
     },
     {
       "fid": "FID_スミルノス",
-      "file": "assets/portraits/before-part3/troop/smyrnos.png",
+      "file": "assets/portraits/before-part3/troop/smyrnos.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1455,11 +1455,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "66dce5505f789ff13ca8266968067477dd89c0c72b161cf36043e278f3060a19"
+      "sha256": "dfba175d0510c8ca2513536282581eece5ca4fa0955ac87d102d9d09bd49347e"
     },
     {
       "fid": "FID_ソフィア",
-      "file": "assets/portraits/before-part3/troop/sofia.png",
+      "file": "assets/portraits/before-part3/troop/sofia.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1478,11 +1478,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "9e3fae57ebafd768cb8327632e5d912142c1df17b4ccd1a87ba0febbce2cef9c"
+      "sha256": "fd1cca81b8f28856d8567f334efd556a7bfa64a18b587fb8c7d3b0afe3e390bf"
     },
     {
       "fid": "FID_大ソティス",
-      "file": "assets/portraits/before-part3/troop/sothis.png",
+      "file": "assets/portraits/before-part3/troop/sothis.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1501,11 +1501,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "8e027712195409f160ef06b35e86924cad038ed4396bb7f5e5a712c539ec94d2"
+      "sha256": "156ce50c9b280bcc24ff6628f5fabec12dbd97bf31a918bad32f28dd1f935e3b"
     },
     {
       "fid": "FID_タホウニア",
-      "file": "assets/portraits/before-part3/troop/tahonia.png",
+      "file": "assets/portraits/before-part3/troop/tahonia.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1524,11 +1524,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "367f3bc3348f9f7b070c656cd65886a7e84a5669e0b453df26e7416a9bd7d21b"
+      "sha256": "2f34c7d227a70108375182def68f07a82ff6115bac710979ae8b1ee35fad2511"
     },
     {
       "fid": "FID_タリムーン",
-      "file": "assets/portraits/before-part3/troop/talimun.png",
+      "file": "assets/portraits/before-part3/troop/talimun.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1547,11 +1547,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "befbce0272101bfe5a2b1022cea7f6b7b0f08e03c946eaec600c6c5d1390da99"
+      "sha256": "6798faafba37bd80fe1b46968aae9f6ae5f41c850fe81e892ac0e2c4830a255f"
     },
     {
       "fid": "FID_セオドラ",
-      "file": "assets/portraits/before-part3/troop/theodora.png",
+      "file": "assets/portraits/before-part3/troop/theodora.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1570,11 +1570,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "03c28960235e0ac68e72b58f64a179688b03097b315cd289e61eebaa35dc35ca"
+      "sha256": "2de1f3ab8abe0017458110f18ad30959561132311a4cef37884f8de2096dfa2d"
     },
     {
       "fid": "FID_ティアラ",
-      "file": "assets/portraits/before-part3/troop/tialla.png",
+      "file": "assets/portraits/before-part3/troop/tialla.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1593,11 +1593,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "c19e8815afaed088e92dc14eddedef0e69658ea87bc7c4057bcd9141a9dc37b6"
+      "sha256": "7cf12b2a0bf5ab6be489d634a6c6ac859864c11e68d21e60e573365a0987ee68"
     },
     {
       "fid": "FID_トビヤス",
-      "file": "assets/portraits/before-part3/troop/tobias.png",
+      "file": "assets/portraits/before-part3/troop/tobias.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1616,11 +1616,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "c5b7bc237fdfaf1394673d375de1960c422ecbe9eda673a3951e4ef7434d42d2"
+      "sha256": "231d66f8b2d721e9bb5d1c58cdbdacfd426290e34a86e24cd53eaf014e5e4b4c"
     },
     {
       "fid": "FID_トロイア",
-      "file": "assets/portraits/before-part3/troop/troy.png",
+      "file": "assets/portraits/before-part3/troop/troy.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1639,11 +1639,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "4b3d534a10e8aadf14750eae477d33cf958925a40e56c5ef7fb8afefc49015a7"
+      "sha256": "fd30a7f4b29dba8b9b86cb1c47e01a772ce4b2d032e1ac74178b18a39d9614bd"
     },
     {
       "fid": "FID_ウルタンド",
-      "file": "assets/portraits/before-part3/troop/ultand.png",
+      "file": "assets/portraits/before-part3/troop/ultand.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1662,11 +1662,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "fdb2148db2f24f343628bc752eedb5de623f32c26cde3a7e30c96ad337b9f014"
+      "sha256": "6df7dbd05ad7f5d562f57d6960b6e53c12b91d5e0d88b6cac551b963af942e8e"
     },
     {
       "fid": "FID_ウーシュラ",
-      "file": "assets/portraits/before-part3/troop/ursula.png",
+      "file": "assets/portraits/before-part3/troop/ursula.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1685,11 +1685,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "54d0100f8088327bbcd8711cfd658a7ff767e4b83c8ba752a77edc03d28646b1"
+      "sha256": "73ba07849edb39d66e274402d06c9a16165fcd7b079a12eab438cc977a50005f"
     },
     {
       "fid": "FID_ヨーカイ",
-      "file": "assets/portraits/before-part3/troop/yang-jie.png",
+      "file": "assets/portraits/before-part3/troop/yang-jie.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1708,11 +1708,11 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "037fe19d77ef46175d256c4c44917b2fa9665c90fd78dc4fbc4a384fd021929a"
+      "sha256": "5457c286991dfb7dc707fe74cb639b70dc31a8a18baaaa662f978782b6c9ff5d"
     },
     {
       "fid": "FID_ザーコネ",
-      "file": "assets/portraits/before-part3/troop/zarcone.png",
+      "file": "assets/portraits/before-part3/troop/zarcone.webp",
       "window": {
         "center_type": "EyeLevel",
         "selected_center": [
@@ -1731,7 +1731,7 @@
         ],
         "native_function": "main+0x1874de0"
       },
-      "sha256": "87ea0225ccfca0d63e05823ae7f2be23597cdf576c9ce64ce06ffd0914fefb7c"
+      "sha256": "05da0ac0a329cf0281cee65274b834e3f4d8c49797224d18a38c84368353a4f4"
     }
   ]
 }

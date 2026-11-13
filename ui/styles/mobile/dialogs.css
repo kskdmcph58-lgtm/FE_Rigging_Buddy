@@ -6,7 +6,7 @@
    only, never the backdrop,
    except the class and ride picker steps and the expectation details, where a tap outside acts like Esc
    (features.js closeOnOutsideTap). Button order follows UI_GUIDE: auxiliary far left, exit, primary rightmost. */
-@media (max-width:1749px) {
+@media (width < 1750px) {
   /* Native modal focus restoration may focus the dialog surface on iOS. Only controls carry a focus ring. */
   dialog.app-dialog:focus { outline: none; }
   dialog.app-dialog.m-picker-leaving { pointer-events: none; }
@@ -27,20 +27,9 @@
   }
   dialog.app-dialog:not(.m-sheet) :is(footer, .profession-footer, .choice-actions, .class-scope-actions)>button::after,
   dialog.app-dialog.confirm-dialog form>button::after { content: ''; position: absolute; inset: -4px 0; }
-  /* A lone exit sits at the trailing edge, like every other footer. */
-  dialog.app-dialog.card-options-dialog footer { display: flex; justify-content: flex-end; }
 
   /* Fields stay at 16px or larger, or iOS zooms the page when they take focus. */
   dialog.app-dialog .better-mobile-filter select { font-size: 16px; border-radius: 10px; }
-
-  /* ---------- Card panel: title, current class, grouped options; only the list scrolls ---------- */
-  dialog.app-dialog.card-options-dialog[open] { display: flex; flex-direction: column; overflow: hidden; }
-  dialog.app-dialog.card-options-dialog header { flex: none; height: auto; padding: 20px 16px 12px; }
-  dialog.app-dialog.card-options-dialog .card-options-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
-  dialog.app-dialog.card-options-dialog .card-options-current { margin: 0 0 4px; font-size: 13px; }
-  dialog.app-dialog.card-options-dialog .card-options-list button { font-size: 16px; line-height: 22px; }
-  dialog.app-dialog.card-options-dialog .card-options-list button>span { font-size: 13px; }
-  dialog.app-dialog.card-options-dialog footer { flex: none; align-self: stretch; max-width: none; margin: 0; padding: 12px 16px 16px; border: 0; }
 
   /* ---------- Scope choice: the same 16px gutter as the other sheets ---------- */
   dialog.app-dialog.class-scope-dialog h2 { padding: 20px 16px 16px; font-size: 17px; }
@@ -65,8 +54,8 @@
 }
 
 /* Phone widths: tool dialogs become bottom sheets. */
-@media (max-width:600px) {
-  dialog.app-dialog:is(.card-options-dialog,.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog) {
+@media (width <= 600px) {
+  dialog.app-dialog:is(.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog) {
     inset: auto 0 0;
     width: 100%;
     max-width: 100%;
@@ -84,23 +73,11 @@
     max-height: min(65dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 80px));
   }
   /* The bottom safe area belongs to each sheet's footer, so its surface runs to the screen edge. */
-  dialog.app-dialog:is(.card-options-dialog,.expectation-dialog,.better-dialog) footer,
+  dialog.app-dialog:is(.expectation-dialog,.better-dialog) footer,
   dialog.app-dialog:is(.profession-picker,.ride-picker) .profession-footer,
   dialog.app-dialog.class-scope-dialog .class-scope-actions {
     padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
-  dialog.app-dialog.card-options-dialog footer { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-  /* The card's panel reads as an inset grouped list with a full-width close, like an action sheet. */
-  dialog.app-dialog.card-options-dialog .card-options-list button {
-    min-height: 52px;
-    border: 0;
-    border-radius: 12px;
-    background: var(--m-fill);
-  }
-  dialog.app-dialog.card-options-dialog .card-options-list button:active { background: var(--m-fill-strong); }
-  dialog.app-dialog.card-options-dialog .card-options-list .card-option-recommend { box-shadow: inset 0 0 0 1px var(--gold); }
-  dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button { flex: 1 1 auto; width: 100%; min-height: 50px; border-radius: 12px; font-size: 16px; }
-  dialog.app-dialog.card-options-dialog:not(.m-sheet) footer>button::after { display: none; }
   /* Sheet footers speak the same language as the record page's save bar: full-width 50px buttons that
      share the row equally, 12px corners, primary in gold at the trailing end. A third, auxiliary action
      (恢复默认) stays compact at the far left, like 删除记录 there. */
@@ -135,18 +112,15 @@
   dialog.app-dialog:is(.confirm-dialog,.choice-dialog,.setup-level-dialog) { width: calc(100% - 32px); max-width: 400px; max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px); }
   dialog.app-dialog.choice-dialog { overflow-y: auto; }
 }
-@media (max-width:600px) and (prefers-reduced-motion:no-preference) {
-  dialog.app-dialog:is(.card-options-dialog,.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog)[open] {
+@media (width <= 600px) and (prefers-reduced-motion:no-preference) {
+  dialog.app-dialog:is(.profession-picker,.ride-picker,.class-scope-dialog,.better-dialog,.expectation-dialog)[open] {
     animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1);
   }
 }
 
 /* Short landscape screens: dialogs stay centred and fit the height; their bodies scroll, footers stay put. */
-@media (max-height:500px) and (orientation:landscape) and (max-width:1749px) {
+@media (height <= 500px) and (orientation:landscape) and (width < 1750px) {
   dialog.app-dialog:not(.m-sheet) { max-height: calc(100dvh - 16px); }
-  dialog.app-dialog.card-options-dialog { max-height: calc(100dvh - 16px); }
-  dialog.app-dialog.card-options-dialog header { padding: 12px 16px 8px; }
-  dialog.app-dialog.card-options-dialog footer { padding: 8px 16px 12px; }
   dialog.app-dialog.profession-picker .profession-titlebar { padding: 8px 16px; }
   dialog.app-dialog.profession-picker .profession-footer { padding: 8px 16px; }
   dialog.app-dialog.profession-picker .profession-tier { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); padding: 8px 0; }

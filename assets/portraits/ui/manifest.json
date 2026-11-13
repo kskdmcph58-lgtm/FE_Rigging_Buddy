@@ -3,50 +3,50 @@
   "entries": [
     {
       "texture": "UnitGrid_Bg_Decide^q",
-      "output": "meal-decided.png",
+      "output": "meal-decided.webp",
       "size": [
         300,
         232
       ],
-      "sha256": "8aff4f2f3051cd0ac432cecd100e6ab98e349acca1fbd491d935c26ab43895df"
+      "sha256": "e1a7baf8b1351894702fe9a93601681074bd1a943df2c464852e68bfc8b68c2c"
     },
     {
       "texture": "UnitGrid_Bg_Default^q",
-      "output": "meal-background.png",
+      "output": "meal-background.webp",
       "size": [
         300,
         232
       ],
-      "sha256": "cda92722503d4d79b58bed511288efeabfb70e4ff82dd2700aabd2ea05d168f0"
+      "sha256": "dbf7df8be9d8b8d6dc6296877a1d41ce6a851de23f6fce2c16afd99d4d580e4d"
     },
     {
       "texture": "UnitGrid_Bg_Select^q",
-      "output": "meal-selected.png",
+      "output": "meal-selected.webp",
       "size": [
         300,
         232
       ],
-      "sha256": "1073c00b5192b5b0bc1196f1baf64845c191048a57143b935d193c53ca63970f"
+      "sha256": "22ccf9508427c3008b89d24d0255b827806410153c914c4c1d8a9578771884bc"
     },
     {
       "texture": "UnitGrid_Mask^t",
-      "output": "meal-mask.png",
+      "output": "meal-mask.webp",
       "size": [
         300,
         280
       ],
-      "sha256": "735a5250ec0be2e41a7b066b1e784183f04796013c8682ed109ff035be6527ee"
+      "sha256": "71061811920f2fc37ed2c7f18b876356964a1edc3aadde406b259ddc9f4072ca"
     },
     {
       "texture": "Cursor^q",
       "source": "Layout/Common.arc.zst",
-      "output": "meal-quill.png",
+      "output": "meal-quill.webp",
       "size": [
         96,
         96
       ],
       "tint": "UI gold #d8c394; original alpha retained",
-      "sha256": "9966b39c1de206a8d43f1eb8559e85fb0015df5392fa9c310042afd3da28a2d9"
+      "sha256": "d59bb9c961d2240e828f3d94fc686463c9a1dc06552a5f14edf7bab680358ec5"
     }
   ],
   "layout": "Common_UnitGrid_MenuItem.bflyt",

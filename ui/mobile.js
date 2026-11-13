@@ -5,7 +5,7 @@
 (() => {
   const media = UI_MEDIA.mobileShell;
   // Short screens (a phone on its side) keep the compact bar on every page, as iOS does in landscape.
-  const shortScreen = matchMedia('(max-height:500px)');
+  const shortScreen = matchMedia('(height <= 500px)');
   const header = document.querySelector('body>header');
   const TITLES = { select: '选择人物', levels: '初始设置', summary: '升级记录' };
   // The bar shows the brand (the header's star and name) in place of a page title.

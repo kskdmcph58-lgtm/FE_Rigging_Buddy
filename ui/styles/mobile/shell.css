@@ -3,7 +3,7 @@
    Visual language: the game's colours, fonts and content frames (portraits, cards, stats) stay;
    tool chrome follows iOS conventions — a navigation bar with a large title, grouped controls,
    bottom toolbars inside the safe area, sheets for menus, and 44px hit areas around compact visuals. */
-@media (max-width:1749px) {
+@media (width < 1750px) {
   :root {
     --m-gutter: 16px;
     --m-bar: 44px;
@@ -178,7 +178,7 @@
   .selection-toolbar-anchor.is-floating .selection-toolbar-backdrop { height: calc(var(--selection-bar-height) + var(--m-safe-top)); }
 
   /* Wide screens: keep bottom actions at a readable width instead of stretching across a tablet. */
-  @media (min-width:601px) {
+  @media (width > 600px) {
     #app .bottom-bar {
       padding-left: max(calc(var(--m-gutter) + var(--m-safe-left)), calc((100vw - 680px) / 2));
       padding-right: max(calc(var(--m-gutter) + var(--m-safe-right)), calc((100vw - 680px) / 2));
@@ -247,7 +247,7 @@
   dialog.m-sheet .m-sheet-group button:disabled { color: var(--muted); opacity: .5; }
   dialog.m-sheet .m-sheet-group button:active:not(:disabled) { background: var(--m-fill-strong); }
   dialog.m-sheet footer { flex: none; align-self: stretch; width: auto; display: block; margin: 8px 0 0; padding: 0; border: 0; background: none; }
-  @media (max-height:500px) {
+  @media (height <= 500px) {
     dialog.m-sheet .m-sheet-group button, dialog.m-sheet footer button { min-height: 44px; font-size: 17px; }
   }
   dialog.m-sheet footer button { border-radius: 14px; background: var(--surface-floating); font-weight: 600; }
@@ -266,7 +266,7 @@
     pointer-events: none;
   }
 }
-@media (max-width:1749px) and (prefers-reduced-motion:no-preference) {
+@media (width < 1750px) and (prefers-reduced-motion:no-preference) {
   @keyframes m-sheet-in { from { transform: translateY(calc(100% + 8px + env(safe-area-inset-bottom, 0px))); } }
   /* The dialog itself stays still (no shared dialog scale-in); its body slides and the edge band fades in
      with the dimming (motion.css: 160ms). */

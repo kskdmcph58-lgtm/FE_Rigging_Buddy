@@ -21,322 +21,322 @@
   },
   "entries": [
     {
-      "file": "commoner.png",
+      "file": "commoner.webp",
       "base": "JID_無職_平民男",
       "color_layer": "JID_無職_平民男_Clr"
     },
     {
-      "file": "noble.png",
+      "file": "noble.webp",
       "base": "JID_無職_貴族男",
       "color_layer": "JID_無職_貴族男_Clr"
     },
     {
-      "file": "gladiator.png",
+      "file": "gladiator.webp",
       "base": "JID_闘士男",
       "color_layer": "JID_闘士男_Clr"
     },
     {
-      "file": "hunter.png",
+      "file": "hunter.webp",
       "base": "JID_猟兵男",
       "color_layer": "JID_猟兵男_Clr"
     },
     {
-      "file": "soldier.png",
+      "file": "soldier.webp",
       "base": "JID_兵士男",
       "color_layer": "JID_兵士男_Clr"
     },
     {
-      "file": "ornius-rider.png",
+      "file": "ornius-rider.webp",
       "base": "JID_飛駝兵男",
       "color_layer": "JID_飛駝兵男_Clr"
     },
     {
-      "file": "diviner.png",
+      "file": "diviner.webp",
       "base": "JID_呪い師男",
       "color_layer": "JID_呪い師男_Clr"
     },
     {
-      "file": "myrmidon.png",
+      "file": "myrmidon.webp",
       "base": "JID_剣士男",
       "color_layer": "JID_剣士男_Clr"
     },
     {
-      "file": "brigand.png",
+      "file": "brigand.webp",
       "base": "JID_ブリガンド男",
       "color_layer": "JID_ブリガンド男_Clr"
     },
     {
-      "file": "pugilist.png",
+      "file": "pugilist.webp",
       "base": "JID_セスタス男",
       "color_layer": "JID_セスタス男_Clr"
     },
     {
-      "file": "archer.png",
+      "file": "archer.webp",
       "base": "JID_アーチャー男",
       "color_layer": "JID_アーチャー男_Clr"
     },
     {
-      "file": "rogue.png",
+      "file": "rogue.webp",
       "base": "JID_ローグ男",
       "color_layer": "JID_ローグ男_Clr"
     },
     {
-      "file": "armored-knight.png",
+      "file": "armored-knight.webp",
       "base": "JID_重装歩兵男",
       "color_layer": "JID_重装歩兵男_Clr"
     },
     {
-      "file": "light-cavalry.png",
+      "file": "light-cavalry.webp",
       "base": "JID_軽騎兵男",
       "color_layer": "JID_軽騎兵男_Clr"
     },
     {
-      "file": "charioteer.png",
+      "file": "charioteer.webp",
       "base": "JID_戦車兵男",
       "color_layer": "JID_戦車兵男_Clr"
     },
     {
-      "file": "armored-ornius-rider.png",
+      "file": "armored-ornius-rider.webp",
       "base": "JID_騎甲駝兵男",
       "color_layer": "JID_騎甲駝兵男_Clr"
     },
     {
-      "file": "wing-soldier.png",
+      "file": "wing-soldier.webp",
       "base": "JID_天翼兵女",
       "color_layer": "JID_天翼兵女_Clr"
     },
     {
-      "file": "shaman.png",
+      "file": "shaman.webp",
       "base": "JID_シャーマン男",
       "color_layer": "JID_シャーマン男_Clr"
     },
     {
-      "file": "priest.png",
+      "file": "priest.webp",
       "base": "JID_プリースト男",
       "color_layer": "JID_プリースト男_Clr"
     },
     {
-      "file": "shido.png",
+      "file": "shido.webp",
       "base": "JID_シドー男",
       "color_layer": "JID_シドー男_Clr"
     },
     {
-      "file": "dancer.png",
+      "file": "dancer.webp",
       "base": "JID_踊り子男",
       "color_layer": "JID_踊り子男_Clr"
     },
     {
-      "file": "warrior.png",
+      "file": "warrior.webp",
       "base": "JID_ウォーリアー男",
       "color_layer": "JID_ウォーリアー男_Clr"
     },
     {
-      "file": "blacksmith.png",
+      "file": "blacksmith.webp",
       "base": "JID_鍛冶師男",
       "color_layer": "JID_鍛冶師男_Clr"
     },
     {
-      "file": "sniper.png",
+      "file": "sniper.webp",
       "base": "JID_スナイパー男",
       "color_layer": "JID_スナイパー男_Clr"
     },
     {
-      "file": "forest-knight.png",
+      "file": "forest-knight.webp",
       "base": "JID_フォレストナイト男",
       "color_layer": "JID_フォレストナイト男_Clr"
     },
     {
-      "file": "ranger.png",
+      "file": "ranger.webp",
       "base": "JID_レンジャー男",
       "color_layer": "JID_レンジャー男_Clr"
     },
     {
-      "file": "guardian.png",
+      "file": "guardian.webp",
       "base": "JID_ガーディアン男",
       "color_layer": "JID_ガーディアン男_Clr"
     },
     {
-      "file": "dreadnought.png",
+      "file": "dreadnought.webp",
       "base": "JID_ヘヴィアーマー男",
       "color_layer": "JID_ヘヴィアーマー男_Clr"
     },
     {
-      "file": "bardinger.png",
+      "file": "bardinger.webp",
       "base": "JID_バーディンガー男",
       "color_layer": "JID_バーディンガー男_Clr"
     },
     {
-      "file": "caladrius.png",
+      "file": "caladrius.webp",
       "base": "JID_カラドリオス男",
       "color_layer": "JID_カラドリオス男_Clr"
     },
     {
-      "file": "cataphract.png",
+      "file": "cataphract.webp",
       "base": "JID_カタフラクト男",
       "color_layer": "JID_カタフラクト男_Clr"
     },
     {
-      "file": "elephant-rider.png",
+      "file": "elephant-rider.webp",
       "base": "JID_戦象兵男",
       "color_layer": "JID_戦象兵男_Clr"
     },
     {
-      "file": "dragoon.png",
+      "file": "dragoon.webp",
       "base": "JID_ドラグーン男",
       "color_layer": "JID_ドラグーン男_Clr"
     },
     {
-      "file": "troubadour.png",
+      "file": "troubadour.webp",
       "base": "JID_トルバドール男",
       "color_layer": "JID_トルバドール男_Clr"
     },
     {
-      "file": "ovate.png",
+      "file": "ovate.webp",
       "base": "JID_ウァテス男",
       "color_layer": "JID_ウァテス男_Clr"
     },
     {
-      "file": "bishop.png",
+      "file": "bishop.webp",
       "base": "JID_ビショップ男",
       "color_layer": "JID_ビショップ男_Clr"
     },
     {
-      "file": "swordmaster.png",
+      "file": "swordmaster.webp",
       "base": "JID_ソードマスター男",
       "color_layer": "JID_ソードマスター男_Clr"
     },
     {
-      "file": "high-savant.png",
+      "file": "high-savant.webp",
       "base": "JID_ハイエピタフ男",
       "color_layer": "JID_ハイエピタフ男_Clr"
     },
     {
-      "file": "battlemaster.png",
+      "file": "battlemaster.webp",
       "base": "JID_バトルマスター男",
       "color_layer": "JID_バトルマスター男_Clr"
     },
     {
-      "file": "war-monk.png",
+      "file": "war-monk.webp",
       "base": "JID_バトルモンク男",
       "color_layer": "JID_バトルモンク男_Clr"
     },
     {
-      "file": "bow-adept.png",
+      "file": "bow-adept.webp",
       "base": "JID_マスターアーチ男",
       "color_layer": "JID_マスターアーチ男_Clr"
     },
     {
-      "file": "bow-knight.png",
+      "file": "bow-knight.webp",
       "base": "JID_ボウナイト男",
       "color_layer": "JID_ボウナイト男_Clr"
     },
     {
-      "file": "shadow-seeker.png",
+      "file": "shadow-seeker.webp",
       "base": "JID_シャドーシーカー男",
       "color_layer": "JID_シャドーシーカー男_Clr"
     },
     {
-      "file": "sentinel.png",
+      "file": "sentinel.webp",
       "base": "JID_ホーリーランサー男",
       "color_layer": "JID_ホーリーランサー男_Clr"
     },
     {
-      "file": "castle-knight.png",
+      "file": "castle-knight.webp",
       "base": "JID_フォートレス男",
       "color_layer": "JID_フォートレス男_Clr"
     },
     {
-      "file": "orichaldia.png",
+      "file": "orichaldia.webp",
       "base": "JID_オリハルディア男",
       "color_layer": "JID_オリハルディア男_Clr"
     },
     {
-      "file": "great-knight.png",
+      "file": "great-knight.webp",
       "base": "JID_グレートナイト男",
       "color_layer": "JID_グレートナイト男_Clr"
     },
     {
-      "file": "celestial-trooper.png",
+      "file": "celestial-trooper.webp",
       "base": "JID_聖天翼兵女",
       "color_layer": "JID_聖天翼兵女_Clr"
     },
     {
-      "file": "bau-lord.png",
+      "file": "bau-lord.webp",
       "base": "JID_ドラゴンマスター男",
       "color_layer": "JID_ドラゴンマスター男_Clr"
     },
     {
-      "file": "druid.png",
+      "file": "druid.webp",
       "base": "JID_ドルイド男",
       "color_layer": "JID_ドルイド男_Clr"
     },
     {
-      "file": "wiseman.png",
+      "file": "wiseman.webp",
       "base": "JID_ワイズマン男",
       "color_layer": "JID_ワイズマン男_Clr"
     },
     {
-      "file": "valkyrium.png",
+      "file": "valkyrium.webp",
       "base": "JID_ヴァルキュリウム男",
       "color_layer": "JID_ヴァルキュリウム男_Clr"
     },
     {
-      "file": "trickster.png",
+      "file": "trickster.webp",
       "base": "JID_トリックスター男",
       "color_layer": "JID_トリックスター男_Clr"
     },
     {
-      "file": "enlightened.png",
+      "file": "enlightened.webp",
       "base": "JID_覚者男",
       "color_layer": "JID_覚者男_Clr"
     },
     {
-      "file": "seere.png",
+      "file": "seere.webp",
       "base": "JID_セーレ男",
       "color_layer": "JID_セーレ男_Clr"
     },
     {
-      "file": "badb-catha.png",
+      "file": "badb-catha.webp",
       "base": "JID_バイヴ・カハ女",
       "color_layer": "JID_バイヴ・カハ女_Clr"
     },
     {
-      "file": "the-blade.png",
+      "file": "the-blade.webp",
       "base": "JID_ザ・ブレイド男",
       "color_layer": "JID_ザ・ブレイド男_Clr"
     },
     {
-      "file": "the-apsara.png",
+      "file": "the-apsara.webp",
       "base": "JID_ジ・アプサラス男",
       "color_layer": "JID_ジ・アプサラス男_Clr"
     },
     {
-      "file": "the-eternal.png",
+      "file": "the-eternal.webp",
       "base": "JID_ジ・エターナル男",
       "color_layer": "JID_ジ・エターナル男_Clr"
     },
     {
-      "file": "the-godhand.png",
+      "file": "the-godhand.webp",
       "base": "JID_ザ・ゴッドハンド男",
       "color_layer": "JID_ザ・ゴッドハンド男_Clr"
     },
     {
-      "file": "the-calamity.png",
+      "file": "the-calamity.webp",
       "base": "JID_ザ・カラミティ男",
       "color_layer": "JID_ザ・カラミティ男_Clr"
     },
     {
-      "file": "the-trident.png",
+      "file": "the-trident.webp",
       "base": "JID_ザ・トライデント男",
       "color_layer": "JID_ザ・トライデント男_Clr"
     },
     {
-      "file": "the-cavalier.png",
+      "file": "the-cavalier.webp",
       "base": "JID_ザ・キャバリアー男",
       "color_layer": "JID_ザ・キャバリアー男_Clr"
     },
     {
-      "file": "the-avatar.png",
+      "file": "the-avatar.webp",
       "base": "JID_ジ・アヴァタール男",
       "color_layer": "JID_ジ・アヴァタール男_Clr"
     }

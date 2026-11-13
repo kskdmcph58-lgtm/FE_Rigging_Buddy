@@ -8,13 +8,13 @@
     2,
     3
   ],
-  "count": 68,
+  "count": 72,
   "description": "Desktop list art: the troop portrait window (same face position and scale) extended down on the Spine bust; FaceMask_List on both sides as in the troop pane; top and bottom cut at the card inner edges, starting 14px above the troop window.",
   "entries": [
     {
       "fid": "FID_コウカ",
       "faceCode": "107",
-      "file": "assets/portraits/before-part3/list/hong-hua.png",
+      "file": "assets/portraits/before-part3/list/hong-hua.webp",
       "troopWindow": [
         0.03700000047683716,
         0.23600001633167267,
@@ -27,15 +27,15 @@
       ],
       "headMatch": 0.984,
       "sha256": {
-        "1x": "e05c374c8dbf23004c3bff0e8c2438b0cb9b2f2e6c6c2bc9becba0b8a131ea77",
-        "2x": "830d6881106019e8d63bce904b43b55b0c14699f580709b560b793275db339cf",
-        "3x": "9b6c6b3a9208703cc91fcd555faf93f4d38dd389848b7743ab63738966fcb62c"
+        "1x": "e80ec947d8010b4d0f439a44abcaea4aa878ea41d29b84c8ec50d224848af64d",
+        "2x": "309fb20df8d2ca41b485ee4fd9adb993a1511d5afbc1053ced32782c68465a62",
+        "3x": "ca0bdff5b8bb49f7619bb043780d50a20116637daaf3fdad17a836957f617a6b"
       }
     },
     {
       "fid": "FID_トロイア",
       "faceCode": "145",
-      "file": "assets/portraits/before-part3/list/troy.png",
+      "file": "assets/portraits/before-part3/list/troy.webp",
       "troopWindow": [
         0.06299999356269836,
         0.2280000001192093,
@@ -48,15 +48,15 @@
       ],
       "headMatch": 0.979,
       "sha256": {
-        "1x": "01f236f0e55f690e66777ca1ee317b69ed2dfcdee49f6b005d0a45c0de0b3480",
-        "2x": "684af96a9443b19a0c3ce911689bf866a06526f506d2a5ba2e90d8047190e15a",
-        "3x": "ec32766fff9dc95ac5ba8843b2771526697b61f39c421fe196aef7bceed9d9a4"
+        "1x": "2eab412d4b1296d090032f08d4ef54de5301f8a96fcc0b9d506c1040988e3bbe",
+        "2x": "2c9f679214c06a5ad1dbed8e9b20b145f7f40da775f1fcae1e1d5d3f9040611e",
+        "3x": "8423a346bd7f209fcfcdbcc81a6ce6ee8826e6fc749eed7349d929bb8ab484bc"
       }
     },
     {
       "fid": "FID_カイ",
       "faceCode": "017",
-      "file": "assets/portraits/before-part3/list/cai.png",
+      "file": "assets/portraits/before-part3/list/cai.webp",
       "troopWindow": [
         0.01600000262260437,
         0.24899999797344208,
@@ -69,15 +69,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "2e3045b36fab598ef931d128d2f9477453180013c8ce635b0d9d26735b72c2d2",
-        "2x": "28eee220725cde57b8e40ab9afc326ef8a5e5719dccf443a995641e6c62af3a8",
-        "3x": "9407b4ce83b68d9bd27d8f0391b0fe43646e86a036150ec9eb7c38b8fb59bb65"
+        "1x": "35cc4a947a8f0a066975f8c4659a50d5b595402a257523f1b3e9cac849a4ab78",
+        "2x": "f0cb156b4e4f4e80ca5f105abdbecc9adce29e040fc290f4d9a89d6074f0413c",
+        "3x": "693cd74045894d03428625cce381a648b71651be968037083c5c1abbf62d13d5"
       }
     },
     {
       "fid": "FID_ティアラ",
       "faceCode": "025",
-      "file": "assets/portraits/before-part3/list/tialla.png",
+      "file": "assets/portraits/before-part3/list/tialla.webp",
       "troopWindow": [
         0.02899998426437378,
         0.25199997425079346,
@@ -90,15 +90,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "9b8985f08d94e83ad9469b144b66dbb80f0b11db1445099e1192f5f8e8207474",
-        "2x": "16a4472a073fcc10328181263ad14073f22aa576426878f0b4732eb99c39dce7",
-        "3x": "485aba0c3e7a7f2cd87aecc0483785ebcc09f7547bbff579e918454edd144077"
+        "1x": "c8dd5c7b4e0506f5c6e082426dfe4e880dfe072f05278c24c64bafd969f3766f",
+        "2x": "a8435c8f49a939c1010802667d7d287224019bb7d79d811a8497013fa6c4cf9f",
+        "3x": "f49424a484ebcaa7ec244d69c18939444f0e7be834fa0e0e4082290771afe5be"
       }
     },
     {
       "fid": "FID_ピーテル",
       "faceCode": "026",
-      "file": "assets/portraits/before-part3/list/peter.png",
+      "file": "assets/portraits/before-part3/list/peter.webp",
       "troopWindow": [
         0.05699998140335083,
         0.265999972820282,
@@ -111,15 +111,15 @@
       ],
       "headMatch": 0.982,
       "sha256": {
-        "1x": "5b5d3ed06f610cfa5220cc08bf61dc643804118053c14c806eef461d17eaab42",
-        "2x": "38a163afd217e9e56146ce683ca2178c6cf68b02f776d8bdf24c0428be130c0d",
-        "3x": "44a05a47270a2c633000478108be800c3deec0f27c0573bfea5ea9534bcf81c6"
+        "1x": "76e5138b7c825f23d1b4840f1cbc9270b91aaea56cc6e397d671a4673c491f8f",
+        "2x": "a22625f9a260fb517f5b8f9e091211c5d241a5cef0793a5c363c5b543997a6b9",
+        "3x": "6bbb1fd2b5617a58d01ff47e6693658fae077e7b263878ab04af34f2b71f9289"
       }
     },
     {
       "fid": "FID_ウルタンド",
       "faceCode": "027",
-      "file": "assets/portraits/before-part3/list/ultand.png",
+      "file": "assets/portraits/before-part3/list/ultand.webp",
       "troopWindow": [
         0.03299999237060547,
         0.20999999344348907,
@@ -132,15 +132,15 @@
       ],
       "headMatch": 0.98,
       "sha256": {
-        "1x": "9d03c2cfb3a0324ad19b9e1a6fdb6d70adfba7fa11339ed814e307faefb485d9",
-        "2x": "0be10fcbf53ab734a4511420221a084d911ca3119479c8d7e56904dacac83818",
-        "3x": "a4e364317db35c3b145bf628fd4586e0012fe8bf0ad8ca62ee56beae74a17221"
+        "1x": "d39e31e30d3db4e8685f2ee80c26d7a6d720e4815229b893be2941f5a9fbf16e",
+        "2x": "fb7846c3be478c738ea241659d5d86776380d5c3ecdeef24f353bd7b4aac98f0",
+        "3x": "c22b7bafe35227c866b530138fca56898c47d43463b37c17d028f61973d6db26"
       }
     },
     {
       "fid": "FID_ディートリヒ",
       "faceCode": "019",
-      "file": "assets/portraits/before-part3/list/dietrich.png",
+      "file": "assets/portraits/before-part3/list/dietrich.webp",
       "troopWindow": [
         0.1289999783039093,
         0.23099999129772186,
@@ -153,15 +153,15 @@
       ],
       "headMatch": 0.988,
       "sha256": {
-        "1x": "65f1472b11e7890275ec1e3351c8ec5456005fd2032933c2ebfbfb7fd28b88e2",
-        "2x": "75647814c507c760f4a60ae278242d092367515f1f8893f306d90f71e7d46047",
-        "3x": "7e0ece460f961321a4977410a74788a8a8b6966a6fe6019f2e2000d5d0bfa8fd"
+        "1x": "c6ba6e58b15ed09c7c884fc3f98588f38183ea7bb677308470f2291a84c8f3e6",
+        "2x": "e3fb125d4870a0807b5940acee8d7d8df7ef445841b599015cf9b26df3d88d79",
+        "3x": "0431db76133ac8a24dffa036571f147e5ebc23e5a219651d911d8d8652dfd06f"
       }
     },
     {
       "fid": "FID_ファビオ",
       "faceCode": "032",
-      "file": "assets/portraits/before-part3/list/fabio.png",
+      "file": "assets/portraits/before-part3/list/fabio.webp",
       "troopWindow": [
         0.03700000047683716,
         0.1810000091791153,
@@ -174,15 +174,15 @@
       ],
       "headMatch": 0.985,
       "sha256": {
-        "1x": "087d1fd2dfb906bc57bf0dbcfa7c9afdd4a2cd9772e4652f6b541f4f94fe72a6",
-        "2x": "50c5d147112b277775fd2011d5912127c1313961ddb6e7d982de4b8d9d637747",
-        "3x": "46458db80078290aeb38ffc8fcb894eb0555b982df81dff2808c19879d9dc033"
+        "1x": "eb2009ccdee464582427381c7b3690bde3af8aaa9226397552a3d25dbc19119f",
+        "2x": "cc51e0788a5e5b727aa9ac64493f8b91328ce4d6dac17e4543bc4baf76e63fef",
+        "3x": "08677e2b1457081f64fafb812bff5bb2d6e80d760014b5723a666920351b02bc"
       }
     },
     {
       "fid": "FID_エスメラルダ",
       "faceCode": "033",
-      "file": "assets/portraits/before-part3/list/esmeralda.png",
+      "file": "assets/portraits/before-part3/list/esmeralda.webp",
       "troopWindow": [
         0.013999998569488525,
         0.2630000114440918,
@@ -195,15 +195,15 @@
       ],
       "headMatch": 0.978,
       "sha256": {
-        "1x": "9f0f9afb65ff6ea940bddd3cf4bfb46c02ce223b61b752c6825c8ae83936c6ad",
-        "2x": "933bf90b6b0dd7e88bec4f9bfa31e62a1fc299afb3cbfb6f5432e05b1d576feb",
-        "3x": "9ef6bb24012c0cc21439c40463cafa46c900cde69f9da8650a73b3bc624af19e"
+        "1x": "7dd90c79e6c7fd6f0fe274bb71f44611f98edf78da7e5e50324293f7acedfff2",
+        "2x": "4c56b7f91ed7142b8bf61b7da69613fbfa83fb4cf4ce19863551e4ef1c8f7ca0",
+        "3x": "4f77e446c137414cdc5baddb4f3e178dce2e475851ac833cf143d2f33948f6b9"
       }
     },
     {
       "fid": "FID_ミカエラ",
       "faceCode": "049",
-      "file": "assets/portraits/before-part3/list/mikaela.png",
+      "file": "assets/portraits/before-part3/list/mikaela.webp",
       "troopWindow": [
         0.030000001192092896,
         0.2149999886751175,
@@ -216,15 +216,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "3cfec5054dede4ffb6ed1ad131a362236ed8988054bcff9eca713260c77a0fa4",
-        "2x": "f1564c264f0ae1fed3bde7b86ada67e056ef10ef0447b0136fd770b38afd7caa",
-        "3x": "3f862b13230af695b2d77eb45c17cd6f5c820950e62a4d385082d76acc2a8d10"
+        "1x": "e450c0b71bff7ff7d0532cc6bf3c8aff177be014f5b672c3e39aee2ba387affa",
+        "2x": "4d069c80dc77ab1772cff2678d1ea1f5a0dcfac30d63fec5dbdc4bf79c9485d1",
+        "3x": "e2efcf369335cc1119ee9ac2deb60383f9017bb33764e8be809356bfd52701b8"
       }
     },
     {
       "fid": "FID_セオドラ",
       "faceCode": "022",
-      "file": "assets/portraits/before-part3/list/theodora.png",
+      "file": "assets/portraits/before-part3/list/theodora.webp",
       "troopWindow": [
         0.02899998426437378,
         0.22500000894069672,
@@ -237,15 +237,15 @@
       ],
       "headMatch": 0.975,
       "sha256": {
-        "1x": "cc7d45f39e1f1c8b76b0542b7eb644e6deaef545a9b5c1b5f9b17801a08f6925",
-        "2x": "a202e791c1577af42c971681ea8bee68cba1855fa581923dd2d70c99507d183b",
-        "3x": "0571b2d33dbc5e2ad59f38e0a28375d1d172de9ed39de9a49be9bfa163061c00"
+        "1x": "a011f849c21663b0066eff71e8e467788f3ce8955f1d14a30cf97aa758bc00e0",
+        "2x": "c663856f4654c07b3fb9468bac53c7dec64be1f6c3c56f111768e0e0db932758",
+        "3x": "0211592988bbaa2c3844b5a57557eae2daedb092c82b666f60298579f9b19c89"
       }
     },
     {
       "fid": "FID_ボナパルテ",
       "faceCode": "042",
-      "file": "assets/portraits/before-part3/list/bonaventure.png",
+      "file": "assets/portraits/before-part3/list/bonaventure.webp",
       "troopWindow": [
         0.03599998354911804,
         0.19300000369548798,
@@ -258,15 +258,15 @@
       ],
       "headMatch": 0.972,
       "sha256": {
-        "1x": "f75a301098ca31d983fcc32c375fe5e7c7e4241df2e0d67287adde765334bde7",
-        "2x": "443291385ecc9d6666331244c9e10f5749bbe87462b8142bad2d5891e23a80e4",
-        "3x": "a52e7b1b629f0a6e120672ccb12f0c1236dd49ca514c9089f5ec996d0a907137"
+        "1x": "0091eb85089d3f171fa88a43333150828cb597bae3ac7858106318683f56f62b",
+        "2x": "029604e5af0af28b8e95a88d7fab5c3da5cccaa81bad9d69f7383fed0972f04d",
+        "3x": "8c156d7c3851335d3f51e5189df678a7971c460cf128e57cc9e66533d00a56d9"
       }
     },
     {
       "fid": "FID_トビヤス",
       "faceCode": "043",
-      "file": "assets/portraits/before-part3/list/tobias.png",
+      "file": "assets/portraits/before-part3/list/tobias.webp",
       "troopWindow": [
         0.085999995470047,
         0.1900000125169754,
@@ -279,15 +279,15 @@
       ],
       "headMatch": 0.965,
       "sha256": {
-        "1x": "f36c5804b0af363ab3749c119a70665e9bec7a3248f9a78e3e3bbbd13f7bd54d",
-        "2x": "dcc91d4e0948e71bc6731754f05be414f51d7add27c101189b6f8762dd8a8845",
-        "3x": "69c78810b1d857801475a5481601deab56776f10afdbf6008d4d01cdba9dd52c"
+        "1x": "80a57ebd60606dc7478d0597e424fe8d0040c02a611ff0141e7f10bd8b2869ab",
+        "2x": "e718aa44bfdbe337d96ddac8100d6ed65531081b41cf769b0f84d128dc80a0a6",
+        "3x": "bec6461714c13be01e4d349d566f0181531aa2fdc48646172cc79790eeba19da"
       }
     },
     {
       "fid": "FID_リリアン",
       "faceCode": "044",
-      "file": "assets/portraits/before-part3/list/lilian.png",
+      "file": "assets/portraits/before-part3/list/lilian.webp",
       "troopWindow": [
         0.0,
         0.2329999953508377,
@@ -300,15 +300,15 @@
       ],
       "headMatch": 0.973,
       "sha256": {
-        "1x": "9c2ca9028f2d2e539ba3d895d68eb69589f55b3a6c969c4568778bd8652f7257",
-        "2x": "f81da7975f6120eedc21a21203d0619ba390719c077c383730098156d9bfffd0",
-        "3x": "3962d650356d256959049ba08d56ef7dcbee8ddf4fb75f3cde1715a2674ba73f"
+        "1x": "a458a48502c80c1be5adbc2b64b23794a2a5d26cb84130a18fd32e5ecfa91f38",
+        "2x": "e87349a368f8d28e66cf6262fd305c32f0970b7da9160a91e48db828add5103f",
+        "3x": "f347baf4f196da7adb054097b849c0167455db72f8b64fe387e6da9bea78dee9"
       }
     },
     {
       "fid": "FID_ライサンダー",
       "faceCode": "045",
-      "file": "assets/portraits/before-part3/list/lysander.png",
+      "file": "assets/portraits/before-part3/list/lysander.webp",
       "troopWindow": [
         0.046000003814697266,
         0.21300001442432404,
@@ -321,15 +321,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "2e3f2df36ec3be1d33cfc21a81ed30a9d174a87eab27ad5c952511684e4fa353",
-        "2x": "c2f7db0411881a3ca3c8d12e9c3dd759d7144edc6e0a916763c941a71ca4a888",
-        "3x": "88a0c2fcc0895400d8f19f561a245e1ce4a26e2e82d825ae49743f5bd61aa288"
+        "1x": "4f47e21c56d279319e0948ea8251dc4ffecdb6b4de28542f3da3ae977aa51166",
+        "2x": "a7da1a7040b8cd46634f5f6458adc929ad6e9f8e2b196f0f4639198766d2f2c1",
+        "3x": "95a7bbfbe858f16e0b7edd09a9e7e1671f42d495adc3e9bf32352f0878882dd9"
       }
     },
     {
       "fid": "FID_レダ",
       "faceCode": "023",
-      "file": "assets/portraits/before-part3/list/leda.png",
+      "file": "assets/portraits/before-part3/list/leda.webp",
       "troopWindow": [
         0.03799998760223389,
         0.2460000067949295,
@@ -342,15 +342,15 @@
       ],
       "headMatch": 0.975,
       "sha256": {
-        "1x": "7bb3210222684ba5701b48cd2fdd5df95e850780b12007c411290afd341298e1",
-        "2x": "11b3fed3638cb87e0f28860ce6815ab9bf22a3c3ec18fd673ac9f704074676f8",
-        "3x": "bbd7c01d244e1b182a7bdd37e7c0723689dbd98ff07b303585a611baeb3b696a"
+        "1x": "091f661c79a40dbdb1521150fd8b7181d4c23d3026f90110043a151918089707",
+        "2x": "05eb06f46e016ba36db106ff7158ec8d284fc361b623f48d4f3cad8ddf13bf92",
+        "3x": "c48215b8920ea306019a22f17a19b63970d8118e01031dec85aef50e8846621b"
       }
     },
     {
       "fid": "FID_バッカニア",
       "faceCode": "046",
-      "file": "assets/portraits/before-part3/list/buccar.png",
+      "file": "assets/portraits/before-part3/list/buccar.webp",
       "troopWindow": [
         0.0169999897480011,
         0.24199999868869781,
@@ -363,15 +363,15 @@
       ],
       "headMatch": 0.975,
       "sha256": {
-        "1x": "5ae6a841015245f98a93673acc6e9a8cfa8f09499e328015edda191a8b684dc2",
-        "2x": "e01c08e64a5155f659360670b408594af57a8013a9ac715be056ae14470ed259",
-        "3x": "27e3fd3f084509674411bd7ce85d83f89181a7a0d2a59fdacf63c90a37664b2a"
+        "1x": "7487f2ce1bab16ff43d6d810d0a60ed20885733811a3785c9a7c8b279f889e1b",
+        "2x": "8bd16e61b07b0200b45d89f7c049536247d7e13c47394dda9170c79e4ae5aa8a",
+        "3x": "c9d0039aa4aaac76022812a06dc73d1c7535c7d9ec3d9f84f86a9867d3d35525"
       }
     },
     {
       "fid": "FID_シロッコ",
       "faceCode": "047",
-      "file": "assets/portraits/before-part3/list/sirocco.png",
+      "file": "assets/portraits/before-part3/list/sirocco.webp",
       "troopWindow": [
         0.030999988317489624,
         0.2239999920129776,
@@ -384,15 +384,15 @@
       ],
       "headMatch": 0.97,
       "sha256": {
-        "1x": "6d84d72842b5d0b17f369e3823192dad9a4a466bf7a03fa0628f3b6e47f62c44",
-        "2x": "9f15181e348b1491cf91aa22b5b5c0852ac807b4ef46aa0f2ceb6a16c4ad4003",
-        "3x": "ce1fbd0741409d200761840f71dd540984945212a05619431c2bc577893b5125"
+        "1x": "c1e692786262b7c9d246d0a5a104938f17fad59db6608586593f4e7845442620",
+        "2x": "982be923762545fffacda14e56a26d2b0252698dc9e231f1d39652506373045a",
+        "3x": "38c5567ae9e51d1299b5bb7ed6fe7b1f7b8d50de7deeb811f407e2dae754ead0"
       }
     },
     {
       "fid": "FID_ムウ",
       "faceCode": "048",
-      "file": "assets/portraits/before-part3/list/mu.png",
+      "file": "assets/portraits/before-part3/list/mu.webp",
       "troopWindow": [
         0.03999999165534973,
         0.2449999898672104,
@@ -405,15 +405,15 @@
       ],
       "headMatch": 0.979,
       "sha256": {
-        "1x": "0b4b07355a9501386a63dc7fa8491298db86edc5577c4038ae37c11384eddabf",
-        "2x": "e5e591974aeecdde7a31e9f62001c5b1a8e826d18f1b59c2dcd320fe53784bfa",
-        "3x": "cb973efba1f506c0967d0aa25ab857bc4dae7d18837de067eb7513089f34f5c8"
+        "1x": "b2cd291abf239c58fa8cc69537c21389513d4830d6a740ee6b778a87a3169307",
+        "2x": "c180c8a44e5e0ec3e271d4a80ce8ce113e71ab94a5f7cceba4fdb549d2e5f8e3",
+        "3x": "848228a0cd7591911d137b1d993734d5cc7147938be4866e0b3c1e483263c6d5"
       }
     },
     {
       "fid": "FID_オリンピア",
       "faceCode": "050",
-      "file": "assets/portraits/before-part3/list/olympia.png",
+      "file": "assets/portraits/before-part3/list/olympia.webp",
       "troopWindow": [
         0.08799999952316284,
         0.23999999463558197,
@@ -426,15 +426,15 @@
       ],
       "headMatch": 0.972,
       "sha256": {
-        "1x": "d5912049107d1e90674ee35f6478237ee580689287adaf731ac5e7cf92ef5bce",
-        "2x": "a99d18c7cb51f1669cdcb0c5cdfcce316bea3541406368cdc6334d5a13dc072b",
-        "3x": "6e55bc28198f6cb18bde00676b1f457836da4476c681c5e4d861918d196ab2ab"
+        "1x": "af3b5a16ad3722a1d1c39be83e6cfd54f354fcb97f4336bec4730e59c8713d37",
+        "2x": "d441ed850889b7d56966a23b18aad5ad76d2e8f059dddfbcb5a9a1721f204dc4",
+        "3x": "a05d045fac78ddc9d6e3dd2576160b2a27e1c2936cfe5968fbb029c198ea4956"
       }
     },
     {
       "fid": "FID_ベルトラン",
       "faceCode": "018_Normal",
-      "file": "assets/portraits/before-part3/list/bertrand.png",
+      "file": "assets/portraits/before-part3/list/bertrand.webp",
       "troopWindow": [
         0.021999984979629517,
         0.2110000103712082,
@@ -447,15 +447,15 @@
       ],
       "headMatch": 0.986,
       "sha256": {
-        "1x": "9ab1933fe3aa47ae549f44e81243ed045f82c9d681690e143349ceb083a31c01",
-        "2x": "7525b1a6e62058476a978007c3db70990bc2ff67f963ddf7e997bcb295dbb3b3",
-        "3x": "5277daab98ac0d8139fd5107706bef61196426fdce0fbd7bd0c01fe9f1275c2b"
+        "1x": "0097da390995117f447c4085f0a81833fdc24831e515ae27f71392f048da363a",
+        "2x": "e644beeb5514336d1b79eafc4015a2dc70ef83b762110b81a6fe386044c99842",
+        "3x": "7a8145ed87142852ba31acd43e9aef8462b822416670fd0022d29760ab89b74e"
       }
     },
     {
       "fid": "FID_ゲイツ",
       "faceCode": "030",
-      "file": "assets/portraits/before-part3/list/gaitz.png",
+      "file": "assets/portraits/before-part3/list/gaitz.webp",
       "troopWindow": [
         0.03700000047683716,
         0.22199998795986176,
@@ -468,15 +468,15 @@
       ],
       "headMatch": 0.979,
       "sha256": {
-        "1x": "fa8c5861a42010175541a4b17faaa18ef8a6324f26b0dcc90b5cf096cf6ad1dd",
-        "2x": "b13a252284452d011f5d5e286bbae578c6f56ddacd41f7e18c1116459c2eccc7",
-        "3x": "72903e2810bb4104f5402e90b5f0a0bd764255704de587d9308926e2cb1a2547"
+        "1x": "4faca3ffe129d0a545e4093bcf77ac55ff5e417dc757b57fc8eaaffcc399cc8e",
+        "2x": "48152a1e29323e93bd572dd148e6249a9ca4476d052badc52941307e9c5f5815",
+        "3x": "1039995f61d5fac1f19ed1803f5b2588cdbdf417bfce6b7297516e32b195c354"
       }
     },
     {
       "fid": "FID_ゴライアス",
       "faceCode": "029",
-      "file": "assets/portraits/before-part3/list/goliath.png",
+      "file": "assets/portraits/before-part3/list/goliath.webp",
       "troopWindow": [
         0.050999999046325684,
         0.20200000703334808,
@@ -489,15 +489,15 @@
       ],
       "headMatch": 0.973,
       "sha256": {
-        "1x": "0760d6b7e36490b8c73545fd697365cee714e6d4a4e04ecb0357491d154a13df",
-        "2x": "c3bb73541a6209b73297814a334075727acafafd6242ecadc8175df202dfc91c",
-        "3x": "d4c5066343ef7d5d8c05936e2cea541f4cc192be0ca1cfff1fce5a80160d0ece"
+        "1x": "de77d99e8fba1e0279b8ea932a7a621a9faa6d49fc7aa6e2b5be4606a4078ac1",
+        "2x": "0efc554c0dd936976b6e6f1faa5e778888886e7406c73b14249c8259ac65e74c",
+        "3x": "36c40e47ffcbc3536778179812ca4f6830fef253b26f0aeb3ee26061f1e115d0"
       }
     },
     {
       "fid": "FID_ジェスター",
       "faceCode": "055",
-      "file": "assets/portraits/before-part3/list/jester.png",
+      "file": "assets/portraits/before-part3/list/jester.webp",
       "troopWindow": [
         0.057999998331069946,
         0.22700001299381256,
@@ -510,15 +510,15 @@
       ],
       "headMatch": 0.983,
       "sha256": {
-        "1x": "5a7910e77d64f02481bc07e2362da33489fdf6c6707f0e3e684815b56f5f5983",
-        "2x": "1a8f820f40a4c565be182ffc8090ba6e73cc3b302713d140158b4c346cde7188",
-        "3x": "0167c52e4ed18b3c60159dc2849c9226d7eb4198c0acbf3796eccbaca6ab18b3"
+        "1x": "3314a4bc9c8c78fcb03c5b0fe651d6b1a3b779a815e4dbf2978c4444e8174fe1",
+        "2x": "a4a5430ab541ef02c2e47de81bca40d38a20b951873eb3a892a8c473445754fe",
+        "3x": "f63e3c3391bc496b65951b21fb5bcd22c51b900e5443bf581a822de67cc07cc8"
       }
     },
     {
       "fid": "FID_ダンテ",
       "faceCode": "031",
-      "file": "assets/portraits/before-part3/list/dante.png",
+      "file": "assets/portraits/before-part3/list/dante.webp",
       "troopWindow": [
         0.085999995470047,
         0.2280000001192093,
@@ -531,15 +531,15 @@
       ],
       "headMatch": 0.977,
       "sha256": {
-        "1x": "abab68076f44b9b8bfbf8d2cefdefd9fb49a0b7642eb43517c3f04147fc6afcf",
-        "2x": "ab251f5cb85a6fb24662c0e1f57d0f8886bf392022170d4818088d2ee4958b83",
-        "3x": "d3910b545a89c53682176d193a5f2f89baa77d2e98616755de586f538edbd294"
+        "1x": "a3b12d4abca695c1c2948aaa391d830c36181abfe5bc95fa35338a7448834345",
+        "2x": "50c66e3a888827676905cff646e6fdf1d1141edc7036c3f4f2e737d4e2d4a6a2",
+        "3x": "ddd0e2251ffa89e01dc532bd4b26c36c08415a9824d2f7ac264637b15348705b"
       }
     },
     {
       "fid": "FID_オルヘル",
       "faceCode": "021",
-      "file": "assets/portraits/before-part3/list/orchel.png",
+      "file": "assets/portraits/before-part3/list/orchel.webp",
       "troopWindow": [
         0.07400000095367432,
         0.23200000822544098,
@@ -552,15 +552,15 @@
       ],
       "headMatch": 0.978,
       "sha256": {
-        "1x": "b597261a4aa2d8dfb6f07a54dfaaae276e76ab97036b2d1d9ac9408b9f3b2838",
-        "2x": "bcd52bd1dfb22333145271088c9f32367d5a27ec0d01cc184a4cde8e249917ed",
-        "3x": "8b301c3012dc4d4e441f37efaa2829a2fa9164ecc81027202a8a7bb729660031"
+        "1x": "1ecd6978836bb86e215e1cc35c15d88649e5abb03473bf2bbcd9e7d0d0e45c08",
+        "2x": "b29cf80cc4bafddca909f3f3c90fd8737fd584c3ce627b640c0c84fec6ef2a08",
+        "3x": "c3ea15177e26987b749aaa326d29047913d74956e983ec9aeba2c812a25d020b"
       }
     },
     {
       "fid": "FID_ディエゴ",
       "faceCode": "038",
-      "file": "assets/portraits/before-part3/list/diego.png",
+      "file": "assets/portraits/before-part3/list/diego.webp",
       "troopWindow": [
         0.08199998736381531,
         0.23799999058246613,
@@ -573,15 +573,15 @@
       ],
       "headMatch": 0.964,
       "sha256": {
-        "1x": "fd726f687e5d5260cd24e0136e1661b0de62bfba46288925439ecfca01ae837e",
-        "2x": "510169ea17fec68e62378be642c1f965a6047968f364cc88d09bf068c443a91e",
-        "3x": "3d659f12ff61f2a8870c73cc40cf2d94c875c7d5254636298fe4ed3cdcf7fd14"
+        "1x": "94416c785ecf94414c0cf990f34818790e21cdf2491a65c77ff88015b4c81d8a",
+        "2x": "c500daabcca44b7f7ac18c17d2837d102c59b6c61487b71a7dabc0ee152d352e",
+        "3x": "15a92940a528561ba543385b6cd8cba5e1606c94e568f44f22f1804ca599c7a7"
       }
     },
     {
       "fid": "FID_ロレッタ",
       "faceCode": "039",
-      "file": "assets/portraits/before-part3/list/loretta.png",
+      "file": "assets/portraits/before-part3/list/loretta.webp",
       "troopWindow": [
         0.04999998211860657,
         0.2580000162124634,
@@ -594,15 +594,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "2b4e0b1091ace5b90e65f7d0fda5dea0068f858e202b3fbe4818fb8af63b327f",
-        "2x": "af016dcb658f811afc744304837a8bdb5f5e7e0033b6c9c958a6ad108c88adfd",
-        "3x": "166577e4ea676320c8e8a6fcf1ffbcec4d7767cf5e29925b8899a2938f404015"
+        "1x": "6ea76e29edc1c54d26881b3851e31850ef334522d00c134b82b8b10197c394df",
+        "2x": "9dd372d5ef973d9ab3753f33b97a1be6d23240e22a19941ae8be4878640a6779",
+        "3x": "390cbfe4b02989485ab5568602dd52e1ff32618347867c5737b0ad25c5640781"
       }
     },
     {
       "fid": "FID_セテス",
       "faceCode": "040_TarbanOn",
-      "file": "assets/portraits/before-part3/list/seteth.png",
+      "file": "assets/portraits/before-part3/list/seteth.webp",
       "troopWindow": [
         0.026999980211257935,
         0.21699999272823334,
@@ -615,15 +615,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "5a394e13b0d8fbadb98f67f214fefba1c326ab58415ebbc33632de9c7c7e9e26",
-        "2x": "c4f2d31edb8c5a901b2f77c938f1d3cd8f466b8b06566d1616b361ac4ecb1719",
-        "3x": "c6fa89426e85140c47d12dca7ee9100388a8db5ede16ed8f21731c974945b903"
+        "1x": "3087ff033986bea8b235575d17396cd96f07efc3463592c4e148e2ba009a93cc",
+        "2x": "7c7b76928182b03e4b28e9037516605f004d20cd38ffc8f9092540d2cba7829d",
+        "3x": "ecf2717efb3abfaa2d4daa79fc078fafa264383e4341b4abde17e1efcf8543f3"
       }
     },
     {
       "fid": "FID_ニネ",
       "faceCode": "041",
-      "file": "assets/portraits/before-part3/list/ninae.png",
+      "file": "assets/portraits/before-part3/list/ninae.webp",
       "troopWindow": [
         0.018999993801116943,
         0.25999999046325684,
@@ -636,15 +636,15 @@
       ],
       "headMatch": 0.975,
       "sha256": {
-        "1x": "4579cc033dae848356496d050d40ae19216ac0d3ffa8075657572e296a6b89ff",
-        "2x": "aed6879d0c6c84f054c00f392c7389d514a6d1fdd76b0183d5b5a111cb01f917",
-        "3x": "fa95accdc6d37bb8052dd5a0c75fa7ae739d4353ed46082494f5b1bfee6afc44"
+        "1x": "876e04d455b261f042b3608ba33317276a57ad0ad0cb1d13a002264aec056b41",
+        "2x": "e4183818a8d534c7861f402c0bd85f06d9c3a82b9eea44557138c09ec4cbc742",
+        "3x": "0af7be3be13f4c13e32224e1412387548969a2c4d679cd19adfdeaa7809b99da"
       }
     },
     {
       "fid": "FID_タリムーン",
       "faceCode": "020_CinnamonOn",
-      "file": "assets/portraits/before-part3/list/talimun.png",
+      "file": "assets/portraits/before-part3/list/talimun.webp",
       "troopWindow": [
         0.03799998760223389,
         0.18199999630451202,
@@ -657,15 +657,15 @@
       ],
       "headMatch": 0.972,
       "sha256": {
-        "1x": "17e9a2e6c1cce83510537715d4d4c6936b70cf962f366421c81b2f8f91460925",
-        "2x": "06251f72407e55bf8fcf04cd7f7d2f46324675620114282649b30420e7ad1a72",
-        "3x": "1203f85da02f4b8cd7278cebbf0f895e4c8237ec22b04a4a9be50404a0572925"
+        "1x": "f3da68bacd007a00ac587b334a071e7dc453b8b8979f032a156efceb0d2577dd",
+        "2x": "b4998b7387593f0eb6ad6430f2742b63785586e110550309d01a3c30e0ae293c",
+        "3x": "7815ad8c56c5c0f478cd9b1afa32eb9700e0544a015d15370d8341daf5209d5f"
       }
     },
     {
       "fid": "FID_ウーシュラ",
       "faceCode": "034",
-      "file": "assets/portraits/before-part3/list/ursula.png",
+      "file": "assets/portraits/before-part3/list/ursula.webp",
       "troopWindow": [
         0.05199998617172241,
         0.23600001633167267,
@@ -678,15 +678,15 @@
       ],
       "headMatch": 0.973,
       "sha256": {
-        "1x": "157f19143efe4a4e4e441c637afb7625cbc3b5bd1a9f4bf145ab4eed81c742dd",
-        "2x": "8b41e2092f8fc76e5176373ee3ae502ac1607116088312c8f1f8f3ab8c48f113",
-        "3x": "9ebd35acaf8002bb36403cb227a100bb84ff6283d9e4104cce19b1f5d6a7ce0c"
+        "1x": "33a5225a9169fa4232cc3066a7b5e86d80e4d8b6031c7033bfd916a995caead4",
+        "2x": "9fbc5233b4b1f10fef7ced151c5b0926f6e4ad78dd03305ffa60acb4e2881296",
+        "3x": "3c29bf884d6bcc905b211c7c14d0ef1b3a226c23eb04da5f6b4ed7ab210d1116"
       }
     },
     {
       "fid": "FID_シモン",
       "faceCode": "035",
-      "file": "assets/portraits/before-part3/list/simon.png",
+      "file": "assets/portraits/before-part3/list/simon.webp",
       "troopWindow": [
         0.0,
         0.20999999344348907,
@@ -699,15 +699,15 @@
       ],
       "headMatch": 0.967,
       "sha256": {
-        "1x": "d5ac71afddd69ef146bb42d0160d06ed428b916d08a7657e8b3fd9224c918ef3",
-        "2x": "1bcdca30ae11479e2eb0566ce5fe316ee77b8195a71be02ae741a13cd217e587",
-        "3x": "b775ab6d3cf3080f4828d93c75beba02a6420cf886c97f7d87b7380bc8fcb6bd"
+        "1x": "9a35f78cce5a36a0d9ec68d014954919062841f4964fd09a96ad66e3a72f79e1",
+        "2x": "4ed3be3f912c7833aa93d624dfe50d99c061b133c9f1fd19cebc8a2ba821b88c",
+        "3x": "002e5e72c15f6869541fdf962df0233f03d43b3466c9cc94aa349be4b09fa6ca"
       }
     },
     {
       "fid": "FID_ルルディヤー",
       "faceCode": "036",
-      "file": "assets/portraits/before-part3/list/ludia.png",
+      "file": "assets/portraits/before-part3/list/ludia.webp",
       "troopWindow": [
         0.03200000524520874,
         0.23600001633167267,
@@ -720,15 +720,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "375776d60a946703f18ef9cfbb8a0795c1739f51ccebd04f0305c18e4fa057c2",
-        "2x": "1533b028c3be782abe809223fb328720f1fce97856315dfb5b017817bf186cdb",
-        "3x": "529aa65bce07ca459289db2026193b159ce6aa7da6130f6dfac9e1da9672caed"
+        "1x": "8b1a9cce5c713ab435693fcde1cb172047ac862656d14ea08b5ddfeb70caac56",
+        "2x": "35bff71e6d357c8fcf96e860c39ff466e6f36c1e5149ff5a893fb1c349dae06b",
+        "3x": "0ca855f1c05f64b5eeb9a08ff8db191c7de71d5b9c6784e9178806014519f83b"
       }
     },
     {
       "fid": "FID_フィアナ",
       "faceCode": "037_Fianna",
-      "file": "assets/portraits/before-part3/list/fianna.png",
+      "file": "assets/portraits/before-part3/list/fianna.webp",
       "troopWindow": [
         0.06000000238418579,
         0.24199999868869781,
@@ -741,15 +741,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "6e92dad79f11fd5336107eacd92ec4d10a16ba80c2fd8fdf14c388fc97f6ad44",
-        "2x": "48826e8e04cd943e6c6b0ddba339395ae7c0b35cff70abdd6ec53a66bde05b00",
-        "3x": "38efe517226e5537e6c1a234dcbf9ee549afdca8911dd6c109783995b69e3677"
+        "1x": "174a230ba133b64ee17c5107d1464e2fcd49c0d846b2a9e01975b44c3477a277",
+        "2x": "d695ebcf510299b627ef38363e47b0e394ffc16bdb832a1fcc7abd38ee7f39d9",
+        "3x": "e783bcdc7a9a79c3ca32dfd660f12f741e92c0ceab15c4f1699cac3aecb7a3be"
       }
     },
     {
       "fid": "FID_アナトリア",
       "faceCode": "024_VeilOn",
-      "file": "assets/portraits/before-part3/list/anatolia.png",
+      "file": "assets/portraits/before-part3/list/anatolia.webp",
       "troopWindow": [
         0.06399998068809509,
         0.23499999940395355,
@@ -762,15 +762,15 @@
       ],
       "headMatch": 0.974,
       "sha256": {
-        "1x": "b225dd439a600fb9038ebe0a43c1d4ab96ec2850fba053d778219db22cb4f431",
-        "2x": "d648eba5e14af0e09b9f24510ca6bf0568ec280556348f5fe47ad39f87d27dc9",
-        "3x": "6ee56dff139f11a1568cf2e99503a69b60eabe8990fed6d162b34fdab96558be"
+        "1x": "90bc2b329f63599262df18326048bcbc78e9a147de8ce70e8135e5187d7f605d",
+        "2x": "faffbf57fb50222904451390fcad7ed3e559299bf5ec3282c702a254b20aef84",
+        "3x": "9db1d23057321dd94070bcea126773e160604c804fb28a638970dc51f52f6d13"
       }
     },
     {
       "fid": "FID_サラン",
       "faceCode": "052",
-      "file": "assets/portraits/before-part3/list/sha-lan.png",
+      "file": "assets/portraits/before-part3/list/sha-lan.webp",
       "troopWindow": [
         0.050999999046325684,
         0.23499999940395355,
@@ -783,15 +783,15 @@
       ],
       "headMatch": 0.974,
       "sha256": {
-        "1x": "318d6b23638b59b8cf7d8ea9fbafd7198c4491fc5004f867577253eb0028b261",
-        "2x": "4fc9c86ec9893c02dcc3651fed55056526f77c1ccb29e3b9112e9cdc464f7aa9",
-        "3x": "c1bb50421480dd350af7a8ba4325003e74f34218c4155a0a2e59e469a639974f"
+        "1x": "e34c561fed30646a4cb5f6180bf113af4affe3df1453fda28d09b120e141a6ae",
+        "2x": "0b0586bf2d5fcaac336f82dfa32494e5928ff56650f23898ad154a31bbea1d60",
+        "3x": "98d822795d80900124c5efbc1d8f9dabfbae38ab70596b6d07114ecae9c799be"
       }
     },
     {
       "fid": "FID_ナジャ",
       "faceCode": "051",
-      "file": "assets/portraits/before-part3/list/nezha.png",
+      "file": "assets/portraits/before-part3/list/nezha.webp",
       "troopWindow": [
         0.04399999976158142,
         0.2329999953508377,
@@ -804,15 +804,15 @@
       ],
       "headMatch": 0.972,
       "sha256": {
-        "1x": "066add31b8668561666a7664c43cf588091313d97ddc9115cd61961380b6f4d3",
-        "2x": "90fef6028aa3e909d79ee43c2f47ca7fd9f41006fb7278fbd700ac818c6f3624",
-        "3x": "d94efd3c872a6b36326ed33d53f693bd15fcad04365ff6478bbfe1659f74887e"
+        "1x": "24c359e710e0695d76c5b24f3dafb2e765ab8eb1b1ffac94dd222b13f701b299",
+        "2x": "dcf29740bef27b52f09ab1766b660dc05d55118abeaa87afba33c89b2b2bd41e",
+        "3x": "7be7cb45126cb86300235977f89c76ea7037d2f89bdc6e6a5eb1a7447534d6a0"
       }
     },
     {
       "fid": "FID_ダイトウ",
       "faceCode": "053",
-      "file": "assets/portraits/before-part3/list/dadao.png",
+      "file": "assets/portraits/before-part3/list/dadao.webp",
       "troopWindow": [
         0.034999996423721313,
         0.1889999955892563,
@@ -825,15 +825,15 @@
       ],
       "headMatch": 0.972,
       "sha256": {
-        "1x": "c44369b8571b99baafbcf65ae7dfd0cea06d2a23486ec7bc1e523da7c5ab8fc4",
-        "2x": "b96d25c858a419ece7f69e83e6b3fd73a305d902498396c1eba6bf11723c23e3",
-        "3x": "fbb91b8c4e25381b3b3836e3435cb145665ba5eae2a6587b686c1617b0cf223e"
+        "1x": "c582b276a3ee48d38b49f3203bf0851bde75000a4c0a31f716cc6a30ffdb0e8e",
+        "2x": "fbc53bbafff6413bbdd3eaa10b6198c22be21539d2c9ca324274a9a73eb60e20",
+        "3x": "3f7d2bc3913038b573ef78fd9982fc3c5182b18c31d2e25f55208851d65b940d"
       }
     },
     {
       "fid": "FID_ハルヴィン",
       "faceCode": "054",
-      "file": "assets/portraits/before-part3/list/halvin.png",
+      "file": "assets/portraits/before-part3/list/halvin.webp",
       "troopWindow": [
         0.03799998760223389,
         0.23600001633167267,
@@ -846,15 +846,15 @@
       ],
       "headMatch": 0.969,
       "sha256": {
-        "1x": "ecaadbbef45046c0a556285c2d7bbb61cda3be785e95ddbeebe094d5e749fe79",
-        "2x": "640b96f942439ddaff3ebaea0cd74ffb97e4904ac94df8a117a739d1fb0214a0",
-        "3x": "61e21b447fcb9bbd3036ca80c6eb3613669906cfe514230af37ae8152ae5abdc"
+        "1x": "8699bf0eefac584bf22c06d1de714ac5f7ab3c2eefca1e8c62ccc103e989a53f",
+        "2x": "250597b639df4da30fadb2fa03d985bbd01b28915a0ea2a552f4aaae841360bc",
+        "3x": "7176af923c18452ebc7a391323bdfbb84cd18daf16951f1f27ce9745207b5dc2"
       }
     },
     {
       "fid": "FID_カターニャ",
       "faceCode": "092",
-      "file": "assets/portraits/before-part3/list/catania.png",
+      "file": "assets/portraits/before-part3/list/catania.webp",
       "troopWindow": [
         0.0,
         0.23200000822544098,
@@ -867,15 +867,15 @@
       ],
       "headMatch": 0.969,
       "sha256": {
-        "1x": "612bee9ef373106eea4f473eb88b8d8a784262af369cfbda82838fb1e60fe154",
-        "2x": "3d202a3bbff0b71f2133ee3ef1bf6dda4c388b89d5ae7ecaa1e0a1a58aaf6086",
-        "3x": "477493c58f2480c3e7d419a6efac7bbbd10833a00e0c8890f8410a7b4aa02584"
+        "1x": "ffe9cbcfeddc84ef972b63a58f361b2fdbf49b052200ba287014936c0cfc00ca",
+        "2x": "1afe689c9c9b5facec106e4e57b0ec7a802f3ab0f0891928e2d33232a7e0d74a",
+        "3x": "6551d81c9442b2c7f659a74643312f38671d2e4d091cc2b19f01685c2515766c"
       }
     },
     {
       "fid": "FID_ヌディーヌ",
       "faceCode": "093",
-      "file": "assets/portraits/before-part3/list/nydine.png",
+      "file": "assets/portraits/before-part3/list/nydine.webp",
       "troopWindow": [
         0.046000003814697266,
         0.21899999678134918,
@@ -888,15 +888,15 @@
       ],
       "headMatch": 0.974,
       "sha256": {
-        "1x": "471a338e4888ecaaf56d7ddf4a45d0e12a4c1b67830c36376469949d0e67f1fc",
-        "2x": "f6ad4948cdf992a37f07fc5837b06d2b4ee53dcbfe8c045c827d6db9b2e0232d",
-        "3x": "387d06edd2223e2f0f16de9b0af561275ad09c9f4d552e13b9060c8d0df53b1a"
+        "1x": "c566108e2ca6538262fc45d05d2d6009a724454aac315a282a9ca435243f19a5",
+        "2x": "ed66230ced0fb3fc1cc6df4a2ad30980de2505e6ed947b8f9d1618d3834d74fb",
+        "3x": "123be68b96c004e595110128d1bf55ccf794b8415acffe0102af56a0713aba67"
       }
     },
     {
       "fid": "FID_イオ",
       "faceCode": "088",
-      "file": "assets/portraits/before-part3/list/io.png",
+      "file": "assets/portraits/before-part3/list/io.webp",
       "troopWindow": [
         0.03200000524520874,
         0.19700001180171967,
@@ -909,15 +909,15 @@
       ],
       "headMatch": 0.977,
       "sha256": {
-        "1x": "24a4b8fd615912b37333c2b0844e907abc03f04c077b58b29e4795c5e5bdb86c",
-        "2x": "105baf11e616496cbd2a3e785bd00bfb4965114825fbf970a09aae4297231bbf",
-        "3x": "385d842a389a6a4e01cf409b3be92e1f9701973b68ef23dc29b22708aef05724"
+        "1x": "69a679a556ceb2351fdb418833c7d57597a6ba3907cb02a6c0d9701ec4bf617a",
+        "2x": "a93dcc68b565fdcf3ee3f765499e0c0164072a94b545d883f7d82f0851756fc1",
+        "3x": "556fceefb89fc72d80b2ec8895ff3de216589a85a824af2060da83583d120e44"
       }
     },
     {
       "fid": "FID_グザラン",
       "faceCode": "086",
-      "file": "assets/portraits/before-part3/list/guzran.png",
+      "file": "assets/portraits/before-part3/list/guzran.webp",
       "troopWindow": [
         0.03200000524520874,
         0.15699999034404755,
@@ -930,15 +930,15 @@
       ],
       "headMatch": 0.966,
       "sha256": {
-        "1x": "f955c6b1f0cebd36cca46544aac09e66c5c5f9ab6fe74269097a382515a04825",
-        "2x": "8f9685bb7e39e810ce4efe475b326d4429279b3659a37657ebb28df4cc69e3a6",
-        "3x": "2a917fca9414702c5a7b3db3c23d1b086fdb99db2cd1a2ec8b8f1f3e8144a7e9"
+        "1x": "39735582552e7a177cf088f42b3fc13cee3fcc6062f43ea4c36ad1963152fb85",
+        "2x": "ad5277939052b059165ea166e5bb11855875054bdd5752b69046f3f971cd57a2",
+        "3x": "df67521d9d7e419130955c1e43309e50af56403b13acd2e6c6be6e2026a55d92"
       }
     },
     {
       "fid": "FID_ヨーカイ",
       "faceCode": "087",
-      "file": "assets/portraits/before-part3/list/yang-jie.png",
+      "file": "assets/portraits/before-part3/list/yang-jie.webp",
       "troopWindow": [
         0.03299999237060547,
         0.1589999943971634,
@@ -951,15 +951,15 @@
       ],
       "headMatch": 0.97,
       "sha256": {
-        "1x": "c3e491a276f8acb6a83a94174adb48d2053acd0c558b9fa3d71229ad8a407413",
-        "2x": "689f3c88f319f7ece25d36e0515cbbf5178d3f138ad92a0172acfa0c4bc08c4f",
-        "3x": "9499ed223f39598b5b562fa7ccc96467d0f416cb33a8649a6adeb2b641d80a7d"
+        "1x": "84bd5f4d1c1b9450e2795b27781570585683c9bcce5f6e64b83a590a61b1a8eb",
+        "2x": "cc1f7e44d575e94f9e0b4697948e4fff9bc4ae5cf0c3b7f455783bf9e216c573",
+        "3x": "e03a825881ae84aa858f5e896ef03163dae6f3dffa647e7fff538783b27b43c6"
       }
     },
     {
       "fid": "FID_マジーデ",
       "faceCode": "095",
-      "file": "assets/portraits/before-part3/list/majide.png",
+      "file": "assets/portraits/before-part3/list/majide.webp",
       "troopWindow": [
         0.046999990940093994,
         0.17600001394748688,
@@ -972,15 +972,15 @@
       ],
       "headMatch": 0.968,
       "sha256": {
-        "1x": "44eee6f26088e1663a41b75443e858cf696cfdc8cff4a75383b3ee0ca73c25dc",
-        "2x": "72e600535f4b843efcf8924f378c54e37c978450ee205c237e289fdba1633a45",
-        "3x": "07fa1a8bce37987c2d1cc4825bc1d56abf9ce9cae2ec1d8263c7ab4bc7b34461"
+        "1x": "e26f5cfef495563ff7fe6da80c59acc60dc06a753a77b9ffdde875f87316b148",
+        "2x": "5809bd9b377cbe7b86a6fd4d4e7dde1132a16649b5c6ccfdf781d9dbacf6ba80",
+        "3x": "0a040c4b40a37e1ee8c819bd07174116aed79a967fc68ed7bc9a8f2e8e66c142"
       }
     },
     {
       "fid": "FID_ノクチュラ",
       "faceCode": "090",
-      "file": "assets/portraits/before-part3/list/noctula.png",
+      "file": "assets/portraits/before-part3/list/noctula.webp",
       "troopWindow": [
         0.06399998068809509,
         0.23000000417232513,
@@ -993,15 +993,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "b2237e0b15e9bdf8341723b1e03568091d9a87378cf893612c235cc2ece6fdd6",
-        "2x": "617d287972e3588d7f91f0503615bbccc503c0ed5bfaadc792e962c83c975188",
-        "3x": "32740960a054ddde2b8a4643e79e63a12c398d5ee8750d9658a988982a1a6112"
+        "1x": "fcb1dca1bb9f5e6f11bd4d08d1c6604633046a815486bbb3dcea63e36164498c",
+        "2x": "b9d9e5d78e1a13e5b6042f8e1b5f24dc01de990ae695a4826d9ec4a896d23d6c",
+        "3x": "d8f589a7eff64ff8d8049f1e6f4628fef4f51b6a6cdbff047cf17c629f360c45"
       }
     },
     {
       "fid": "FID_ヌッツォ",
       "faceCode": "136",
-      "file": "assets/portraits/before-part3/list/nuzzuo.png",
+      "file": "assets/portraits/before-part3/list/nuzzuo.webp",
       "troopWindow": [
         0.042999982833862305,
         0.21199999749660492,
@@ -1014,15 +1014,15 @@
       ],
       "headMatch": 0.982,
       "sha256": {
-        "1x": "f1cd76a392989e03eb8baf243c6f69977657f791f44680c84f827404472f62a8",
-        "2x": "1ad84e926511ce10f5b3052c06d29a07b4e5e96f03d1f6d88ed8947546bf4579",
-        "3x": "fde5bc2e30b8ed8fc03531ee839d41276af46bbfe4c474744c72fd9090a4bf61"
+        "1x": "b77b50875904a2ac7d610720d7dbd36e7e4b3720b02a60b46e4f3ce3a71197a8",
+        "2x": "68b31fe2fd30f8c386f34e2c997eafd2f250f6f053e1eea2431b9c6cad56cee5",
+        "3x": "656ec31afb7fe405fb8f3dd05c3d9fb4269d5f2dbe991c654950ba666edfcca8"
       }
     },
     {
       "fid": "FID_ソフィア",
       "faceCode": "091",
-      "file": "assets/portraits/before-part3/list/sofia.png",
+      "file": "assets/portraits/before-part3/list/sofia.webp",
       "troopWindow": [
         0.03700000047683716,
         0.23600001633167267,
@@ -1035,15 +1035,15 @@
       ],
       "headMatch": 0.981,
       "sha256": {
-        "1x": "745b50f9161321d021f072d932e8470946c2b35af4a98f20e1975caf2eb5d508",
-        "2x": "0c4f2c5a0e8b4336792148445a09374663100cc08ba2802c851a4c99057b4c45",
-        "3x": "3ed1cf641bc0e3e160279b9221ee2c622871c98952d31e12e730d1ade89ddb33"
+        "1x": "590f6b4f2d576df11bad6259042406b101658e27cee4dd3e2de21750bbeb4a47",
+        "2x": "9ea4a7881e06770f50338d63578291f904b7b0fb15b13eb3ecbb1c5767b80df1",
+        "3x": "aac6411addcf18b175d1bc0a5d3c8cbeb733ae346383f02291528effa983f108"
       }
     },
     {
       "fid": "FID_ペペ",
       "faceCode": "089",
-      "file": "assets/portraits/before-part3/list/peppe.png",
+      "file": "assets/portraits/before-part3/list/peppe.webp",
       "troopWindow": [
         0.03599998354911804,
         0.22700001299381256,
@@ -1056,15 +1056,15 @@
       ],
       "headMatch": 0.977,
       "sha256": {
-        "1x": "c342d21e242064b0eac9d495ce001bdb4def7bc51eef34f5ebcad0807ffb043a",
-        "2x": "fe0e81175f24b5e7629b0f0968c1bd6a5b2fad5e8cbe0803b40e9f6959b1f354",
-        "3x": "5cf81b95a7c2895863efc8abc0b2d81094dc5f1919a275a2fc98765b1b7f2a99"
+        "1x": "7068d99f421250b7eacda372e5b6e7692bbbbe149a73dfbf88755d3d46a0e61f",
+        "2x": "f8871314f6daf125cfd1e6d5838c14808cd4e5156a1c47f231469f63cf206832",
+        "3x": "4c216d091a24d2d44a2c353d96d462a499e25added1c5e8f3198dde8698bafdd"
       }
     },
     {
       "fid": "FID_ザーコネ",
       "faceCode": "094",
-      "file": "assets/portraits/before-part3/list/zarcone.png",
+      "file": "assets/portraits/before-part3/list/zarcone.webp",
       "troopWindow": [
         0.018000006675720215,
         0.2149999886751175,
@@ -1077,15 +1077,15 @@
       ],
       "headMatch": 0.969,
       "sha256": {
-        "1x": "3bf07a3934f40059fa4fa4f894d523cb9f1c5f041fbe37246f9d1f8607504615",
-        "2x": "d10e809023496a9d48d83f3895bce770a51d87b9c61a3ccc871aa2a24ba2ba66",
-        "3x": "182fecccf8fe195e6d9dbd7da6723ad2220a7c60fcb8cc4b7fa108434e6746c0"
+        "1x": "9bdab05e12ba49728b71b356cd464f33ea2440902bde36f58450cf6bc5c230ea",
+        "2x": "46013a1f3326cd906c3bab23d3b5af78a8418c1fba002da33476c2902acf65a3",
+        "3x": "17396fed24b6e191362a346ed35ea37652527e650f8c8015cb91c57541de3d85"
       }
     },
     {
       "fid": "FID_ベンディッツ",
       "faceCode": "096",
-      "file": "assets/portraits/before-part3/list/benditz.png",
+      "file": "assets/portraits/before-part3/list/benditz.webp",
       "troopWindow": [
         0.030000001192092896,
         0.14799998700618744,
@@ -1098,15 +1098,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "392ddfdd31f030593a6330a09392d97baa64c645390cbfb734a7c889a53a90d2",
-        "2x": "240adc65cbc3ee810a6f5a44fa20553b882ec3d35d3eb871663f093dffa2eb94",
-        "3x": "6f9671eec858d953f13937c791c7fc807937bddcb839e543e7723c73c7379c45"
+        "1x": "2ec6983cefe6b0d2e28b73ad19ed410e5adcf564461459655a490766216a7238",
+        "2x": "25d75b29081f8ec467c69f178a650ce3b88da56743d0f59845b1c1038f23fdd0",
+        "3x": "54225dfa0babd341b3d64e39786b111f31bfcf733dd924f991b98f86af10b368"
       }
     },
     {
       "fid": "FID_アレキサンドラ",
       "faceCode": "099",
-      "file": "assets/portraits/before-part3/list/alexandra.png",
+      "file": "assets/portraits/before-part3/list/alexandra.webp",
       "troopWindow": [
         0.04499998688697815,
         0.22599999606609344,
@@ -1119,15 +1119,15 @@
       ],
       "headMatch": 0.98,
       "sha256": {
-        "1x": "f236ceb2c3e21ad1fe5771f64b52abc0eb89143b53d7ec97687584b04b0d3a03",
-        "2x": "6d56945d28d38a4dfa463b38c47909c7dcf9a464ec4104fe69238ee58fa638a3",
-        "3x": "dedcd0cdde85a0428f83fddd5df8e5df03da3aa50d001ede8d5fcd90b9e5f736"
+        "1x": "1c4f9bae0780b01be689000196ac4144d1281e7ab5607dfe711051760ef28e8b",
+        "2x": "c919ddab989d12e293855c9009fa3a99a7587e5e22640b5eb86c15731140b866",
+        "3x": "ca34cddd38c66cfc4c1ff076351022914b2935ffadad45a597d963cb9f08015d"
       }
     },
     {
       "fid": "FID_キロイカ",
       "faceCode": "120",
-      "file": "assets/portraits/before-part3/list/kiroc.png",
+      "file": "assets/portraits/before-part3/list/kiroc.webp",
       "troopWindow": [
         0.009000003337860107,
         0.1860000044107437,
@@ -1140,15 +1140,15 @@
       ],
       "headMatch": 0.963,
       "sha256": {
-        "1x": "47561adae26b44bf401de45edbea65c860867042b8b4bbed91409b6d24b10ee2",
-        "2x": "26a6235f3425ad8f9e16a7797414c66a61eb679636422bd04c1e8169f1ca6b18",
-        "3x": "87f11426323ecb921f3deaf2ca810837be5367d47593cccdb79553fca48f5999"
+        "1x": "9482a77df3a4ef83eb63bdca002a88f1365d92a55239bfcfc72482638787b396",
+        "2x": "58a4f27bd01b259e13679631f26ee9262f8b19658591f7b6121672b733682781",
+        "3x": "eaf3c3329a82e8b21d4c982a2976a4c4ec3e84ab8a04e4b9bc0d82fe854e7678"
       }
     },
     {
       "fid": "FID_ジャスミン",
       "faceCode": "098",
-      "file": "assets/portraits/before-part3/list/jasmine.png",
+      "file": "assets/portraits/before-part3/list/jasmine.webp",
       "troopWindow": [
         0.025999993085861206,
         0.20400001108646393,
@@ -1161,15 +1161,15 @@
       ],
       "headMatch": 0.97,
       "sha256": {
-        "1x": "97f0cdd16d4e16cf817a116130e4a4f940cf238b3bd4132882fdb086090e9d0c",
-        "2x": "4e6622456ce39e1f73a94397d46c65fad46de653ab512e823ec6809bf8cef32a",
-        "3x": "d274696fcec636de01fab5c90b2c8ed7d41687ce87aae03112af571499c5ab1b"
+        "1x": "c5b5c4611b354e8a9988033df82a10163199270ae78bd39da215f3c354e64ada",
+        "2x": "be4072bc00a31dabebf41ccbc35e821feb4bb7eb773817d1a28dc22e5000bf4e",
+        "3x": "d692370194dd5b337b3446b5ebd0654068e114a9f5a8fdb639d25b8f113eaf92"
       }
     },
     {
       "fid": "FID_イニオニ",
       "faceCode": "097",
-      "file": "assets/portraits/before-part3/list/inyoni.png",
+      "file": "assets/portraits/before-part3/list/inyoni.webp",
       "troopWindow": [
         0.0339999794960022,
         0.21899999678134918,
@@ -1182,15 +1182,15 @@
       ],
       "headMatch": 0.978,
       "sha256": {
-        "1x": "c17a311ec13da6762aec9dc45fd21fd15d35dd14e7c1b6da87800282c53522a2",
-        "2x": "cbc0461444a5f9fbbcc9b57f0f65b453eb582ba6f82cabcaeae200417a49cdde",
-        "3x": "a0d652e64c6ddf411965dc019e8f71fa5c83d8121b88be172bbe401bec7b371c"
+        "1x": "7e19d8cdce9e832df67fcae5ce4be76448d42584d35461efa1fa50b523949d66",
+        "2x": "3d0562de39d0a3a7c8c2143b3db55890362f52f6868c0492000ce5d373e1cd7d",
+        "3x": "087564557cdae92e101c1367a773996d81f6d53b8bfcd3bd4735847b2758ec69"
       }
     },
     {
       "fid": "FID_キリーク",
       "faceCode": "118",
-      "file": "assets/portraits/before-part3/list/creek.png",
+      "file": "assets/portraits/before-part3/list/creek.webp",
       "troopWindow": [
         0.018999993801116943,
         0.18800000846385956,
@@ -1203,15 +1203,15 @@
       ],
       "headMatch": 0.979,
       "sha256": {
-        "1x": "5d5de965889e58cf17882588d96ae4e83bf718673718a51c257d808513fb2dd5",
-        "2x": "a7e1ca523596ba1228f9bb5ca6c611be7dc8add00945ae5da797548675932b02",
-        "3x": "9ed98ceeb215a2465c8522fc5ff609883b37e6acdfeec85de21e067b0050609b"
+        "1x": "3dbc980ad696b44d71592f6d2d0ace8603cf2f8e1fed98d50149c849bff10d54",
+        "2x": "ef848065c8768102b5a2fb4d7850119e7a5efbcab12fa60ca17b76a49e3a8f9e",
+        "3x": "50348f857ae49a6ffed6905d5f3b2218629496374d7c3cc9d811d7af57ddd13f"
       }
     },
     {
       "fid": "FID_ネイサン",
       "faceCode": "117",
-      "file": "assets/portraits/before-part3/list/nathan.png",
+      "file": "assets/portraits/before-part3/list/nathan.webp",
       "troopWindow": [
         0.0729999840259552,
         0.2149999886751175,
@@ -1224,15 +1224,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "80118c3b1ddf23370ba67324ce05735809db1ac7d0572dc4c33d989bdbf1a5ab",
-        "2x": "83cc641a6b08858ba9b94e69773c182ab5cf57a5f9f799b028fc2c572544f6fe",
-        "3x": "0953b35d0e856d04b34b4bfa63f5bacde7acd221032510b69ac28277901c31b8"
+        "1x": "01d4e10d79ed09d88d1667b1acb7cf11196afb6790d133ed2e9881069418eef1",
+        "2x": "2cca1a30902b396ebb86c889ea9038cbb43b8b65b31e7a6a0f077fe8b2dbc173",
+        "3x": "cafb973d19db98ae2a251391911b0f198e6786e68f5738481f6b8f7942a56d16"
       }
     },
     {
       "fid": "FID_セントリオン",
       "faceCode": "112",
-      "file": "assets/portraits/before-part3/list/centurio.png",
+      "file": "assets/portraits/before-part3/list/centurio.webp",
       "troopWindow": [
         0.030999988317489624,
         0.18400000035762787,
@@ -1245,15 +1245,15 @@
       ],
       "headMatch": 0.966,
       "sha256": {
-        "1x": "80113cebd35a1217a4a32c596837ac7ecfb042471b3dec95d9b976dc3da4031d",
-        "2x": "59821971d4e9db9715fb13f3a7d6e2cc64ef91b62cc030b5fa3d6ca7003cccb2",
-        "3x": "251b5b8a58f8f439560faa4736d69ffc58a8555609b614dcbd08361b7132e91a"
+        "1x": "fc87f205865fc30b5ca81753881d65ca1e9c65081127995ae9d6921e8ff848fa",
+        "2x": "b33dd30b53f33fada41b8120e011a90d915ff1c9d791dfb7fe59ec6c2e892f25",
+        "3x": "c15531deeb2f89d02e90bc5f0b0d53c90d7ed1fa3d8df721f4e1c4ba4261c502"
       }
     },
     {
       "fid": "FID_アスワン",
       "faceCode": "113",
-      "file": "assets/portraits/before-part3/list/aswan.png",
+      "file": "assets/portraits/before-part3/list/aswan.webp",
       "troopWindow": [
         0.039000004529953,
         0.2160000056028366,
@@ -1266,15 +1266,15 @@
       ],
       "headMatch": 0.97,
       "sha256": {
-        "1x": "e96d217c917b65365bc20a1ea751883fcd76e78ebaea73c90a7459ff475eca00",
-        "2x": "3e750e758750411176a94aa7bd58f789ebca44dcc3c1b07e6ad9ebead7af7b11",
-        "3x": "e4a362c4db8fe1b43be67ced19a67b4c6645849ea10c2a5914996c230298a670"
+        "1x": "d175b5ad412d96348a6925adae933c19e062e81327ce640224405fdf450f86d5",
+        "2x": "9ada90e0097bc51e7e1969e7a671c4a14c9678af72066a2a3839c9a12e214010",
+        "3x": "ffbcb181aa739269a05c219c0db0d91f178da834a2f9de3db1c5cb87664b7a04"
       }
     },
     {
       "fid": "FID_タホウニア",
       "faceCode": "114",
-      "file": "assets/portraits/before-part3/list/tahonia.png",
+      "file": "assets/portraits/before-part3/list/tahonia.webp",
       "troopWindow": [
         0.050999999046325684,
         0.21199999749660492,
@@ -1287,15 +1287,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "cfd57b200c90d3a189b8e32c7f3c1c1bc430f17e8ab5a0a5cda8d89ec65b3ef9",
-        "2x": "118756ce96ddfa03ccaf6fa1059fbfd459999ccb6d3c9b37a247f1b930ca6c5c",
-        "3x": "47e131ee5e87916e03449ad23a51e038fb65ded2942b1c4b6ff7fb417f6c6e9d"
+        "1x": "03e1465c99efb2cb8e88b78c6265e3699cfbc8d363a84e256cf3f521d7af3e9f",
+        "2x": "bef30809d825c39a30ee406c3335aeb0a839f25326b14c2dc2922c0536a6beb9",
+        "3x": "a971e4dbad9acc0a884fb0817bb46c0fb7258b6a98bae9a2930fea89220494c2"
       }
     },
     {
       "fid": "FID_クラプカ",
       "faceCode": "138",
-      "file": "assets/portraits/before-part3/list/klapka.png",
+      "file": "assets/portraits/before-part3/list/klapka.webp",
       "troopWindow": [
         0.03200000524520874,
         0.1900000125169754,
@@ -1308,15 +1308,15 @@
       ],
       "headMatch": 0.976,
       "sha256": {
-        "1x": "72e79a9a076c8c737114cee934f250397d54aa3cc866a93df3b2e65071cfbba9",
-        "2x": "f525a80f49a8e30bd04d72573f0670f51e8d0a5d76a949ffb6692e7533fed7cc",
-        "3x": "2106d99eb598a333eb6ec095486b8551c2f3852f05398a97f04c3b4cf66b7a08"
+        "1x": "d29d4fd148f7faa359f5890f55175fdd15c30ca866dbda746c57b156ae7d8470",
+        "2x": "40f2c9105c6478f68fdaea325223848ecf09879ad2ac7e067fd5f987b0967142",
+        "3x": "48617907cba6527610256ecde8d606b944835a6945072410accbe2a813fdf738"
       }
     },
     {
       "fid": "FID_アンナ",
       "faceCode": "163",
-      "file": "assets/portraits/before-part3/list/anna.png",
+      "file": "assets/portraits/before-part3/list/anna.webp",
       "troopWindow": [
         0.06499999761581421,
         0.2200000137090683,
@@ -1329,15 +1329,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "4645c3b8e51986b63280a0eb7382cc90cecdd5609e37b8b8583fe77aeb4f9e37",
-        "2x": "2088da28fc754d0e5dc8de81bc5c5f286e6b72679943f4de88af79e29bb0e5dc",
-        "3x": "2ac0b187dc4547d7827dced3f246ebff815988401e55eec309ddc251276152d4"
+        "1x": "afe56bae194dc65976d34a5875ac38f10fc5a1090525ab92cfe83788fc7b41fe",
+        "2x": "0ed94394e5cb053255c05f5af4d227f1846df1459b8551a86d2b22fde3e33db9",
+        "3x": "948293160a69d180976452ec5dfe4a17f813b8e16d8fb6c48e527bf8d9f7ac6c"
       }
     },
     {
       "fid": "FID_カーラ",
       "faceCode": "007",
-      "file": "assets/portraits/before-part3/list/kalla.png",
+      "file": "assets/portraits/before-part3/list/kalla.webp",
       "troopWindow": [
         0.03299999237060547,
         0.23799999058246613,
@@ -1350,15 +1350,15 @@
       ],
       "headMatch": 0.971,
       "sha256": {
-        "1x": "4f6be020b78ea80c91def68f8b3eb0a86a6444248b27b8ff154b51baa72e19c4",
-        "2x": "b41baf3b20d714b092beec8c87d58fb65de07fd10509339c3af62967bd80ba21",
-        "3x": "0d4ea4f860e17ed396dc60190e8c1ee2c2d911b1f9aa769068d81d7aeb138efc"
+        "1x": "1985119b61f2aec40c2e83a837d04c545dd77e912f3412ad67f3d141f0f29ce3",
+        "2x": "7038bbccf3349ff8437339addf2754bbeb7b608f04f7b77a4c4f8447e68fd9af",
+        "3x": "6c619e686189a4fdc02c90e04d2dc77436d163e641050cbd0fa1844f543626ea"
       }
     },
     {
       "fid": "FID_マーズ",
       "faceCode": "004",
-      "file": "assets/portraits/before-part3/list/mars.png",
+      "file": "assets/portraits/before-part3/list/mars.webp",
       "troopWindow": [
         0.04100000858306885,
         0.1900000125169754,
@@ -1371,15 +1371,15 @@
       ],
       "headMatch": 0.965,
       "sha256": {
-        "1x": "613964498c561698ebbc3ff2eac18b35a2df0feecaf0dc12c7bdd86c7bc3954e",
-        "2x": "31704c6912b1248711efed84f1541b07ce94e422b1084b44e7c256dbc0d461d3",
-        "3x": "058228e6ca28f07d7d76f66af49e8801727968891e418b05b0ce42d457c67498"
+        "1x": "0b847315a7f048eecb017045707aa2cc68cc92c1d020474e4c602107088dfe67",
+        "2x": "70812ee5f96d5883b830387211fa1541aca65c3165cc7305b27171795177250b",
+        "3x": "e13ec61564835c95c73ee4761f05b3c7c72d9d5dbed24fa6a20e6dbfb25fd1c6"
       }
     },
     {
       "fid": "FID_ジュラ",
       "faceCode": "002",
-      "file": "assets/portraits/before-part3/list/jurah.png",
+      "file": "assets/portraits/before-part3/list/jurah.webp",
       "troopWindow": [
         0.011000007390975952,
         0.20400001108646393,
@@ -1392,15 +1392,15 @@
       ],
       "headMatch": 0.98,
       "sha256": {
-        "1x": "4c086e8b5353e4611e28a43bb94e17f0cdea5fc7fffe2dd626a40d62e824ef77",
-        "2x": "b74877c75c35f3bda0cbb4bb03690f57312e2a0b6ddd127195569c3437621312",
-        "3x": "6988c75ddb670bbddf0840d637d954317132aaac7261a1b2bd3c6af544d20eea"
+        "1x": "05fbe77f6bda9abc96c2579d7f92576f1b7bb17a58e7df766c533213e04fe649",
+        "2x": "b0b654ef63b493dfc5d57a09c3c67f308bfa64faf711a2c516e37ca4537f0158",
+        "3x": "c48f2a8835dedddd0698410827bcd2719e68b8b990a3ed85b2c0116fae8d6018"
       }
     },
     {
       "fid": "FID_スミルノス",
       "faceCode": "005",
-      "file": "assets/portraits/before-part3/list/smyrnos.png",
+      "file": "assets/portraits/before-part3/list/smyrnos.webp",
       "troopWindow": [
         0.03200000524520874,
         0.1939999908208847,
@@ -1413,15 +1413,15 @@
       ],
       "headMatch": 0.975,
       "sha256": {
-        "1x": "9bed2569e9c1e7cb2b8c331a29cbd3bd41b9463bc8b413f35c5022df9a167acb",
-        "2x": "6df862d4f1fb9e9fc9f28b469216c843bec67e26bd33580a2a2f1b3f32dc4111",
-        "3x": "022de1a52d6400877b51ce9217a7502b5d9540eedd0a4424b11f9915f5ff064c"
+        "1x": "b6b86ee48a7e2a71294eaeb2ea2288756ddf24647ba780082c24ba109b1316c6",
+        "2x": "049e6a13536b23ffed7bc7d6b396c6ab64dea5a589a62ef561f287bf677cb288",
+        "3x": "340e21465b1e1bd364e5982951f17b750152f1caf2448a8e0415b41a0f0b9677"
       }
     },
     {
       "fid": "FID_アウロラ",
       "faceCode": "010",
-      "file": "assets/portraits/before-part3/list/aurora.png",
+      "file": "assets/portraits/before-part3/list/aurora.webp",
       "troopWindow": [
         0.05399999022483826,
         0.2410000115633011,
@@ -1434,9 +1434,93 @@
       ],
       "headMatch": 0.97,
       "sha256": {
-        "1x": "0fb9a2bcbd01222853ce4f9f5c155163d2d215f8a72b5d28f2c865a90c6326aa",
-        "2x": "e2ac7cac1fa8e6263e594a834d178b33eb88ba9a8a0f37775706e18eaa22a507",
-        "3x": "fc31e83a10dd99bc938464215759eb1d303f83b6de9323e1bb9fe24c8ebef8d0"
+        "1x": "f7ada5ad23546b72ad5b8ae14f529d9d2fcea4490b0277ee8acfe71e0218c128",
+        "2x": "d522c950805e10e3a46b67d052372bf36aee99b7fc476c1bd22ed17dad7a7da4",
+        "3x": "bacb0a934c5397e6d4b98ec6fdf69064832bbea9a10bafb87036674a24e32ec0"
+      }
+    },
+    {
+      "fid": "FID_フォトナ",
+      "faceCode": "008",
+      "file": "assets/portraits/before-part3/list/fortuna.webp",
+      "troopWindow": [
+        0.03200000524520874,
+        0.2720000147819519,
+        0.8320000171661377,
+        0.6819999814033508
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.97,
+      "sha256": {
+        "1x": "a1a41715d71b2eebf7dd9a6198dacf75ca483a18d83b972a792034a95b06677e",
+        "2x": "b07756b600b9ac9282b51a8e710da3dd05e45b96ef3bb2b9cf2b93b75c9ebd96",
+        "3x": "b010e45452dd0785aa5087eff909706f9e210f5f4452acc558f86458ed64adb3"
+      }
+    },
+    {
+      "fid": "FID_ラクシャ",
+      "faceCode": "102",
+      "file": "assets/portraits/before-part3/list/raksha.webp",
+      "troopWindow": [
+        0.034999996423721313,
+        0.20799998939037323,
+        0.8350000381469727,
+        0.6179999709129333
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.961,
+      "sha256": {
+        "1x": "735052628701ba0d812a7909c93a72e2c5fce9abdc72cd8b845bac40bf2ffe46",
+        "2x": "c137330ae1809f09a87cefd4cc51426a86a28a34afdd35e54779a50db6b40c66",
+        "3x": "a87edab3b26672d2a74ec45ad2c3cb2367fa170e5ef39cadb9aa0184e62477cc"
+      }
+    },
+    {
+      "fid": "FID_イリアナ",
+      "faceCode": "103",
+      "file": "assets/portraits/before-part3/list/iliana.webp",
+      "troopWindow": [
+        0.021999984979629517,
+        0.23600001633167267,
+        0.8220000267028809,
+        0.6460000276565552
+      ],
+      "headOffset": [
+        1,
+        0
+      ],
+      "headMatch": 0.975,
+      "sha256": {
+        "1x": "eb80a61a8c7eb662001059b8a9d14f059bfce2b9e04c7a77f748f73080cf3b8e",
+        "2x": "f16352ddbe22d8cf3b4bc6ff048e7a16d3649f2238d4ac29ccbf3dd01d5a03d3",
+        "3x": "91c081988dd5d91819309d113f48880146c3e28abdc65879a3dbaed2490ba465"
+      }
+    },
+    {
+      "fid": "FID_大ソティス",
+      "faceCode": "000",
+      "file": "assets/portraits/before-part3/list/sothis.webp",
+      "troopWindow": [
+        0.03599998354911804,
+        0.22700001299381256,
+        0.8359999656677246,
+        0.6370000243186951
+      ],
+      "headOffset": [
+        0,
+        0
+      ],
+      "headMatch": 0.974,
+      "sha256": {
+        "1x": "9181e094e23b986b090d8f60f8f261b8e99eb8285fd3a045b4cd243a7e6f027a",
+        "2x": "3de197fea886a403548f44511fafe805a488a596b84792ad943c4151380fd2db",
+        "3x": "481efde96f1af035e9ec99516ff0bd0a645e0d813375dad1e4bc56e41470ae2c"
       }
     }
   ]

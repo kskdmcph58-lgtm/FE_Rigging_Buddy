@@ -40,7 +40,7 @@
       "equipped background",
       "original class icon"
     ],
-    "asset": "profession-equipped.png",
+    "asset": "profession-equipped.webp",
     "web_size": [
       60,
       60
@@ -75,6 +75,6 @@
     "web_top_left_percent": 3.125,
     "web_size_percent": 31.25,
     "layer": "above icon, selected option only",
-    "asset": "profession-equipped-mark.png"
+    "asset": "profession-equipped-mark.webp"
   }
 }

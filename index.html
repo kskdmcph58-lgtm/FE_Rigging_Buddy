@@ -6,10 +6,32 @@ layout: null
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
+  <meta name="description" content="A rigging tool for Fire Emblem: Fortune's Weave">
+  <meta name="theme-color" content="#101e20">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="FE Rigging Buddy">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <style>
     /* Paint the theme base before external styles or fonts arrive. */
     html { color-scheme: dark; background-color: var(--bg, #101e20); }
     html.fonts-loading body { visibility: hidden; }
+    /* Slow loads only: the header star and a thin bar while the hidden page waits for its fonts.
+       Revealed after 400 ms so a fast load never paints it; gone with the class, no transition. */
+    html.fonts-loading::before, html.fonts-loading::after { position: fixed; top: 50%; left: 50%; pointer-events: none; visibility: hidden; animation: rb-boot-show 0s .4s forwards; }
+    html.fonts-loading::before {
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40' width='32' height='40'%3E%3Cpath fill='%23d8c394' d='M16 3C13 14 10 17 2 20c8 3 11 6 14 17 3-11 6-14 14-17C22 17 19 14 16 3Z'/%3E%3C/svg%3E");
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40' width='32' height='40'%3E%3Cpath fill='%23d8c394' d='M16 3C13 14 10 17 2 20c8 3 11 6 14 17 3-11 6-14 14-17C22 17 19 14 16 3Z'/%3E%3C/svg%3E") / "正在加载";
+      width: 32px; height: 40px; margin: -32px 0 0 -16px; line-height: 0;
+    }
+    html.fonts-loading::after {
+      content: ""; width: 96px; height: 2px; margin: 20px 0 0 -48px; border-radius: 1px;
+      background: #d8c3942e linear-gradient(90deg, transparent, #d8c394, transparent) no-repeat; background-size: 40% 100%;
+      animation: rb-boot-show 0s .4s forwards, rb-boot-bar 1.4s ease-in-out .4s infinite;
+    }
+    @keyframes rb-boot-show { to { visibility: visible; } }
+    @keyframes rb-boot-bar { from { background-position: -67% 0; } to { background-position: 167% 0; } }
+    @media (prefers-reduced-motion: reduce) { html.fonts-loading::after { content: none; } }
   </style>
   <meta name="app-version" content="{{ site.github.build_revision }}">
   <link rel="preload" href="assets/fonts/wlqs-system-cn.woff2" as="font" type="font/woff2" crossorigin>
@@ -17,6 +39,10 @@ layout: null
   <link rel="preload" href="assets/fonts/wlqs-level-up.woff2" as="font" type="font/woff2" crossorigin>
   <script>{% include update-check.js %}</script>
   <title>Rigging Buddy · 万缕千丝</title>
+  <link rel="icon" href="assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="ui/styles/theme.css?v={{ site.github.build_revision }}">
   <link rel="stylesheet" href="styles.css?v={{ site.github.build_revision }}">
   <link rel="stylesheet" href="ui/styles/mobile/shell.css?v={{ site.github.build_revision }}">
@@ -47,11 +73,12 @@ layout: null
       }, { once: true });
     }
   </script>
+  <script defer src="data/image-versions.js?v={{ site.github.build_revision }}"></script>
   <script defer src="characters.js?v={{ site.github.build_revision }}"></script>
   <script defer src="vendor/pinyin-pro.js?v={{ site.github.build_revision }}"></script>
   <script defer src="data/professions.js?v={{ site.github.build_revision }}"></script>
   <script defer src="data/class-rules.js?v={{ site.github.build_revision }}"></script>
-  <script defer src="professions.js?v={{ site.github.build_revision }}"></script>
+  <script defer src="ui/profession-controls.js?v={{ site.github.build_revision }}"></script>
   <script defer src="model.js?v={{ site.github.build_revision }}"></script>
   <script defer src="core/persistence.js?v={{ site.github.build_revision }}"></script>
   <script defer src="core/actions.js?v={{ site.github.build_revision }}"></script>

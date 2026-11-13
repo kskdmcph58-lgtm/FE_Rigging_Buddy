@@ -259,8 +259,8 @@ function ratingIcon(happy) {
   return `<svg class="rating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r=".8" fill="currentColor" stroke="none"/><path d="${happy ? 'M8 14 Q12 19 16 14' : 'M8 17 Q12 12 16 17'}"/></svg>`;
 }
 function portrait(c, kind = 'small', sizes = kind === 'narrow' ? '116px' : '56px') {
-  const revision = document.querySelector('meta[name="app-version"]')?.content;
-  const versioned = path => /^[a-f0-9]{40}$/i.test(revision || '') ? `${path}?v=${revision}` : path;
+  // Each file's own content version (data/image-versions.js), so a deploy only re-downloads changed portraits.
+  const versioned = imageSrc;
   if (kind === 'narrow') {
     const path = c.image.replace('/grid/', '/troop/');
     // The files are 116, 232 and 348px wide. Listed by width, so a portrait shown larger than 116px on a
@@ -291,6 +291,7 @@ function fadeInPage() {
   app.animate({ opacity: [0, 1] }, { id: 'page-in', duration: MOTION.medium, easing: 'ease-out' });
 }
 function render() {
+  settleInlineEdit();
   const pageChanged = renderedPage !== null && renderedPage !== page;
   renderedPage = page;
   applyStoryPhase();
@@ -526,7 +527,7 @@ function renderLevels() {
     <div class="table-head"><span class="setup-name-heading">人物</span><span class="setup-profession-heading">兵种</span><span class="setup-level-heading">当前等级</span><span class="setup-expectation-heading">属性期望</span></div>
     ${state.selection.map(id=>{const c=char(id);return `<div class="level-row" draggable="false" data-sort-id="${id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
       <span class="drag-grip" aria-hidden="true">${dragGrip()}</span>
-      <div class="setup-character">${portrait(c,'narrow','(max-width:1749px) 84px, 116px')}<strong>${c.name}</strong></div>
+      <div class="setup-character">${portrait(c,'narrow','(width < 1750px) 84px, 116px')}<strong>${c.name}</strong></div>
       <div class="level-value setup-level-cell" data-setup-level="${id}" role="button" tabindex="0" aria-label="${c.name}当前等级，${state.initialLevels[id]||'暂无'}，点击编辑">${setupLevelText(id)}</div>
       <div class="setup-profession-cell">${setupProfessionButton(id)}${setupRideButton(id)}</div>${setupExpectationButton(id)}</div>`;}).join('')}
     </section><div class="bottom-bar"><button data-action="select">返回选择</button><button class="primary" data-action="create">开始记录</button></div>`;
@@ -585,10 +586,12 @@ function stepInitialLevel(input, delta) {
   clearLevelError(input); input.removeAttribute('aria-invalid');
   input.select();
 }
-function closeInitialLevel(form, save) {
+function closeInitialLevel(form, save, quiet = false) {
   if (!form.isConnected || form.dataset.closing) return;
   const input = form.querySelector('input');
   if (save) {
+    // Quiet: the caller redraws, so an invalid value is dropped instead of shown as an error.
+    if (quiet && !/^(?:[1-9][0-9]?)?$/.test(input.value)) { form.dataset.closing = '1'; return; }
     if (!validLevel(input)) return;
     const item = state.roster.find(r => r.id === form.dataset.initialForm);
     item.initialLevel = input.value === '' ? null : Number(input.value);
@@ -596,14 +599,33 @@ function closeInitialLevel(form, save) {
     if (item.initialLevel === null) delete item.seed;
   }
   form.dataset.closing = '1';
+  if (quiet) return;
   rememberListPosition();
   // A click elsewhere blurs the field on pointerdown; redraw after that click lands so it is not lost.
   if (initialPointerDown) {
-    const redraw = () => { document.removeEventListener('click', redraw, true); document.removeEventListener('pointercancel', redraw, true); setTimeout(returnToSummary); };
+    // Unless that click already rebuilt the page (another step, a clear): a redraw then would undo it.
+    const redraw = () => { document.removeEventListener('click', redraw, true); document.removeEventListener('pointercancel', redraw, true); setTimeout(() => { if (form.isConnected) returnToSummary(); }); };
     document.addEventListener('click', redraw, true);
     document.addEventListener('pointercancel', redraw, true);
     setTimeout(() => { if (!initialPointerDown) redraw(); }, 400);
   } else returnToSummary();
+}
+/* An unfinished inline edit (step 3 初始等级 box, step 2 等级 cell) commits when its field loses focus, and removing
+   a focused field loses it in the middle of the removal. So anything that replaces the page settles the edit first.
+   settleInlineEdit: the page is rebuilt from the current data (render), so keep the value as clicking away would.
+   parkInlineEdit: the data is replaced (restore, followed save), so the edit is dropped, never written into the old
+   data or the new; the returned function puts it back for a restore that has to roll back. */
+function settleInlineEdit() {
+  const form = document.activeElement?.closest?.('[data-initial-form]');
+  if (form) closeInitialLevel(form, true, true);
+  if (setupLevelEdit) finishSetupLevel(!/^(?:[1-9][0-9]?)?$/.test(setupLevelEdit.input.value));
+}
+function parkInlineEdit() {
+  const form = document.activeElement?.closest?.('[data-initial-form]'), setup = setupLevelEdit;
+  const wasClosing = form?.dataset.closing;
+  if (form) form.dataset.closing = '1';
+  setupLevelEdit = null;
+  return () => { if (form && !wasClosing) delete form.dataset.closing; if (setup) setupLevelEdit = setup; };
 }
 let initialPointerDown = false;
 document.addEventListener('pointerdown', () => { initialPointerDown = true; }, true);
@@ -814,10 +836,6 @@ window.addEventListener('pointerdown', e => {
   } else dismissSeedMessage(bubble.dataset.seedStatus);
 }, true);
 app.addEventListener('click', async e => {
-  const cardOptions = e.target.closest('[data-card-options]');
-  if (cardOptions) { e.preventDefault(); e.stopPropagation(); openCardOptions(cardOptions); return; }
-  const moreForecast = e.target.closest('[data-more-forecast]');
-  if (moreForecast) { showMoreForecast(moreForecast.dataset.moreForecast); return; }
   // With a better choice marked, clicking anywhere on the class name opens the choices; changing the class
   // is the class row in its hover tip. The keyboard keeps both: Enter on the field changes the class,
   // Enter on the mark opens the choices.
@@ -996,6 +1014,8 @@ async function importFile(file) {
     focused: document.activeElement };
   clearTimeout(localSaveTimer);
   storageReady = false;
+  // Drop an unfinished inline edit before its field is removed, so removing it commits and redraws nothing.
+  const restoreInlineEdit = parkInlineEdit();
   try {
     app.replaceChildren();
     state = trackState(data);
@@ -1008,6 +1028,7 @@ async function importFile(file) {
     editingCharacters.clear(); previous.editing.forEach(id => editingCharacters.add(id));
     rowSelection.clear(); previous.selected.forEach(id => rowSelection.add(id));
     app.replaceChildren(...previous.nodes); app.className = previous.className;
+    restoreInlineEdit();
     if (previous.focused?.isConnected) previous.focused.focus({ preventScroll: true });
     storageReady = previous.ready;
     try { sessionStorage.setItem(LOCAL_PAGE_KEY, page === 'record' ? 'summary' : page); } catch { /* Optional navigation memory. */ }
@@ -1296,6 +1317,7 @@ function applyFollowedSave() {
   try { serialized = localStorage.getItem(LOCAL_STATE_KEY); } catch { return; }
   if (serialized === null || serialized === lastLocalSave) return;
   const scrollY = window.scrollY;
+  parkInlineEdit();
   persistence.follow(serialized);
   render();
   window.scrollTo(0, scrollY);

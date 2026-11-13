@@ -14,7 +14,7 @@
     {
       "fid": "FID_イシュマール男A",
       "faceCode": "015_AHoodOff",
-      "file": "assets/portraits/protagonist/list/eshmel-male.png",
+      "file": "assets/portraits/protagonist/list/eshmel-male.webp",
       "troopWindow": [
         0.021999984979629517,
         0.21400000154972076,
@@ -26,15 +26,15 @@
         0
       ],
       "sha256": {
-        "1x": "5e50c8e7238984093a9d3ef702da3408615b5fd0ad09f52229490995b12ea0e1",
-        "2x": "4dd9e970a9516245a61de03c7c4b7c1d97e818eb3b37ed57ec72712725ad9efd",
-        "3x": "cae780e006d1979be0e22bb4c30f77074c6ae4900d4328a08077516d9051dc13"
+        "1x": "67766e241719dce438c8f977d7b0c4ee4cbd1dd1ff8c42707a79efd810c15619",
+        "2x": "ccf741288461b2b91ab56eb30f20d5436b86998a8d11c5ed840828527daff956",
+        "3x": "5a0c97fe115ed8dc66fdde3a65c092457b61e081761d9860de3996438e4a99ab"
       }
     },
     {
       "fid": "FID_イシュマール女A",
       "faceCode": "016_AHoodOff",
-      "file": "assets/portraits/protagonist/list/eshmel-female.png",
+      "file": "assets/portraits/protagonist/list/eshmel-female.webp",
       "troopWindow": [
         0.03799998760223389,
         0.2160000056028366,
@@ -46,9 +46,9 @@
         0
       ],
       "sha256": {
-        "1x": "ff5af1a3246d204354576fbe5034d967249b19123e4104bd6531ab6033bf2734",
-        "2x": "f92d85a84e14b5ea7ad53cbdf24c16956b16bd76d60de36b0e823633e06da487",
-        "3x": "e7aa2b2fee9a1cdaa8f5e789e265975484212b24949e5c342fa767b1db524ec8"
+        "1x": "e23e59e0844f688866a679b38a8f0d02d25e2e06bcd3971fdd1fcd8db566952a",
+        "2x": "a29a84e59b624ed7b91b192e5ed101ed99c3cc9916d1ed2715d8a670baf8236e",
+        "3x": "076172a0d736a7460215c3e9b25fbd6e453f0c99b03b8231037b96d5139aca1f"
       }
     }
   ]

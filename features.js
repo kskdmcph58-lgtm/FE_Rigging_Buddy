@@ -228,7 +228,9 @@ window.addEventListener('scroll', () => {
   selectionBarFrame = requestAnimationFrame(() => { selectionBarFrame = 0; updateFloatingSelectionBar(); });
 }, { passive: true });
 /* Entering or leaving multi-select swaps toolbar controls and adds the row checks. On desktop the ones that
-   appear fade in; the ones that leave go at once. Returns the call that runs the fade after the change. */
+   appear fade in; the ones that leave go at once. Returns the call that runs the fade after the change.
+   The fade ends on each control's own opacity (the open end keyframe), not on 1: a disabled button sits at .45,
+   and fading it to 1 showed it as clickable until the animation ended and it snapped back. */
 const REVEAL_SCOPE = '.summary-top>*,.summary-top button,.toolbar>*,.toolbar button,.row-select';
 function revealAfterChange() {
   if (!motionAllowed() || UI_MEDIA.mobileShell.matches) return null;
@@ -236,7 +238,7 @@ function revealAfterChange() {
   const before = new Set([...app.querySelectorAll(REVEAL_SCOPE)].filter(shown));
   return () => {
     const fresh = [...app.querySelectorAll(REVEAL_SCOPE)].filter(el => shown(el) && !before.has(el));
-    for (const el of fresh) if (!fresh.some(other => other !== el && other.contains(el))) el.animate({ opacity: [0, 1] }, { duration: MOTION.medium, easing: 'ease-out' });
+    for (const el of fresh) if (!fresh.some(other => other !== el && other.contains(el))) el.animate([{ opacity: 0 }, {}], { duration: MOTION.medium, easing: 'ease-out' });
   };
 }
 function refreshRowSelection() {
@@ -246,7 +248,10 @@ function refreshRowSelection() {
   if (rowSelection.size) multiSelectMode = true;
   const reveal = app.classList.contains('multi-select-mode') !== multiSelectMode ? revealAfterChange() : null;
   app.classList.toggle('multi-select-mode', multiSelectMode);
-  app.querySelectorAll('[data-sort-id]').forEach(row => {
+  // All writes first, then every measurement, then the tops: measuring each row right after writing to it forced
+  // a style and layout pass per row. A row's measurement is relative to the row itself, which the other rows'
+  // class, aria and absolutely placed check do not move.
+  const checks = [...app.querySelectorAll('[data-sort-id]')].map(row => {
     const selected = rowSelection.has(row.dataset.sortId);
     row.classList.toggle('row-selected', selected);
     let check = row.querySelector('.row-select');
@@ -257,13 +262,17 @@ function refreshRowSelection() {
       row.prepend(check);
     }
     check.setAttribute('aria-pressed', String(selected));
-    check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
+    if (!check.querySelector(':scope>svg')) check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
+    return [row, check];
+  });
+  const tops = checks.map(([row]) => {
+    if (row.matches('.level-row') && UI_MEDIA.narrowLayout.matches) return '48px';
+    if (row.matches('.journal') && UI_MEDIA.wideJournalSelection.matches) return '';
     const image = row.querySelector('img');
     const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
-    if (row.matches('.level-row') && UI_MEDIA.narrowLayout.matches) check.style.top = '48px';
-    else if (row.matches('.journal') && UI_MEDIA.wideJournalSelection.matches) check.style.top = '';
-    else if (avatar) check.style.top = `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (UI_MEDIA.narrowLayout.matches ? 22 : 10)}px`;
+    return avatar ? `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (UI_MEDIA.narrowLayout.matches ? 22 : 10)}px` : null;
   });
+  checks.forEach(([, check], index) => { if (tops[index] !== null) check.style.top = tops[index]; });
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
     b.textContent = multiSelectMode ? '完成多选' : '多选'; b.setAttribute('aria-pressed', String(multiSelectMode));
   });

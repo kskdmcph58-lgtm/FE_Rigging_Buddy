@@ -48,7 +48,7 @@ button:active:not(:disabled) {
 }
 /* A menu that closes fades out, as macOS menus do; it opens with the fade-in above. The details element keeps
    its content rendered until the fade ends. Browsers without ::details-content simply close at once. */
-@media(min-width:1750px) {
+@media(width >= 1750px) {
   .action-menu::details-content {
     transition: content-visibility var(--motion-medium) allow-discrete;
   }

@@ -27,8 +27,8 @@
       "characterIds": [
         "c054"
       ],
-      "grid": "assets/portraits/before-part3/grid/alexandra.png",
-      "narrow": "assets/portraits/before-part3/narrow/alexandra.png",
+      "grid": "assets/portraits/before-part3/grid/alexandra.webp",
+      "narrow": "assets/portraits/before-part3/narrow/alexandra.webp",
       "dimensions": {
         "grid": [
           214,
@@ -83,18 +83,18 @@
         }
       },
       "sha256": {
-        "grid": "de2d85b86f96560bb52465c60a9dff1c6c20646e759e9a25040f2f33f6fdac8f",
-        "narrow": "18ea5eb3f1d6c6196920b4edebd90191e94b7c289bb7e7c8b3cc3eb9448a3433"
+        "grid": "e6206f99bde4e8996816c26908f086f6c4d14c6adf54eada5038905eb93969a3",
+        "narrow": "0772a85da0465f3025a454d22107ba1acf5b4cafe07b2d09d40e41303a619db8"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/alexandra.png",
-        "112": "assets/portraits/before-part3/small/112/alexandra.png",
-        "168": "assets/portraits/before-part3/small/168/alexandra.png"
+        "56": "assets/portraits/before-part3/small/56/alexandra.webp",
+        "112": "assets/portraits/before-part3/small/112/alexandra.webp",
+        "168": "assets/portraits/before-part3/small/168/alexandra.webp"
       },
       "smallSha256": {
-        "56": "0b1bb6d8f1c8320d00dc48f30b50fac7ba778b5517579e9ac56f0616b4d1c133",
-        "112": "3b0370af4eb41054618962abd2f71f736531377eb7c737c6ee46d8b3ad24f5ae",
-        "168": "84543ba23fb606dc894d5d22a7c57396a419acd82ccf4c6890369e86bfc509d6"
+        "56": "8276b11de6fdfee91dd734ba92c74a1ca34c0dfe726f6e21d4aff7ca8407ccb9",
+        "112": "91d24faa007e8166df1cb106e04e90b1d469c26c5ecd386f41bba29d6febc1b9",
+        "168": "c386bc38efab08120424868452ae57f947b6383569583297967136358aff5c85"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_アレキサンドラ.png",
@@ -130,8 +130,8 @@
       "characterIds": [
         "c037"
       ],
-      "grid": "assets/portraits/before-part3/grid/anatolia.png",
-      "narrow": "assets/portraits/before-part3/narrow/anatolia.png",
+      "grid": "assets/portraits/before-part3/grid/anatolia.webp",
+      "narrow": "assets/portraits/before-part3/narrow/anatolia.webp",
       "dimensions": {
         "grid": [
           214,
@@ -186,18 +186,18 @@
         }
       },
       "sha256": {
-        "grid": "5c398f58c03b38f37e863859fb8c218479e4ed986526bc2b3a48f33c9cb39def",
-        "narrow": "2ed4c2b2570e97c0bf73323b0febe8a320768a23e6c23fc936e7466d3458f245"
+        "grid": "8c2038ef309ae93c31892b3cc11205bddc6a6b5b915d5dc980f8b42c02938919",
+        "narrow": "2ca2624c8b1001936a82ee9a94465697a68a9e4915f9596808f8bba29db452ec"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/anatolia.png",
-        "112": "assets/portraits/before-part3/small/112/anatolia.png",
-        "168": "assets/portraits/before-part3/small/168/anatolia.png"
+        "56": "assets/portraits/before-part3/small/56/anatolia.webp",
+        "112": "assets/portraits/before-part3/small/112/anatolia.webp",
+        "168": "assets/portraits/before-part3/small/168/anatolia.webp"
       },
       "smallSha256": {
-        "56": "a28291939f7d78bd1b1d917c8195173b55a9d2777040c16f57681c2ccbc95a6c",
-        "112": "4bfd23b5fa6f2548f882206761b48eb7a23f8074225b1fe8cb6341a70c6b20b5",
-        "168": "247bd42b17952f7b8775f4b52feebd076a46c8c7668ebeca6c375a9d11ec8dde"
+        "56": "4047a93a464829ca8d8b6dbba09734fd24bdd64ffaa38b9dc956039504b01bec",
+        "112": "296799e8ed9261835ffc4e9326622f4b1766eca8df1a6c7b5748ee90cf8da648",
+        "168": "3d95034577b086da5bbc912d70670ea4981253a82268634d59f604ef0b1b7239"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_アナトリア.png",
@@ -233,8 +233,8 @@
       "characterIds": [
         "c064"
       ],
-      "grid": "assets/portraits/before-part3/grid/anna.png",
-      "narrow": "assets/portraits/before-part3/narrow/anna.png",
+      "grid": "assets/portraits/before-part3/grid/anna.webp",
+      "narrow": "assets/portraits/before-part3/narrow/anna.webp",
       "dimensions": {
         "grid": [
           214,
@@ -289,18 +289,18 @@
         }
       },
       "sha256": {
-        "grid": "f5cfb9db3fafa2416d93feaa0dcb82e34a6dab62b9ad17033b2fb55301c58bf6",
-        "narrow": "380c33233114c289913c7056991c2884ab3a667909638b30718853870e913896"
+        "grid": "c9e417e91541e44602d8f1cd01b8193d5ba79c948627fc641e25868c6ebe04ce",
+        "narrow": "06e9fd9875267d9ffaf12dce7779ccb62292c288e74a03dc225f7cdfb559df6c"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/anna.png",
-        "112": "assets/portraits/before-part3/small/112/anna.png",
-        "168": "assets/portraits/before-part3/small/168/anna.png"
+        "56": "assets/portraits/before-part3/small/56/anna.webp",
+        "112": "assets/portraits/before-part3/small/112/anna.webp",
+        "168": "assets/portraits/before-part3/small/168/anna.webp"
       },
       "smallSha256": {
-        "56": "87b9e103e9a6b2034e6c46068a40e5b096299e821d5b7fc45fc18f42c0123494",
-        "112": "08d4a27c784321fdd5dcf17df593fd0d2d48a049052c1783502eb448234ce449",
-        "168": "913461e88f90004da539c854a8b24d3b05f24698e02fb5dd52aed884edc1ff3d"
+        "56": "7ab24e2fffbce0d3573e95b278a664ecf1f63fca2e73d8e9b8eccefab621e713",
+        "112": "00ce905f861fe3cffe115839e452ed4f27256671c9b1063f26b48a857aee83ed",
+        "168": "d99121335dfa5905053371eccd95b8d0f149d71dd592923b4380ec0d97b438df"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_アンナ.png",
@@ -336,8 +336,8 @@
       "characterIds": [
         "c061"
       ],
-      "grid": "assets/portraits/before-part3/grid/aswan.png",
-      "narrow": "assets/portraits/before-part3/narrow/aswan.png",
+      "grid": "assets/portraits/before-part3/grid/aswan.webp",
+      "narrow": "assets/portraits/before-part3/narrow/aswan.webp",
       "dimensions": {
         "grid": [
           214,
@@ -392,18 +392,18 @@
         }
       },
       "sha256": {
-        "grid": "d5f4d343a962d3d36045d625ae66873352df1f4eb1c93f950f0a2d330606c6f2",
-        "narrow": "f341d43fe79ea6d368e4ae726a95907f0b3f946da3f3d560667570ae8073612d"
+        "grid": "ffb7d13fb946c1b54ec815126c2a8e7c1b08e7d0d1a13fac91f47e6db42db20b",
+        "narrow": "7083bd12fd36cf197dd0244675a4d7eb903fe6f83376655efbe2b98d663965e0"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/aswan.png",
-        "112": "assets/portraits/before-part3/small/112/aswan.png",
-        "168": "assets/portraits/before-part3/small/168/aswan.png"
+        "56": "assets/portraits/before-part3/small/56/aswan.webp",
+        "112": "assets/portraits/before-part3/small/112/aswan.webp",
+        "168": "assets/portraits/before-part3/small/168/aswan.webp"
       },
       "smallSha256": {
-        "56": "d9c386a4f851ea02e18e559d5f0d89e3b069717e714bbafdc9a1b1f751c34719",
-        "112": "5e3ff64d76d307cb4d17646ae014b8efec5a302c41f83d34da383dda8d9725de",
-        "168": "0338439b07b47d7d1b977565ab8ded2871c883c9a538697d68f1e21eab4e94c2"
+        "56": "66a63bdc75de84daf34bee2bf6c92774239415fb9aefd15ddbd0762dc881a7e0",
+        "112": "52673e61670cf6c6d93a01bd0f4f926f86181f872758a63d47e8fff554ab7cad",
+        "168": "140a6fa9e140dc7e1e419a53dd4d1982fbadc5155451fcbf05e81551ca71ac98"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_アスワン.png",
@@ -439,8 +439,8 @@
       "characterIds": [
         "c077"
       ],
-      "grid": "assets/portraits/before-part3/grid/aurora.png",
-      "narrow": "assets/portraits/before-part3/narrow/aurora.png",
+      "grid": "assets/portraits/before-part3/grid/aurora.webp",
+      "narrow": "assets/portraits/before-part3/narrow/aurora.webp",
       "dimensions": {
         "grid": [
           214,
@@ -495,18 +495,18 @@
         }
       },
       "sha256": {
-        "grid": "31f0a9c578a5ebdd48851d3172efa69251c108ae54ff8e5d898d5965e3c5412e",
-        "narrow": "8cbe5f1e6789a8e4115b6ad6489b830abd80e5ed998c634820634271de1296f7"
+        "grid": "adf623d0d784c88a218c28588d3eab4d43f490828229ebf2f88c3214bee5d287",
+        "narrow": "42525f89f57072fe71099861d5197968b7a3a1efceecf97aa6e403cfed2e728a"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/aurora.png",
-        "112": "assets/portraits/before-part3/small/112/aurora.png",
-        "168": "assets/portraits/before-part3/small/168/aurora.png"
+        "56": "assets/portraits/before-part3/small/56/aurora.webp",
+        "112": "assets/portraits/before-part3/small/112/aurora.webp",
+        "168": "assets/portraits/before-part3/small/168/aurora.webp"
       },
       "smallSha256": {
-        "56": "91368a827f6bd4584f3c0356ea425c0d7df36c4142fadc8636a719b5602bd76f",
-        "112": "80f3d35dd22108833277bad382462a77f4ba3c515a659526ddd407608e454fb6",
-        "168": "55c273a786038f9e78a681cf71f2a7d486d70c25faf7fc14b64aaf83f82a4947"
+        "56": "5c810e0a12dad14ddac31a1b1a925adf8a483c28fb397df66887b631bb64b904",
+        "112": "6528072f9f1db845d8baa81701432b546ae7330f59ed6c9b98cb52c9a1e545b4",
+        "168": "bc359bbbf399bf86400f289a25a2434aac0e4602bc152a64f84310ed8a3ae267"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_アウロラ.png",
@@ -542,8 +542,8 @@
       "characterIds": [
         "c053"
       ],
-      "grid": "assets/portraits/before-part3/grid/benditz.png",
-      "narrow": "assets/portraits/before-part3/narrow/benditz.png",
+      "grid": "assets/portraits/before-part3/grid/benditz.webp",
+      "narrow": "assets/portraits/before-part3/narrow/benditz.webp",
       "dimensions": {
         "grid": [
           214,
@@ -598,18 +598,18 @@
         }
       },
       "sha256": {
-        "grid": "8f7785351286fdf13f163a7fec4bc5b5e583b2936e832cd3c665b238471bccf6",
-        "narrow": "94b6216c28cea32e9bf725de8df68fb8f980ce3fc9342ef4d2512e1c308cbcba"
+        "grid": "961c7db5ed2cb03dbd3b2658118d753b5ce8d66fa465a7182231b1707ddd5fc2",
+        "narrow": "d12b4c0833b6838d71778a1b5c2b2d4a6d3762b5686b4bb6c9c6ca60a32d45b2"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/benditz.png",
-        "112": "assets/portraits/before-part3/small/112/benditz.png",
-        "168": "assets/portraits/before-part3/small/168/benditz.png"
+        "56": "assets/portraits/before-part3/small/56/benditz.webp",
+        "112": "assets/portraits/before-part3/small/112/benditz.webp",
+        "168": "assets/portraits/before-part3/small/168/benditz.webp"
       },
       "smallSha256": {
-        "56": "ffbe6b7333057cd5fce813246ad20c0cc227d6ecb8b969a85fd357e7c739d750",
-        "112": "6bdb631a4aaf6d54d95bc81a07004c4db6ded2ca9218024100a952ff8732e1d5",
-        "168": "faf78293e323de4d29ad91826fb557972327da5805a813c80de630c24f73175d"
+        "56": "7cb359fc76978ae8653bf45a1b40decef8f0433b4f5eda82f42413faaf36d7dc",
+        "112": "c62a609b4bec97512e345c4c9311f8908d8b907cefa1f72a241943aabdff1764",
+        "168": "900545369ec1f35552664c5dbc2bc66e9690bcb068976dbcdbc828c1b850c1de"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ベンディッツ.png",
@@ -645,8 +645,8 @@
       "characterIds": [
         "c022"
       ],
-      "grid": "assets/portraits/before-part3/grid/bertrand.png",
-      "narrow": "assets/portraits/before-part3/narrow/bertrand.png",
+      "grid": "assets/portraits/before-part3/grid/bertrand.webp",
+      "narrow": "assets/portraits/before-part3/narrow/bertrand.webp",
       "dimensions": {
         "grid": [
           214,
@@ -701,18 +701,18 @@
         }
       },
       "sha256": {
-        "grid": "5cd9d3ef8de6a5c506057574d46daf14481b404bd5472201cdb921b455cef032",
-        "narrow": "e4d0cb8794d6eedb480a9bb1eb8a17ddf961c19fa465762da741a7471971e0b4"
+        "grid": "c493a8fee8ed961e0407a683569fa026fc851f26747b2ca5c4567fe75647d070",
+        "narrow": "05cd41e94392dd279b6ed0b06d58bc2fa9a6623f25379d1137dbd37671a4572c"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/bertrand.png",
-        "112": "assets/portraits/before-part3/small/112/bertrand.png",
-        "168": "assets/portraits/before-part3/small/168/bertrand.png"
+        "56": "assets/portraits/before-part3/small/56/bertrand.webp",
+        "112": "assets/portraits/before-part3/small/112/bertrand.webp",
+        "168": "assets/portraits/before-part3/small/168/bertrand.webp"
       },
       "smallSha256": {
-        "56": "d7a9fa22728006a0813ad01998462960fcb3ac99fa300cce315254bf5301dc96",
-        "112": "24b949a97b82216d27f1b54a88776a08255cb391c32d17b21ff8b7ec906d2c16",
-        "168": "dc93afa6257aacdb3900b6ec41b754048bde06640bc4001728c02316d07f03a1"
+        "56": "ae6e5bfe4b962ea69bfd407a3551295161d8d28875b3b75ec4ea81f1ce447338",
+        "112": "46dba80343a06246aae273e9235ae08ab6a0821c34f83a71aad64385de6ff470",
+        "168": "515b11b0cb0d79f83b78ba75933f401c0199a2f6d063004089696b667e70682e"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ベルトラン.png",
@@ -748,8 +748,8 @@
       "characterIds": [
         "c013"
       ],
-      "grid": "assets/portraits/before-part3/grid/bonaventure.png",
-      "narrow": "assets/portraits/before-part3/narrow/bonaventure.png",
+      "grid": "assets/portraits/before-part3/grid/bonaventure.webp",
+      "narrow": "assets/portraits/before-part3/narrow/bonaventure.webp",
       "dimensions": {
         "grid": [
           214,
@@ -804,18 +804,18 @@
         }
       },
       "sha256": {
-        "grid": "d817c3cb48ab65381b16eac0dbc8e692951e4ca680da36267b03f8b9d9b6635f",
-        "narrow": "e375d9b8d41ae67027f73e4c8c3f3143f100c3c9346c61fbefaf0352f43bab00"
+        "grid": "7ed5645c8d644160d30b452d2899ef5e59b36b639e1f3e64126644332b6cb101",
+        "narrow": "b837b35eea8c2871676ddf2c9ff0903bf21bd58942a37700a78adcfbb7d8c4b0"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/bonaventure.png",
-        "112": "assets/portraits/before-part3/small/112/bonaventure.png",
-        "168": "assets/portraits/before-part3/small/168/bonaventure.png"
+        "56": "assets/portraits/before-part3/small/56/bonaventure.webp",
+        "112": "assets/portraits/before-part3/small/112/bonaventure.webp",
+        "168": "assets/portraits/before-part3/small/168/bonaventure.webp"
       },
       "smallSha256": {
-        "56": "62004ba43f4d1a6693647464bffe388be2625ecae4b8595be6aad291dcb5bd8c",
-        "112": "241713d9f266907a96f6b1f14fc05b29212c292eab0098a6919d839d081c7b6e",
-        "168": "f0d8ba8a4716694c039ef7d12fedb6699d61c05f63dc6310eeaac1ddce5ec27f"
+        "56": "1c7e28bf529802bd201fed69017a58d061a576c7871e407390541a78beda6651",
+        "112": "1fc4e22df4c5035c89df82e7f7c71cdf2eb060cb6ce528711cefbcb29ea4aa68",
+        "168": "056690e6cc635ea90dabd1405f18010fd338680304541602bdbc8d941a8f26a0"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ボナパルテ.png",
@@ -851,8 +851,8 @@
       "characterIds": [
         "c018"
       ],
-      "grid": "assets/portraits/before-part3/grid/buccar.png",
-      "narrow": "assets/portraits/before-part3/narrow/buccar.png",
+      "grid": "assets/portraits/before-part3/grid/buccar.webp",
+      "narrow": "assets/portraits/before-part3/narrow/buccar.webp",
       "dimensions": {
         "grid": [
           214,
@@ -907,18 +907,18 @@
         }
       },
       "sha256": {
-        "grid": "38297a0ba9b9fa6bc386cdfbd5e6dc80285e0ab1db938b9a99c45b7e9d40be57",
-        "narrow": "3c4eed7182ad0682f85f83f5811774cb97ee92535c6bf6af39460404294a1f14"
+        "grid": "15348516e39a7c48640d9ad1ae3e32ca694ab732d30b12eea0631a3ba790dabe",
+        "narrow": "d65df54cdc92fd7016c901872127deb6c0045f6bcf82e014659b5cca79f2d20b"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/buccar.png",
-        "112": "assets/portraits/before-part3/small/112/buccar.png",
-        "168": "assets/portraits/before-part3/small/168/buccar.png"
+        "56": "assets/portraits/before-part3/small/56/buccar.webp",
+        "112": "assets/portraits/before-part3/small/112/buccar.webp",
+        "168": "assets/portraits/before-part3/small/168/buccar.webp"
       },
       "smallSha256": {
-        "56": "623431368b97a13ef15e065d28fb50c33b0e879e64972b395b6f78c2dd47cfa8",
-        "112": "e35e87473ca599bb849ed0bac98c9f5fafe25c963169c95da00d4d3b74afab00",
-        "168": "f7f0b182d042de4cd530ca893b14be2f051ec1f5d9147110cf656152bd05b246"
+        "56": "e066a8659be8904cfa595a0bfbbd432b74e14b25bf37d27721e6671b9d3cf198",
+        "112": "e848d046389d0a0a24bdbe33e87ce9c7fa114f5b2e23397e80fc6e9303507a46",
+        "168": "b19188f0825d3287da4a30a8e6689c2180c98f1cdf27c13b75358f95ae26c948"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_バッカニア.png",
@@ -954,8 +954,8 @@
       "characterIds": [
         "c004"
       ],
-      "grid": "assets/portraits/before-part3/grid/cai.png",
-      "narrow": "assets/portraits/before-part3/narrow/cai.png",
+      "grid": "assets/portraits/before-part3/grid/cai.webp",
+      "narrow": "assets/portraits/before-part3/narrow/cai.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1010,18 +1010,18 @@
         }
       },
       "sha256": {
-        "grid": "7a36a43cc97c5733ca23d3e10b961ce6543ba16c81fdd9741f9ff976a2b7dc25",
-        "narrow": "0e80342df82c35f3d9c26248cebda0a75eb65516860d5c2843a4ba3a9ba47fac"
+        "grid": "72b6358b72f65e0369b86ccf49ced9b92c18bd14678f81f7beeabc277b4dd339",
+        "narrow": "ecc2345abd8090eda1e76349fbf286415a1253678414f159d72242cedfb36738"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/cai.png",
-        "112": "assets/portraits/before-part3/small/112/cai.png",
-        "168": "assets/portraits/before-part3/small/168/cai.png"
+        "56": "assets/portraits/before-part3/small/56/cai.webp",
+        "112": "assets/portraits/before-part3/small/112/cai.webp",
+        "168": "assets/portraits/before-part3/small/168/cai.webp"
       },
       "smallSha256": {
-        "56": "b074b394d8e3f2fb6a06c6f3e4d4fd1529ec941627822968af253ca58b47a602",
-        "112": "9fa36c9c047ee581f2884818aaba4a346723dd9014494d1ae08eb7b6ebcb4b93",
-        "168": "32c5dd2b4d62f0cbac4797d1e13fc102eedc9b276aef6fcf948a3ff680aff621"
+        "56": "16045e68ee6117500c3144f2026cf8fee393e61512a755991add220b90362208",
+        "112": "27105577fd06069701101f5cf3da575ead78637637548c521dcf7c84f5569d9d",
+        "168": "47d29c6b69efcedc0802ae372d9d4bf8170aebc7a47682507631c4dc4b67743b"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_カイ.png",
@@ -1057,8 +1057,8 @@
       "characterIds": [
         "c042"
       ],
-      "grid": "assets/portraits/before-part3/grid/catania.png",
-      "narrow": "assets/portraits/before-part3/narrow/catania.png",
+      "grid": "assets/portraits/before-part3/grid/catania.webp",
+      "narrow": "assets/portraits/before-part3/narrow/catania.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1113,18 +1113,18 @@
         }
       },
       "sha256": {
-        "grid": "5f62e968ccb96a87d7766d7fc1cf9bbe6a998b02c57d9336aa51ebeda9c0d5ae",
-        "narrow": "5f86c025028f7a3905303b935e0181572aeb14f1b524c567d0e5d332991c1656"
+        "grid": "d14a2eeab0788ec3b7081695f763b23a53998c81296c91875a40ec7a44f686ec",
+        "narrow": "f74968c6954e1c15951eebe7d31a6ad77e9b2e21a45f7078d21067e6ad79ba71"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/catania.png",
-        "112": "assets/portraits/before-part3/small/112/catania.png",
-        "168": "assets/portraits/before-part3/small/168/catania.png"
+        "56": "assets/portraits/before-part3/small/56/catania.webp",
+        "112": "assets/portraits/before-part3/small/112/catania.webp",
+        "168": "assets/portraits/before-part3/small/168/catania.webp"
       },
       "smallSha256": {
-        "56": "2f7a53f05d0d138ea200438b17adb114069dd319c8cfdedbf5216b252a39b6a2",
-        "112": "0c319768451cd8c81579f6b0e8790f73fd9a25c57dd18e22e6db5a521d0951e7",
-        "168": "3a6e9516d5ab033c16b68d5794bf7b6d9e9e479595733a4495dcc4077b5f4dea"
+        "56": "d31748c2777b2866bea7ff9a1240fd3b43f61e80cf605022e1936a38e55a07ed",
+        "112": "1fb911d811bb2024c6f45c086718158443f6a01438b2b7d4b3a790d28c3db767",
+        "168": "96c8235d59f8738322e1444134390f31859209ecd009e784213ba4b3b9dbf6ef"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_カターニャ.png",
@@ -1160,8 +1160,8 @@
       "characterIds": [
         "c060"
       ],
-      "grid": "assets/portraits/before-part3/grid/centurio.png",
-      "narrow": "assets/portraits/before-part3/narrow/centurio.png",
+      "grid": "assets/portraits/before-part3/grid/centurio.webp",
+      "narrow": "assets/portraits/before-part3/narrow/centurio.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1216,18 +1216,18 @@
         }
       },
       "sha256": {
-        "grid": "f8097b69133a725f51775184b4192561a7c9f9050b0c9583a5a17557be239f42",
-        "narrow": "d9d844ddab3b11612b79bf72c626b0d8d41504836378bf20498739a23710c1bd"
+        "grid": "8fce258527e9e0c77baecf80fb8a4f09b5153f4212cfd0b7952ad43725c60359",
+        "narrow": "9b01a1eed49057ab1dabbc5e8c7ee4092cbafbd57dc000c604dbc148abd3dc15"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/centurio.png",
-        "112": "assets/portraits/before-part3/small/112/centurio.png",
-        "168": "assets/portraits/before-part3/small/168/centurio.png"
+        "56": "assets/portraits/before-part3/small/56/centurio.webp",
+        "112": "assets/portraits/before-part3/small/112/centurio.webp",
+        "168": "assets/portraits/before-part3/small/168/centurio.webp"
       },
       "smallSha256": {
-        "56": "14298436ae9fa22ef85da6e28264f279ca97854744df6868a59a396bdaede83b",
-        "112": "cb53d3243e03950c4ddc1dc0d9e621bc27b63176aa172dd2e6a226114b6e5629",
-        "168": "1d6838edee5943fb0e014da8b2b9d53b22e1721613c28ea3e173e5a86541f7d7"
+        "56": "1bbca195eb341b42718e77f9351fad7a20240b09050c733aa6de0915e379c069",
+        "112": "e95e59f708ee36195969c3067fcb30a0f19442e1eb335e7e5acdb1eb0d76b856",
+        "168": "c6f39920456f34c67934e2f0e3e5401b9f5a1a234646eff8d503664036fe4bc2"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_セントリオン.png",
@@ -1263,8 +1263,8 @@
       "characterIds": [
         "c058"
       ],
-      "grid": "assets/portraits/before-part3/grid/creek.png",
-      "narrow": "assets/portraits/before-part3/narrow/creek.png",
+      "grid": "assets/portraits/before-part3/grid/creek.webp",
+      "narrow": "assets/portraits/before-part3/narrow/creek.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1319,18 +1319,18 @@
         }
       },
       "sha256": {
-        "grid": "62df18ccbfdbc0926bca058a649f35329c86253a21e1001ad2658c506c602d0f",
-        "narrow": "7fbc9dc29e43bb61bad679a01db66d5b3f31213ad11b6bc7da6f7832a6968fb5"
+        "grid": "44dd6388b96f5633aee0ad560a4c9ebecb0ea57b0f0b1ece5a294dd2dc44b59e",
+        "narrow": "30d482635d9b39386ab8c0d51bc3045db5d8ef741cf9e5f7902cc0c736ebadbf"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/creek.png",
-        "112": "assets/portraits/before-part3/small/112/creek.png",
-        "168": "assets/portraits/before-part3/small/168/creek.png"
+        "56": "assets/portraits/before-part3/small/56/creek.webp",
+        "112": "assets/portraits/before-part3/small/112/creek.webp",
+        "168": "assets/portraits/before-part3/small/168/creek.webp"
       },
       "smallSha256": {
-        "56": "720085ca66b565bfa933a2aa7c537b9f03745b4139868fe070c52395215d78e2",
-        "112": "7a0c27a4018d31b2b7f649adc4dd10c89dcc29077ca1142f26de1bed6a7c3c56",
-        "168": "71e897e6bb65ec53352837266d89b43447986b7b2075e7678336f1485b6cdbd2"
+        "56": "42f1a7eae072a907ce59adb2cee066404b3e2b2a5fe83939e2fde6994463fe1d",
+        "112": "9cd908586986cf4f9dc0e6ae7d82c9162a24cdf4e37f1c730468968cc8c57031",
+        "168": "9120966227e1067527d7e06f981f7516f1cd1ab093f314be874a4afdf6071ee3"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_キリーク.png",
@@ -1366,8 +1366,8 @@
       "characterIds": [
         "c040"
       ],
-      "grid": "assets/portraits/before-part3/grid/dadao.png",
-      "narrow": "assets/portraits/before-part3/narrow/dadao.png",
+      "grid": "assets/portraits/before-part3/grid/dadao.webp",
+      "narrow": "assets/portraits/before-part3/narrow/dadao.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1422,18 +1422,18 @@
         }
       },
       "sha256": {
-        "grid": "26061b4f55455f31d023f3bc97d97a1c5b9d4bb5b0bb9365f343aafd862b6513",
-        "narrow": "8d2d3126314965755d9a7f26d6f2286627de2c0aae6dc0c9014c24a6a4e5a440"
+        "grid": "1e838b90559c89c0182dcc9ea48dcfc79d7e1baba55da1367aae7adac2795ae5",
+        "narrow": "ed97afda4d67f298d5a9c6a0e9136d7e3a2458b9448cee8dd7b26500d9ab4e99"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/dadao.png",
-        "112": "assets/portraits/before-part3/small/112/dadao.png",
-        "168": "assets/portraits/before-part3/small/168/dadao.png"
+        "56": "assets/portraits/before-part3/small/56/dadao.webp",
+        "112": "assets/portraits/before-part3/small/112/dadao.webp",
+        "168": "assets/portraits/before-part3/small/168/dadao.webp"
       },
       "smallSha256": {
-        "56": "15095c5bfeebe733a175b5bae5b029d575041cf01f979835185a2ff83a81fcbe",
-        "112": "714480486d649c33c3af2c1774bd30a154db5d3cfcb6d72425ec06bc1dd302d2",
-        "168": "78bc7bbcd9903563a95f3a6ed8b6c4c7c92f517bd60fc18168fba90415757f82"
+        "56": "8ca6aa338040ff81d9e8e98617abf3781e94df98384c187887b8215b217d87a7",
+        "112": "39bf6c44126744cc4be1c13b54a2d7e434e9713a5575af5405e73187adb5ddd3",
+        "168": "7eb81febc606f149a7a379ac4c83b750af8e587509207d85e3c697e0a3b6b3fe"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ダイトウ.png",
@@ -1469,8 +1469,8 @@
       "characterIds": [
         "c026"
       ],
-      "grid": "assets/portraits/before-part3/grid/dante.png",
-      "narrow": "assets/portraits/before-part3/narrow/dante.png",
+      "grid": "assets/portraits/before-part3/grid/dante.webp",
+      "narrow": "assets/portraits/before-part3/narrow/dante.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1525,18 +1525,18 @@
         }
       },
       "sha256": {
-        "grid": "e900fbde7ed7e4ff0f487056bb80edf32cd491e3910c6d1ffef0ef2e9614cc17",
-        "narrow": "ee9de112b5bf9f27348f0b047c246bff5ad3536190ac5b2101d72047296f99f5"
+        "grid": "1f569cc1055991cab435fce993c8794125be77258b086f8a5e3310a7ee3ef169",
+        "narrow": "d667ea61148ec86445c2de3b4b0fbeb5f69d4dbcaec197e29cca0645bab24897"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/dante.png",
-        "112": "assets/portraits/before-part3/small/112/dante.png",
-        "168": "assets/portraits/before-part3/small/168/dante.png"
+        "56": "assets/portraits/before-part3/small/56/dante.webp",
+        "112": "assets/portraits/before-part3/small/112/dante.webp",
+        "168": "assets/portraits/before-part3/small/168/dante.webp"
       },
       "smallSha256": {
-        "56": "fc9bacdc3f47912dbe957f91318360d466cc85b666ece03b1c9980b688e68296",
-        "112": "e38fb42e962a01aba20c7bbf12ec821297d1fa507b9e1d1bef0861038b356359",
-        "168": "ff7a4f38c995a76bb6007fa44e56aa4e3c1967d9317ef6dad62196092d60704f"
+        "56": "b4ef2fdce1fe788d2792bd859ee78e88ac1bb72ed82017ab8d87d4f50757fb55",
+        "112": "bf6847d222767d29b3a4776a10ce8a96556c61b3a02ac1e2d2f897084a7eb32e",
+        "168": "d0d14435c4bf4527fdec12c2ca3be330ece43db4e2fbe09c726c17f400a24017"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ダンテ.png",
@@ -1572,8 +1572,8 @@
       "characterIds": [
         "c028"
       ],
-      "grid": "assets/portraits/before-part3/grid/diego.png",
-      "narrow": "assets/portraits/before-part3/narrow/diego.png",
+      "grid": "assets/portraits/before-part3/grid/diego.webp",
+      "narrow": "assets/portraits/before-part3/narrow/diego.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1628,18 +1628,18 @@
         }
       },
       "sha256": {
-        "grid": "ed07ebc029f0596a19585196674ba66eb28cb8f18abd4b997689eff5682f03b4",
-        "narrow": "0c143281377828b2a2eafe8b929dea0884849ca71efdb69d3445952d1d9c3256"
+        "grid": "e6833cf25ee27d04149b1a27e4cf5ca8be214c12fc90733df805a03161406703",
+        "narrow": "f54f893ddbd8517ca3c4456e6aea65845311c09f559dc994100c030dc6edfd91"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/diego.png",
-        "112": "assets/portraits/before-part3/small/112/diego.png",
-        "168": "assets/portraits/before-part3/small/168/diego.png"
+        "56": "assets/portraits/before-part3/small/56/diego.webp",
+        "112": "assets/portraits/before-part3/small/112/diego.webp",
+        "168": "assets/portraits/before-part3/small/168/diego.webp"
       },
       "smallSha256": {
-        "56": "4dd02049fe18c24474702181e20c79a1f7b195f2835781d618ffed071a3cee96",
-        "112": "76f5c11ef42cebdaabdd5dd25b808a132c641c0f330587994161d69f62599850",
-        "168": "71f8c23559401bd4ede9ca1c3bc246ec0c45d146443496ab08cef9d6ac1e5174"
+        "56": "b363d7634ec6fcd66a5019030099f9caf24f2637ef5fd97f5f83d134e6f2e3c4",
+        "112": "b2696c298ff6265449c60b518c067d3c0b1760ffa59c5bbf401d561edf98b9fb",
+        "168": "58976078dfeb035d42bab5c55a233c38f36b5625d5dd4b779dcd1d9655d6b4f6"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ディエゴ.png",
@@ -1675,8 +1675,8 @@
       "characterIds": [
         "c008"
       ],
-      "grid": "assets/portraits/before-part3/grid/dietrich.png",
-      "narrow": "assets/portraits/before-part3/narrow/dietrich.png",
+      "grid": "assets/portraits/before-part3/grid/dietrich.webp",
+      "narrow": "assets/portraits/before-part3/narrow/dietrich.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1731,18 +1731,18 @@
         }
       },
       "sha256": {
-        "grid": "0c7c4787ccdc1a162ccf18180cd68789b2846087dfaa298d316a6a818c815024",
-        "narrow": "c456dd93887987549c5135a67c42b511c1a66b3d6f290b548b603989bd979245"
+        "grid": "9f38c79b2163d3817e439b85c66d075da399c1c90e0675287c8b7b8c5c70be53",
+        "narrow": "94bd6c20ab5fcef68ed89b890488073c27e52cb555ae5604df731b0b02851bdd"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/dietrich.png",
-        "112": "assets/portraits/before-part3/small/112/dietrich.png",
-        "168": "assets/portraits/before-part3/small/168/dietrich.png"
+        "56": "assets/portraits/before-part3/small/56/dietrich.webp",
+        "112": "assets/portraits/before-part3/small/112/dietrich.webp",
+        "168": "assets/portraits/before-part3/small/168/dietrich.webp"
       },
       "smallSha256": {
-        "56": "e9325a862171b73b952af7d937bbea7de46a952b73a7f29621cfdf1be5db3a7b",
-        "112": "2bc3610da50b68a3a91ec2a2cd2655a2bad23831783e46aa85da8eb9ca9ac7ce",
-        "168": "d5cfc8af430d966ba98d60f7bfcd044ce4afd61e6635ebdbe45fbcd553354e16"
+        "56": "344a47ea9f1a6e0f5152ee4562629ac97bb5580edb0dc2506f3f9cfb165cbd76",
+        "112": "72f4290da1db8f20a6d28026659a6a1e59ffeed9ec84105dbb85888fcad8bcd0",
+        "168": "6b31ff4b3b444547622cb0e4f8c996369f874aa6559cb309b79f05d871cacd5f"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ディートリヒ.png",
@@ -1778,8 +1778,8 @@
       "characterIds": [
         "c010"
       ],
-      "grid": "assets/portraits/before-part3/grid/esmeralda.png",
-      "narrow": "assets/portraits/before-part3/narrow/esmeralda.png",
+      "grid": "assets/portraits/before-part3/grid/esmeralda.webp",
+      "narrow": "assets/portraits/before-part3/narrow/esmeralda.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1834,18 +1834,18 @@
         }
       },
       "sha256": {
-        "grid": "6ac1cbeea6b224d13b50a81395e84201748ad527c0db08bd917fa9fa4adc10df",
-        "narrow": "29c3c48b3cf3cf33c08e5bd8c88e7da49cd6bd0315ec3b4afabec94b658d03bb"
+        "grid": "780be559299e1d95ee2295aeab83b70a238a3e514f6406ea69f52b3bb6656b84",
+        "narrow": "2589e9192e59b889344dc414fc75598b909c97508e0af23fe6933a5b558c7830"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/esmeralda.png",
-        "112": "assets/portraits/before-part3/small/112/esmeralda.png",
-        "168": "assets/portraits/before-part3/small/168/esmeralda.png"
+        "56": "assets/portraits/before-part3/small/56/esmeralda.webp",
+        "112": "assets/portraits/before-part3/small/112/esmeralda.webp",
+        "168": "assets/portraits/before-part3/small/168/esmeralda.webp"
       },
       "smallSha256": {
-        "56": "0c66df69156f35da01126435732c2ec5adc44b75251633f850759e8b58039341",
-        "112": "2da8c3084c39bee99c751b5bfcd09785364e6a93757a38e38b05c7bde8617cdc",
-        "168": "a60557b8d222d195dc5b8b575c56ea7683457537a814acb98e7664faf940f539"
+        "56": "57deae523ce70e10013eca5023363c10141762fbe5a78be8098b7fc6faf5be56",
+        "112": "9102893c99840aeed94e41346c5fec00fad3cb066c46038bc4b40eac6b3146d4",
+        "168": "bed03430f840b025720bcc608ae4c721c321067f46a4442be254399a991093f8"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_エスメラルダ.png",
@@ -1881,8 +1881,8 @@
       "characterIds": [
         "c009"
       ],
-      "grid": "assets/portraits/before-part3/grid/fabio.png",
-      "narrow": "assets/portraits/before-part3/narrow/fabio.png",
+      "grid": "assets/portraits/before-part3/grid/fabio.webp",
+      "narrow": "assets/portraits/before-part3/narrow/fabio.webp",
       "dimensions": {
         "grid": [
           214,
@@ -1937,18 +1937,18 @@
         }
       },
       "sha256": {
-        "grid": "4f51ef797339ddbe0261db8ef6444ad7f355518a7d36cff9c052cc817bbc946c",
-        "narrow": "2d6c6fc223888835deadec752017dab741641694f4958b2a3cb75bc28a8d63e8"
+        "grid": "ee6835b617293d5c854169fea6fc3b0d14f25f66aca4b445e0fad2d88692f712",
+        "narrow": "ba0f21531b9b3c0a465054429f592d32fb80347e4c5a8591d07e280f7538d9d7"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/fabio.png",
-        "112": "assets/portraits/before-part3/small/112/fabio.png",
-        "168": "assets/portraits/before-part3/small/168/fabio.png"
+        "56": "assets/portraits/before-part3/small/56/fabio.webp",
+        "112": "assets/portraits/before-part3/small/112/fabio.webp",
+        "168": "assets/portraits/before-part3/small/168/fabio.webp"
       },
       "smallSha256": {
-        "56": "83a6af137161de3cf832ba29cfdce2e2637305bb15ff4b3ca53b704a734bf40b",
-        "112": "02b20600931d4536f0cf9bbda1a335e628e830428a737bdf5fa77f8547cf85df",
-        "168": "abf2bf98eb81c7d33938748a04e9ca3f350c15ef48f07a20f2dbc94010e97bcd"
+        "56": "3d5a33880d7f7feb449db67a2d82ac61e6c02e6bc1fc76fe3bdd49d1773449c4",
+        "112": "95e7e7560724dd7f389790943ac3615e90e23f1533800332c8d77a8b110a6943",
+        "168": "d659f5f2a7ebe02f4cd473a21a7ca912081e4af3fa0bdd244d6935b9582192a7"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ファビオ.png",
@@ -1982,8 +1982,8 @@
       },
       "englishName": "Fatima",
       "characterIds": [],
-      "grid": "assets/portraits/before-part3/grid/fatima.png",
-      "narrow": "assets/portraits/before-part3/narrow/fatima.png",
+      "grid": "assets/portraits/before-part3/grid/fatima.webp",
+      "narrow": "assets/portraits/before-part3/narrow/fatima.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2038,18 +2038,18 @@
         }
       },
       "sha256": {
-        "grid": "326198f47d380c6d3a220dd4af296865b47474c24fe3beefb2424e81489a4a7a",
-        "narrow": "0a3d5f123a3d78d67090159b5fee6ad8ddd4d55969f34c2b310222f897527958"
+        "grid": "4fe3c09d33d923fe700e9a471fdd4e076fbda99da26f466ec486a24e086241ad",
+        "narrow": "aa9cf54c3697e38e9f91ad0f186e815cfb609e660f9d34287b082a712ea796bb"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/fatima.png",
-        "112": "assets/portraits/before-part3/small/112/fatima.png",
-        "168": "assets/portraits/before-part3/small/168/fatima.png"
+        "56": "assets/portraits/before-part3/small/56/fatima.webp",
+        "112": "assets/portraits/before-part3/small/112/fatima.webp",
+        "168": "assets/portraits/before-part3/small/168/fatima.webp"
       },
       "smallSha256": {
-        "56": "7f3dda23bd756daedf78a83dd14034d30431752c46243957800dd50f34eab683",
-        "112": "be268e3774e4a00b87ca2d38b258406e0611f17e386c7bed72c7e34453e825ce",
-        "168": "4993567aaf181fab73d90ed5d99c666c687ad7f578a625cde67839ec34ed8fae"
+        "56": "94056b8fd29a594a049d4dbb51d2f5551ec3389ba8dd85e5323ac996c4fb44af",
+        "112": "c3edca7debaab136176935ba291bbdf09365380d877fc6f7a4eba6db1383065e",
+        "168": "1bb5476b233452aaa8b64f80c7efe49005a056555e33eb6d67e6ba3e674a4d5f"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ファティマ.png",
@@ -2085,8 +2085,8 @@
       "characterIds": [
         "c036"
       ],
-      "grid": "assets/portraits/before-part3/grid/fianna.png",
-      "narrow": "assets/portraits/before-part3/narrow/fianna.png",
+      "grid": "assets/portraits/before-part3/grid/fianna.webp",
+      "narrow": "assets/portraits/before-part3/narrow/fianna.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2141,18 +2141,18 @@
         }
       },
       "sha256": {
-        "grid": "b0a5087252337d47d2e94d6f717e88a16c555efcc9805351443a27722276ed67",
-        "narrow": "475658d3d89c64499080a2b2e78ac7132dfda310e7e5fc09c0a4cd6b59d370e1"
+        "grid": "ef8ba8df2e2c097d14ddfd60bd4fcaff26cb31a546bf68ce9b924a2474990b0c",
+        "narrow": "9d34a451841842cf0518eaa961fcd6da63e325517d857a0d21a964492e3ab9eb"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/fianna.png",
-        "112": "assets/portraits/before-part3/small/112/fianna.png",
-        "168": "assets/portraits/before-part3/small/168/fianna.png"
+        "56": "assets/portraits/before-part3/small/56/fianna.webp",
+        "112": "assets/portraits/before-part3/small/112/fianna.webp",
+        "168": "assets/portraits/before-part3/small/168/fianna.webp"
       },
       "smallSha256": {
-        "56": "9f6a27419657eeaea7d0959663f0d9c01bcdba1b75b65223fd6e217158f8e5a9",
-        "112": "ae5b0198def1ca6dc3331b56273ed7eeceae1c60bfc8be818ade0b07cd6b0074",
-        "168": "07b9a086a451f78b039cb73bda474b5666fd90baf6ee7741aa00cef7dac427b2"
+        "56": "84d5d6070a38acb1879bddae31bbf7ac8fde404cc893ad0417393d263d74fdb5",
+        "112": "94d5ffd7a4e54f7a211d49065e9f7270ef6515cab4647776a16825dfd86ed7f8",
+        "168": "d59ad1b03dd5dba1ccacc1a4fea2a3f0bbaaced565bb21bbb140c6856dfd82ca"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_フィアナ.png",
@@ -2188,8 +2188,8 @@
       "characterIds": [
         "c065"
       ],
-      "grid": "assets/portraits/before-part3/grid/fortuna.png",
-      "narrow": "assets/portraits/before-part3/narrow/fortuna.png",
+      "grid": "assets/portraits/before-part3/grid/fortuna.webp",
+      "narrow": "assets/portraits/before-part3/narrow/fortuna.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2244,18 +2244,18 @@
         }
       },
       "sha256": {
-        "grid": "e4fa5cab50f1e6fa4e37b1671b91046decfbfa8940f77231f33d27488e539149",
-        "narrow": "e3efa8002ba9c764f252a656fc774371e29cd1a99677f922560f20837a1048b6"
+        "grid": "c008455a2170d80d23aa6508306a7608dd00e1c1b55b8005be272c513c9bb779",
+        "narrow": "9a85765365528a2f33d888e022aba98871782fb53605492b9b93d98a75aeff05"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/fortuna.png",
-        "112": "assets/portraits/before-part3/small/112/fortuna.png",
-        "168": "assets/portraits/before-part3/small/168/fortuna.png"
+        "56": "assets/portraits/before-part3/small/56/fortuna.webp",
+        "112": "assets/portraits/before-part3/small/112/fortuna.webp",
+        "168": "assets/portraits/before-part3/small/168/fortuna.webp"
       },
       "smallSha256": {
-        "56": "f15212c1c7c52d2481359c0f03664d0239ffdd14d1f6515cc264b10ea0c7fa5d",
-        "112": "64a3ef9c22dfb38b9589c414a16a14e886a1b168af6bc885cb5824969683dc2f",
-        "168": "a061654b34660c53c7c2ce2419dce0b6b3140de5411ccd7d671b592a284332a3"
+        "56": "462913819bc03d2de2a7282407b36f23877094de35447f39c3eea5ea927c86a4",
+        "112": "7aa3e1d46ef80da4df29823ea5bf643103d5111cb9af9034fcd11e2fff5d6c0b",
+        "168": "393ef76c90778efd66792d06be9f9b8db695433ccf338782057123e8511c1a10"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_フォトナ.png",
@@ -2291,8 +2291,8 @@
       "characterIds": [
         "c023"
       ],
-      "grid": "assets/portraits/before-part3/grid/gaitz.png",
-      "narrow": "assets/portraits/before-part3/narrow/gaitz.png",
+      "grid": "assets/portraits/before-part3/grid/gaitz.webp",
+      "narrow": "assets/portraits/before-part3/narrow/gaitz.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2347,18 +2347,18 @@
         }
       },
       "sha256": {
-        "grid": "d455d86df73b6045973405f12186e840ceb14ef84e3dc481b174fd7048bc2393",
-        "narrow": "b1458698a99b2cf395ad2b375056bad677da1f83af8ac3fcef96a3df7c9df922"
+        "grid": "0ef478bf07db863906a20fec9001c951f9a6cfd65e514acc16f8d8d7d2f1d24f",
+        "narrow": "6b885dbdf0601e2a6108ca501820bf869f7788568591a6f68f26a38431665ec2"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/gaitz.png",
-        "112": "assets/portraits/before-part3/small/112/gaitz.png",
-        "168": "assets/portraits/before-part3/small/168/gaitz.png"
+        "56": "assets/portraits/before-part3/small/56/gaitz.webp",
+        "112": "assets/portraits/before-part3/small/112/gaitz.webp",
+        "168": "assets/portraits/before-part3/small/168/gaitz.webp"
       },
       "smallSha256": {
-        "56": "3f4f4c9819d98b453f33f09d81f49a40991a605f06b83c4a4cfbaf0e54cab120",
-        "112": "740ff90f296ff1d5265d3aaf2d542e414c091e2c9420f183f29947a24feedd91",
-        "168": "182cbe7862d66c4d64c8bb31a838e73b1ac5e866779a80b84a1f8ac469fa2c5e"
+        "56": "dd3c43a35316f4e472fa048e0ded8736f15dc1a9de149d96e2481fc4d640538b",
+        "112": "d11b3d3832585d7f1beababdd8dbbce45da85039d6deb1dba6b20dfbba7b2204",
+        "168": "0ea01ebaad9ecee325b10c2c0382fe2d426e67fbe59669ed75905d18c3fe10a7"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ゲイツ.png",
@@ -2394,8 +2394,8 @@
       "characterIds": [
         "c024"
       ],
-      "grid": "assets/portraits/before-part3/grid/goliath.png",
-      "narrow": "assets/portraits/before-part3/narrow/goliath.png",
+      "grid": "assets/portraits/before-part3/grid/goliath.webp",
+      "narrow": "assets/portraits/before-part3/narrow/goliath.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2450,18 +2450,18 @@
         }
       },
       "sha256": {
-        "grid": "5026ef834c35e1cbbe9353d2c270333f1bd04d7560e8c3d018aa51cd9c02cfb6",
-        "narrow": "af6dfc0d46e1e172f0b7c8ce92930d2d0e2cfe18724d1ceb8ebadb9c24e48d13"
+        "grid": "cb490a98efa22b69a73b7d1796dcd1c9ac266580c99263a2c0f3d8bdffb6fe8f",
+        "narrow": "30662346b6847930c47903059083103563dc2b99ea494144bf78e8717ddb88d8"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/goliath.png",
-        "112": "assets/portraits/before-part3/small/112/goliath.png",
-        "168": "assets/portraits/before-part3/small/168/goliath.png"
+        "56": "assets/portraits/before-part3/small/56/goliath.webp",
+        "112": "assets/portraits/before-part3/small/112/goliath.webp",
+        "168": "assets/portraits/before-part3/small/168/goliath.webp"
       },
       "smallSha256": {
-        "56": "675b8afc88dff669fee6685ad26eaf483790d60f8d95d91d23e2453f4f1ea823",
-        "112": "e6f17cbec051e43280e474f12d0ff8c1d5c502530dc00eae8e619aee6f44fd60",
-        "168": "ce717fa69830427cf3bfa014a56c2945a086d1597e012a513f7e1c36eb47814a"
+        "56": "8b13d7708dd1185c988625fabcfa8f36660e31e79d8cbc0d087b3130fbba4cf9",
+        "112": "eebfc23f9592b3a8005663740f62fd0597c871dfd47054530c16d27175be9e86",
+        "168": "6052714569ce102fd5ff61a2c071e8bba3adb46136864b07f51d8d2bee23c04a"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ゴライアス.png",
@@ -2497,8 +2497,8 @@
       "characterIds": [
         "c045"
       ],
-      "grid": "assets/portraits/before-part3/grid/guzran.png",
-      "narrow": "assets/portraits/before-part3/narrow/guzran.png",
+      "grid": "assets/portraits/before-part3/grid/guzran.webp",
+      "narrow": "assets/portraits/before-part3/narrow/guzran.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2553,18 +2553,18 @@
         }
       },
       "sha256": {
-        "grid": "4436d16f907931e18615ba89ae1a32e7a5c838e44c2b2db8e44a4f1bf7eaab19",
-        "narrow": "554591822b1a5e465957001f40b90f73a5379cc6a834ce6385b3d887724fbb27"
+        "grid": "4d566c7bed7e41e187cfec38e3797f341f1bd901a200962b0fded4df2554efc6",
+        "narrow": "778cb8bf69a4795119007c9c5e3811c9027a4987fd34e15d7418152ae4bd7e6c"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/guzran.png",
-        "112": "assets/portraits/before-part3/small/112/guzran.png",
-        "168": "assets/portraits/before-part3/small/168/guzran.png"
+        "56": "assets/portraits/before-part3/small/56/guzran.webp",
+        "112": "assets/portraits/before-part3/small/112/guzran.webp",
+        "168": "assets/portraits/before-part3/small/168/guzran.webp"
       },
       "smallSha256": {
-        "56": "abb131a49b9fecfbeb82e3b4bbacc1125a2730da49c0df513a6a4ae6be7af93d",
-        "112": "417743535d97cd4d7b4fde8fdf709f6bea6b7601279b9508207dbbb30c2f7a50",
-        "168": "b80ec15612e7ddf2a090de9e74f9709c6e73e265c5bf685a634a1b0393e6c434"
+        "56": "0353f48d344ff375a5752074734c1ab634e9909f3c390e3b495dc5758a6b52c7",
+        "112": "4bacb2f4f5c122eb77d85e5ab3bb937c143151e0b84ff2dc7b7cb59b783479e6",
+        "168": "5241455e18a661881a48bbb9cea3993c949bd781f82c963a4d8ae77140ef8853"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_グザラン.png",
@@ -2600,8 +2600,8 @@
       "characterIds": [
         "c041"
       ],
-      "grid": "assets/portraits/before-part3/grid/halvin.png",
-      "narrow": "assets/portraits/before-part3/narrow/halvin.png",
+      "grid": "assets/portraits/before-part3/grid/halvin.webp",
+      "narrow": "assets/portraits/before-part3/narrow/halvin.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2656,18 +2656,18 @@
         }
       },
       "sha256": {
-        "grid": "43c5c6241f4ddb8a5e3d9f44d83845c0365fcb6f0a8bcc8c73896637a844b24d",
-        "narrow": "58c6fdba3541db062a383cd8046838521a43e9ab15f71d3a376691e683184da4"
+        "grid": "f48eac3159e46276c0265bc318dfc5289209ef2d0e57ccf0c9828ee9a8d14541",
+        "narrow": "7b4aec190399ef1a4640946a025b57b62f913f14e4aa4c2e664348d6f53a13bd"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/halvin.png",
-        "112": "assets/portraits/before-part3/small/112/halvin.png",
-        "168": "assets/portraits/before-part3/small/168/halvin.png"
+        "56": "assets/portraits/before-part3/small/56/halvin.webp",
+        "112": "assets/portraits/before-part3/small/112/halvin.webp",
+        "168": "assets/portraits/before-part3/small/168/halvin.webp"
       },
       "smallSha256": {
-        "56": "9c9f8bc8ea1ac88c058b099a984b16b471932a9c9e8bed9dad13e9d73a432148",
-        "112": "3a5fc18b4d3cd7fa8499fc4d09b3a426183fd770936df8c3a3bddcc01d34a40d",
-        "168": "60a166f587f6b536072dc939a63daef89c90d581f60975b1222084090bfe0113"
+        "56": "2a239b487473d7c3ce1430e791e4e4c2a78eabd8b82104ffe1eeb58f81569faa",
+        "112": "70d54287d3f99f8ce68b98f6e059149a0c64f1f04e2bff8705408bb3a643bdc8",
+        "168": "d62af7946b8cd28a2d9ca746eb4b63cfbdb40d200adabffc0fc8856c231547d5"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ハルヴィン.png",
@@ -2703,8 +2703,8 @@
       "characterIds": [
         "c002"
       ],
-      "grid": "assets/portraits/before-part3/grid/hong-hua.png",
-      "narrow": "assets/portraits/before-part3/narrow/hong-hua.png",
+      "grid": "assets/portraits/before-part3/grid/hong-hua.webp",
+      "narrow": "assets/portraits/before-part3/narrow/hong-hua.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2759,18 +2759,18 @@
         }
       },
       "sha256": {
-        "grid": "3dc3a18e59f6f7ac9525ee492d7c30d2d40a381b51095eb944df2adebb0e3b79",
-        "narrow": "ac464f7008655cd0c9416886b7523ef3227bf2ceae46e4d433c4c0938f77f642"
+        "grid": "4aab7147ba6ccddc3bd2a177a0f772782dcb58cae74cd9ba018c5f2141b85803",
+        "narrow": "f7dc45ce96befaacceeb3be6f0ed08689dd13d1ec4e1ae794e915850544d2ef2"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/hong-hua.png",
-        "112": "assets/portraits/before-part3/small/112/hong-hua.png",
-        "168": "assets/portraits/before-part3/small/168/hong-hua.png"
+        "56": "assets/portraits/before-part3/small/56/hong-hua.webp",
+        "112": "assets/portraits/before-part3/small/112/hong-hua.webp",
+        "168": "assets/portraits/before-part3/small/168/hong-hua.webp"
       },
       "smallSha256": {
-        "56": "6665f7e3fe8c43810d643d15dd7c594eac835846f384c3d08c5892e38657afef",
-        "112": "1f13fdf71241dbbf6be736458e7a2ddc70a6042beeb7993f27870940ddb8fec9",
-        "168": "1659884444511e7fdf7328d5e2cdb24897ed0b600839e858cc5974844dcef4a4"
+        "56": "1785d1a46aebd5770f1ca383be9ff9174d035bb2d920563236831b2a8bf72c11",
+        "112": "c1265aa3daecfba6b656aa38cb5c76efae0028f8b5d0b472b68077f8eae20ff4",
+        "168": "fc0648473f0525249c777e05127795596b17bcd892fa1b73d7a7f592e2ac9a9b"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_コウカ.png",
@@ -2806,8 +2806,8 @@
       "characterIds": [
         "c069"
       ],
-      "grid": "assets/portraits/before-part3/grid/iliana.png",
-      "narrow": "assets/portraits/before-part3/narrow/iliana.png",
+      "grid": "assets/portraits/before-part3/grid/iliana.webp",
+      "narrow": "assets/portraits/before-part3/narrow/iliana.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2862,18 +2862,18 @@
         }
       },
       "sha256": {
-        "grid": "da805240aaaaef12293a4fd456428fd4a24036cb8adcab878f211cffb59558a0",
-        "narrow": "48865f62c6222d422409785e413408632ac20586976c354ca92c4c99379327be"
+        "grid": "f5b9585e59b37d8204733622ff32d07a07c4ed06608fbbcdd3c736e58b7d4ae7",
+        "narrow": "8cfcbb8d3368324ce19fe76a2746024d43177fd65107755dc5b821ce7ed080cf"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/iliana.png",
-        "112": "assets/portraits/before-part3/small/112/iliana.png",
-        "168": "assets/portraits/before-part3/small/168/iliana.png"
+        "56": "assets/portraits/before-part3/small/56/iliana.webp",
+        "112": "assets/portraits/before-part3/small/112/iliana.webp",
+        "168": "assets/portraits/before-part3/small/168/iliana.webp"
       },
       "smallSha256": {
-        "56": "5e14762ceb7ad69ddf40231f70c5ba0f52e74b36bbc109cfd8079e4b78b0d429",
-        "112": "c509605373e4490bc9d2ece9d60673e205ee6825903a62d5d3473d0075aa4dd3",
-        "168": "8862ce3a3f5d8b6c5b1e0bc584d5c4acc8edfa4d13a1bc880acaa6792f7f0a88"
+        "56": "868307e82559c0822dc6144472b1cfe0aa964bc9dfa38f684c714d36a26acfcd",
+        "112": "0d16c8cc42ff2e01080adeab96ee42d4ef4bf1135d3309aacaf9cb6dc5629352",
+        "168": "15fe3177a77b8b90db59b222f0f26c0e1bded3e392ae7e1728a87ad782cdea1c"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_イリアナ.png",
@@ -2909,8 +2909,8 @@
       "characterIds": [
         "c057"
       ],
-      "grid": "assets/portraits/before-part3/grid/inyoni.png",
-      "narrow": "assets/portraits/before-part3/narrow/inyoni.png",
+      "grid": "assets/portraits/before-part3/grid/inyoni.webp",
+      "narrow": "assets/portraits/before-part3/narrow/inyoni.webp",
       "dimensions": {
         "grid": [
           214,
@@ -2965,18 +2965,18 @@
         }
       },
       "sha256": {
-        "grid": "723bd40b3c98ece9b3bc13c38107ba9ad1422fef4401389493d6149ffaafda77",
-        "narrow": "9192449c561b516078f623cafca635684d5c6ec1295b73118823763e57e66f9b"
+        "grid": "80db991c2bdc1ff58677feba154e05f0d618dbc1190375c81f79e320263205e2",
+        "narrow": "a160bb8b283fd42c3051a3faa003788c9dfca60e9ad8ea7f89f9885b419856bf"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/inyoni.png",
-        "112": "assets/portraits/before-part3/small/112/inyoni.png",
-        "168": "assets/portraits/before-part3/small/168/inyoni.png"
+        "56": "assets/portraits/before-part3/small/56/inyoni.webp",
+        "112": "assets/portraits/before-part3/small/112/inyoni.webp",
+        "168": "assets/portraits/before-part3/small/168/inyoni.webp"
       },
       "smallSha256": {
-        "56": "f2511a39634d7f9e99485a0e4747b6f8a4c50db8cd5ea3628ae6c118edf7f63d",
-        "112": "2484d11641cee8428f48dcc6ce411836418da5a89de9a398a862a6728f842bfb",
-        "168": "42f357619c325c0374f0c72dd2a9e7333280bb53d534937a51ba0e4aa31aaa15"
+        "56": "653d698b794830978bb4b9e4a83192f804c57f125b4a90d68e437ff4eee702de",
+        "112": "7a9b38c303ae81d546ea2a716a396f8652307af1caaa6c3502f3cfd0df269844",
+        "168": "ae31a6672e3e3e4c109db0b04c1f780b1dea177d75f92ff05aac9df5194f6889"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_イニオニ.png",
@@ -3012,8 +3012,8 @@
       "characterIds": [
         "c044"
       ],
-      "grid": "assets/portraits/before-part3/grid/io.png",
-      "narrow": "assets/portraits/before-part3/narrow/io.png",
+      "grid": "assets/portraits/before-part3/grid/io.webp",
+      "narrow": "assets/portraits/before-part3/narrow/io.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3068,18 +3068,18 @@
         }
       },
       "sha256": {
-        "grid": "2398cf8b01becbb56376752e25288d14cbe2075cf81856c8e5e11b88ca5f5d8e",
-        "narrow": "a50d8496bd2412b6822aa39f9967ee57fdc7892c359ed3c15bf15bcbc63825f3"
+        "grid": "c8bfedab1f66adee43dbff6889a2a98f59a384a020207427271e7af6995d5e95",
+        "narrow": "df4df7a64749db1f6688867507065553929eaef2d726802f044df72d64e5e0df"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/io.png",
-        "112": "assets/portraits/before-part3/small/112/io.png",
-        "168": "assets/portraits/before-part3/small/168/io.png"
+        "56": "assets/portraits/before-part3/small/56/io.webp",
+        "112": "assets/portraits/before-part3/small/112/io.webp",
+        "168": "assets/portraits/before-part3/small/168/io.webp"
       },
       "smallSha256": {
-        "56": "236e834e24a953d4f4f7a496acd1ab4c42d70326cb79b16eeab8ac9ce385ab40",
-        "112": "1e9fa5dcf581f26fb10624a324b84de12078705e05117a3771712fd12156a783",
-        "168": "3d81534ce8a6b142c51b46a9e8372817ccd2a33cd92b1e87e75c11ede607f54a"
+        "56": "a40001b59a38ceb6f0f616f0181a55c7065e9b4bb9b879418cb20dcb789b97c9",
+        "112": "c90c9b3e70f3a2661eafeee5df6eef4911ac7da9be51fde6608c52d5a62f8d90",
+        "168": "e95b94b1c4875fa65f701fe91f692c4abb2e0e1c5f284427f080142e36e15af2"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_イオ.png",
@@ -3115,8 +3115,8 @@
       "characterIds": [
         "c056"
       ],
-      "grid": "assets/portraits/before-part3/grid/jasmine.png",
-      "narrow": "assets/portraits/before-part3/narrow/jasmine.png",
+      "grid": "assets/portraits/before-part3/grid/jasmine.webp",
+      "narrow": "assets/portraits/before-part3/narrow/jasmine.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3171,18 +3171,18 @@
         }
       },
       "sha256": {
-        "grid": "2f061301c304d3d59a584cad5278e411bd7fed417aae69bd223e87960fb73415",
-        "narrow": "ddbb053ab2bea578806c63fb3831414186b316c30e9fc6cfe90e19cd24806cff"
+        "grid": "44ce5f9901294142751f44ec719937e4d50a78c0756a28efd42a9bbadd67d5e7",
+        "narrow": "e7fd5e9ada8bb8918cf2d14b62181a6ede21bf584a0f525f2d0b31c02eff6137"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/jasmine.png",
-        "112": "assets/portraits/before-part3/small/112/jasmine.png",
-        "168": "assets/portraits/before-part3/small/168/jasmine.png"
+        "56": "assets/portraits/before-part3/small/56/jasmine.webp",
+        "112": "assets/portraits/before-part3/small/112/jasmine.webp",
+        "168": "assets/portraits/before-part3/small/168/jasmine.webp"
       },
       "smallSha256": {
-        "56": "df70aa68159e5df955ed49bc24a4dafc77ce27e30067c1e22dc14d9eab85c786",
-        "112": "fc88fdbae8daf61b5387cd194bf4756620e520f0f5760fa766cad55ad7b1085c",
-        "168": "ab898d24b079637f09e058f70e77caf3238e59955c21a56ecf13a010065a9ded"
+        "56": "7c9a73894e261d4054c7b16ba3a4195f6a6442c4cb1b0b39bca65282c62eb196",
+        "112": "30136acc4e8ec3e0623ad4afcd775551fca76d98d9b684f987acf852bf5c870a",
+        "168": "c248af5e8511bcd551ee024e4659fe7762a90bf8c6c6d078603af25934d89ff1"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ジャスミン.png",
@@ -3218,8 +3218,8 @@
       "characterIds": [
         "c025"
       ],
-      "grid": "assets/portraits/before-part3/grid/jester.png",
-      "narrow": "assets/portraits/before-part3/narrow/jester.png",
+      "grid": "assets/portraits/before-part3/grid/jester.webp",
+      "narrow": "assets/portraits/before-part3/narrow/jester.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3274,18 +3274,18 @@
         }
       },
       "sha256": {
-        "grid": "67eabe8a74e8adb8bc15f1065e48f2f7a162527e98276e24d04c5b2e790eaad7",
-        "narrow": "bf1265b834434ae1c5fba52a912f5d2b9dcc94f006e0d577f30848957290d916"
+        "grid": "8494177f50af81276a913a466adbd5de9febe295612ae6af1783db45e72d96b5",
+        "narrow": "966413ce09722dc3d00317d3891931befe3d93043e6d98fca9f2a428f83d894b"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/jester.png",
-        "112": "assets/portraits/before-part3/small/112/jester.png",
-        "168": "assets/portraits/before-part3/small/168/jester.png"
+        "56": "assets/portraits/before-part3/small/56/jester.webp",
+        "112": "assets/portraits/before-part3/small/112/jester.webp",
+        "168": "assets/portraits/before-part3/small/168/jester.webp"
       },
       "smallSha256": {
-        "56": "76158b2a2efbce13d626febfc525cf3a482d1d69abc1978a7c6ffe36a6ccad4e",
-        "112": "b7f3149a2a24d0ed1a70a41419b3b2445d5e504a82561e1201da36ce213c164e",
-        "168": "c225254365446462390f7389a7fdf92b1547a58bb468885593dd9f4020b09288"
+        "56": "e9fe0e48709d71fe7c6c995689dfdafeb8c20bf4d237beeaa4319cb39239acb6",
+        "112": "14213d50c63de70b30b0cc0418058b5eaecab8f47b5f1585fa5866d16001b0f9",
+        "168": "4ba0f5b9073cbc7787f2f53435afb00a93e88d15f201d3de39bc29fec5e3683b"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ジェスター.png",
@@ -3321,8 +3321,8 @@
       "characterIds": [
         "c074"
       ],
-      "grid": "assets/portraits/before-part3/grid/jurah.png",
-      "narrow": "assets/portraits/before-part3/narrow/jurah.png",
+      "grid": "assets/portraits/before-part3/grid/jurah.webp",
+      "narrow": "assets/portraits/before-part3/narrow/jurah.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3377,18 +3377,18 @@
         }
       },
       "sha256": {
-        "grid": "50db651a6f13af4e42a5f2dcb2e18b6e889bbfd947e8ef6e62136fb9226d1581",
-        "narrow": "fcefa9929311708e81e182a1bd7c09bf4b9d9171f9fe6463b10781766262e446"
+        "grid": "80847f490413fe935baa3ba8dd0c1b22c404189a479dc722dfc53cfd8aaf4b77",
+        "narrow": "451adab29be7ba46f98c7fc814846e5c8132b3c4372052158303c1b0c81a9fc7"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/jurah.png",
-        "112": "assets/portraits/before-part3/small/112/jurah.png",
-        "168": "assets/portraits/before-part3/small/168/jurah.png"
+        "56": "assets/portraits/before-part3/small/56/jurah.webp",
+        "112": "assets/portraits/before-part3/small/112/jurah.webp",
+        "168": "assets/portraits/before-part3/small/168/jurah.webp"
       },
       "smallSha256": {
-        "56": "f14feeb324156c402b02735fbc6cb07fa5ac2827f8417246451a6a4e1db33139",
-        "112": "071c8a570e409d767cc5e98844c7d31e0183a59bad8a5fb28255149a16f1dfc5",
-        "168": "e30cba4f6e31fa18521747e5be634649d794e8314932cbe015ac0660cf766efa"
+        "56": "be88d710bc929e9c3c28b28e958e5df949b5400fa46719b06df2a7e43eb844bb",
+        "112": "46a0764cfbdca7e93faff15198acd019f9748d8c459e179e5bcb17121205ca46",
+        "168": "18fc86a6355608cf2c85a647310fb38cc00074b6e1f5629152181e9c2bc3d9cf"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ジュラ.png",
@@ -3424,8 +3424,8 @@
       "characterIds": [
         "c066"
       ],
-      "grid": "assets/portraits/before-part3/grid/kalla.png",
-      "narrow": "assets/portraits/before-part3/narrow/kalla.png",
+      "grid": "assets/portraits/before-part3/grid/kalla.webp",
+      "narrow": "assets/portraits/before-part3/narrow/kalla.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3480,18 +3480,18 @@
         }
       },
       "sha256": {
-        "grid": "7b74da3bbc8accab7c02b123a2e1af8a53389244e8890d3f8f0391577167e031",
-        "narrow": "cdfb920dde9e42a7e8a25aac0a66f1d0d57392eb22824877c73fb7a2ea9b3d42"
+        "grid": "9985aa0a482d4176b87eb2f729c82cb6b3922a9ba32d7614ba47a991b3f0e71d",
+        "narrow": "9ccf3ea0dea9851d749125d0dbccbdadeeaefa6cdf1efe8cec58bfdff576306f"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/kalla.png",
-        "112": "assets/portraits/before-part3/small/112/kalla.png",
-        "168": "assets/portraits/before-part3/small/168/kalla.png"
+        "56": "assets/portraits/before-part3/small/56/kalla.webp",
+        "112": "assets/portraits/before-part3/small/112/kalla.webp",
+        "168": "assets/portraits/before-part3/small/168/kalla.webp"
       },
       "smallSha256": {
-        "56": "2e96118e7b2b6ac5cb7d1747a4a4202cac011883783febba5f14e14426b22a01",
-        "112": "7d6d8ca09efaa4f6e6759951a803d65940c91d9e468d5e2b856226af4367ef35",
-        "168": "3d654fa49d558014f9d845e4f2e8c70eda2471eb0200cd9dcb569a9783e00ca5"
+        "56": "7c7cfbe402e5ed71489dbddab75fe6c750dd5b7bbc12deb97449f95b5233c1cc",
+        "112": "eec19c75c210696a190e52f567cdc47e8c947b773ceb758d45077617a2fdeda9",
+        "168": "1955c7014f1940396cc502d7dd930b57b1a95a39d9589fa9f00506b2d80d962f"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_カーラ.png",
@@ -3527,8 +3527,8 @@
       "characterIds": [
         "c055"
       ],
-      "grid": "assets/portraits/before-part3/grid/kiroc.png",
-      "narrow": "assets/portraits/before-part3/narrow/kiroc.png",
+      "grid": "assets/portraits/before-part3/grid/kiroc.webp",
+      "narrow": "assets/portraits/before-part3/narrow/kiroc.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3583,18 +3583,18 @@
         }
       },
       "sha256": {
-        "grid": "ff463bd1afbfdf1c75f18d0bb14278a74be203d0ba9fb172c23945b0dd5a1279",
-        "narrow": "d049b687bd82cba966423ed7a3927023e1cc31a15c16c49f025a4dfe110b18ea"
+        "grid": "2f28ccbf1b8893f5ef795fe2b3a2ec59e62675fbedd2c97df165d32f97dbd147",
+        "narrow": "bfb7a21116244398ba332ad02a58eae6c8841553d902c6a74a14b6f9dfd09fb9"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/kiroc.png",
-        "112": "assets/portraits/before-part3/small/112/kiroc.png",
-        "168": "assets/portraits/before-part3/small/168/kiroc.png"
+        "56": "assets/portraits/before-part3/small/56/kiroc.webp",
+        "112": "assets/portraits/before-part3/small/112/kiroc.webp",
+        "168": "assets/portraits/before-part3/small/168/kiroc.webp"
       },
       "smallSha256": {
-        "56": "8b0167316f911df714f48045f359af36808e0c89b8d51361d4355f4dbd54786f",
-        "112": "6b30e2a6654b6fe79caa253c255a5dba8baa6ed4b88d7e9989409e5fe0b45dc7",
-        "168": "b381195d83ac680dac30b84d79edc0f8df4358daec258f6ece9acb762576a4e8"
+        "56": "fdfddbac45e825f4c8caf47b9b08e25a85d067b748393832610eb6f5d2547a27",
+        "112": "45197a081257b2cc2c859072423a38d599171849a1abf3998de709ea57268dfd",
+        "168": "07bd899233c8eb720d891d33740e3c4a439d952259585461cd021424b745fa84"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_キロイカ.png",
@@ -3630,8 +3630,8 @@
       "characterIds": [
         "c063"
       ],
-      "grid": "assets/portraits/before-part3/grid/klapka.png",
-      "narrow": "assets/portraits/before-part3/narrow/klapka.png",
+      "grid": "assets/portraits/before-part3/grid/klapka.webp",
+      "narrow": "assets/portraits/before-part3/narrow/klapka.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3686,18 +3686,18 @@
         }
       },
       "sha256": {
-        "grid": "ec37e3a8a402ffab5ebd7857ed06d1f6b841d485badb0962d43b0d723cb33b9a",
-        "narrow": "be72bb85d203c240573b157f820e78deb9f6c744c39576f855baaa04dc95b370"
+        "grid": "49c59523203b753fad1b44fbe9f9a14cc1bc22efa6b11e29075feabb8479d5f6",
+        "narrow": "cfa92ba1f2e9c147e1c3add80cb5b9883682d81c01110e4547718ab7740cb576"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/klapka.png",
-        "112": "assets/portraits/before-part3/small/112/klapka.png",
-        "168": "assets/portraits/before-part3/small/168/klapka.png"
+        "56": "assets/portraits/before-part3/small/56/klapka.webp",
+        "112": "assets/portraits/before-part3/small/112/klapka.webp",
+        "168": "assets/portraits/before-part3/small/168/klapka.webp"
       },
       "smallSha256": {
-        "56": "b66463f27bc2df07f406ec20756c25ae864c3fa69eb28e269aae589811475379",
-        "112": "552799ebd00f5c972298018142912372725545e026975c3a1c4ee72cfdd08975",
-        "168": "653be36b85febe4a3a15ecd860c339607e02be67a8674acbea24c4ac8dba5afc"
+        "56": "31cfad8096ba4bb59cf204f279ff16613a6a9e8721b93dcd7872bff624875b81",
+        "112": "27a57934f63b8f0e5c1e13791a12d3e049aa0bb4b343724a9c7ba5841d0dfcc7",
+        "168": "56804f6a06d59146ed8f8e89cd84f41b5f130dce30d0ce73be8ba5417fb47761"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_クラプカ.png",
@@ -3733,8 +3733,8 @@
       "characterIds": [
         "c017"
       ],
-      "grid": "assets/portraits/before-part3/grid/leda.png",
-      "narrow": "assets/portraits/before-part3/narrow/leda.png",
+      "grid": "assets/portraits/before-part3/grid/leda.webp",
+      "narrow": "assets/portraits/before-part3/narrow/leda.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3789,18 +3789,18 @@
         }
       },
       "sha256": {
-        "grid": "d47961483dca8c4b1a04a8edaf4de5365efae129f95d5ede9f09e441e89d3800",
-        "narrow": "2b35d40e48dd9e394765de9c17006af12cda0fc7479dcf9b4d361b7cae26da74"
+        "grid": "0acba5f9db3d9f9f78d7ac7362dd13508c55c65fd16b9c3ef92e15faad81bc1b",
+        "narrow": "8d080abe4de643860cd69e5222adbfe49277fc1fb1baba5104b5a39e0ea6a4f7"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/leda.png",
-        "112": "assets/portraits/before-part3/small/112/leda.png",
-        "168": "assets/portraits/before-part3/small/168/leda.png"
+        "56": "assets/portraits/before-part3/small/56/leda.webp",
+        "112": "assets/portraits/before-part3/small/112/leda.webp",
+        "168": "assets/portraits/before-part3/small/168/leda.webp"
       },
       "smallSha256": {
-        "56": "4f72ba7980f4494abc627626132c0520eb8247adeba878b8225d804b95a65d3a",
-        "112": "2e432ed9432b5bcb76bf46a6a404d88b1fd2b66453253149c51f560d760a254a",
-        "168": "40324fa0f96798d44843d88de8b1417b6000e3f5a24906e78fae9df49d430c35"
+        "56": "3928866af636748d199b5fc260f5838f7cb0f64ab5e268ab2fd3eabe61dce71a",
+        "112": "5a9fdb089927f341b940cbe7448bd88bf730ea2a5d8115606fcddea5280d9ed4",
+        "168": "364b53f565484ebb2ce7ef01462bd94928ddf8da02cd03b843ed1eeccff2e740"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_レダ.png",
@@ -3836,8 +3836,8 @@
       "characterIds": [
         "c015"
       ],
-      "grid": "assets/portraits/before-part3/grid/lilian.png",
-      "narrow": "assets/portraits/before-part3/narrow/lilian.png",
+      "grid": "assets/portraits/before-part3/grid/lilian.webp",
+      "narrow": "assets/portraits/before-part3/narrow/lilian.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3892,18 +3892,18 @@
         }
       },
       "sha256": {
-        "grid": "1c90c856cdd25332626cae531f7515542d62f07a78b572d754d766eea11b39ef",
-        "narrow": "6f9ba86a36f67d067db00a605b3dcc0bef87a13abc89e5b582119672dfa81d43"
+        "grid": "20f27b7188b4dc48ff5b9a3e583f4c8826648219969c6cd437ec0ca05cde2054",
+        "narrow": "abd4a8f28fc4a639a73301e29a048f6a628e04a149a296e7d93b26646c9c642c"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/lilian.png",
-        "112": "assets/portraits/before-part3/small/112/lilian.png",
-        "168": "assets/portraits/before-part3/small/168/lilian.png"
+        "56": "assets/portraits/before-part3/small/56/lilian.webp",
+        "112": "assets/portraits/before-part3/small/112/lilian.webp",
+        "168": "assets/portraits/before-part3/small/168/lilian.webp"
       },
       "smallSha256": {
-        "56": "4a26a8d2d32e3bff218e6dc8a90da5a4a974b481221e580bb20c1da6d07ad756",
-        "112": "dcb3de7f2b3f7a697ecfb4461b937af594970c8efa8eb2b0c62665f445b9eb8f",
-        "168": "b3e14f540c2118fc20afab126ed8491213c4010db1c0833793f6d254953253ce"
+        "56": "0f9d4a50e38c183ba97d009e719ffdcae937b3fa7bbf7c53aa9f6d7a691c2927",
+        "112": "b4182c69313fc8777b6dca3cfb62d8e65f45c58bcaf4f648e472d3e954a92a78",
+        "168": "172ab506a9f15de6a1a32f08a1bb366f3594576e28ac1938c0cf87e666050325"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_リリアン.png",
@@ -3939,8 +3939,8 @@
       "characterIds": [
         "c029"
       ],
-      "grid": "assets/portraits/before-part3/grid/loretta.png",
-      "narrow": "assets/portraits/before-part3/narrow/loretta.png",
+      "grid": "assets/portraits/before-part3/grid/loretta.webp",
+      "narrow": "assets/portraits/before-part3/narrow/loretta.webp",
       "dimensions": {
         "grid": [
           214,
@@ -3995,18 +3995,18 @@
         }
       },
       "sha256": {
-        "grid": "7a9a619add6660b5535a59cd2b5d9d92eca9c977d638f673b0972c4b8ffbb302",
-        "narrow": "d124092f788a458e25ef52cf7a05a671b66d847660cbb51d32453ef5eff5011c"
+        "grid": "f66270b41a5a35ec0048c1f70b4fb3fe53336099cced292811b57f65b4e34d39",
+        "narrow": "cde88a9d0a80dcac203caa945cf2ca7cdf9ec7e01d468c71bc3c52f1a3b05daa"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/loretta.png",
-        "112": "assets/portraits/before-part3/small/112/loretta.png",
-        "168": "assets/portraits/before-part3/small/168/loretta.png"
+        "56": "assets/portraits/before-part3/small/56/loretta.webp",
+        "112": "assets/portraits/before-part3/small/112/loretta.webp",
+        "168": "assets/portraits/before-part3/small/168/loretta.webp"
       },
       "smallSha256": {
-        "56": "ef5bfa392f3ed566240af9ca2eccd4538edf9c039868c5aa7c70e567279c62f2",
-        "112": "e5e91373170bda8e4b55d535d04c8862aaca3c9e3548f5a3752659426645e737",
-        "168": "a12e228b784542922c985fa395e1520740ecc5cac89450550143161d84db64fc"
+        "56": "0c840cbf2204afb63a6e8e07a01b9ad70ab32da89c30e77c8e2d9ae1fdfc32c4",
+        "112": "14f5a61be7ed999f69b07ce9907c8c54492bb9e4a36aebc7f22c37b3b47ad8f0",
+        "168": "52d35c6fe6d65503209421c9628c553f078153502c71a50eefb66358d7d6e489"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ロレッタ.png",
@@ -4042,8 +4042,8 @@
       "characterIds": [
         "c035"
       ],
-      "grid": "assets/portraits/before-part3/grid/ludia.png",
-      "narrow": "assets/portraits/before-part3/narrow/ludia.png",
+      "grid": "assets/portraits/before-part3/grid/ludia.webp",
+      "narrow": "assets/portraits/before-part3/narrow/ludia.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4098,18 +4098,18 @@
         }
       },
       "sha256": {
-        "grid": "7ae708e9220c22bd098a616ff504ff7d02b48a3effc99c9ccac7d3ffb70cf023",
-        "narrow": "b8f79c4f1dfec4bbcef8c11789071accef7ad4dd2bfed9c2209cb0485771b7e4"
+        "grid": "a4d889d3ea84c7021c302112b7de26616c8aba04bceb089515e67b32886a8998",
+        "narrow": "4616cdae843b9a72e6e1effab36e7e5f256f7b3faa67cd0932eedce663f2328f"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/ludia.png",
-        "112": "assets/portraits/before-part3/small/112/ludia.png",
-        "168": "assets/portraits/before-part3/small/168/ludia.png"
+        "56": "assets/portraits/before-part3/small/56/ludia.webp",
+        "112": "assets/portraits/before-part3/small/112/ludia.webp",
+        "168": "assets/portraits/before-part3/small/168/ludia.webp"
       },
       "smallSha256": {
-        "56": "8f2b96830eb102ffcd52528302ed7a73b12aa9bc23fbe966dadef3170ead0f24",
-        "112": "68e04c900c14bf23fb3d282d4471221bcb557ded615381a88168c57080f2af3e",
-        "168": "d4d1551a8552de230091b46414d3c0e49c84b7c45e80cccaf2f4772fe9bcbdd3"
+        "56": "10b07c6a4f949790eaf32acd32a9df46a4fd389eba04887e16cd8091b1311dd0",
+        "112": "4c65bbb62d54cbdd1bc6146311f12e8278270172564d0017ad6b4c866060b002",
+        "168": "a85947604f74b0878c23f29264cb728787fdef568878b639394b7011d3670b49"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ルルディヤー.png",
@@ -4145,8 +4145,8 @@
       "characterIds": [
         "c016"
       ],
-      "grid": "assets/portraits/before-part3/grid/lysander.png",
-      "narrow": "assets/portraits/before-part3/narrow/lysander.png",
+      "grid": "assets/portraits/before-part3/grid/lysander.webp",
+      "narrow": "assets/portraits/before-part3/narrow/lysander.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4201,18 +4201,18 @@
         }
       },
       "sha256": {
-        "grid": "6bbc8933e1b59a46b9bc08c2fda427c7d8f61a48f656577600de900de8875a44",
-        "narrow": "6fc026d7d47fa68ad885dab794a09f3618f8e9ced80f2c55529855299cee43f7"
+        "grid": "5ab0fce6901bc9fa1fad085c0dcf4a0dec1da133da5b0e14c1ea32650c732cf9",
+        "narrow": "fdc740f21825f248b4a344dc936c90bdf6d5b5813844a00aa8fb112b62c08146"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/lysander.png",
-        "112": "assets/portraits/before-part3/small/112/lysander.png",
-        "168": "assets/portraits/before-part3/small/168/lysander.png"
+        "56": "assets/portraits/before-part3/small/56/lysander.webp",
+        "112": "assets/portraits/before-part3/small/112/lysander.webp",
+        "168": "assets/portraits/before-part3/small/168/lysander.webp"
       },
       "smallSha256": {
-        "56": "4a5b23808d1ead51572df066db48ef70d98230700ee8104f89769917148ba839",
-        "112": "c89633ec88b6bef265d3a3c92feb915e2379ef69711d86a4445ae56681527562",
-        "168": "2ae1af0b4159cc676c8d06282990627484948ac73c6b85fae4c84a8dde04a72b"
+        "56": "b0a18b971a7545bd048acd90c67b1ba9a19374beffab75148662a5f6b2f11e35",
+        "112": "e5308740e06e29d362f5a34e96ddc9f4524450bd40d8d73fb86d30fef400c875",
+        "168": "4c35e652c1f17a2e3f138d0c2b6cac38b362d9c2ea6611e6042a8e05a1ee52ea"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ライサンダー.png",
@@ -4248,8 +4248,8 @@
       "characterIds": [
         "c047"
       ],
-      "grid": "assets/portraits/before-part3/grid/majide.png",
-      "narrow": "assets/portraits/before-part3/narrow/majide.png",
+      "grid": "assets/portraits/before-part3/grid/majide.webp",
+      "narrow": "assets/portraits/before-part3/narrow/majide.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4304,18 +4304,18 @@
         }
       },
       "sha256": {
-        "grid": "92e51f4b63cb84ef4c0f6111f24df012fe5302af601175cfc8e34e09c3427bd1",
-        "narrow": "0165f16ce1e7c9bdb80dbf97d7e78f568ad1ce8cabf2a13fc6a342e4fc5b9e0b"
+        "grid": "b58d215ce7c7514755680f2bca4c608a4e091641031adc94257b886237adcb26",
+        "narrow": "55aa396f89c2b1ac8b07179195456552060db5083fae62248733be7967cc8bad"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/majide.png",
-        "112": "assets/portraits/before-part3/small/112/majide.png",
-        "168": "assets/portraits/before-part3/small/168/majide.png"
+        "56": "assets/portraits/before-part3/small/56/majide.webp",
+        "112": "assets/portraits/before-part3/small/112/majide.webp",
+        "168": "assets/portraits/before-part3/small/168/majide.webp"
       },
       "smallSha256": {
-        "56": "bb2d7932d9e515d962efa16288cdddaa2db2373d4fe344d38ac156b9faa0648b",
-        "112": "75742b8fa3010ba084c7483a35dabb0b7070ea23e3f324b8d53cd7ea22a4a273",
-        "168": "209e112eeae8a4330a15a6f77200ba842250fcabc35687db74deadf319a91baf"
+        "56": "5ffc9583df81b231796885a71d2e46a9f23923fa09343632a1f5e1e44acf9fe1",
+        "112": "cee8b3f25b90c39a1fcf92926f62bd82dc600371629e0a64106f94d4974e635a",
+        "168": "17c8d5016dfa13d6cb7e48a342878c4cae16fc857461d60f67279fc56d68b338"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_マジーデ.png",
@@ -4351,8 +4351,8 @@
       "characterIds": [
         "c067"
       ],
-      "grid": "assets/portraits/before-part3/grid/mars.png",
-      "narrow": "assets/portraits/before-part3/narrow/mars.png",
+      "grid": "assets/portraits/before-part3/grid/mars.webp",
+      "narrow": "assets/portraits/before-part3/narrow/mars.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4407,18 +4407,18 @@
         }
       },
       "sha256": {
-        "grid": "b62a893538e73a30824dae8e979e684c778c86f2ba487c22bf454b4e23d455db",
-        "narrow": "5c51d718a1aa6e8629f37ce5a5a8047cf3c0ac98ceafc289dc1a54d8345200cf"
+        "grid": "b00b8e6a6921d6cacba931646810dfda49baa455bb26283b3cdca748b26661c7",
+        "narrow": "47f27c9c07aa97d9f32910ed0db5cd5ccb78df2e8a0836f42efbcabb40f5f5eb"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/mars.png",
-        "112": "assets/portraits/before-part3/small/112/mars.png",
-        "168": "assets/portraits/before-part3/small/168/mars.png"
+        "56": "assets/portraits/before-part3/small/56/mars.webp",
+        "112": "assets/portraits/before-part3/small/112/mars.webp",
+        "168": "assets/portraits/before-part3/small/168/mars.webp"
       },
       "smallSha256": {
-        "56": "700ce5c5b3614b75372de6c3524aa87acf89c1b090a3a606e0f51a427099240c",
-        "112": "2fa093b9b336c91f97c4b50fcf5e00b1b47b71741cba82ea0421c78adbd6897c",
-        "168": "6ec7f2a00267cf9ce565683ab2c8f68f91ce5e6fd259af005863d9969a492843"
+        "56": "7796dcc326811917278ad0c9b1f27524f772b6b454b8eeb4a796c7554913f911",
+        "112": "e6077f754c03cd0fac0bd178a74fa10d4d4a3b681faba2e1895496a5da71a2e8",
+        "168": "25b4b18cb8515fbbfd9eee89b55d0cca58a7388d1be85b8568cb3b00bd629a1f"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_マーズ.png",
@@ -4452,8 +4452,8 @@
       },
       "englishName": "Maxim",
       "characterIds": [],
-      "grid": "assets/portraits/before-part3/grid/maxim.png",
-      "narrow": "assets/portraits/before-part3/narrow/maxim.png",
+      "grid": "assets/portraits/before-part3/grid/maxim.webp",
+      "narrow": "assets/portraits/before-part3/narrow/maxim.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4508,18 +4508,18 @@
         }
       },
       "sha256": {
-        "grid": "e9e514d79ebbefe86ba711b5a48b60db6018e65ada287f17a11325c9c85f14d8",
-        "narrow": "787654f85721597a3f00e80567c2279c659ea2c04af97b6e650b30abf8d33d99"
+        "grid": "9ba4432dafba9fe0bf53c4eab4debcd2573e79fbb1066c13e63172d9ffbcca39",
+        "narrow": "bae9099037bc2ccbe11fa74a66972dcb4182ff8481c364ff7b7af025f6cb8090"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/maxim.png",
-        "112": "assets/portraits/before-part3/small/112/maxim.png",
-        "168": "assets/portraits/before-part3/small/168/maxim.png"
+        "56": "assets/portraits/before-part3/small/56/maxim.webp",
+        "112": "assets/portraits/before-part3/small/112/maxim.webp",
+        "168": "assets/portraits/before-part3/small/168/maxim.webp"
       },
       "smallSha256": {
-        "56": "f1bef75e2970b65642bb99bd5740d5226c001b115ba538e324926c32833b7975",
-        "112": "1c9fd190a346b29432ac7d9873e0115015582c9c73b5e9188f4a017030e0c871",
-        "168": "3f1d2ae856d94be78ff15c30ae5ecc5cc55437336ba9de36c05e9c1ee4ab3fa6"
+        "56": "6e625b48052301455158ba038163f7c7b9d9c24e976dd0999cab538bad975195",
+        "112": "0ed6204194d7878e60aad66fb5de28971ecc52eb2ac6e3ef3d5ce5a4b5cfbd82",
+        "168": "6ec44770e339b0ab97f1877552701f2d6d0a6f5f10856e83e2eae08eec5586c0"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_マクシム.png",
@@ -4555,8 +4555,8 @@
       "characterIds": [
         "c011"
       ],
-      "grid": "assets/portraits/before-part3/grid/mikaela.png",
-      "narrow": "assets/portraits/before-part3/narrow/mikaela.png",
+      "grid": "assets/portraits/before-part3/grid/mikaela.webp",
+      "narrow": "assets/portraits/before-part3/narrow/mikaela.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4611,18 +4611,18 @@
         }
       },
       "sha256": {
-        "grid": "2a6f55948ddda56a01e761a5d29160f4865d56bd3a95b7be89414f3cd606b347",
-        "narrow": "1115ee91f2bd740e19772b2fd0b34b4fc26fddb0e1df5bb5bc3484a4c47ef0ca"
+        "grid": "63dc634ce577eefd81ac894f1d2f49f5ffdd9e0371b940adce07fe83360c22db",
+        "narrow": "e14954095efef6de133db7e2597e2ab052b1218a12afe107f46ab376c6536e2d"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/mikaela.png",
-        "112": "assets/portraits/before-part3/small/112/mikaela.png",
-        "168": "assets/portraits/before-part3/small/168/mikaela.png"
+        "56": "assets/portraits/before-part3/small/56/mikaela.webp",
+        "112": "assets/portraits/before-part3/small/112/mikaela.webp",
+        "168": "assets/portraits/before-part3/small/168/mikaela.webp"
       },
       "smallSha256": {
-        "56": "347ea48614cf2e79214f4390afbb037b5cd850155c137dc5283fe608e814a1bd",
-        "112": "12bfbf08f93337ffcfb40ebcec95fdee39f112d397cdad42e35b3cb607e08247",
-        "168": "56171fc964b8b9bbfe7b3fb02957ce17f18f8e0b8304e4739b9ff9cf0ef937b5"
+        "56": "27fce846d87dcad69ab93fc0216bb53ee43839f06080b86f779893456142e136",
+        "112": "a93cf2ad3b83ceb2d5e90ba519993d4be696b02d1d189ca3e686b181821e2359",
+        "168": "f614059c05a4e126f8fd735d87b24109a54e7469a77957318b6869c53eab0793"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ミカエラ.png",
@@ -4658,8 +4658,8 @@
       "characterIds": [
         "c020"
       ],
-      "grid": "assets/portraits/before-part3/grid/mu.png",
-      "narrow": "assets/portraits/before-part3/narrow/mu.png",
+      "grid": "assets/portraits/before-part3/grid/mu.webp",
+      "narrow": "assets/portraits/before-part3/narrow/mu.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4714,18 +4714,18 @@
         }
       },
       "sha256": {
-        "grid": "96f8d4e043d73002ffad654870a576f7569e0ac78a5b9ee57f029412c3daa283",
-        "narrow": "d34f14adb7a43a520bda1c41394106f4d8fd7598b6255b6136494edabeb77f33"
+        "grid": "973e15c9d5217019ad98e7d735878f26c77b9bc1f1b680d209851dedabb29660",
+        "narrow": "24ecfde532128b74d63fed44f7ae74ef69863bb5863f67d115747b5efdbd711f"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/mu.png",
-        "112": "assets/portraits/before-part3/small/112/mu.png",
-        "168": "assets/portraits/before-part3/small/168/mu.png"
+        "56": "assets/portraits/before-part3/small/56/mu.webp",
+        "112": "assets/portraits/before-part3/small/112/mu.webp",
+        "168": "assets/portraits/before-part3/small/168/mu.webp"
       },
       "smallSha256": {
-        "56": "6bee890bbe733f0c0181eda47d1fd6d54ddcbca3c6f48d33a3ecce0cdd2b2730",
-        "112": "ec9353fc454b1ff015d407dc944264e0bcdd5ddf2a9b2a989786dac60114ff47",
-        "168": "5e0cc28cb2da1a84021e610bbd2a54751aa9c7d39be6d3f8c44695bab29126c2"
+        "56": "e7f81f1937b674026b6567909d32d341f194e2800423e374d469f10cfc3bfe3f",
+        "112": "9d237ea110e797e16b588dc2c251ae37b9b5f6999d4fbf93fd6cbb124ce8e8dd",
+        "168": "8b933577726f83d01853342e216e190fa09c57cc12c4410b70fb2b25c9c89f2a"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ムウ.png",
@@ -4761,8 +4761,8 @@
       "characterIds": [
         "c059"
       ],
-      "grid": "assets/portraits/before-part3/grid/nathan.png",
-      "narrow": "assets/portraits/before-part3/narrow/nathan.png",
+      "grid": "assets/portraits/before-part3/grid/nathan.webp",
+      "narrow": "assets/portraits/before-part3/narrow/nathan.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4817,18 +4817,18 @@
         }
       },
       "sha256": {
-        "grid": "5b9c64eb0284ef91b4098ee77b737ac49fcc2767d4748c45a51af287753ff00a",
-        "narrow": "8e8c898c1177c096f466d1ac5b7761247d0c4e78692ef105cfa986602004f08b"
+        "grid": "080bc728b7130ece9bab59d6083e1caf137ed23dadcca164f87d09ebd3476c37",
+        "narrow": "ae9564134b67c9a23d5e3fdcccd1dcb81403cf912ee848b2a04963c61093ad75"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/nathan.png",
-        "112": "assets/portraits/before-part3/small/112/nathan.png",
-        "168": "assets/portraits/before-part3/small/168/nathan.png"
+        "56": "assets/portraits/before-part3/small/56/nathan.webp",
+        "112": "assets/portraits/before-part3/small/112/nathan.webp",
+        "168": "assets/portraits/before-part3/small/168/nathan.webp"
       },
       "smallSha256": {
-        "56": "7dc34cf1e5e0c4297be2a118bc6ed03d370b4a8d9d0f6f821ee9a33770974f34",
-        "112": "90f860f7b29a23e3defd35d835a016e74653ae0a86f2df1ddf67a68e31bb4ef2",
-        "168": "79902d92cb93dcbd03fa6d6f9df2d11e1fe2aeb94941677212835d21206a5962"
+        "56": "28eb6f098e9af60bdd8513114c13d19c50d00ded5fe86991671eabf5498d8da7",
+        "112": "7a0e103a3cea86620a5d5118c486a952f0f8ff531f13eb432a35b21a0e8da6c3",
+        "168": "aff1311c28af96801e32eb59299a574b771c3b1af1b67ea33510adc9835a5905"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ネイサン.png",
@@ -4864,8 +4864,8 @@
       "characterIds": [
         "c039"
       ],
-      "grid": "assets/portraits/before-part3/grid/nezha.png",
-      "narrow": "assets/portraits/before-part3/narrow/nezha.png",
+      "grid": "assets/portraits/before-part3/grid/nezha.webp",
+      "narrow": "assets/portraits/before-part3/narrow/nezha.webp",
       "dimensions": {
         "grid": [
           214,
@@ -4920,18 +4920,18 @@
         }
       },
       "sha256": {
-        "grid": "0872e5597f0d22f527bc5069c9eb0817388ba1d0a21279a5e15f5b0fb3a73bb5",
-        "narrow": "8519ba2893bb8aa6d215eb026cbda2ae31e67285b1a66cd940a27e6571c9592a"
+        "grid": "51679d583a79d11e7b5632aa3c91c05150d20b51b91e4da3e22718875b7cf101",
+        "narrow": "94a4478c9f2a0fc241b098d06b9c2302c668ced963f2d029433e0c969fd1f12d"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/nezha.png",
-        "112": "assets/portraits/before-part3/small/112/nezha.png",
-        "168": "assets/portraits/before-part3/small/168/nezha.png"
+        "56": "assets/portraits/before-part3/small/56/nezha.webp",
+        "112": "assets/portraits/before-part3/small/112/nezha.webp",
+        "168": "assets/portraits/before-part3/small/168/nezha.webp"
       },
       "smallSha256": {
-        "56": "197332bb93145de497c40b98272aba4381b2808696813e69d4451f23ebaed01b",
-        "112": "8a6793463409b0be11a2898961c6838d242c883535faa890835bba0cd5b2ed6e",
-        "168": "a9744645c0de4ff67f1b6924ae5d0ea5962d54025c1da04f0111d9b67f3065bf"
+        "56": "0bfe1c4cfaf0f65007653e31b2cf99e23476300783b31092bc46a6cec841659e",
+        "112": "c36f6fa15563cb7bb445ffd5e1e8e85b7fe60cbfda0e7a79e4538e3652d966e2",
+        "168": "a61d93cd39da83f3f46736d247e83139c52c51bdff1635070ece4787aba94fff"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ナジャ.png",
@@ -4967,8 +4967,8 @@
       "characterIds": [
         "c031"
       ],
-      "grid": "assets/portraits/before-part3/grid/ninae.png",
-      "narrow": "assets/portraits/before-part3/narrow/ninae.png",
+      "grid": "assets/portraits/before-part3/grid/ninae.webp",
+      "narrow": "assets/portraits/before-part3/narrow/ninae.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5023,18 +5023,18 @@
         }
       },
       "sha256": {
-        "grid": "7c496825405ab118aebdf8ccceabda21855e5078251f626e095b79fb9499076e",
-        "narrow": "b71c29da25d0e3eef4091d2a98cd63544ad226057779bdbaedcc7e7d1d308f59"
+        "grid": "f75bfdadffbb16edee2dddbd8171ce9b3a43dddfbeb34cde5ce182534c953d00",
+        "narrow": "f3e0fc9fa9eaf0f0633ab452a37fd429cd0b3a4691fc715285f818b53cff1b99"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/ninae.png",
-        "112": "assets/portraits/before-part3/small/112/ninae.png",
-        "168": "assets/portraits/before-part3/small/168/ninae.png"
+        "56": "assets/portraits/before-part3/small/56/ninae.webp",
+        "112": "assets/portraits/before-part3/small/112/ninae.webp",
+        "168": "assets/portraits/before-part3/small/168/ninae.webp"
       },
       "smallSha256": {
-        "56": "43146bfc96b74bbe0f13fe08cf48643678f8a32c95d373bee5e8b097cf2ba20e",
-        "112": "55d031bb5e692ddbd69c476aa83d584b8c5f17fb34a72a36bc80073ee5aadb79",
-        "168": "a213eb1c7df4ffa7c59418edd0371825e012e97ad3a43e18e2bc605053a42282"
+        "56": "1bfcc939d3d329aa99f2285e9cf72a8ad3703b12fc93f885aed67bfdea655382",
+        "112": "2a0aee91d1a3b73a44906a6dcfbe175b148444ac8571144a078b14842ce283d2",
+        "168": "00066fbe5b78bab34e86d4b7244fa48f5ce58006df0d94059c3cb5d44b3d94ac"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ニネ.png",
@@ -5070,8 +5070,8 @@
       "characterIds": [
         "c048"
       ],
-      "grid": "assets/portraits/before-part3/grid/noctula.png",
-      "narrow": "assets/portraits/before-part3/narrow/noctula.png",
+      "grid": "assets/portraits/before-part3/grid/noctula.webp",
+      "narrow": "assets/portraits/before-part3/narrow/noctula.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5126,18 +5126,18 @@
         }
       },
       "sha256": {
-        "grid": "27cccc4d7af56bf09f10382cef81f237e281f40359d1a82172fb52660e2292d5",
-        "narrow": "b42926b62741d424e79667b589c390b0d22f51499965ea375c6976ff445fb9d2"
+        "grid": "150821d26d69e9d20bed6f75a8c1279a69d5657daccd8aaef60257d701d7c06b",
+        "narrow": "bfd4d1e9b44a2172425c90c9051fa05ce4119f37115080e6e21e050e7b03718f"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/noctula.png",
-        "112": "assets/portraits/before-part3/small/112/noctula.png",
-        "168": "assets/portraits/before-part3/small/168/noctula.png"
+        "56": "assets/portraits/before-part3/small/56/noctula.webp",
+        "112": "assets/portraits/before-part3/small/112/noctula.webp",
+        "168": "assets/portraits/before-part3/small/168/noctula.webp"
       },
       "smallSha256": {
-        "56": "f927013c8ed0840f4b522584c457f07c9d41dcde5aca75a24f68b861b2358f36",
-        "112": "e02ac8a430448c08e1a95f04cc6b37450fb4cc11f0dd32515ce1b1700be2e52e",
-        "168": "35470cc18b5716b4c8839c7c5a08a8c5b8537c72ce92fb2472b9bf4680b1ca35"
+        "56": "b2ca8592282a742219453b27d5d5b3dcf0576899036a8fe10d2b800b45eae3b5",
+        "112": "0a8da7be9b968fa8c15c0a0baca782b6b06db1fb55d27a448abe3fd4dfdd25b4",
+        "168": "a7a43a0b6a52c9a38e23f26304074ed76c033d9a9846e8f3f69ecbdf338346a5"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ノクチュラ.png",
@@ -5173,8 +5173,8 @@
       "characterIds": [
         "c049"
       ],
-      "grid": "assets/portraits/before-part3/grid/nuzzuo.png",
-      "narrow": "assets/portraits/before-part3/narrow/nuzzuo.png",
+      "grid": "assets/portraits/before-part3/grid/nuzzuo.webp",
+      "narrow": "assets/portraits/before-part3/narrow/nuzzuo.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5229,18 +5229,18 @@
         }
       },
       "sha256": {
-        "grid": "860f54b2951c01c7b72fa44b4b159ae50103ab793eab656b6b80e069c457808f",
-        "narrow": "9649baf41d07632895c9973b76fcd15cea05968d62ff80f5538fe326ffb5081d"
+        "grid": "7fad3e177a42a363f56a8b9ddee27e516f6aeb6c06925e92e3eb4ceab35bb84a",
+        "narrow": "7bbecf7cfe833e1439cb1edad3775d4da8755c67c534632a96c067ade67fd5f4"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/nuzzuo.png",
-        "112": "assets/portraits/before-part3/small/112/nuzzuo.png",
-        "168": "assets/portraits/before-part3/small/168/nuzzuo.png"
+        "56": "assets/portraits/before-part3/small/56/nuzzuo.webp",
+        "112": "assets/portraits/before-part3/small/112/nuzzuo.webp",
+        "168": "assets/portraits/before-part3/small/168/nuzzuo.webp"
       },
       "smallSha256": {
-        "56": "8a6eb286556f3e9c7449fe72dd4a3f9b45dea5b92c7c11f692c36774d73da012",
-        "112": "2f2d7d6bbf167e4a5dc7f148818cb676f1f2de6fa2d275f032b46889589d6108",
-        "168": "fbd19eac55dc443989b4d0e4258b9c891a6081b67730c8cc9f1c016278be721a"
+        "56": "d9139387e6af8ae4db6443322bb0c46678d1ea5cd0b34a534ac6e37b292cca92",
+        "112": "a81fae147b38e0941ab0b727f0db75992b6abe2efab589029d3dda1fbf0fb1bf",
+        "168": "1c94bba14e917cc8c5bf7c14de6e4bdb29bda61ac2c95eefe913bab4adb2c6c3"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ヌッツォ.png",
@@ -5276,8 +5276,8 @@
       "characterIds": [
         "c043"
       ],
-      "grid": "assets/portraits/before-part3/grid/nydine.png",
-      "narrow": "assets/portraits/before-part3/narrow/nydine.png",
+      "grid": "assets/portraits/before-part3/grid/nydine.webp",
+      "narrow": "assets/portraits/before-part3/narrow/nydine.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5332,18 +5332,18 @@
         }
       },
       "sha256": {
-        "grid": "eac8a395d74e57d74b9d57e072e6bcd63c43764c7f6b10a80e4cf6908d8ad7fc",
-        "narrow": "c446aca43b70ed6b0fb43212104c4fbf4a80dbdff0531dbb8a3da82ddfa344db"
+        "grid": "644bb28a80e7e4cf3f53f032dadc8de871bb2694562b947ef9c3bc9613acec65",
+        "narrow": "fbd5634c840e5e3d330bce473ed575c486b5ea4e1b914f28ec62e0f92863b76d"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/nydine.png",
-        "112": "assets/portraits/before-part3/small/112/nydine.png",
-        "168": "assets/portraits/before-part3/small/168/nydine.png"
+        "56": "assets/portraits/before-part3/small/56/nydine.webp",
+        "112": "assets/portraits/before-part3/small/112/nydine.webp",
+        "168": "assets/portraits/before-part3/small/168/nydine.webp"
       },
       "smallSha256": {
-        "56": "bbb94724c3fae12243c92118440791685ec8c3b5bf8b8dedd60def4d78d66500",
-        "112": "fcfcf009889bc324150f2e28559abdd4a85fa667fb65db323a861d1e339a56bb",
-        "168": "3ecc2f5eaee6fb2e0f381e0e92af2da28cba41baa4a04e12ca239b0fd955c65a"
+        "56": "5c94b210e7695745f1cf22144d038f7b8c22f3ff38c490428ccdd1bcfcc8b977",
+        "112": "9d582f0c5c9a1b7952431f6e3fdf1dc85de75eac3dff513e1904c6b212604129",
+        "168": "6466ce24ac9788a62776dbe97e3b7a0799f570ee2ac90c0ce2c48ee4f1f398fa"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ヌディーヌ.png",
@@ -5379,8 +5379,8 @@
       "characterIds": [
         "c021"
       ],
-      "grid": "assets/portraits/before-part3/grid/olympia.png",
-      "narrow": "assets/portraits/before-part3/narrow/olympia.png",
+      "grid": "assets/portraits/before-part3/grid/olympia.webp",
+      "narrow": "assets/portraits/before-part3/narrow/olympia.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5435,18 +5435,18 @@
         }
       },
       "sha256": {
-        "grid": "0a6eaa9780b66fdb3331b26644f9e2abaae630ce2255ba90b23857ef96e424a3",
-        "narrow": "e0fa122c452dd8a5cca6c3eccac4ca1f792a067b2ee78b55663927646c06218a"
+        "grid": "6f7b221e62ac142ff5218a9d067621e5e0a8cc72edcf14c6507692dbbc3a7214",
+        "narrow": "2f2f891c0e294696d2bed05e006337fc5db314af1e82c0f1586562f9ed0bde10"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/olympia.png",
-        "112": "assets/portraits/before-part3/small/112/olympia.png",
-        "168": "assets/portraits/before-part3/small/168/olympia.png"
+        "56": "assets/portraits/before-part3/small/56/olympia.webp",
+        "112": "assets/portraits/before-part3/small/112/olympia.webp",
+        "168": "assets/portraits/before-part3/small/168/olympia.webp"
       },
       "smallSha256": {
-        "56": "74edf0b5b46cd14b793648a66e45c7acef72a701264eda12e4629805de1eb5bc",
-        "112": "6ecfd2814a507dc70e8893537263435560a39aa755ef0d338aec6a96cd2e935f",
-        "168": "4b04f6d19fd528d975d957f9f941677d17b88baf5d690d8428d26ebfb08d7124"
+        "56": "389c8179360cac8a98278ecfc9aa005afa7ef58661cb1c3105e61ad90d1f1167",
+        "112": "5edaf2959ab57008339c935ea10da728d6100e4dbd82e58b535673ba82bc65c3",
+        "168": "07d9b141ee212a659323c4dcae106caabc7646bb2b9e7ef44ce631eb02d63398"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_オリンピア.png",
@@ -5482,8 +5482,8 @@
       "characterIds": [
         "c027"
       ],
-      "grid": "assets/portraits/before-part3/grid/orchel.png",
-      "narrow": "assets/portraits/before-part3/narrow/orchel.png",
+      "grid": "assets/portraits/before-part3/grid/orchel.webp",
+      "narrow": "assets/portraits/before-part3/narrow/orchel.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5538,18 +5538,18 @@
         }
       },
       "sha256": {
-        "grid": "a4911407e43223b3c150adefb6716c80e137eadc91df096d7bfaa742135575bf",
-        "narrow": "6ec280935b44422a35aaadc81a6cdb9de767db4c1834fbf483c80fd04e46ca34"
+        "grid": "d2140c58541bbe7dacab95fd76b19549e2fbfa6592d11a3cc618e830a54b7e28",
+        "narrow": "5fc245696a96a961f3119fb3e5aa088f8f30a6d0a32c43a48c9648e2f5efd679"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/orchel.png",
-        "112": "assets/portraits/before-part3/small/112/orchel.png",
-        "168": "assets/portraits/before-part3/small/168/orchel.png"
+        "56": "assets/portraits/before-part3/small/56/orchel.webp",
+        "112": "assets/portraits/before-part3/small/112/orchel.webp",
+        "168": "assets/portraits/before-part3/small/168/orchel.webp"
       },
       "smallSha256": {
-        "56": "cb1771a59516bc394e256a0378a605813dbd24ab0d559bd658ce7a0a133b7676",
-        "112": "908599df7e8ce1adaacca26eaac70b6fbe7e2069e9c58e64df01a5ecdb72b1d1",
-        "168": "53cba04582e0fac6a6cc6bf239059a86d19a672e12a314f749762216bf99db72"
+        "56": "dd5bee33fc1325d0f034d8dbd5b9c4e88b5f730885bdcba044afd0b457f62019",
+        "112": "566421ac701569cdd48cc884136444b7bb5bb313af86812ca9a8541170aa3fed",
+        "168": "cedc218c32061ce71050eb0ced74364d740d05dd18cf802101de05cf57ee8599"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_オルヘル.png",
@@ -5585,8 +5585,8 @@
       "characterIds": [
         "c051"
       ],
-      "grid": "assets/portraits/before-part3/grid/peppe.png",
-      "narrow": "assets/portraits/before-part3/narrow/peppe.png",
+      "grid": "assets/portraits/before-part3/grid/peppe.webp",
+      "narrow": "assets/portraits/before-part3/narrow/peppe.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5641,18 +5641,18 @@
         }
       },
       "sha256": {
-        "grid": "0fed45812bbb7359b7811e285a50498d791d66d1e7977a078e3f273972ad5983",
-        "narrow": "0f66785e4e891e97ab0e672f93f92c4664184217adad95ca953f74096e75aeb5"
+        "grid": "17927f78e3150caaeff2e6ac1a91a5d76959d97cfabae0c26ba743e8e07aa577",
+        "narrow": "35363904a4262c4271bee7ecc8ecf9de8295b549b52a225b0319e0fcccdfe8de"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/peppe.png",
-        "112": "assets/portraits/before-part3/small/112/peppe.png",
-        "168": "assets/portraits/before-part3/small/168/peppe.png"
+        "56": "assets/portraits/before-part3/small/56/peppe.webp",
+        "112": "assets/portraits/before-part3/small/112/peppe.webp",
+        "168": "assets/portraits/before-part3/small/168/peppe.webp"
       },
       "smallSha256": {
-        "56": "a58580d3427f9e8bfa36dfcaddba4d4a8523be60637267c7bb26a29ff2fc170c",
-        "112": "8bc3dc1cf748db974f198f4ee799e2f6a8ce47367b02ca4d7444a1d38c72ce43",
-        "168": "8bbbfd2e96841ef0aeccd82717f4d1848bdbc5f89c29e897931836bd961eb131"
+        "56": "f8f14abeec27ed1be77ba1b7a76efaec80b81fc5dbea19f3b31d4b12888514aa",
+        "112": "fcc23571ecc1042fc7a7350bf72d3f9f8e8706b9587684b186b83f408e30320d",
+        "168": "8207974ec1478cc44d4224b28b280da8cd9520a5be9c1de0ef13e8d3acd832f8"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ペペ.png",
@@ -5688,8 +5688,8 @@
       "characterIds": [
         "c006"
       ],
-      "grid": "assets/portraits/before-part3/grid/peter.png",
-      "narrow": "assets/portraits/before-part3/narrow/peter.png",
+      "grid": "assets/portraits/before-part3/grid/peter.webp",
+      "narrow": "assets/portraits/before-part3/narrow/peter.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5744,18 +5744,18 @@
         }
       },
       "sha256": {
-        "grid": "8ea7cbc59d864b9685605f58fe4cf91efe1e699bcc0e540cbb2179df12b242cc",
-        "narrow": "3a90ec2f2f9ef5a6cb804c52f7e87a19cf1aa049c4b60b401ebfa0b0741e9ebc"
+        "grid": "4dba7e48292bd833c81cb35dcd770045ee87e73b6396e887f5ad490ab9fe21f2",
+        "narrow": "50c7ccd3efd38fa162766d5fb7dae493c51314fa33095de160bda4953295010e"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/peter.png",
-        "112": "assets/portraits/before-part3/small/112/peter.png",
-        "168": "assets/portraits/before-part3/small/168/peter.png"
+        "56": "assets/portraits/before-part3/small/56/peter.webp",
+        "112": "assets/portraits/before-part3/small/112/peter.webp",
+        "168": "assets/portraits/before-part3/small/168/peter.webp"
       },
       "smallSha256": {
-        "56": "5df79d50b237ec08f6b9cf9b51b20668e6ca4229b78d61cfffeebf94c459dec1",
-        "112": "ca631501a5a834d940f26ecdd2d7cfcaae9e6feaccf34f1e3e41c26af3a9e776",
-        "168": "2c5326b8a3bad191ea23527ec906eba098f642a7fa713044d10b895e8aa7f977"
+        "56": "d2b896d97b90ed061575a2e655b0be98f716694bab987e7ae7d108fd3fdc4cfb",
+        "112": "361d09f81312d48df0b2dd3a9db2c6ee89ad13dba76a8c5ad62dced0d5087eb4",
+        "168": "957fa3e865aca523c2959705271324b99f359a1593315584950451e6113dc8d7"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ピーテル.png",
@@ -5791,8 +5791,8 @@
       "characterIds": [
         "c068"
       ],
-      "grid": "assets/portraits/before-part3/grid/raksha.png",
-      "narrow": "assets/portraits/before-part3/narrow/raksha.png",
+      "grid": "assets/portraits/before-part3/grid/raksha.webp",
+      "narrow": "assets/portraits/before-part3/narrow/raksha.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5847,18 +5847,18 @@
         }
       },
       "sha256": {
-        "grid": "f28eaab761a10480e3bfdb7d2146e4a73a12117154b61ba5853212e1466ab7d6",
-        "narrow": "ecbad4f72fb62215acd4f8c2d2f4fac3c2d16749578b48e8af2eb29692acf846"
+        "grid": "c4e1a191ad2fbea54e9f90dc99f8a2fedf87fe3f962e752fa9d2b76c255c9da9",
+        "narrow": "c46eddf589cc9479206250f27698365a16a501eb64ac6be2c9c2f055127612e0"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/raksha.png",
-        "112": "assets/portraits/before-part3/small/112/raksha.png",
-        "168": "assets/portraits/before-part3/small/168/raksha.png"
+        "56": "assets/portraits/before-part3/small/56/raksha.webp",
+        "112": "assets/portraits/before-part3/small/112/raksha.webp",
+        "168": "assets/portraits/before-part3/small/168/raksha.webp"
       },
       "smallSha256": {
-        "56": "d67133fecc4c0902298f108abe0df5584c0d62a9854ebd6bee0ab0f833d73d9e",
-        "112": "3855a3bf6c2aa850a6f37b2101331fca05af6f0a3fa6d5f9ffffe11a2ae808cd",
-        "168": "06eba30a023dddb616958cfe54b077b24ca0ae9204dfdebb3f8cbe03439ce6a9"
+        "56": "2d6fae337024952bfa91ddcfc79b2b1b34fcf7b0ea0bc0e26561974fda6ab115",
+        "112": "560784c73e6f86fe2e3a8ee4a20dddf035aba496fb06b86982296d2b643462d9",
+        "168": "5c5e9c1ebae3e64fc36335220ba8d65e1cd8d9c2a9e1eb8414a02e73c5a50006"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ラクシャ.png",
@@ -5894,8 +5894,8 @@
       "characterIds": [
         "c030"
       ],
-      "grid": "assets/portraits/before-part3/grid/seteth.png",
-      "narrow": "assets/portraits/before-part3/narrow/seteth.png",
+      "grid": "assets/portraits/before-part3/grid/seteth.webp",
+      "narrow": "assets/portraits/before-part3/narrow/seteth.webp",
       "dimensions": {
         "grid": [
           214,
@@ -5950,18 +5950,18 @@
         }
       },
       "sha256": {
-        "grid": "297e75d1e65a65a6f651c1dd18ef92a03accc96abf819117dddcabdab7fe2630",
-        "narrow": "391983fe208f8dfaf0d5eed8dc194d1b73702437d346b20d4fe34cff9a2ae760"
+        "grid": "0fc4eb56662c6d378039d35b6b58a7ae81204bae78f6402551ab58027a217737",
+        "narrow": "d4535d8fc50f56aaaf5e55987c0077b0cf5863da74673d18a99e3dbe1bac603c"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/seteth.png",
-        "112": "assets/portraits/before-part3/small/112/seteth.png",
-        "168": "assets/portraits/before-part3/small/168/seteth.png"
+        "56": "assets/portraits/before-part3/small/56/seteth.webp",
+        "112": "assets/portraits/before-part3/small/112/seteth.webp",
+        "168": "assets/portraits/before-part3/small/168/seteth.webp"
       },
       "smallSha256": {
-        "56": "1f88bcae00832732ce23166d918bb623d48cdf39ea687f456355495d243eec84",
-        "112": "3e6896f549234cfd1ad519697be7eba85b60b237262445643012d718270e9220",
-        "168": "0ca19a153285dbf2080aab0784e7a363b6e58fd612c1032e3f7d53575c42b5c2"
+        "56": "7e57265071c44d4b80e77df671016ad217c261e26c8080bb40e91a776f47d3ec",
+        "112": "d6873c3b9feb9ee97f1a853c2773e2d7a49eb74b64c52a72866827c9523fa7d8",
+        "168": "7f39cd83d82b99add9a41f5b7826083652078ef0106970ca3707089484d3a033"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_セテス.png",
@@ -5997,8 +5997,8 @@
       "characterIds": [
         "c038"
       ],
-      "grid": "assets/portraits/before-part3/grid/sha-lan.png",
-      "narrow": "assets/portraits/before-part3/narrow/sha-lan.png",
+      "grid": "assets/portraits/before-part3/grid/sha-lan.webp",
+      "narrow": "assets/portraits/before-part3/narrow/sha-lan.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6053,18 +6053,18 @@
         }
       },
       "sha256": {
-        "grid": "3c82c8088ab6f13f6e9000af1f7e2cad8603cc10263f5e73fe737722e286e225",
-        "narrow": "38a2de1d682d75b5e4a99fb9b0501c7cd2ed6e35c50c0b76873a80f08c8b79c6"
+        "grid": "3b80e7d09dbb6ea89e2a94916f42a39910b2bbf3b43b82de3ee6c0438c54b8b3",
+        "narrow": "bdbf0141d3d420cb4fac4ed26cfe1ca9d64688ad00baa70308c0b4479a415992"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/sha-lan.png",
-        "112": "assets/portraits/before-part3/small/112/sha-lan.png",
-        "168": "assets/portraits/before-part3/small/168/sha-lan.png"
+        "56": "assets/portraits/before-part3/small/56/sha-lan.webp",
+        "112": "assets/portraits/before-part3/small/112/sha-lan.webp",
+        "168": "assets/portraits/before-part3/small/168/sha-lan.webp"
       },
       "smallSha256": {
-        "56": "e1c0b5290d50718e4c523c9fa1feee53a39a6c3da42ace43bcd3d942552f0687",
-        "112": "8594efe7f5ea94547b7647940843f89553f9a0d382722793bd9c9ac437749a7b",
-        "168": "ce5b93455138c9681230f0dcd1b664a159dd8452102d1554e46101a3b3b0c31f"
+        "56": "f53af1e701891b0b3dabdf10e9bd094114985c07f7f23b6323f40c45fdf592aa",
+        "112": "7ad7d0f3ab52f72e13839ac70c1e19426dc8c63cc2e8bfed7b954d297b11b223",
+        "168": "05e600b2040cfc269ab59a0e53a8b3d2da272db7f2f2474e149f7f63e2b2d90e"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_サラン.png",
@@ -6100,8 +6100,8 @@
       "characterIds": [
         "c034"
       ],
-      "grid": "assets/portraits/before-part3/grid/simon.png",
-      "narrow": "assets/portraits/before-part3/narrow/simon.png",
+      "grid": "assets/portraits/before-part3/grid/simon.webp",
+      "narrow": "assets/portraits/before-part3/narrow/simon.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6156,18 +6156,18 @@
         }
       },
       "sha256": {
-        "grid": "d4998617368159241c7d1926391b043b5c2d1900531b18c5a4481faa7d0a196b",
-        "narrow": "0436ab5b5fc517f87c9898f62b4717754a956ad3650cd1002fd567262adad68a"
+        "grid": "70abb8a5b76fdb944d04966bd3b11bd6d66137c79b193067904685a02f8ee928",
+        "narrow": "403730fab7610237981314f720ac40e5af85ae882c54c01a325db09e30162078"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/simon.png",
-        "112": "assets/portraits/before-part3/small/112/simon.png",
-        "168": "assets/portraits/before-part3/small/168/simon.png"
+        "56": "assets/portraits/before-part3/small/56/simon.webp",
+        "112": "assets/portraits/before-part3/small/112/simon.webp",
+        "168": "assets/portraits/before-part3/small/168/simon.webp"
       },
       "smallSha256": {
-        "56": "2fb766f05887a01866879d0ef16a13a276ac9828d037eff7ce90dca8f95041e0",
-        "112": "8e08153d3788483c764c68fdaddf8a44cf620252cd38f21ee63caa66fcedb340",
-        "168": "05a77111af79cb39c179da1e1239770c564a5b92a543e15726e0840b90a5e862"
+        "56": "9b04f81c2be2d727ef8cbe0e9b1e1b8ad7e98740299359aeef2de24e42ed5282",
+        "112": "85e067e2d0ad11f8f07c4b7e15f9928e6e48a738c1dcf624cabb4073dd8b288e",
+        "168": "0a698766c49d92b137e08771739ed12d379d23b69054313adbfa8d7236185ddf"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_シモン.png",
@@ -6203,8 +6203,8 @@
       "characterIds": [
         "c019"
       ],
-      "grid": "assets/portraits/before-part3/grid/sirocco.png",
-      "narrow": "assets/portraits/before-part3/narrow/sirocco.png",
+      "grid": "assets/portraits/before-part3/grid/sirocco.webp",
+      "narrow": "assets/portraits/before-part3/narrow/sirocco.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6259,18 +6259,18 @@
         }
       },
       "sha256": {
-        "grid": "21808967fde337a59de45f067d932900489c90dd0b3f3137ad55a38c28395381",
-        "narrow": "ba1ad81759aaea182965527523d3d9333ab82dc6afc56368f28a631c914ccdc4"
+        "grid": "39c7ae0e581e7e57654ca860e30bfafc4eb12d07fc7cab6f9826602cde57d595",
+        "narrow": "13394f3232f22b8d9d331caa81406791f57462d3563942eb6ad799e58a4fa939"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/sirocco.png",
-        "112": "assets/portraits/before-part3/small/112/sirocco.png",
-        "168": "assets/portraits/before-part3/small/168/sirocco.png"
+        "56": "assets/portraits/before-part3/small/56/sirocco.webp",
+        "112": "assets/portraits/before-part3/small/112/sirocco.webp",
+        "168": "assets/portraits/before-part3/small/168/sirocco.webp"
       },
       "smallSha256": {
-        "56": "d74c241ad7c4c78fed1cc4f30c11d637855e94f0a403b8b43664e351107fc590",
-        "112": "e8da343baaaf34fc05ae22fe2de6e808f23a2699bae483428f6b742123e9901a",
-        "168": "19a38741131f9bd7a18823a48348f4a22e2f2d66e2f9e583f338e4cd16fb866a"
+        "56": "8147337148bf25424d75453d01e9aae350c49ee32ccdb50412c555ecf5684a4b",
+        "112": "50854de3cb786c6e9aa45b33a6403dcebd3800c2ae96166dcb0e92e289048496",
+        "168": "2f8aac44459d74cc4471dd9b41f2f01b2f7ecf8eaf86e2683b939c4a2e50d97c"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_シロッコ.png",
@@ -6306,8 +6306,8 @@
       "characterIds": [
         "c075"
       ],
-      "grid": "assets/portraits/before-part3/grid/smyrnos.png",
-      "narrow": "assets/portraits/before-part3/narrow/smyrnos.png",
+      "grid": "assets/portraits/before-part3/grid/smyrnos.webp",
+      "narrow": "assets/portraits/before-part3/narrow/smyrnos.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6362,18 +6362,18 @@
         }
       },
       "sha256": {
-        "grid": "2cd463698cc64af1f1205c5c7e9f7684233ad4a02bfad5fd6aa8b107e868cb47",
-        "narrow": "1442788269b5dc7f33fbf1baab5bd3f5ea9471f0f85bce94c0e0fb4c1c7bdc26"
+        "grid": "5cf5150cb61a5b12ba51b10b6bdbf25e01741c3eefce32cacbaf177b7238f43f",
+        "narrow": "204abd083bf9e1f94a19dd5e60e2cddf23a68922b61d8a6fb2d7dc092916afc0"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/smyrnos.png",
-        "112": "assets/portraits/before-part3/small/112/smyrnos.png",
-        "168": "assets/portraits/before-part3/small/168/smyrnos.png"
+        "56": "assets/portraits/before-part3/small/56/smyrnos.webp",
+        "112": "assets/portraits/before-part3/small/112/smyrnos.webp",
+        "168": "assets/portraits/before-part3/small/168/smyrnos.webp"
       },
       "smallSha256": {
-        "56": "145449678786af16b9af4d36bb0d8f192a608f3d2381ca2ef28d9863e965dbd0",
-        "112": "e845f94c71e6e79a6642e6e54dd950b92c0f5de45597e420ecf53f2db11d92bf",
-        "168": "5a8d87e99ed21c85e3e99cd14b49373fad69a57dcaf901ff2a658e4d793fd5b4"
+        "56": "6d76dd68d8e7c49a03b4290edfd8846c05939cf6997f567924197ff9b9548b8c",
+        "112": "8fdf0ebe2fc7fe0f78dc280de6fbf1cb42cb0a3763ed3470528b1e25f0a8ad0a",
+        "168": "3177b71aace7aec8c81ad4eacc0a5af7e77a0dc76f1713bb529ba8797c7d2a7b"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_スミルノス.png",
@@ -6409,8 +6409,8 @@
       "characterIds": [
         "c050"
       ],
-      "grid": "assets/portraits/before-part3/grid/sofia.png",
-      "narrow": "assets/portraits/before-part3/narrow/sofia.png",
+      "grid": "assets/portraits/before-part3/grid/sofia.webp",
+      "narrow": "assets/portraits/before-part3/narrow/sofia.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6465,18 +6465,18 @@
         }
       },
       "sha256": {
-        "grid": "3399c13a2f8c125eb71e9208bc3dde25080bb2213efeaa353d64a1e94d1cb15c",
-        "narrow": "1e50e1bf28f7f15439e442ba5c756c804aa1d2e35f1f147096266967761fee24"
+        "grid": "304c5b7b55dca168aedfafc88c7d1e81ca15b60376069afb11747a736bf328ab",
+        "narrow": "8bc08eab0aee3076bed25086401c34123286f4c8d935ee4d1746b350d7b721e3"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/sofia.png",
-        "112": "assets/portraits/before-part3/small/112/sofia.png",
-        "168": "assets/portraits/before-part3/small/168/sofia.png"
+        "56": "assets/portraits/before-part3/small/56/sofia.webp",
+        "112": "assets/portraits/before-part3/small/112/sofia.webp",
+        "168": "assets/portraits/before-part3/small/168/sofia.webp"
       },
       "smallSha256": {
-        "56": "130ff72a23821c5204d55102101b61c10b1232490b9b72be881a6f11194c24d7",
-        "112": "8180da1dbaa5f6080ff35183942225373515caca4aac75e90d2cc17938da550c",
-        "168": "e0f84e713914c48123cc7b5c1342296521c25b236baab0e4b0b1ed75477c02f4"
+        "56": "d2be758444702c4da9d23291fc7187945e4656ceb89967ed5a4179be04f000be",
+        "112": "4cbc0cb1a08041d399f815bf1c568619b8e62565034f994923a38a30a798f9e1",
+        "168": "0bb506a3c1479a8206c9192c85ca4d3d8887f947760832585d29686f48eff52b"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ソフィア.png",
@@ -6512,8 +6512,8 @@
       "characterIds": [
         "c070"
       ],
-      "grid": "assets/portraits/before-part3/grid/sothis.png",
-      "narrow": "assets/portraits/before-part3/narrow/sothis.png",
+      "grid": "assets/portraits/before-part3/grid/sothis.webp",
+      "narrow": "assets/portraits/before-part3/narrow/sothis.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6568,18 +6568,18 @@
         }
       },
       "sha256": {
-        "grid": "1d253af8287fe5b3be39b738b44c8901ff3c44bcbb3af6fd07ae9b114556f0f7",
-        "narrow": "aa152a6c426a5c889df7cb842906074f3ef0d4d7da5b39ab07493194e7b1244c"
+        "grid": "09744ca0d6ab8fee55473ffa481627f4232be002344e262f598575abaa682577",
+        "narrow": "28c8c0f4c2689c68d8c174ffeb7a2df9576ab11d20cb503d16f59f0f97ae64e1"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/sothis.png",
-        "112": "assets/portraits/before-part3/small/112/sothis.png",
-        "168": "assets/portraits/before-part3/small/168/sothis.png"
+        "56": "assets/portraits/before-part3/small/56/sothis.webp",
+        "112": "assets/portraits/before-part3/small/112/sothis.webp",
+        "168": "assets/portraits/before-part3/small/168/sothis.webp"
       },
       "smallSha256": {
-        "56": "d54953f27cfa6b603891e25be59810e4bc30992f478da5a4d021d859c9b9751b",
-        "112": "f9119b9ff9145c1d2c50dafd281f3ddab8ce9a47894ccbad0a4b6e5c16efb8c7",
-        "168": "3a4cc776653918a8f768d5ad9b2ea68c8bca6ec76be0c8eb6912d8a2b27667e7"
+        "56": "4f78cb0fbb96d59074dffd263f7a99f4f652db639f5bd17dc3da35a9dd29e54a",
+        "112": "a58a44bad3e0ba468051245c0d370420c8ab4013c71ba1f85c8a268b1f9b93d2",
+        "168": "6a2f89990048a177417ea2921aab9e02454d137747d41cfa2e4b04c37bddf3bc"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_大ソティス.png",
@@ -6615,8 +6615,8 @@
       "characterIds": [
         "c062"
       ],
-      "grid": "assets/portraits/before-part3/grid/tahonia.png",
-      "narrow": "assets/portraits/before-part3/narrow/tahonia.png",
+      "grid": "assets/portraits/before-part3/grid/tahonia.webp",
+      "narrow": "assets/portraits/before-part3/narrow/tahonia.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6671,18 +6671,18 @@
         }
       },
       "sha256": {
-        "grid": "a8b24b9457cc4c49e1ef8318ef8e128761fb46f18fbd47aaf812965cca77b1ba",
-        "narrow": "85b6ac0f3e17dca53e408fa26fbd42751435014ee674b822a6abbb365fa6aad8"
+        "grid": "532cf7a8fb60dd5dd77aca9994d4cfed151ca843729f194f22f66ffd35d5c5cd",
+        "narrow": "eba5681aeadb478d15c281885088033405db9c7919648f08cb54fca470aecd0b"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/tahonia.png",
-        "112": "assets/portraits/before-part3/small/112/tahonia.png",
-        "168": "assets/portraits/before-part3/small/168/tahonia.png"
+        "56": "assets/portraits/before-part3/small/56/tahonia.webp",
+        "112": "assets/portraits/before-part3/small/112/tahonia.webp",
+        "168": "assets/portraits/before-part3/small/168/tahonia.webp"
       },
       "smallSha256": {
-        "56": "d53f81676979c98ef4bedc73f18bc068655dd6a33d79ac2998a1c01f6977cf5e",
-        "112": "b6949861749f0d6a10d7809d3cd1328a8bb05339b1e34b6e34e175d1a3052944",
-        "168": "85d119c5f3f3c93baa8af7bd7fff9412910630116a04318ffe8bb01c8030f3c4"
+        "56": "ab75d2b050b1c592b6c772756599d00c5d951a0bafe0bb5b54d03a257b229dd2",
+        "112": "6d766260257668cbcd5694c307b83b7d9f58d33e6235e5b0bcea8565faeb7070",
+        "168": "45df192858ac235bc6c2427b23e8739435e66844b7403c8c0bf2c445c8d95c98"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_タホウニア.png",
@@ -6718,8 +6718,8 @@
       "characterIds": [
         "c032"
       ],
-      "grid": "assets/portraits/before-part3/grid/talimun.png",
-      "narrow": "assets/portraits/before-part3/narrow/talimun.png",
+      "grid": "assets/portraits/before-part3/grid/talimun.webp",
+      "narrow": "assets/portraits/before-part3/narrow/talimun.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6774,18 +6774,18 @@
         }
       },
       "sha256": {
-        "grid": "9b3fd766a0b98966bfc73b8b51a93d319c72e91e180e4b225ef809be98747f4f",
-        "narrow": "776e6d30d138b114c7a60b4b56e39d4416128b770528660b7641260f7c9238c3"
+        "grid": "25f3f71ebe048cc104157e63299143577f92478df7b1b54e33d39d2213412666",
+        "narrow": "3bc9aec1f0af124bfd45bb65de4f691fd7319bd7edca1d60c6e16cc963298fdf"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/talimun.png",
-        "112": "assets/portraits/before-part3/small/112/talimun.png",
-        "168": "assets/portraits/before-part3/small/168/talimun.png"
+        "56": "assets/portraits/before-part3/small/56/talimun.webp",
+        "112": "assets/portraits/before-part3/small/112/talimun.webp",
+        "168": "assets/portraits/before-part3/small/168/talimun.webp"
       },
       "smallSha256": {
-        "56": "c360a8587b811bedf266a6af8d3e5ce20d465eaa6e3a2222c9dd7e4a297d809b",
-        "112": "3cb75e14cf21bcaea51aea9a360731e4be4f7da48d93741d2ec60ec5692095b1",
-        "168": "74a5ff6d300c0dcc6fe30ac058c4f42989f61c9dff598c8972ed41ce310beeb7"
+        "56": "b53fc9c2447cddf5c88b25004f909b8a226bf391015dc56e9880642e04046519",
+        "112": "5eec87919cbc5bd1dc67061d5d32a31807a46ed1c263f33cd352c83c82ea57ec",
+        "168": "39e0f50d85c11cec613fda70c8b81d79a3d94eebfb433815a094092b3ea13f05"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_タリムーン.png",
@@ -6821,8 +6821,8 @@
       "characterIds": [
         "c012"
       ],
-      "grid": "assets/portraits/before-part3/grid/theodora.png",
-      "narrow": "assets/portraits/before-part3/narrow/theodora.png",
+      "grid": "assets/portraits/before-part3/grid/theodora.webp",
+      "narrow": "assets/portraits/before-part3/narrow/theodora.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6877,18 +6877,18 @@
         }
       },
       "sha256": {
-        "grid": "2af84985373cf144275e5205fb70d44caa421f44f4c0c2243136e968d359f2c0",
-        "narrow": "b4eabdc1a81053d5f6c0988dc3d9ad4e35788645a3959df3738df8f480a0745a"
+        "grid": "bdb75b7ce5e76d88e8f03c417c974a816e449278d146a15b0a4145ab5d59883a",
+        "narrow": "d84aa8e2e177ab938976b5d1948dd4acd45554edc2b042c16b78f4093052a597"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/theodora.png",
-        "112": "assets/portraits/before-part3/small/112/theodora.png",
-        "168": "assets/portraits/before-part3/small/168/theodora.png"
+        "56": "assets/portraits/before-part3/small/56/theodora.webp",
+        "112": "assets/portraits/before-part3/small/112/theodora.webp",
+        "168": "assets/portraits/before-part3/small/168/theodora.webp"
       },
       "smallSha256": {
-        "56": "09fca598fee34ac95a19c23dd3b154659112880a36a0642f2e049a4f5a1560df",
-        "112": "8b6fbaf1bc96c7b8b5f112f78f3da312b5c581b67730af9390a1098d2fedc3ba",
-        "168": "ddf6dbc9e87f0b458217d84c4864c687c3c5ca935d45b840ddd663e587267261"
+        "56": "9d3aefef481c3934313e92f00f9fb5ff20e36b696e33611d340366705088e242",
+        "112": "7183a223ce983ba3b957426cc575f21469aab1114ba5f6cb8ed40a0f2625a435",
+        "168": "9a039b0c3762eb4723e48ea17515af5c44a6bf7c0cf9c871234b601b2503cd28"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_セオドラ.png",
@@ -6924,8 +6924,8 @@
       "characterIds": [
         "c005"
       ],
-      "grid": "assets/portraits/before-part3/grid/tialla.png",
-      "narrow": "assets/portraits/before-part3/narrow/tialla.png",
+      "grid": "assets/portraits/before-part3/grid/tialla.webp",
+      "narrow": "assets/portraits/before-part3/narrow/tialla.webp",
       "dimensions": {
         "grid": [
           214,
@@ -6980,18 +6980,18 @@
         }
       },
       "sha256": {
-        "grid": "4957e6847a6029aaa63c20f3fc43e82d06b6662ae3e065088d1b9ee26ddc70be",
-        "narrow": "f6048b925094d0586f7143fc914d09e599292752171828f220c075d0ad771ecc"
+        "grid": "449d1adfb20072bc0893845ec879e697677643cf0133220d0d488b70e90c5afd",
+        "narrow": "8240a8ad53f8f19725a1067dd52adaf34767930dc2e3f4f35aa9753eb8aa2989"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/tialla.png",
-        "112": "assets/portraits/before-part3/small/112/tialla.png",
-        "168": "assets/portraits/before-part3/small/168/tialla.png"
+        "56": "assets/portraits/before-part3/small/56/tialla.webp",
+        "112": "assets/portraits/before-part3/small/112/tialla.webp",
+        "168": "assets/portraits/before-part3/small/168/tialla.webp"
       },
       "smallSha256": {
-        "56": "c4a260566086f8d6b68a96ec16805ba4067031d6c4ee26cde8157037fc8bf255",
-        "112": "3e21306accf038c6652a5d8350ba52f1d39e885a3a7979eda5134b636b250776",
-        "168": "d77a1db56778b2662d1eceab20f7bd12f69b68e310c83e7f5699d50cf476b996"
+        "56": "ba5153ad419f345b13d6f487a127dfd773207aaec61c52d856f0698374a669be",
+        "112": "02e31835e117d3d8225a84d6ba9d4d1078ca363279ce32895f2bdf7f599c760d",
+        "168": "a3016fc48f6bee01743396edf61178cfe43c29ffda352606c4c3f5fc3491f1ad"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ティアラ.png",
@@ -7027,8 +7027,8 @@
       "characterIds": [
         "c014"
       ],
-      "grid": "assets/portraits/before-part3/grid/tobias.png",
-      "narrow": "assets/portraits/before-part3/narrow/tobias.png",
+      "grid": "assets/portraits/before-part3/grid/tobias.webp",
+      "narrow": "assets/portraits/before-part3/narrow/tobias.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7083,18 +7083,18 @@
         }
       },
       "sha256": {
-        "grid": "66011ff412528d95d841210b51a54797a17f8f77c6672f764e59327f8df32167",
-        "narrow": "323d132492fe376ae1caa5d661a62a164c74eed193efa71497e6ffef34bd3d7c"
+        "grid": "9fc1ee32522b204e94c3c23bf98a5658eb6d89bbe37918cd96481df0309627fe",
+        "narrow": "684ee5d536f407eb8ebd94800f15e1d48333136f9f28cd581a7720e8a45ba8e0"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/tobias.png",
-        "112": "assets/portraits/before-part3/small/112/tobias.png",
-        "168": "assets/portraits/before-part3/small/168/tobias.png"
+        "56": "assets/portraits/before-part3/small/56/tobias.webp",
+        "112": "assets/portraits/before-part3/small/112/tobias.webp",
+        "168": "assets/portraits/before-part3/small/168/tobias.webp"
       },
       "smallSha256": {
-        "56": "255174263548b589e24eedaf2e157870cdeb9e80be50c91dddf88731e27c0b7c",
-        "112": "320a8b943c8e80d897b5f228f59edead5b8b855c3fa8db70aef74c9e61b3df57",
-        "168": "82c87b68401af300fffadaa9e3fab753629d8c96ca741558559efc612a13763b"
+        "56": "b9656ebbbf050948c42fa5d605c6249f5cd08278eb7be610139a53b0ec74837a",
+        "112": "a167b905c0934796192b983100079fc3fe624ed339a5eb2fe234aec6563e9bf4",
+        "168": "3209f0d3d746e409d21411d8e79e29e20ef77fe38d31fceaa1218e5381335b5c"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_トビヤス.png",
@@ -7130,8 +7130,8 @@
       "characterIds": [
         "c003"
       ],
-      "grid": "assets/portraits/before-part3/grid/troy.png",
-      "narrow": "assets/portraits/before-part3/narrow/troy.png",
+      "grid": "assets/portraits/before-part3/grid/troy.webp",
+      "narrow": "assets/portraits/before-part3/narrow/troy.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7186,18 +7186,18 @@
         }
       },
       "sha256": {
-        "grid": "03d20e41a49d0e1ff5074eae2aa39a821f3d061d7c7083bf041d738ec18a1b0c",
-        "narrow": "d7ce49f885cce3b7bf1b37c42462452cf070c67b2288e5307860f3d1d324e435"
+        "grid": "605bec8cbce46b13ff6efb453b0dcd60e528046c786a61c98fd01d1674b866c7",
+        "narrow": "f8d542b082b2745c9cd4c204249596bcc9070d6323f2fe4f9b67ac417023a8be"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/troy.png",
-        "112": "assets/portraits/before-part3/small/112/troy.png",
-        "168": "assets/portraits/before-part3/small/168/troy.png"
+        "56": "assets/portraits/before-part3/small/56/troy.webp",
+        "112": "assets/portraits/before-part3/small/112/troy.webp",
+        "168": "assets/portraits/before-part3/small/168/troy.webp"
       },
       "smallSha256": {
-        "56": "5d724d37311edb319db6ae87a88d7534464d07fb6dbe50c43793c677a602b484",
-        "112": "1e26a910367ac6225e2b9ff4b04ace64c367706832af755e1b0470ccd3d68cf1",
-        "168": "09290963897a45ec8c3de62477086abbf5d11b19106f4a477b4a616b244207a9"
+        "56": "b488de66750533c4babbeaf8289c8ac1a969441ccee2c264414d3b38c06496cf",
+        "112": "81ed95c003bba263e2aba84e54f89bd45f5923d715f0e18e15c0bf5b0a3670a9",
+        "168": "66bbc63d5b245dad9a5ef3b7202d424b97526cfbb8a410fc578430e912c4449d"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_トロイア.png",
@@ -7233,8 +7233,8 @@
       "characterIds": [
         "c007"
       ],
-      "grid": "assets/portraits/before-part3/grid/ultand.png",
-      "narrow": "assets/portraits/before-part3/narrow/ultand.png",
+      "grid": "assets/portraits/before-part3/grid/ultand.webp",
+      "narrow": "assets/portraits/before-part3/narrow/ultand.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7289,18 +7289,18 @@
         }
       },
       "sha256": {
-        "grid": "09a0347bbf85cc9a91e956e5bc3067130eff3f9ee7144fe8842f35f217aadc8e",
-        "narrow": "119b85ea954bdca603893cbdf9cc469f31f44c2e9ab462b371572a1eb468bfce"
+        "grid": "6fb707e8f7ec98b9f3389858a6abb775bb910303981ebee9ba2d6642b1289a2e",
+        "narrow": "d22a5add9be62c238cf0a28e6d1e88a2aa9a7627a24180d5e582469e7729ed26"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/ultand.png",
-        "112": "assets/portraits/before-part3/small/112/ultand.png",
-        "168": "assets/portraits/before-part3/small/168/ultand.png"
+        "56": "assets/portraits/before-part3/small/56/ultand.webp",
+        "112": "assets/portraits/before-part3/small/112/ultand.webp",
+        "168": "assets/portraits/before-part3/small/168/ultand.webp"
       },
       "smallSha256": {
-        "56": "81c227e4d3bb36f52fb34ec6bac92afb5b827c0bc3d9a23bd200703bda213927",
-        "112": "0ac75bfa9ab70edafbf95e81933fa6548ca5ba06efc9e4e90b195d97e5ed4da3",
-        "168": "58cad3121aacd770c3f65f02799a3f527e244680e91e64eb02fd4851469ea3eb"
+        "56": "8e5f723e579e20cf89c35fa09472ab1eb2dce5ac475cde136337653809c6a790",
+        "112": "2bbecdb6fab0602833dcd50e33b102eb50d3db1a4fc140e5b3413bc37112f3d5",
+        "168": "393e378aeb82a5f940db6e69903a11810e2c2f7e41f119bbdc632b153cf900eb"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ウルタンド.png",
@@ -7336,8 +7336,8 @@
       "characterIds": [
         "c033"
       ],
-      "grid": "assets/portraits/before-part3/grid/ursula.png",
-      "narrow": "assets/portraits/before-part3/narrow/ursula.png",
+      "grid": "assets/portraits/before-part3/grid/ursula.webp",
+      "narrow": "assets/portraits/before-part3/narrow/ursula.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7392,18 +7392,18 @@
         }
       },
       "sha256": {
-        "grid": "66b4e7668d1637113a29b29f92a4a20b3e40ff9363e9c4d05e92fb715989b1ba",
-        "narrow": "6e1a283b19a9791739c8cdad71b6eb4b117c4739e90105e4c3a8c7529e5ac9b2"
+        "grid": "769fd3555c7ca226e2785d305525e112d4f0f4413dd04d2dc0179d5b0b150b70",
+        "narrow": "aaf5171830970a7af9eba94fd2836eeba2b9d1adaa75cb8a21a75872c2823f5d"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/ursula.png",
-        "112": "assets/portraits/before-part3/small/112/ursula.png",
-        "168": "assets/portraits/before-part3/small/168/ursula.png"
+        "56": "assets/portraits/before-part3/small/56/ursula.webp",
+        "112": "assets/portraits/before-part3/small/112/ursula.webp",
+        "168": "assets/portraits/before-part3/small/168/ursula.webp"
       },
       "smallSha256": {
-        "56": "0b391a7d9733e85e5fd7821ccd25eaec1b7d1cf11374306fc682bf339c235b4a",
-        "112": "78b92861778f44317fa08ff16f3a859dcfcdf243b5f731977fbe3d2b3932425e",
-        "168": "b406bed942a51b8f269b47548b09e87c6c214417219d3d597dd62b4f6782078c"
+        "56": "cec87b575027d421d4d84a7ff6c3a26ab339f5c1843a8765da36e90f1d750732",
+        "112": "5599463b344da2566b95443d582daaff654ada455aa267ba57e3eaa8d3a7bb2a",
+        "168": "754f60f3c10e84e9b8a7dc253ec4353bb15d064c1d357e840d856ee867619cac"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ウーシュラ.png",
@@ -7439,8 +7439,8 @@
       "characterIds": [
         "c046"
       ],
-      "grid": "assets/portraits/before-part3/grid/yang-jie.png",
-      "narrow": "assets/portraits/before-part3/narrow/yang-jie.png",
+      "grid": "assets/portraits/before-part3/grid/yang-jie.webp",
+      "narrow": "assets/portraits/before-part3/narrow/yang-jie.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7495,18 +7495,18 @@
         }
       },
       "sha256": {
-        "grid": "54c0361c434c4237062663a9492a8174626e2f1961f25bd665268b79d20f7744",
-        "narrow": "06013b9473477d10576e7189963c41125bef43308560d072058ab1d426513358"
+        "grid": "d9ec3a8e54bb7532c6e8ac5f31e6c85827a82c6683a71a1d53e71c210582db79",
+        "narrow": "20b8b0f89406a6006ff8fb62da942ddb6052a4a170ac59d9f97c5e8a5204d97e"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/yang-jie.png",
-        "112": "assets/portraits/before-part3/small/112/yang-jie.png",
-        "168": "assets/portraits/before-part3/small/168/yang-jie.png"
+        "56": "assets/portraits/before-part3/small/56/yang-jie.webp",
+        "112": "assets/portraits/before-part3/small/112/yang-jie.webp",
+        "168": "assets/portraits/before-part3/small/168/yang-jie.webp"
       },
       "smallSha256": {
-        "56": "12525eb6c946ab9962431ee42529d5a3b12368f3b54e5e50d5a0360f4bf95cf9",
-        "112": "cd478a7c36a6af44828d050542c0b9bd04b4043a0ec6475ca9de9081ca54fa0e",
-        "168": "2418c313dc765bb0ae85dfeb733166270e1d8af01992343823cec17d9bc82cd0"
+        "56": "f26b010a278595f98046f0a42ffce5d320042c4b0f600f516febb247610d0d59",
+        "112": "878c020c83ebab588106a10ef925c752dc421688dcb326d9a9854bcf6ff41a3c",
+        "168": "be1663a1002acf3449772892d985e7081cf7d24a0c897c178d7faaee24134565"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ヨーカイ.png",
@@ -7542,8 +7542,8 @@
       "characterIds": [
         "c052"
       ],
-      "grid": "assets/portraits/before-part3/grid/zarcone.png",
-      "narrow": "assets/portraits/before-part3/narrow/zarcone.png",
+      "grid": "assets/portraits/before-part3/grid/zarcone.webp",
+      "narrow": "assets/portraits/before-part3/narrow/zarcone.webp",
       "dimensions": {
         "grid": [
           214,
@@ -7598,18 +7598,18 @@
         }
       },
       "sha256": {
-        "grid": "ad98edf6c88b63ebf368c857a95a135ebb29e1427fae1899a9898225de89a431",
-        "narrow": "b35b5a54df8eeca855aede586abe141bb9fa8e98f3c8f5dab9b4738544119db5"
+        "grid": "c86ac488bf8daed5b7541e39c95a6bc89e02f4f92973d65d12052d65c2ebc9e8",
+        "narrow": "dd588e975d5fbbfc64e42986fc44f76cf109f5b4fe84799e13908d098c3e5c66"
       },
       "small": {
-        "56": "assets/portraits/before-part3/small/56/zarcone.png",
-        "112": "assets/portraits/before-part3/small/112/zarcone.png",
-        "168": "assets/portraits/before-part3/small/168/zarcone.png"
+        "56": "assets/portraits/before-part3/small/56/zarcone.webp",
+        "112": "assets/portraits/before-part3/small/112/zarcone.webp",
+        "168": "assets/portraits/before-part3/small/168/zarcone.webp"
       },
       "smallSha256": {
-        "56": "cc9e09f63bdc4893a0c6b4fd1e0978df738e6e90f281341c81cf0f7523883113",
-        "112": "c9049c04319a40933e17fc295ff2ba23a9993166e74b6bc9fe25469074257e2e",
-        "168": "c0e679c66c22f3810da3bcbc70c14d51722b6f5b5a5fd36c8ff4cfc25e4572b8"
+        "56": "ef995876d79dfe48e9a21057b7a9849615b11213c2f339678d5a1ea41f5cc6a6",
+        "112": "e37a29a8b4662ec4a57a873ad93520c361e5cd628e801311499f4840bb0e0564",
+        "168": "db87706439a842335f1ffec7f81bf62fc407b7c6043795d28cf0444433353eae"
       },
       "smallSampling": {
         "source": "tests/wlqs_extracted/before_part3/portraits/default/FID_ザーコネ.png",
@@ -7629,7 +7629,7 @@
     {
       "id": "c001",
       "englishName": "Eshmel",
-      "image": "assets/portraits/eshmel.png"
+      "image": "assets/portraits/eshmel.webp"
     }
   ]
 }

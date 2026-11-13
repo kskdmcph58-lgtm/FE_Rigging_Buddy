@@ -4,7 +4,7 @@
    Layout: an iOS detail view. Header (who, target level, class and mount), the stat grid, then the
    hint, the expectation link and the rating in the thumb zone, with the save bar pinned inside the
    bottom safe area. Short landscape screens use two columns so nothing scrolls under the bar. */
-@media (max-width:1749px) {
+@media (width < 1750px) {
   /* One screen, locked: the page never scrolls; the expectation text gives up space first. */
   /* The document is locked too, as for step 3 (html.m-fit): the global body min-height is 100vh, which on iOS
      is the toolbar-hidden height, so without this Safari still scrolls and rubber-bands the window. */
@@ -231,7 +231,7 @@
 }
 
 /* Tablets and mid-width desktop windows: rating follows the stats; only the save bar stays at the bottom edge. */
-@media (min-width:601px) and (max-width:1749px) and (min-height:501px) {
+@media (width > 600px) and (width < 1750px) and (height > 500px) {
   #app.record-page>.back { align-self: center; justify-content: flex-start; width: min(100%, 680px); margin-left: auto; margin-right: auto; }
   #app.record-page .record-layout { align-self: center; width: min(100%, 680px); }
   #app.record-page .stat-panel { border-width: .5px .5px 0; }
@@ -245,7 +245,7 @@
 }
 
 /* Short landscape screens: stats on the left; header, rating and save on the right, all on one screen. */
-@media (max-height:500px) and (orientation:landscape) and (max-width:1749px) {
+@media (height <= 500px) and (orientation:landscape) and (width < 1750px) {
   main#app.record-page { min-height: 100dvh; padding-bottom: 0; }
   #app.record-page>.back { margin-bottom: 0; }
   #app.record-page .stat-panel {
@@ -304,7 +304,7 @@
 
 /* Short portrait phones (SE-class, or Safari with both toolbars): tighter rows so the rating and the save
    bar fit without scrolling. */
-@media (max-height:700px) and (orientation:portrait) and (max-width:1749px) {
+@media (max-height:700px) and (orientation:portrait) and (width < 1750px) {
   #app.record-page>.back { margin-bottom: 0; }
   #app.record-page .stat-panel { padding-top: 12px; }
   #app.record-page .stat-heading { --record-portrait: 56px; gap: 8px; }
