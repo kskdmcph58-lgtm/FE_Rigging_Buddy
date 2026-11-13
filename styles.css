@@ -4620,6 +4620,11 @@ html[data-input-mode="touch"] button.expectation-link {
 .better-hearts { display:inline-flex; align-items:center; flex:none; }
 .better-hearts .ride-level { display:block; width:16px; height:16px; }
 .better-root .better-hearts .ride-level { margin-left:0; }
+/* 考试推荐 rides with hearts: icon, then a box holding the name and the hearts. They share a line while both fit; when
+   not, the name keeps its own line next to the icon and the hearts drop under it (2px below, aligned with the name), so
+   the narrow card never squeezes the name. The 2px padding keeps the one-line height at the icon's 20px. */
+.better-ride-wrap { align-items:flex-start; }
+.better-ride-text { display:flex; flex-wrap:wrap; align-items:center; column-gap:6px; row-gap:2px; min-width:0; padding-block:2px; }
 /* Same cells as the level-up page, scaled down; lit cells are filled, so the rules under each row are dropped. */
 .mini-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2px 6px; }
 .mini-stat { grid-column:var(--col); grid-row:var(--row); display:flex; justify-content:space-between; align-items:center; padding:2px 6px; border-radius:4px; color:var(--stat-text); font:12px/16px var(--font-game); }

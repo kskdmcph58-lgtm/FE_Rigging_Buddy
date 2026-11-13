@@ -912,10 +912,13 @@ async function openExamRecommend(id) {
   await examDialog(item, c, stats);
   button()?.focus({ preventScroll: true });
 }
-// Rides as text, like the class box in 其他选择 but nothing to pick.
+// Rides as text, like the class box in 其他选择 but nothing to pick. A ride with hearts keeps its name and hearts in
+// one wrapping box (.better-ride-text): the hearts sit after the name while both fit, else drop under the name.
 function examRideLines(kind, rides, id) {
   if (anyRide(kind, rides, id)) return `<span class="better-ride">${rideIcon(kind, {})}<span>任意配属</span></span>`;
-  return rideEntries(rides).map(({ id: rideId, name, levels }) => `<span class="better-ride">${rideIcon(kind, rideId ? { id: rideId, level: Math.max(...levels) } : null)}<span>${name}</span>${rideId ? `<span class="better-hearts">${heartRange(levels)}</span>` : ''}</span>`).join('');
+  return rideEntries(rides).map(({ id: rideId, name, levels }) => rideId
+    ? `<span class="better-ride better-ride-wrap">${rideIcon(kind, { id: rideId, level: Math.max(...levels) })}<span class="better-ride-text"><span>${name}</span><span class="better-hearts">${heartRange(levels)}</span></span></span>`
+    : `<span class="better-ride">${rideIcon(kind, null)}<span>${name}</span></span>`).join('');
 }
 // The level-up board again, each stat with what it gains and what it loses over the counted levels.
 function examMiniStats(entry) {
