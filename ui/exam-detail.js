@@ -139,12 +139,13 @@ const { examDetailButton, examDetails } = (() => {
       const view = scroll.getBoundingClientRect(), over = full.getBoundingClientRect().bottom + 16 - view.bottom;
       if (open && over > 0) scroll.scrollBy({ top: Math.max(0, Math.min(over, disclosure.getBoundingClientRect().top - view.top - 13)), behavior: reduceMotion() ? 'instant' : 'smooth' });
     };
-    if (reduceMotion()) { disclosure.setAttribute('aria-expanded', String(open)); examDetailMotion.get(box)?.forEach(animation => animation.cancel()); settle(); place?.(); revealInSheet(); return; }
+    const stop = () => examDetailMotion.get(box)?.forEach(animation => animation.cancel());
+    if (reduceMotion()) { disclosure.setAttribute('aria-expanded', String(open)); stop(); settle(); place?.(); revealInSheet(); return; }
     // The chevron turns on the same clock as the sizes (its transform is read before the state flips, mid-turn included).
     const from = sizes(), scrolled = scroll.scrollTop;
     const position = place && { top: box.getBoundingClientRect().top, arrow: arrow?.getBoundingClientRect().top };
     disclosure.setAttribute('aria-expanded', String(open));
-    examDetailMotion.get(box)?.forEach(animation => animation.cancel());
+    stop();
     settle();
     place?.();
     const to = sizes();
@@ -224,7 +225,9 @@ const { examDetailButton, examDetails } = (() => {
         const right = card.right + GAP + width <= area.right - EDGE, left = card.left - GAP - width >= area.left + EDGE;
         const side = right || !left && area.right - card.right >= card.left - area.left ? 'right' : 'left';
         const x = side === 'right' ? Math.min(card.right + GAP, area.right - EDGE - width) : Math.max(card.left - GAP - width, area.left + EDGE);
-        const y = Math.min(Math.max(centre - height / 2, area.top + EDGE), area.bottom - EDGE - height);
+        // Whole pixels: at a half-pixel top (a dialog centred on one) the lower rows snap 1px differently once the resize's
+        // translate animation, which paints the popover as its own layer, ends.
+        const y = Math.round(Math.min(Math.max(centre - height / 2, area.top + EDGE), area.bottom - EDGE - height));
         pop.dataset.side = side;
         pop.style.left = `${x - frame.left - dialog.clientLeft}px`;
         pop.style.top = `${y - frame.top - dialog.clientTop}px`;

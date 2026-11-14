@@ -4927,9 +4927,17 @@ button.exam-detail-disclosure:focus-visible { outline:2px solid var(--gold); out
 button.exam-detail-unlock[aria-pressed="true"] { color:var(--muted); }
 @media (prefers-reduced-motion: reduce) { .exam-info-glyph, .exam-dialog button.exam-info { transition:none; } }
 @media(width >= 1750px) {
-  /* Only the gaps between unlock rows grow; balance the line against body text and the next summary. */
-  .exam-detail-popover .exam-detail-condition:not(:last-child) { --condition-bottom:9px; }
-  .exam-detail-popover .exam-detail-condition + .exam-detail-condition { --condition-top:10px; }
+  /* Popover endings: every glyph row of 解锁条件 sits --ink-gap from the line above, the line below and the popover's edge,
+     the distance the last bait row leaves under it in a mount popover (its 16px padding and 2px of game-font descent).
+     The hint's line box holds its glyphs 3px under its top and 4px above its bottom; the full text's 2px body padding is
+     mirrored below it (DLC职业's glyphs sit 3px up). The first row keeps its distance from the heading. */
+  .exam-detail-popover { --ink-gap:18px; }
+  .exam-detail-popover .exam-detail-condition { --condition-bottom:calc(var(--ink-gap) - 4px); }
+  .exam-detail-popover .exam-detail-condition + .exam-detail-condition { --condition-top:calc(var(--ink-gap) - 3px); }
+  .exam-detail-popover .exam-detail-full-body { padding-bottom:2px; }
+  .exam-detail-popover .exam-detail-scroll:has(> .exam-detail-section:last-child > .exam-detail-condition) { padding-bottom:0; }
+  .exam-detail-popover .exam-detail-scroll:has(> .exam-detail-section:last-child > .exam-detail-plain) { padding-bottom:calc(var(--ink-gap) - 3px); }
+  .exam-detail-popover .exam-detail-scroll:has(> .exam-detail-section:last-child > .exam-detail-row:last-child) { padding-bottom:var(--ink-gap); }
   /* A card's class box grows to fit its rows (name, glyph and hearts on one line), as the 其他选择 boxes do;
      boxes that already fit keep their width. */
   .exam-dialog:not(.better-mobile) .exam-node .better-ridebox { max-width:none; }
