@@ -62,7 +62,7 @@ window.RiggingSeed = (() => {
       const jobId = jobs.get(profession);
       if (!jobId) continue;
       const kind = actions.rideKind(profession, c.id);
-      const rides = [null, ...actions.rideOptions(kind, c.id).flatMap(ride => [1, 2, 3, 4, 5].map(level => ({ id: ride.id, level })))];
+      const rides = [null, ...actions.rideOptions(kind, c.id, row.part3 === true).flatMap(ride => [1, 2, 3, 4, 5].map(level => ({ id: ride.id, level })))];
       for (const ride of rides) {
         const { growth, guarantee } = computeGrowth({ person, jobId, level: row.level, part3: row.part3, ride });
         const result = engine.simulateLevel(row.seed, { kind: 'level', growth, guarantee, room: new Array(9).fill(UNCAPPED), advanceBefore: 0 });
@@ -237,7 +237,7 @@ window.RiggingSeed = (() => {
         profession = saved.profession;
         ride = actions.rememberedRide(state, item.id, actions.rideKind(profession, item.id));
       }
-      if (Object.hasOwn(saved, 'ride') && (usable || !Object.hasOwn(saved, 'profession'))) ride = actions.usableRide(saved.ride, actions.rideKind(profession, item.id), item.id);
+      if (Object.hasOwn(saved, 'ride') && (usable || !Object.hasOwn(saved, 'profession'))) ride = actions.usableRide(saved.ride, actions.rideKind(profession, item.id), item.id, part3);
       let rowClass = profession, rowRide = ride;
       if (!part3 && part3Only.has(rowClass)) { rowClass = story; rowRide = actions.rememberedRide(state, item.id, actions.rideKind(story, item.id)); }
       else if (!part3Only.has(rowClass)) story = rowClass;

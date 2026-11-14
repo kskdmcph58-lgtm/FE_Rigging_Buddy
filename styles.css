@@ -4777,6 +4777,108 @@ html[data-input-mode="touch"] button.expectation-link {
 .exam-dialog.better-mobile .better-ride { white-space:normal; }
 .exam-dialog.better-mobile button.exam-unlock { position:relative; min-height:32px; }
 .exam-dialog.better-mobile button.exam-unlock::after { content:''; position:absolute; inset:-6px; }
+/* 考试推荐 details (ui/exam-detail.js). Entry: the class or ride name is a button with an info glyph tight after
+   it; the whole row is its hit area (a pseudo-element, so no row moves). On touch the area grows toward 44px into
+   the gaps around the row, never over another row or the 标为已解锁 button. */
+.exam-info-row { position:relative; }
+.exam-dialog button.exam-info { display:inline-flex; align-items:center; gap:3px; width:auto; min-width:auto; min-height:0; margin:0; padding:0; border:0; border-radius:4px; background:transparent; color:inherit; font:inherit; text-align:left; white-space:inherit; transition:color var(--motion-medium); }
+.exam-dialog button.exam-info::after { content:''; position:absolute; inset:0; }
+.exam-info-glyph { display:block; flex:none; width:12px; height:12px; color:var(--muted); transition:color var(--motion-medium); }
+/* The game font's ink sits low in its line box (measured 1.5px at 14px, 1px at 12px), so the glyph comes down .1em to
+   centre on the name; translate keeps the row's height. */
+.exam-dialog button.exam-info .exam-info-glyph { translate:0 .1em; }
+.exam-dialog button.exam-info[aria-expanded="true"], .exam-dialog button.exam-info[aria-expanded="true"] .exam-info-glyph { color:var(--gold); }
+.exam-dialog button.exam-info:is(:hover,:active,.touch-pressed):not(:disabled) { background:transparent; }
+@media (hover:hover) and (pointer:fine) { .exam-info-row:hover button.exam-info, .exam-info-row:hover .exam-info-glyph { color:var(--gold); } }
+.exam-dialog button.exam-info:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+@media (pointer:coarse) {
+  .exam-dialog .better-class.exam-info-row button.exam-info::after { top:-13px; bottom:-4px; }
+  .exam-dialog .better-class.exam-info-row:not(:has(+ .better-rides)) button.exam-info::after { bottom:-12px; }
+  .exam-dialog .better-ride.exam-info-row button.exam-info::after { top:-3px; bottom:-3px; }
+  .exam-dialog .better-rides > .exam-info-row:first-child button.exam-info::after { top:-4px; }
+  .exam-dialog .better-rides > .exam-info-row:last-child button.exam-info::after { bottom:-12px; }
+}
+/* The detail's content, shared by the desktop popover and the narrow sheet. */
+.exam-detail-hero { display:flex; flex:none; align-items:center; gap:12px; padding:14px 16px 12px; }
+/* The sections sit in one inset frame under the hero, which scrolls on its own when they do not fit, so no line runs
+   to the popover's edge (or into its arrow) and the frame is never cut. Insets from the game's exam panel. */
+.exam-detail-scroll { flex:1 1 auto; min-height:0; margin:0 16px 16px; padding:16px 14px 16px 18px; border:1px solid var(--line); border-radius:10px; overflow:hidden auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--control-line) transparent; }
+.exam-detail-icon { display:block; flex:none; object-fit:contain; }
+.exam-detail-names { display:grid; min-width:0; }
+.exam-detail-name { color:var(--text); font:400 18px/24px var(--font-game); }
+.exam-detail-sub { color:var(--muted); font:13px/18px var(--font-ui); }
+/* Sections follow the game's exam panel: a centred title between two small ornaments, then rows each underlined;
+   labels at the left, values at the right, the line running 4px past the value. Text sits low in its row (its
+   centre about 0.42 of the row above the line), as in the game. */
+.exam-detail-section + .exam-detail-section { margin-top:18px; }
+.exam-detail-heading { display:flex; align-items:center; justify-content:center; gap:12px; margin:0 0 3px; color:var(--text); font:400 13px/22px var(--font-game); letter-spacing:0; }
+.exam-detail-heading::before, .exam-detail-heading::after { content:''; flex:none; width:24px; height:7px; background:var(--gold); opacity:.6; clip-path:polygon(0 3px, 17px 3px, 20.5px 0, 24px 3.5px, 20.5px 7px, 17px 4px, 0 4px); }
+.exam-detail-heading::after { scale:-1 1; }
+.exam-detail-row { box-sizing:border-box; display:flex; align-items:center; gap:10px; min-height:38px; padding:10px 4px 4px 0; border-bottom:1px solid var(--line); }
+/* 推荐LV and 名声LV share a row as the game draws them: two short runs (30% of the row each, 4% apart), each with
+   its own line ending at its value. */
+.exam-detail-pair { display:grid; grid-template-columns:30% 30%; column-gap:4%; }
+.exam-detail-pair > .exam-detail-row { padding-right:0; }
+.exam-detail-label { flex:none; color:var(--muted); font:13px/20px var(--font-game); }
+.exam-detail-value { display:flex; flex:1 1 auto; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:6px 8px; min-width:0; text-align:right; }
+.exam-detail-item { font:15px/20px var(--font-game); }
+.exam-detail-price { color:var(--text); font:16px/20px var(--font-number); }
+.exam-detail-price small { margin-left:1px; color:var(--muted); font:12px/1 var(--font-number); }
+.exam-detail-number { color:var(--gold); font:19px/22px var(--font-number); }
+.exam-detail-empty { color:var(--muted); font:15px/20px var(--font-number); }
+/* Rows centre icons and text on each other. The game and number fonts draw their ink below the middle of the line
+   box (the UI font sits in the middle); each run moves up by what was measured for it in place, layout unchanged. */
+:is(.exam-detail-heading > span:first-child, .exam-detail-item, .exam-detail-empty, .exam-detail-spot-name, .exam-detail-spot-others .exam-detail-label, .exam-detail-animal > span:first-child, .exam-detail-bait-head .game-text, .exam-detail-gate b) { position:relative; top:-.07em; }
+.exam-detail-number { position:relative; top:-.1em; }
+:is(.exam-detail-row > .exam-detail-label, .exam-detail-price) { position:relative; top:-.14em; }
+.exam-detail-slots { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px 12px; }
+.exam-detail-slot { display:inline-flex; align-items:center; gap:2px; }
+.exam-detail-note { align-items:flex-start; font:13px/18px var(--font-ui); }
+.exam-detail-note-icon { flex:none; width:16px; height:16px; margin-top:1px; color:var(--gold); }
+.exam-detail-condition { flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; }
+.exam-detail-route { color:var(--muted); font:12px/16px var(--font-ui); }
+.exam-detail-hint { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font:14px/20px var(--font-ui); }
+.exam-detail-gate { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.exam-detail-gate b { font:400 15px/20px var(--font-number); }
+.exam-detail-part3 { padding:0 6px; border:1px solid var(--control-line); border-radius:6px; color:var(--gold); }
+button.exam-detail-disclosure { display:flex; justify-content:space-between; width:100%; min-height:38px; margin:0; padding:10px 4px 4px 0; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; color:var(--text); font:14px/20px var(--font-ui); text-align:left; }
+button.exam-detail-disclosure:is(:hover,:active,.touch-pressed):not(:disabled) { background:transparent; }
+@media (hover:hover) and (pointer:fine) { button.exam-detail-disclosure:hover:not(:disabled) { color:var(--gold); } }
+button.exam-detail-disclosure:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
+.exam-detail-chevron { flex:none; width:12px; height:12px; color:var(--muted); transition:transform var(--motion-base) var(--ease-standard); }
+.exam-detail-disclosure[aria-expanded="true"] .exam-detail-chevron { transform:rotate(90deg); }
+.exam-detail-full { display:block; font:14px/22px var(--font-ui); }
+.exam-detail-full[hidden] { display:none; }
+.exam-detail-plain { font:14px/20px var(--font-ui); }
+.exam-detail-source { margin:0; font:14px/20px var(--font-ui); }
+/* 捕获地点: one grid for the list so the columns line up down it: place | region, then under the region 同地点 and
+   the others. Longer runs wrap inside the right column. */
+.exam-detail-spots { display:grid; grid-template-columns:max-content minmax(0,1fr); column-gap:12px; }
+.exam-detail-spot { display:grid; grid-column:1 / -1; grid-template-columns:subgrid; align-items:center; row-gap:2px; padding:10px 4px 4px 0; border-bottom:1px solid var(--line); }
+.exam-detail-spot-name { font:15px/22px var(--font-game); }
+.exam-detail-spot-region { color:var(--muted); font:13px/18px var(--font-ui); }
+.exam-detail-spot-others { grid-column:2; display:flex; flex-wrap:wrap; align-items:center; gap:2px 8px; font:14px/20px var(--font-game); }
+.exam-detail-spot-others .exam-detail-label { font-size:12px; }
+.exam-detail-animal { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.exam-detail-name > .exam-detail-tag { margin-left:6px; }
+.exam-detail-tag { padding:0 5px; border:1px solid #d8c39499; border-radius:6px; color:var(--gold); font:12px/16px var(--font-ui); white-space:nowrap; }
+/* 推荐诱饵: names filled down (rows from --bait-rows), each column as wide as its longest name, 12px apart from
+   the left. */
+.exam-detail-bait-head { gap:8px; font:15px/20px var(--font-game); }
+.exam-detail-baits { display:grid; grid-auto-flow:column; grid-template-rows:repeat(var(--bait-rows),auto); grid-auto-columns:max-content; gap:6px 12px; margin:0; padding:8px 0 0; list-style:none; font:14px/20px var(--font-game); }
+.exam-detail-baits li { white-space:nowrap; }
+button.exam-detail-unlock[aria-pressed="true"] { color:var(--muted); }
+@media (prefers-reduced-motion: reduce) { .exam-detail-chevron, .exam-info-glyph, .exam-dialog button.exam-info { transition:none; } }
+@media(width >= 1750px) {
+  /* A card's class box grows to fit its rows (name, glyph and hearts on one line), as the 其他选择 boxes do;
+     boxes that already fit keep their width. */
+  .exam-dialog:not(.better-mobile) .exam-node .better-ridebox { max-width:none; }
+  /* Desktop: a popover beside the card (macOS), its arrow level with the row; the hero stays put. */
+  .exam-detail-popover { position:absolute; z-index:30; box-sizing:border-box; display:flex; flex-direction:column; width:340px; border:1px solid var(--overlay-line); border-radius:12px; background:var(--surface-dialog); color:var(--text); box-shadow:0 12px 32px #0009; font:14px/20px var(--font-ui); outline:none; }
+  .exam-detail-arrow { position:absolute; top:calc(var(--arrow-y) - 6px); box-sizing:border-box; width:12px; height:12px; border:1px solid var(--overlay-line); background:var(--surface-dialog); transform:rotate(45deg); }
+  .exam-detail-popover[data-side="right"] .exam-detail-arrow { left:-7px; border-top:0; border-right:0; }
+  .exam-detail-popover[data-side="left"] .exam-detail-arrow { right:-7px; border-bottom:0; border-left:0; }
+}
 
 /* A marked card's overlay covers its rating, as it did before the rating was clickable. */
 .record-chip.skipped>div>.rating-toggle,.record-chip.upgraded>div>.rating-toggle { z-index:auto; }

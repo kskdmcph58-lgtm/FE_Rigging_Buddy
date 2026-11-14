@@ -914,11 +914,14 @@ async function openExamRecommend(id) {
 }
 // Rides as text, like the class box in 其他选择 but nothing to pick. A ride with hearts keeps its name and hearts in
 // one wrapping box (.better-ride-text): the hearts sit after the name while both fit, else drop under the name.
+// The name is a button with an info glyph that opens 配属详情 (ui/exam-detail.js); the whole row is its hit area.
 function examRideLines(kind, rides, id) {
   if (anyRide(kind, rides, id)) return `<span class="better-ride">${rideIcon(kind, {})}<span>任意配属</span></span>`;
-  return rideEntries(rides).map(({ id: rideId, name, levels }) => rideId
-    ? `<span class="better-ride better-ride-wrap">${rideIcon(kind, { id: rideId, level: Math.max(...levels) })}<span class="better-ride-text"><span>${name}</span><span class="better-hearts">${heartRange(levels)}</span></span></span>`
-    : `<span class="better-ride">${rideIcon(kind, null)}<span>${name}</span></span>`).join('');
+  return rideEntries(rides).map(({ id: rideId, name, levels }) => {
+    if (!rideId) return `<span class="better-ride">${rideIcon(kind, null)}<span>${name}</span></span>`;
+    const detail = examDetailButton('ride', name);
+    return `<span class="better-ride better-ride-wrap${detail ? ' exam-info-row' : ''}">${rideIcon(kind, { id: rideId, level: Math.max(...levels) })}<span class="better-ride-text">${detail || `<span>${name}</span>`}<span class="better-hearts">${heartRange(levels)}</span></span></span>`;
+  }).join('');
 }
 // The level-up board again, each stat with what it gains and what it loses over the counted levels.
 function examMiniStats(entry) {
@@ -1089,10 +1092,15 @@ function examDialog(item, c, stats) {
       entries = counted ? seed.examEntries(stats, range.from, range.to).entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id), key: encodeURIComponent(`${entry.profession}|${JSON.stringify(entry.rides)}`) })) : [];
     };
     compute();
+    // The class name opens 兵种详情 (ui/exam-detail.js); 平民 and 贵族 have no exam and stay plain text.
+    const classRow = name => {
+      const detail = examDetailButton('class', name, `<span class="game-text">${name}</span>`);
+      return `<span class="better-class${detail ? ' exam-info-row' : ''}">${icon(name)}${detail || `<span class="game-text">${name}</span>`}</span>`;
+    };
     const node = (entry, unlocked) => {
       const base = window.PROFESSIONS.base.includes(entry.profession);
       const toggle = base ? '' : `<button type="button" class="exam-unlock" data-unlock="${entry.profession}" aria-pressed="${unlocked}">${unlocked ? '取消已解锁' : '标为已解锁'}</button>`;
-      return `<div class="better-node exam-node" data-tier="${entry.tier}" data-key="${entry.key}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry"><span class="better-class">${icon(entry.profession)}<span class="game-text">${entry.profession}</span></span>${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
+      return `<div class="better-node exam-node" data-tier="${entry.tier}" data-key="${entry.key}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry">${classRow(entry.profession)}${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
     };
     const column = unlocked => {
       const list = entries.filter(entry => actions.classUnlocked(item, entry.profession) === unlocked);
@@ -1126,6 +1134,7 @@ function examDialog(item, c, stats) {
       for (const col of dialog.querySelectorAll('.exam-col')) col.querySelector('.exam-none').hidden = Boolean(col.querySelector('.exam-node:not([hidden])'));
     };
     const draw = () => {
+      details.close();
       dialog.querySelector('.exam-locked').innerHTML = column(false);
       dialog.querySelector('.exam-unlocked').innerHTML = column(true);
       // How many cards each tier stop keeps, in the levels now chosen.
@@ -1211,6 +1220,13 @@ function examDialog(item, c, stats) {
       if (UI_MEDIA.coarseInput.matches) { sheet.tabIndex = -1; sheet.style.outline = 'none'; sheet.focus({ preventScroll: true }); }
       else wheelOf(tier ? 'tier' : 'from')?.focus({ preventScroll: true });
     };
+    // 标为已解锁 / 取消已解锁, from a card or from its 兵种详情.
+    const toggleUnlock = name => {
+      actions.setClassUnlocked(item, name, !actions.classUnlocked(item, name));
+      examAnimate(dialog, draw);
+      dialog.querySelector(`[data-unlock="${CSS.escape(name)}"]`)?.focus({ preventScroll: true });
+    };
+    const details = examDetails({ dialog, stack, unlocked: name => actions.classUnlocked(item, name), toggleUnlock });
     const collapseAnimations = new Set();
     const stopCollapseAnimation = () => { for (const animation of collapseAnimations) animation.cancel(); collapseAnimations.clear(); };
     const animateCollapse = (node, frames) => {
@@ -1240,18 +1256,12 @@ function examDialog(item, c, stats) {
       const pick = e.target.closest('[data-pick]');
       if (pick) { openSheet(pick.dataset.pick); return; }
       const unlock = e.target.closest('[data-unlock]');
-      if (unlock) {
-        const name = unlock.dataset.unlock;
-        actions.setClassUnlocked(item, name, !actions.classUnlocked(item, name));
-        examAnimate(dialog, draw);
-        dialog.querySelector(`[data-unlock="${CSS.escape(name)}"]`)?.focus({ preventScroll: true });
-        return;
-      }
+      if (unlock) { toggleUnlock(unlock.dataset.unlock); return; }
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
     const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);

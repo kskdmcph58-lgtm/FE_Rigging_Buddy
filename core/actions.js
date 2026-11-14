@@ -15,11 +15,11 @@ window.RiggingActions = (() => {
     const own = window.RIDES.byId[OWN_RIDES[id]];
     return own?.kind === kind ? kind : null;
   };
-  // The rides a person can pick for a kind.
-  const rideOptions = (kind, id) => !kind ? [] : otherRoute() ? window.RIDES.list.filter(ride => ride.id === OWN_RIDES[id] && ride.kind === kind)
-    : window.RIDES.list.filter(ride => ride.kind === kind);
+  // The rides a person can pick for a kind; Part 3 mounts, like Part 3 classes, only in Part 3 (the switch's, or a record's own).
+  const rideOptions = (kind, id, part3 = typeof state === 'undefined' || state.part3 === true) => !kind ? [] : otherRoute() ? window.RIDES.list.filter(ride => ride.id === OWN_RIDES[id] && ride.kind === kind)
+    : window.RIDES.list.filter(ride => ride.kind === kind && (part3 || !window.RIDES.part3Only.has(ride.id)));
   // A stored ride the person cannot ride right now counts as none.
-  const usableRide = (ride, kind, id) => ride && kind && rideOptions(kind, id).some(option => option.id === ride.id) ? ride : null;
+  const usableRide = (ride, kind, id, part3) => ride && kind && rideOptions(kind, id, part3).some(option => option.id === ride.id) ? ride : null;
   const classAvailable = (state, name) => state.part3 === true || !catalog.part3Only.has(name);
   /* Whether this person may take this class at all, the one rule for every picker and every suggestion:
      Part 3 classes only in Part 3; in Part 1-2 only 蕾达 (c017) can be 舞者; and the game's own limits

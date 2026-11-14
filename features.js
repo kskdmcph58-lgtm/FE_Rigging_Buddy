@@ -22,7 +22,8 @@ function animateMobilePickerClose(dialog) {
     const from = { transform: style.transform, opacity: style.opacity };
     dialog.getAnimations().forEach(animation => animation.cancel());
     dialog.inert = true;
-    const sheet = UI_MEDIA.narrowLayout.matches;
+    // The 考试推荐 detail sheet stays on the bottom edge above 600px too, so it leaves the same way.
+    const sheet = UI_MEDIA.narrowLayout.matches || dialog.classList.contains('exam-detail-sheet');
     const duration = group?.duration ?? (sheet ? 220 : MOTION.medium);
     dialog.style.setProperty('--m-picker-exit-duration', `${duration}ms`);
     dialog.classList.add('m-picker-leaving');

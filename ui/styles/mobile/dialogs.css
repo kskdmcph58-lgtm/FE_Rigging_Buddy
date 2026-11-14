@@ -14,6 +14,9 @@
      not a lighter one: each area is dimmed once. The sheet's surface is lighter than the page, so it takes a
      stronger tint (75%, against the page's 60%) to land on the same shade. */
   dialog.app-dialog:is(.picker-stack-root,.picker-stack-layer)::after { background: #050c0dbf; }
+  /* The tint is clipped to the padding box (the dialog hides overflow), so the border takes the same tint itself;
+     otherwise it stays a bright line along the covered dialog's top edge. */
+  dialog.app-dialog.picker-stack-covered { border-color: #050c0dbf; }
   /* ---------- Footer buttons: one readable size, 36px visual, 44px hit area ---------- */
   dialog.app-dialog:not(.m-sheet) :is(footer, .profession-footer, .choice-actions, .class-scope-actions)>button,
   dialog.app-dialog.confirm-dialog form>button {
@@ -129,4 +132,31 @@
   dialog.app-dialog.class-scope-dialog h2 { padding: 12px 16px; }
   dialog.app-dialog.class-scope-dialog .class-scope-option { min-height: 72px; padding-block: 12px; }
   dialog.app-dialog.class-scope-dialog .class-scope-actions { padding: 12px 16px; }
+}
+
+/* 考试推荐 兵种详情 / 配属详情 (ui/exam-detail.js): a bottom sheet over the dialog at every narrow width, built like
+   the 阶级/等级 wheel sheet (same stack, backdrop and exit, the same title bar and footer with 完成). It fits its
+   content up to the height of the other large sheets; only the framed sections scroll. Above 600px it is 560px wide,
+   centred like the exam dialog under it, still on the bottom edge. */
+@media (width < 1750px) {
+  dialog.app-dialog.ride-picker.exam-detail-sheet {
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    height: fit-content;
+    min-height: 0;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 16px);
+    margin: auto auto 0;
+    border-width: .5px 0 0;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 32px #0007;
+  }
+}
+@media (width > 600px) and (width < 1750px) {
+  dialog.app-dialog.ride-picker.exam-detail-sheet { width: min(560px, calc(100vw - 24px)); border-width: .5px .5px 0; }
+  /* On the bottom edge, so its footer keeps clear of the home indicator (phones get this from the sheet footer rule). */
+  dialog.app-dialog.exam-detail-sheet .exam-detail-footer { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (width > 600px) and (width < 1750px) and (prefers-reduced-motion:no-preference) {
+  dialog.app-dialog.ride-picker.exam-detail-sheet[open] { animation: m-sheet-in 280ms cubic-bezier(.32,.72,0,1); }
 }

@@ -58,6 +58,8 @@ window.RIDES = (() => {
     ['RID_バウ', '野生巴乌', 'bau'], ['RID_レッドバウ', '红巴乌', 'bau'], ['RID_ブラックバウ', '黑巴乌', 'bau'],
     ['RID_ダグザンゾウ', '萨拉弥斯战象', 'elephant']
   ].map(([id, name, kind]) => ({ id, name, kind }));
-  return { list, byId: Object.fromEntries(list.map(ride => [ride.id, ride])), kinds: [...new Set(list.map(ride => ride.kind))] };
+  // Mounts that can only be captured in 第3部 (owner-confirmed 2026-11-13); in 第1-2部 they are not offered.
+  const part3Only = new Set(['RID_黒馬', 'RID_レッドファルコン', 'RID_レッドバウ', 'RID_ブラックバウ']);
+  return { list, byId: Object.fromEntries(list.map(ride => [ride.id, ride])), kinds: [...new Set(list.map(ride => ride.kind))], part3Only };
 })();
 
