@@ -132,15 +132,13 @@ const { examDetailButton, examDetails } = (() => {
       ...rows.flatMap(({ text, chevron }) => [[text, text.hidden ? closed : measure(text, 'height', 'opacity')], [chevron, measure(chevron, 'transform')]]),
       ...(arrow ? [[arrow, measure(arrow, 'translate')]] : [])];
     const settle = () => rows.forEach(({ button, text }) => { text.hidden = button.getAttribute('aria-expanded') !== 'true'; });
-    const revealInSheet = () => {
-      // A desktop popover must not start a second text movement after its resize has finished.
-      if (place) return;
-      // At the sheet's tallest the list scrolls instead of growing: keep the opened text in view.
+    const reveal = () => {
+      // At the tallest panel (sheet or popover) the list scrolls instead of growing: keep the opened text in view.
       const view = scroll.getBoundingClientRect(), over = full.getBoundingClientRect().bottom + 16 - view.bottom;
       if (open && over > 0) scroll.scrollBy({ top: Math.max(0, Math.min(over, disclosure.getBoundingClientRect().top - view.top - 13)), behavior: reduceMotion() ? 'instant' : 'smooth' });
     };
     const stop = () => examDetailMotion.get(box)?.forEach(animation => animation.cancel());
-    if (reduceMotion()) { disclosure.setAttribute('aria-expanded', String(open)); stop(); settle(); place?.(); revealInSheet(); return; }
+    if (reduceMotion()) { disclosure.setAttribute('aria-expanded', String(open)); stop(); settle(); place?.(); reveal(); return; }
     // The chevron turns on the same clock as the sizes (its transform is read before the state flips, mid-turn included).
     const from = sizes(), scrolled = scroll.scrollTop;
     const position = place && { top: box.getBoundingClientRect().top, arrow: arrow?.getBoundingClientRect().top };
@@ -169,7 +167,7 @@ const { examDetailButton, examDetails } = (() => {
       settle();
       animations.forEach(animation => animation.cancel());
       examDetailMotion.delete(box);
-      revealInSheet();
+      reveal();
     }, () => {});
   }
 
