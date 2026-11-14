@@ -767,7 +767,10 @@ function layoutBetter(dialog) {
   // A dialog locked to its opening size (lockBetterSize) lays out within that width, not the window's.
   const width = (parseFloat(dialog.style.maxWidth) || window.innerWidth - 32) - 2 - parseFloat(mapStyle.paddingLeft) - parseFloat(mapStyle.paddingRight)
     - dialog.querySelector('.better-side-current').offsetWidth - (parseFloat(mapStyle.columnGap) || 0);
-  const SCROLLBAR = 12, SLACK = BETTER_SLACK;
+  /* A scrolling class box is allowed room for its scrollbar against the window, but not inside a locked size:
+     that was measured from the laid-out dialog, scrollbars and all, so counting them again could fold the
+     very arrangement it was taken from. */
+  const SCROLLBAR = dialog.style.maxWidth ? 0 : 12, SLACK = BETTER_SLACK;
   // Fractions of a pixel in fonts and zoom must never tip a column over: keep a little slack.
   const room = height - SLACK, across = width - SLACK;
   const span = (from, to) => {
