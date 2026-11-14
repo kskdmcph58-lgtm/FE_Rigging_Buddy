@@ -90,15 +90,25 @@ function routeSwitch() {
 /* 推荐: a stepped slider capping the class tier the summary recommends (the better-choice mark, and where
    其他选择 starts filtering). Picking a class is never limited by it. */
 function recommendText(cap, top) { return cap >= top ? '全部职业' : `${TIER_LABELS[cap]}及以下职业`; }
+/* 兵种范围: a second, two-stop slider of the same kind (已解锁 at the left, 全部 at the right) under (phones) or beside (desktop) the tier slider, once someone on
+   the board has marked a class unlocked: 全部, or 已解锁 to consider only the classes a person has unlocked. A person with
+   no mark is always 全部 (RiggingSeed.recommendUnlockedOnly). */
+const hasUnlockMarks = () => visibleRoster().some(item => item.unlockedClasses?.length);
+function recommendTrack(stops, at, label, text, attrs = '') {
+  return `<div class="recommend-slider"${attrs} role="slider" tabindex="0" ${label} aria-valuemin="0" aria-valuemax="${stops.length - 1}" aria-valuenow="${at}" aria-valuetext="${text}" style="--stops:${stops.length};--at:${at}"><span class="recommend-track"><span class="recommend-fill"></span></span>${stops.map((name, stop) => `<span class="recommend-stop${stop <= at ? ' in' : ''}"><i></i><small>${name}</small></span>`).join('')}<span class="recommend-thumb"></span></div>`;
+}
 function recommendFilter() {
   const part3 = state.part3 === true, top = part3 ? 5 : 3, cap = window.RiggingSeed.recommendCap(state, part3);
-  return `<div class="recommend-filter" title="只决定标出哪些更好的职业，以及其他选择默认筛到哪一级；选职业不受限制"><span class="recommend-caption" id="recommend-caption">兵种推荐范围</span><div class="recommend-slider" role="slider" tabindex="0" aria-labelledby="recommend-caption" aria-valuemin="0" aria-valuemax="${top}" aria-valuenow="${cap}" aria-valuetext="${recommendText(cap, top)}" style="--stops:${top + 1};--at:${cap}"><span class="recommend-track"><span class="recommend-fill"></span></span>${TIER_LABELS.slice(0, top + 1).map((label, tier) => `<span class="recommend-stop${tier <= cap ? ' in' : ''}"><i></i><small>${label}</small></span>`).join('')}<span class="recommend-thumb"></span></div></div>`;
+  const tier = recommendTrack(TIER_LABELS.slice(0, top + 1), cap, 'aria-labelledby="recommend-caption"', recommendText(cap, top));
+  const at = state.recommendScope === 'unlocked' ? 0 : 1;
+  const scope = hasUnlockMarks() ? recommendTrack(SCOPE_STOPS, at, 'aria-label="兵种范围"', SCOPE_STOPS[at], ' data-scope') : '';
+  return `<div class="recommend-filter" title="只决定标出哪些更好的职业，以及其他选择默认筛到哪一级；选职业不受限制"><span class="recommend-caption" id="recommend-caption">兵种推荐范围</span>${scope ? `<div class="recommend-sliders">${tier}${scope}</div>` : tier}</div>`;
 }
 function showRecommend(track, cap) {
   const top = Number(track.getAttribute('aria-valuemax'));
   track.style.setProperty('--at', String(cap));
   track.setAttribute('aria-valuenow', String(cap));
-  track.setAttribute('aria-valuetext', recommendText(cap, top));
+  track.setAttribute('aria-valuetext', track.hasAttribute('data-scope') ? SCOPE_STOPS[cap] : recommendText(cap, top));
   track.querySelectorAll('.recommend-stop').forEach((stop, tier) => stop.classList.toggle('in', tier <= cap));
 }
 function commitRecommend(cap) {
@@ -107,10 +117,20 @@ function commitRecommend(cap) {
   const next = { ...state.recommendTier };
   if (cap >= top) delete next[key]; else next[key] = cap;
   if (Object.keys(next).length) state.recommendTier = next; else delete state.recommendTier;
+  renderKeepingFocus(':not([data-scope])');
+}
+function commitScope(at) {
+  if ((state.recommendScope === 'unlocked') === (at === 0)) return;
+  if (at === 0) state.recommendScope = 'unlocked'; else delete state.recommendScope;
+  renderKeepingFocus('[data-scope]');
+}
+// The summary rebuilds its controls: a slider that held the keyboard focus gets it back.
+function renderKeepingFocus(which) {
   const focused = document.activeElement?.matches('.recommend-slider');
   render();
-  if (focused) app.querySelector('.recommend-slider')?.focus({ preventScroll: true });
+  if (focused) app.querySelector(`.recommend-slider${which}`)?.focus({ preventScroll: true });
 }
+const commitSlider = (track, value) => track.hasAttribute('data-scope') ? commitScope(value) : commitRecommend(value);
 // Dragging moves only the thumb; the marks are worked out once it is let go.
 let recommendDrag = null;
 const recommendStopAt = (track, x) => {
@@ -134,7 +154,7 @@ const releaseRecommend = () => {
   if (!recommendDrag) return;
   const { track, cap } = recommendDrag;
   recommendDrag = null; track.classList.remove('recommend-dragging');
-  commitRecommend(cap);
+  commitSlider(track, cap);
 };
 app.addEventListener('pointerup', releaseRecommend);
 app.addEventListener('pointercancel', releaseRecommend);
@@ -145,7 +165,7 @@ app.addEventListener('keydown', e => {
   const next = { ArrowRight: cap + 1, ArrowUp: cap + 1, ArrowLeft: cap - 1, ArrowDown: cap - 1, Home: 0, End: top, PageUp: top, PageDown: 0 }[e.key];
   if (next === undefined) return;
   e.preventDefault();
-  commitRecommend(Math.max(0, Math.min(top, next)));
+  commitSlider(track, Math.max(0, Math.min(top, next)));
 });
 function applyStoryPhase() {
   const part3 = state.part3 === true, phaseChanged = part3 !== appliedPart3;

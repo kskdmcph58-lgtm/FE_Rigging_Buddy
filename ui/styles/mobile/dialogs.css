@@ -151,6 +151,11 @@
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -8px 32px #0007;
   }
+  /* 解锁条件 last: the footer's line sits as far under the last row's text as the line above (or the heading) sits
+     over it, so the bottom padding is cut (measured on the glyphs). With rows the text is nearer than the fade, so the
+     fade shortens with it. */
+  dialog.exam-detail-sheet .exam-detail-scroll:has(> .exam-detail-section:last-child > .exam-detail-condition + .exam-detail-condition) { padding-bottom: 0; --fade-end: 8px; }
+  dialog.exam-detail-sheet .exam-detail-scroll:has(> .exam-detail-section:last-child > .exam-detail-heading + .exam-detail-condition:last-child) { padding-bottom: 5px; }
 }
 @media (width > 600px) and (width < 1750px) {
   dialog.app-dialog.ride-picker.exam-detail-sheet { width: min(560px, calc(100vw - 24px)); border-width: .5px .5px 0; }

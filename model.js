@@ -29,12 +29,17 @@ window.RiggingModel = (() => {
       return part3;
     });
   }
-  // What seed recovery reads. Skipped and upgraded marks change neither the order nor the level,
-  // so this level differs from displayLevels: it is the level before each consecutive level-up.
+  // Every attempt consumes a seed step, but a skipped attempt does not increase the unit's level.
+  // Growth uses the level before the attempted level-up.
   function seedChain(item, part3Only = false) {
     if (item.initialLevel === null || item.initialLevel === undefined) return null;
     const parts = recordParts(item, part3Only);
-    return live(item).map((record, index) => ({ record, level: item.initialLevel + index, part3: parts[index] }));
+    let level = item.initialLevel;
+    return live(item).map((record, index) => {
+      const entry = { record, level, part3: parts[index] };
+      if (record.status !== 'skipped') level++;
+      return entry;
+    });
   }
   function ruleAt(item, seq) {
     let rule = null;
@@ -226,6 +231,7 @@ window.RiggingModel = (() => {
     if (data.route !== undefined && !['kai', 'other'].includes(data.route)) throw Error('路线不正确');
     if (data.recommendTier !== undefined && (!data.recommendTier || typeof data.recommendTier !== 'object' || Array.isArray(data.recommendTier)
       || Object.entries(data.recommendTier).some(([key, cap]) => !['pre', 'part3'].includes(key) || !Number.isInteger(cap) || cap < 0 || cap >= (key === 'part3' ? 5 : 3)))) throw Error('推荐范围不正确');
+    if (data.recommendScope !== undefined && data.recommendScope !== 'unlocked') throw Error('兵种范围不正确');
     if (data.summaryScroll !== undefined && (!Number.isFinite(data.summaryScroll) || data.summaryScroll < 0)) throw Error('页面位置不正确');
     if (data.deletionCounter !== undefined && (!Number.isSafeInteger(data.deletionCounter) || data.deletionCounter < 0)) throw Error('删除顺序不正确');
     for (const drafts of [data.draftProfessions, data.draftStoryClasses]) {

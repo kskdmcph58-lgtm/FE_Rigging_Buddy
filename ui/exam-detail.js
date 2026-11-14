@@ -19,10 +19,10 @@ const { examDetailButton, examDetails } = (() => {
 
   const examDetailImage = (path, size) => `<img class="exam-detail-icon" src="${imageSrc(path)}" width="${size}" height="${size}" alt="" draggable="false">`;
 
-  /* A section as the game's exam panel draws it: a centred title between two ornaments, then rows each underlined,
-     no box. A field row: label at the left, value at the right. */
+  /* A section: a centred title between two ornaments, as the game's exam panel (Hub_Temple_JobSelect) draws it, then
+     its content. Only 考试内容 has the game's field rows (label at the left, value at the right, each underlined). */
   const examDetailSection = (title, rows) => `<section class="exam-detail-section"><h4 class="exam-detail-heading"><span>${title}</span></h4>${rows}</section>`;
-  const examDetailField = (label, value) => `<div class="exam-detail-row"><span class="exam-detail-label">${label}</span><span class="exam-detail-value">${value}</span></div>`;
+  const examDetailField = (label, value, extra = '') => `<div class="exam-detail-row${extra}"><span class="exam-detail-label">${label}</span><span class="exam-detail-value">${value}</span></div>`;
   const examDetailNumber = value => value ? `<span class="exam-detail-number">${value}</span>` : '<span class="exam-detail-empty">--</span>';
 
   function examDetailStage() {
@@ -34,35 +34,41 @@ const { examDetailButton, examDetails } = (() => {
   function examDetailSlots(slots) {
     if (!slots.length) return '<span class="exam-detail-empty">--</span>';
     const data = window.EXAM_DETAILS;
-    return `<span class="exam-detail-slots">${slots.map(([skill, rank]) => `<span class="exam-detail-slot" role="img" aria-label="${skill} ${rank}">${examDetailImage(`assets/exam/skill-${data.skills[skill]}.webp`, 24)}${examDetailImage(`assets/exam/rank-${data.ranks[rank]}.webp`, 22)}</span>`).join('')}</span>`;
+    return `<span class="exam-detail-slots">${slots.map(([skill, rank]) => `<span class="exam-detail-slot" role="img" aria-label="${skill} ${rank}">${examDetailImage(`assets/exam/skill-${data.skills[skill]}.webp`, 20)}${examDetailImage(`assets/exam/rank-${data.ranks[rank]}.webp`, 20)}</span>`).join('')}</span>`;
   }
-  // A hint is a list of parts: 名声LVn reads as the game's 名声LV with its icon, 救世篇 as the game's Part 3 mark.
+  const examDetailChapter = name => `<span class="exam-detail-gate exam-detail-chapter">${name}</span>`;
+  // Short honor requirements use System text and optically matched Number digits, without an icon.
+  const examDetailHonor = text => text.replace(/名声LV\s*(\d+)/g, (_, level) => `<span class="exam-detail-gate exam-detail-honor"><span>名声LV</span><b>${level}</b></span>`);
+  // Chapters share one badge; full conditions remain plain body text.
   function examDetailHint(parts) {
     return parts.map(part => {
-      const honor = /^名声LV(\d+)$/.exec(part);
-      if (honor) return `<span class="exam-detail-gate">${examDetailImage('assets/exam/honor.webp', 16)}<span>名声LV</span><b>${honor[1]}</b></span>`;
-      if (part === '救世篇') return '<span class="exam-detail-gate exam-detail-part3">救世篇</span>';
-      return `<span>${part}</span>`;
+      if (part === '救世篇') return examDetailChapter(part);
+      return `<span>${examDetailHonor(part)}</span>`;
     }).join('');
   }
   let examDetailIds = 0;
+  // One row per route: its name | its short condition. A full wording that adds something makes the row the
+  // disclosure control (the whole row is the button, the full text opens under the condition); otherwise it is plain.
   function examDetailCondition(row) {
-    const route = row.r ? `<span class="exam-detail-route">${row.r}</span>` : '';
-    const text = `<span class="exam-detail-hint">${examDetailHint(row.h || row.a)}</span>`;
-    if (!row.f) return `<div class="exam-detail-row exam-detail-condition">${route}${text}</div>`;
+    const parts = row.h || row.a;
+    const chapter = row.r?.replace(/线$/, '篇');
+    const route = chapter ? `<span class="exam-detail-route">${examDetailChapter(chapter)}</span>` : '';
+    const hint = `<span class="exam-detail-hint">${examDetailHint(parts)}</span>`;
+    if (!row.f) return `<div class="exam-detail-condition"><div class="exam-detail-line">${route}${hint}</div></div>`;
     const id = `exam-detail-full-${++examDetailIds}`;
-    return `<div class="exam-detail-row exam-detail-condition">${route}${text}</div><button type="button" class="exam-detail-row exam-detail-disclosure" aria-expanded="false" aria-controls="${id}"${row.r ? ` aria-label="${row.r}，显示完整条件"` : ''}><span>显示完整条件</span>${EXAM_DETAIL_CHEVRON}</button><div class="exam-detail-row exam-detail-full" id="${id}" hidden>${row.f}</div>`;
+    const label = [chapter, ...parts.map(part => part.replace(/^名声LV(\d+)$/, '名声LV $1')), '显示完整条件'].filter(Boolean).join('，');
+    return `<div class="exam-detail-condition"><button type="button" class="exam-detail-line exam-detail-disclosure" aria-expanded="false" aria-controls="${id}" aria-label="${label}">${route}${hint}${EXAM_DETAIL_CHEVRON}</button><div class="exam-detail-full" id="${id}" hidden><div class="exam-detail-full-body">${row.f}</div></div></div>`;
   }
   // Every route's condition, each named, whatever the route switch and Part 3 say (they only decide what is recommended).
   function examDetailUnlock(unlock) {
-    if (unlock === 'dlc') return '<div class="exam-detail-row exam-detail-plain">DLC职业</div>';
+    if (unlock === 'dlc') return '<p class="exam-detail-plain">DLC职业</p>';
     return unlock ? (unlock.r || [unlock]).map(examDetailCondition).join('') : '';
   }
   function examClassDetail(name, unlocked) {
     const data = window.EXAM_DETAILS, item = data.classes[name];
     // The game's rows: 消耗; 推荐LV and the tier's 名声LV sharing a row; 主要技能LV; 选择技能LV.
     const exam = [
-      examDetailField('消耗', `${examDetailImage(`assets/exam/ticket-${item.i}.webp`, 24)}<span class="exam-detail-item">${item.k}</span>${item.g ? `<span class="exam-detail-price">${item.g}<small>G</small></span>` : ''}`),
+      examDetailField('消耗', `${examDetailImage(`assets/exam/ticket-${item.i}.webp`, 20)}<span class="exam-detail-item">${item.k}</span>${item.g ? `<span class="exam-detail-price">${item.g}<small>G</small></span>` : ''}`, ' exam-detail-cost'),
       `<div class="exam-detail-pair">${examDetailField('推荐LV', examDetailNumber(item.lv))}${examDetailField('名声LV', examDetailNumber(data.fame[item.t]))}</div>`,
       examDetailField('主要技能LV', examDetailSlots(item.m)),
       examDetailField('选择技能LV', examDetailSlots(item.e)),
@@ -82,7 +88,7 @@ const { examDetailButton, examDetails } = (() => {
   // Rows line up in two columns: place | region, then under the region 同地点 and the other animals (稀有 after the rare
   // one). The mount itself is named once, in the hero.
   function examDetailSpots(name, spots) {
-    if (!spots.length) return '<div class="exam-detail-row exam-detail-plain">此路线无法捕获</div>';
+    if (!spots.length) return '<p class="exam-detail-plain">此路线无法捕获</p>';
     return `<div class="exam-detail-spots">${spots.map(spot => {
       const others = spot.a.filter(who => who !== name);
       const second = others.length ? `<span class="exam-detail-spot-others"><span class="exam-detail-label">同地点</span>${others.map(who => `<span class="exam-detail-animal"><span>${who}</span>${who === spot.x ? EXAM_DETAIL_RARE : ''}</span>`).join('')}</span>` : '';
@@ -94,7 +100,7 @@ const { examDetailButton, examDetails } = (() => {
   function examDetailBaits(category) {
     const data = window.EXAM_DETAILS, names = data.baits[category];
     const order = [...names].sort((a, b) => a.length - b.length);
-    return `<div class="exam-detail-row exam-detail-bait-head">${examDetailImage(`assets/exam/food-${data.foods[category]}.webp`, 28)}<span class="game-text">${category}</span></div><ul class="exam-detail-baits" style="--bait-rows:${Math.ceil(order.length / Math.min(4, order.length))}">${order.map(food => `<li>${food}</li>`).join('')}</ul>`;
+    return `<div class="exam-detail-bait-head">${examDetailImage(`assets/exam/food-${data.foods[category]}.webp`, 20)}<span class="game-text">${category}</span></div><ul class="exam-detail-baits" style="--bait-rows:${Math.ceil(order.length / Math.min(4, order.length))}">${order.map(food => `<li>${food}</li>`).join('')}</ul>`;
   }
   function examRideDetail(name, stage) {
     const data = window.EXAM_DETAILS, ride = data.rides[name];
@@ -102,16 +108,75 @@ const { examDetailButton, examDetails } = (() => {
     const spots = ride.src || !stage.part3 && stage.route === 'other' ? [] : ride.s.map(index => data.spots[index]).filter(spot => stage.part3 || !spot.p3);
     // 稀有 beside the name when the mount is the rare animal at any spot shown.
     const hero = `${examDetailImage(`assets/rides/${ride.k}.webp`, 40)}<span class="exam-detail-names"><span class="exam-detail-name game-text">${name}${spots.some(spot => spot.x === name) ? EXAM_DETAIL_RARE : ''}</span><span class="exam-detail-sub">${data.kinds[ride.k]}</span></span>`;
-    // Not captured (a person's own mount, a quest reward): one sentence in the frame, no capture block.
+    // Not captured (a person's own mount, a quest reward): one plain sentence, no capture block.
     if (ride.src) return { title: '配属详情', hero, body: `<p class="exam-detail-source">${ride.src}</p>` };
     return { title: '配属详情', hero, body: examDetailSection('捕获地点', examDetailSpots(name, spots)) + (spots.length ? examDetailSection('推荐诱饵', examDetailBaits(ride.c)) : '') };
+  }
+
+  /* A route's full text opens or closes while the panel's size follows in one motion with the chevron's turn: the sheet's top edge, or the
+     popover's height and translated position with its arrow staying on the row. Everything is measured once (the end state is laid
+     out as it will stay), then each size animates from where it is now, also mid-motion, so a second tap retargets
+     without a jump. The sheet grows upward, so the rows under the text and the footer hold still. Same curve and time as
+     the sheet's own entrance (m-sheet-in in dialogs.css); Reduce Motion changes at once. */
+  const EXAM_DETAIL_RESIZE = { duration: 280, easing: 'cubic-bezier(.32,.72,0,1)' };
+  const examDetailMotion = new WeakMap();
+  function examDetailToggle(box, disclosure, place) {
+    const full = box.querySelector(`#${disclosure.getAttribute('aria-controls')}`), scroll = box.querySelector('.exam-detail-scroll');
+    const arrow = box.querySelector('.exam-detail-arrow'), open = disclosure.getAttribute('aria-expanded') !== 'true';
+    const closed = { height: '0px', opacity: '0' };
+    const rows = [...box.querySelectorAll('.exam-detail-disclosure')].map(button => ({
+      button, text: box.querySelector(`#${button.getAttribute('aria-controls')}`), chevron: button.querySelector('.exam-detail-chevron')
+    })).filter(({ button, text }) => button === disclosure || !text.hidden);
+    const measure = (element, ...properties) => Object.fromEntries(properties.map(property => [property, getComputedStyle(element)[property]]));
+    const sizes = () => [[box, measure(box, 'height')],
+      ...rows.flatMap(({ text, chevron }) => [[text, text.hidden ? closed : measure(text, 'height', 'opacity')], [chevron, measure(chevron, 'transform')]]),
+      ...(arrow ? [[arrow, measure(arrow, 'translate')]] : [])];
+    const settle = () => rows.forEach(({ button, text }) => { text.hidden = button.getAttribute('aria-expanded') !== 'true'; });
+    const revealInSheet = () => {
+      // A desktop popover must not start a second text movement after its resize has finished.
+      if (place) return;
+      // At the sheet's tallest the list scrolls instead of growing: keep the opened text in view.
+      const view = scroll.getBoundingClientRect(), over = full.getBoundingClientRect().bottom + 16 - view.bottom;
+      if (open && over > 0) scroll.scrollBy({ top: Math.max(0, Math.min(over, disclosure.getBoundingClientRect().top - view.top - 13)), behavior: reduceMotion() ? 'instant' : 'smooth' });
+    };
+    if (reduceMotion()) { disclosure.setAttribute('aria-expanded', String(open)); examDetailMotion.get(box)?.forEach(animation => animation.cancel()); settle(); place?.(); revealInSheet(); return; }
+    // The chevron turns on the same clock as the sizes (its transform is read before the state flips, mid-turn included).
+    const from = sizes(), scrolled = scroll.scrollTop;
+    const position = place && { top: box.getBoundingClientRect().top, arrow: arrow?.getBoundingClientRect().top };
+    disclosure.setAttribute('aria-expanded', String(open));
+    examDetailMotion.get(box)?.forEach(animation => animation.cancel());
+    settle();
+    place?.();
+    const to = sizes();
+    if (position) {
+      // Position changes stay on the compositor. Counter-move the pointer so its tip remains on the card.
+      const dy = position.top - box.getBoundingClientRect().top;
+      from[0][1].translate = `0 ${dy}px`;
+      to[0][1].translate = '0 0';
+      if (arrow) {
+        from.at(-1)[1].translate = `0 ${position.arrow - arrow.getBoundingClientRect().top - dy}px`;
+        to.at(-1)[1].translate = '0 0';
+      }
+    }
+    // Include every row still closing: switching rows must not strand canceled content or snap a chevron.
+    rows.forEach(({ text }) => { if (text.hidden) text.hidden = false; });
+    scroll.scrollTop = scrolled;
+    const animations = from.map(([element, start], i) => element.animate([start, to[i][1]], { ...EXAM_DETAIL_RESIZE, fill: 'both' }));
+    examDetailMotion.set(box, animations);
+    Promise.all(animations.map(animation => animation.finished)).then(() => {
+      // Keep the last frame until hidden is settled; releasing a closing row first restores its full height.
+      settle();
+      animations.forEach(animation => animation.cancel());
+      examDetailMotion.delete(box);
+      revealInSheet();
+    }, () => {});
   }
 
   /* ---------- containers ---------- */
   /* One controller per exam dialog. open() replaces whatever detail is showing; the dialog passes its picker
      stack (for the sheet) and how to mark a class, so the sheet's 标为已解锁 does exactly what the card's button
-     does (the popover leaves that to the card beside it). Both show the hero, then the sections in a framed area
-     that scrolls on its own. */
+     does (the popover leaves that to the card beside it). Both show the hero, then the sections, which scroll on their
+     own. */
   function examDetails({ dialog, stack, unlocked, toggleUnlock }) {
     let current = null;
     const desktop = () => !dialog.classList.contains('better-mobile');
@@ -119,10 +184,7 @@ const { examDetailButton, examDetails } = (() => {
     const wire = (root, name) => root.addEventListener('click', e => {
       const disclosure = e.target.closest('.exam-detail-disclosure');
       if (disclosure) {
-        const open = disclosure.getAttribute('aria-expanded') !== 'true';
-        disclosure.setAttribute('aria-expanded', String(open));
-        root.querySelector(`#${disclosure.getAttribute('aria-controls')}`).hidden = !open;
-        current?.place?.();
+        examDetailToggle(root, disclosure, current?.place);
         return;
       }
       if (e.target.closest('[data-detail-unlock]')) {
@@ -158,7 +220,7 @@ const { examDetailButton, examDetails } = (() => {
         const centre = line.top + line.height / 2;
         if (centre < area.top || centre > area.bottom) { close({ restore: false }); return; }
         pop.style.maxHeight = `${Math.floor(area.height - EDGE * 2)}px`;
-        const width = pop.offsetWidth, height = pop.offsetHeight;
+        const { width, height } = pop.getBoundingClientRect();
         const right = card.right + GAP + width <= area.right - EDGE, left = card.left - GAP - width >= area.left + EDGE;
         const side = right || !left && area.right - card.right >= card.left - area.left ? 'right' : 'left';
         const x = side === 'right' ? Math.min(card.right + GAP, area.right - EDGE - width) : Math.max(card.left - GAP - width, area.left + EDGE);
@@ -173,7 +235,7 @@ const { examDetailButton, examDetails } = (() => {
       let frameId = 0;
       const follow = () => { cancelAnimationFrame(frameId); frameId = requestAnimationFrame(() => current?.pop === pop && place()); };
       const outside = e => { if (!pop.contains(e.target) && !e.target.closest('.exam-info-row')) close({ restore: false }); };
-      /* Tab past the last 显示完整条件 (or from the popover itself when it has none), or Shift+Tab before the first,
+      /* Tab past the last unlock row (or from the popover itself when it has none), or Shift+Tab before the first,
          closes the popover and returns to its name button. */
       const tab = e => {
         if (e.key !== 'Tab') return;

@@ -101,6 +101,15 @@ header {
   color: var(--muted);
   font: 13px/20px var(--font-ui);
 }
+/* 兵种范围: a second slider of the same kind beside the tier slider (under it on phones, summary.css), no footprint to keep. */
+.recommend-sliders {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.recommend-slider[data-scope] {
+  margin-right: 0;
+}
 .recommend-slider {
   --col: calc(100% / var(--stops));
   position: relative;
@@ -187,6 +196,8 @@ html[data-input-mode="keyboard"] .recommend-slider:focus-visible {
     box-shadow: 0 1px 2px #0007;
   }
   .recommend-slider:hover .recommend-thumb { background: var(--accent-hover); }
+  /* Beside the scope slider the tier slider ends where its last stop does. */
+  .recommend-slider:has(+ .recommend-slider) { margin-right: 0; }
   .recommend-stop i {
     width: 1px;
     height: 4px;
@@ -4539,11 +4550,10 @@ html[data-input-mode="touch"] button.expectation-link {
 .tier-filter { display:grid; gap:10px; margin-top:12px; padding-top:14px; border-top:1px solid var(--line); }
 .tier-filter .better-caption { color:var(--muted); font-weight:400; }
 .tier-slider { --row:30px; position:relative; display:grid; grid-auto-rows:var(--row); width:max-content; padding-right:8px; cursor:pointer; touch-action:none; user-select:none; border-radius:8px; outline:none; }
-.tier-slider:focus-visible { box-shadow:none; }
-.tier-slider.key-focus { box-shadow:0 0 0 2px var(--gold); }
+html[data-input-mode="keyboard"] .tier-slider:focus { box-shadow:0 0 0 2px var(--gold); }
 .tier-track { position:absolute; left:9px; top:calc(var(--row) / 2); bottom:calc(var(--row) / 2); width:4px; border-radius:2px; background:var(--line); }
 .tier-fill { position:absolute; inset:calc(var(--at) * var(--row)) 0 0; border-radius:inherit; background:var(--gold); opacity:.75; transition:top var(--motion-large) var(--ease-standard); }
-.tier-stop { display:grid; grid-template-columns:22px auto auto; align-items:center; gap:10px; color:var(--muted); font:13px/1 var(--font-ui); transition:color var(--motion-large); }
+.tier-stop { display:grid; grid-template-columns:22px 3em auto; align-items:center; gap:10px; color:var(--muted); font:13px/1 var(--font-ui); transition:color var(--motion-large); }
 .tier-stop i { justify-self:center; width:8px; height:8px; border-radius:50%; background:#3f5552; position:relative; z-index:1; transition:background-color var(--motion-large); }
 .tier-stop.in { color:var(--text); }
 .tier-stop.in i { background:var(--gold); }
@@ -4557,8 +4567,9 @@ html[data-input-mode="touch"] button.expectation-link {
 .tier-slider .tier-stop[data-tier]:hover span { color:var(--text); }
 /* Filtered out by the tier slider: their own display rules must not bring them back. */
 .better-dialog :is(.better-entry,.better-node)[hidden] { display:none !important; }
-/* Results each stop keeps, a quiet hint beside the name. */
-.tier-count { min-width:1.6em; padding:2px 5px; border-radius:6px; background:#ffffff0d; color:var(--muted); font:11px/1.2 var(--font-ui); font-variant-numeric:tabular-nums; text-align:center; }
+/* Results each stop keeps, a quiet hint beside the name. The name column is three characters wide (最上级, 已解锁), so every
+   badge starts on one edge; every badge has one box, wide enough for three digits. */
+.tier-count { box-sizing:border-box; width:2.6em; padding:2px 0; border-radius:6px; background:#ffffff0d; color:var(--muted); font:11px/1.2 var(--font-ui); font-variant-numeric:tabular-nums; text-align:center; }
 .tier-stop.in .tier-count { color:var(--text); }
 .better-none { margin:0; color:var(--muted); font-size:14px; }
 .better-root .better-card, .better-root .better-ridebox { border-color:#d8c39466; background:#d8c39412; }
@@ -4696,7 +4707,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .level-thumb { position:absolute; left:4px; box-sizing:border-box; width:var(--thumb); height:var(--thumb); border-radius:50%; background:var(--gold); border:3px solid var(--surface-dialog); box-shadow:0 0 0 1px var(--gold),0 2px 6px #0008; outline:none; }
 .level-thumb[data-thumb="to"] { top:calc((1 - var(--hi)) * (100% - var(--thumb))); }
 .level-thumb[data-thumb="from"] { top:calc((1 - var(--lo)) * (100% - var(--thumb))); }
-.level-thumb:focus-visible { box-shadow:0 0 0 1px var(--gold),0 0 0 4px #d8c39466,0 2px 6px #0008; }
+html[data-input-mode="keyboard"] .level-thumb:focus { box-shadow:0 0 0 1px var(--gold),0 0 0 4px #d8c39466,0 2px 6px #0008; }
 .exam-picks { display:none; }
 .exam-collapse-caption { display:none; }
 .exam-col { display:grid; align-content:start; gap:16px; min-width:0; }
@@ -4745,10 +4756,18 @@ html[data-input-mode="touch"] button.expectation-link {
 .exam-tier-name { text-align:right; }
 .exam-pick-value { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:17px/20px var(--font-game); text-align:right; }
 .exam-pick-value.better-level { margin:0; font:400 19px/20px var(--font-level-up); overflow:visible; text-overflow:clip; }
-@media (max-width:420px) { .exam-pick-value { font-size:15px; } .exam-pick-value.better-level { font-size:17px; } .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
+/* 兵种范围 between 阶级 and the tier, in the tier's type; it takes the room the tier's wide gap left. */
+.exam-pick-scope { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:17px/20px var(--font-game); text-align:center; }
+.exam-pick.has-scope[data-pick="tier"] .exam-pick-text { gap:4px; }
+/* On the narrowest phones the three do not fit in the column beside the card: the bar takes its own line under it. */
+@media (max-width:339px) {
+  .better-mobile .better-root>.better-card { grid-row:1; }
+  .better-mobile .better-mobile-filter:has(.has-scope) { grid-column:1 / -1; grid-row:2; }
+}
+@media (max-width:420px) { .exam-pick-value,.exam-pick-scope { font-size:15px; } .exam-pick-value.better-level { font-size:17px; } .exam-pick { padding:0 8px; gap:4px; } .exam-pick-text { gap:4px; } }
 @media (max-width:420px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:32px; } }
 @media (max-width:390px) { .exam-pick .exam-pick-chevron { display:none; } }
-@media (max-width:359px) { .exam-pick-value { font-size:13px; } .exam-pick-label,.exam-tier-prefix { font-size:12px; } .exam-pick-value.better-level { font-size:16px; } .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
+@media (max-width:359px) { .exam-pick-value,.exam-pick-scope { font-size:13px; } .exam-pick-label,.exam-tier-prefix { font-size:12px; } .exam-pick-value.better-level { font-size:16px; } .exam-pick { padding:0 6px; } .exam-pick-text { gap:3px; } }
 @media (max-width:359px) { .exam-pick[data-pick="tier"] .exam-pick-text { gap:27px; } }
 .exam-pick-chevron { flex:none; align-self:center; width:12px; height:12px; color:var(--muted); }
 .exam-pick:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
@@ -4761,7 +4780,7 @@ html[data-input-mode="touch"] button.expectation-link {
 .wheel { box-sizing:border-box; height:calc(var(--wheel-row) * 5); padding-block:calc(var(--wheel-row) * 2); overflow-y:auto; overscroll-behavior:contain; scroll-snap-type:y mandatory; scrollbar-width:none; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 65%,transparent); mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 65%,transparent); border-radius:8px; outline:none; cursor:grab; touch-action:pan-y; user-select:none; }
 .wheel::-webkit-scrollbar { display:none; }
 .wheel.wheel-dragging { cursor:grabbing; scroll-snap-type:none; }
-.wheel:focus-visible { box-shadow:inset 0 0 0 2px var(--gold); }
+html[data-input-mode="keyboard"] .wheel:focus { box-shadow:inset 0 0 0 2px var(--gold); }
 .wheel-item { display:flex; align-items:center; justify-content:center; height:var(--wheel-row); scroll-snap-align:center; color:var(--muted); font:16px/1 var(--font-game); white-space:nowrap; transition:color var(--motion-medium); }
 .wheel-item.selected { color:var(--text); }
 .wheel:is([data-wheel="from"],[data-wheel="to"]) .wheel-item { font:400 20px/1 var(--font-level-up); }
@@ -4799,77 +4818,118 @@ html[data-input-mode="touch"] button.expectation-link {
   .exam-dialog .better-rides > .exam-info-row:last-child button.exam-info::after { bottom:-12px; }
 }
 /* The detail's content, shared by the desktop popover and the narrow sheet. */
-.exam-detail-hero { display:flex; flex:none; align-items:center; gap:12px; padding:14px 16px 12px; }
-/* The sections sit in one inset frame under the hero, which scrolls on its own when they do not fit, so no line runs
-   to the popover's edge (or into its arrow) and the frame is never cut. Insets from the game's exam panel. */
-.exam-detail-scroll { flex:1 1 auto; min-height:0; margin:0 16px 16px; padding:16px 14px 16px 18px; border:1px solid var(--line); border-radius:10px; overflow:hidden auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--control-line) transparent; }
+.exam-detail-hero { display:flex; flex:none; align-items:center; gap:12px; padding:14px 16px 4px; }
+/* Under the hero only the sections scroll; nothing runs across to the edges. They fade out over the scroll area's
+   top and bottom padding, which they only reach when scrolled. Sizes below are the game's exam panel
+   (Hub_Temple_JobSelect.bflyt, 538 units wide) at 340/538, so the popover stands for the game's frame: the first title
+   29px under the hero's icon (46 units). Sides and bottom 16px, in line with the hero. */
+.exam-detail-scroll { flex:1 1 auto; min-height:0; padding:13px 16px 16px; overflow:hidden auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--control-line) transparent; -webkit-mask-image:linear-gradient(transparent, #000 13px, #000 calc(100% - var(--fade-end, 13px)), transparent); mask-image:linear-gradient(transparent, #000 13px, #000 calc(100% - var(--fade-end, 13px)), transparent); }
 .exam-detail-icon { display:block; flex:none; object-fit:contain; }
 .exam-detail-names { display:grid; min-width:0; }
 .exam-detail-name { color:var(--text); font:400 18px/24px var(--font-game); }
 .exam-detail-sub { color:var(--muted); font:13px/18px var(--font-ui); }
-/* Sections follow the game's exam panel: a centred title between two small ornaments, then rows each underlined;
-   labels at the left, values at the right, the line running 4px past the value. Text sits low in its row (its
-   centre about 0.42 of the row above the line), as in the game. */
-.exam-detail-section + .exam-detail-section { margin-top:18px; }
-.exam-detail-heading { display:flex; align-items:center; justify-content:center; gap:12px; margin:0 0 3px; color:var(--text); font:400 13px/22px var(--font-game); letter-spacing:0; }
-.exam-detail-heading::before, .exam-detail-heading::after { content:''; flex:none; width:24px; height:7px; background:var(--gold); opacity:.6; clip-path:polygon(0 3px, 17px 3px, 20.5px 0, 24px 3.5px, 20.5px 7px, 17px 4px, 0 4px); }
+/* The game's panel: rows 47 units apart (30px), text 22.05 units (14px) with its centre 18 units (11.5px) above the
+   line, the line from the label's left edge to 10 units (6px) past the value. The title is a row of its own: its
+   centre one row above the first row's text, its ornaments centred 133 units (84px) either side. */
+.exam-detail-section + .exam-detail-section { margin-top:16px; }
+/* The two headings that sat farther from the text above than from the first row below: trimmed so the heading text is
+   as far from the last text above as from the first row under it (measured on the glyphs, 13-15px). */
+.exam-detail-section:has(> .exam-detail-bait-head) { margin-top:-3px; }
+.exam-detail-section:has(> :is(.exam-detail-condition, .exam-detail-plain)) { margin-top:9px; }
+.exam-detail-heading { display:flex; align-items:center; justify-content:center; gap:36px; margin:0; color:var(--text); font:400 14px/24px var(--font-game); letter-spacing:0; }
+.exam-detail-heading::before, .exam-detail-heading::after { content:''; flex:none; width:40px; height:7px; background:var(--gold); opacity:.6; clip-path:polygon(0 3.5px, 3.5px 0, 7px 3px, 40px 3px, 40px 4px, 7px 4px, 3.5px 7px); }
 .exam-detail-heading::after { scale:-1 1; }
-.exam-detail-row { box-sizing:border-box; display:flex; align-items:center; gap:10px; min-height:38px; padding:10px 4px 4px 0; border-bottom:1px solid var(--line); }
-/* 推荐LV and 名声LV share a row as the game draws them: two short runs (30% of the row each, 4% apart), each with
-   its own line ending at its value. */
+.exam-detail-row { box-sizing:border-box; display:flex; align-items:center; gap:10px; min-height:30px; padding:8px 6px 1px 0; border-bottom:1px solid var(--line); }
+/* 推荐LV and 名声LV share a row as the game draws them: two runs of 135 units 18 apart in a 452-unit row (30% and
+   4%), each with its own line ending at its number. */
 .exam-detail-pair { display:grid; grid-template-columns:30% 30%; column-gap:4%; }
 .exam-detail-pair > .exam-detail-row { padding-right:0; }
-.exam-detail-label { flex:none; color:var(--muted); font:13px/20px var(--font-game); }
+.exam-detail-label { flex:none; color:var(--muted); font:14px/20px var(--font-game); }
 .exam-detail-value { display:flex; flex:1 1 auto; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:6px 8px; min-width:0; text-align:right; }
-.exam-detail-item { font:15px/20px var(--font-game); }
-.exam-detail-price { color:var(--text); font:16px/20px var(--font-number); }
+/* 消耗 as the game draws it (Hub_Temple_JobSelect, L_Item in N_PassItem): the ticket icon starts 96 of the row's 451
+   units from the label's left edge and the name follows it, left-aligned. The price is the site's own and stays at the
+   right end. The label's width plus the row's 10px gap puts the icon there, the same for every class. */
+.exam-detail-cost > .exam-detail-label { width:calc(21.3% - 10px); }
+.exam-detail-cost > .exam-detail-value { justify-content:flex-start; }
+.exam-detail-cost .exam-detail-price { margin-left:auto; }
+.exam-detail-item { font:15.5px/20px var(--font-game); }
+.exam-detail-price { color:var(--text); font:15.5px/20px var(--font-number); }
 .exam-detail-price small { margin-left:1px; color:var(--muted); font:12px/1 var(--font-number); }
-.exam-detail-number { color:var(--gold); font:19px/22px var(--font-number); }
-.exam-detail-empty { color:var(--muted); font:15px/20px var(--font-number); }
+.exam-detail-number { color:var(--gold); font:15.5px/20px var(--font-number); }
+.exam-detail-empty { color:var(--muted); font:14px/20px var(--font-game); }
 /* Rows centre icons and text on each other. The game and number fonts draw their ink below the middle of the line
    box (the UI font sits in the middle); each run moves up by what was measured for it in place, layout unchanged. */
-:is(.exam-detail-heading > span:first-child, .exam-detail-item, .exam-detail-empty, .exam-detail-spot-name, .exam-detail-spot-others .exam-detail-label, .exam-detail-animal > span:first-child, .exam-detail-bait-head .game-text, .exam-detail-gate b) { position:relative; top:-.07em; }
-.exam-detail-number { position:relative; top:-.1em; }
-:is(.exam-detail-row > .exam-detail-label, .exam-detail-price) { position:relative; top:-.14em; }
-.exam-detail-slots { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px 12px; }
+:is(.exam-detail-heading > span:first-child, .exam-detail-spot-name, .exam-detail-spot-others .exam-detail-label, .exam-detail-animal > span:first-child, .exam-detail-bait-head .game-text, .exam-detail-gate b) { position:relative; top:-.07em; }
+:is(.exam-detail-row > .exam-detail-label, .exam-detail-empty, .exam-detail-number) { position:relative; top:-.1em; }
+.exam-detail-item { position:relative; top:-.13em; }
+.exam-detail-price { position:relative; top:-.14em; }
+.exam-detail-slots { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px 5px; }
 .exam-detail-slot { display:inline-flex; align-items:center; gap:2px; }
 .exam-detail-note { align-items:flex-start; font:13px/18px var(--font-ui); }
 .exam-detail-note-icon { flex:none; width:16px; height:16px; margin-top:1px; color:var(--gold); }
-.exam-detail-condition { flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; }
-.exam-detail-route { color:var(--muted); font:12px/16px var(--font-ui); }
-.exam-detail-hint { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font:14px/20px var(--font-ui); }
+/* 解锁条件: one row per route, with a hairline between: route name | short
+   condition, the condition starting at --hint-edge (five 12px characters and 12px). A row with a longer wording is one
+   button; its chevron turns and the full text opens under the condition. The button's padding is cancelled by its
+   margins, so it fills the row without making it taller. */
+.exam-detail-condition { --hint-edge:72px; --condition-top:7px; --condition-bottom:8px; padding:var(--condition-top) 0 var(--condition-bottom); }
+.exam-detail-condition + .exam-detail-condition { border-top:1px solid var(--line); }
+.exam-detail-line { display:grid; grid-template-columns:var(--hint-edge) minmax(0,1fr); align-items:start; }
+.exam-detail-route { color:var(--gold); font:12px/20px var(--font-ui); }
+.exam-detail-hint { grid-area:1 / 1 / 1 / -1; display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font:14px/20px var(--font-ui); }
+.exam-detail-route + .exam-detail-hint { grid-column:2; }
 .exam-detail-gate { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
-.exam-detail-gate b { font:400 15px/20px var(--font-number); }
-.exam-detail-part3 { padding:0 6px; border:1px solid var(--control-line); border-radius:6px; color:var(--gold); }
-button.exam-detail-disclosure { display:flex; justify-content:space-between; width:100%; min-height:38px; margin:0; padding:10px 4px 4px 0; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; color:var(--text); font:14px/20px var(--font-ui); text-align:left; }
+.exam-detail-honor { font-family:var(--font-game); }
+.exam-detail-honor b { font:400 12px/20px var(--font-number); }
+.exam-detail-chapter { padding:0 6px; border:1px solid var(--control-line); border-radius:6px; color:var(--gold); }
+/* The five-character routes still fit the existing 72px label column. */
+.exam-detail-route .exam-detail-chapter { padding-inline:4px; }
+button.exam-detail-disclosure { position:relative; width:100%; min-height:0; margin:calc(0px - var(--condition-top)) 0 calc(0px - var(--condition-bottom)); padding:var(--condition-top) 0 var(--condition-bottom); border:0; border-radius:4px; background:transparent; color:var(--text); font:14px/20px var(--font-ui); text-align:left; }
 button.exam-detail-disclosure:is(:hover,:active,.touch-pressed):not(:disabled) { background:transparent; }
-@media (hover:hover) and (pointer:fine) { button.exam-detail-disclosure:hover:not(:disabled) { color:var(--gold); } }
-button.exam-detail-disclosure:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
-.exam-detail-chevron { flex:none; width:12px; height:12px; color:var(--muted); transition:transform var(--motion-base) var(--ease-standard); }
+button.exam-detail-disclosure .exam-detail-hint { padding-right:20px; }
+@media (hover:hover) and (pointer:fine) { button.exam-detail-disclosure:hover:not(:disabled) .exam-detail-chevron { color:var(--gold); } }
+button.exam-detail-disclosure:focus-visible { outline:2px solid var(--gold); outline-offset:0; }
+.exam-detail-chevron { grid-column:2; grid-row:1; justify-self:end; align-self:center; width:12px; height:12px; color:var(--muted); }
 .exam-detail-disclosure[aria-expanded="true"] .exam-detail-chevron { transform:rotate(90deg); }
-.exam-detail-full { display:block; font:14px/22px var(--font-ui); }
-.exam-detail-full[hidden] { display:none; }
-.exam-detail-plain { font:14px/20px var(--font-ui); }
+.exam-detail-full { overflow:hidden; color:var(--muted); font:13px/18px var(--font-ui); }
+/* The reveal clips an outer box; the text's gap stays fixed even while that box has zero height. */
+.exam-detail-full-body { padding-top:2px; }
+.exam-detail-condition:has(.exam-detail-route) > .exam-detail-full { margin-left:var(--hint-edge); }
+/* Touch: the first row grows to 44px up into the heading's gap, never over a neighbouring row; on the popover the last
+   row also grows down into the section's bottom padding (the sheet keeps its text near the footer line, and a hit area
+   reaching past the content would make the list scroll). */
+@media (pointer:coarse) {
+  button.exam-detail-disclosure::after { content:''; position:absolute; inset:0; }
+  .exam-detail-heading + .exam-detail-condition > button.exam-detail-disclosure::after { top:-9px; }
+}
+@media (pointer:coarse) and (width >= 1750px) {
+  .exam-detail-condition:last-child > button.exam-detail-disclosure::after { bottom:-9px; }
+}
+.exam-detail-plain { margin:0; padding-top:8px; font:14px/20px var(--font-ui); }
+/* One sentence alone: as far under the hero (17px) as above the popover's edge (16px), no line. */
 .exam-detail-source { margin:0; font:14px/20px var(--font-ui); }
 /* 捕获地点: one grid for the list so the columns line up down it: place | region, then under the region 同地点 and
    the others. Longer runs wrap inside the right column. */
 .exam-detail-spots { display:grid; grid-template-columns:max-content minmax(0,1fr); column-gap:12px; }
-.exam-detail-spot { display:grid; grid-column:1 / -1; grid-template-columns:subgrid; align-items:center; row-gap:2px; padding:10px 4px 4px 0; border-bottom:1px solid var(--line); }
-.exam-detail-spot-name { font:15px/22px var(--font-game); }
+.exam-detail-spot { display:grid; grid-column:1 / -1; grid-template-columns:subgrid; align-items:center; row-gap:2px; padding:7px 0 8px; }
+.exam-detail-spot + .exam-detail-spot { border-top:1px solid var(--line); }
+.exam-detail-spot-name { font:14px/20px var(--font-game); }
 .exam-detail-spot-region { color:var(--muted); font:13px/18px var(--font-ui); }
 .exam-detail-spot-others { grid-column:2; display:flex; flex-wrap:wrap; align-items:center; gap:2px 8px; font:14px/20px var(--font-game); }
 .exam-detail-spot-others .exam-detail-label { font-size:12px; }
 .exam-detail-animal { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
 .exam-detail-name > .exam-detail-tag { margin-left:6px; }
-.exam-detail-tag { padding:0 5px; border:1px solid #d8c39499; border-radius:6px; color:var(--gold); font:12px/16px var(--font-ui); white-space:nowrap; }
+.exam-detail-tag { padding:0 5px; border:1px solid #d8c39499; border-radius:6px; color:var(--gold); font:12px/14px var(--font-ui); white-space:nowrap; }
 /* 推荐诱饵: names filled down (rows from --bait-rows), each column as wide as its longest name, 12px apart from
    the left. */
-.exam-detail-bait-head { gap:8px; font:15px/20px var(--font-game); }
+.exam-detail-bait-head { display:flex; align-items:center; gap:8px; padding-top:8px; font:14px/20px var(--font-game); }
 .exam-detail-baits { display:grid; grid-auto-flow:column; grid-template-rows:repeat(var(--bait-rows),auto); grid-auto-columns:max-content; gap:6px 12px; margin:0; padding:8px 0 0; list-style:none; font:14px/20px var(--font-game); }
 .exam-detail-baits li { white-space:nowrap; }
 button.exam-detail-unlock[aria-pressed="true"] { color:var(--muted); }
-@media (prefers-reduced-motion: reduce) { .exam-detail-chevron, .exam-info-glyph, .exam-dialog button.exam-info { transition:none; } }
+@media (prefers-reduced-motion: reduce) { .exam-info-glyph, .exam-dialog button.exam-info { transition:none; } }
 @media(width >= 1750px) {
+  /* Only the gaps between unlock rows grow; balance the line against body text and the next summary. */
+  .exam-detail-popover .exam-detail-condition:not(:last-child) { --condition-bottom:9px; }
+  .exam-detail-popover .exam-detail-condition + .exam-detail-condition { --condition-top:10px; }
   /* A card's class box grows to fit its rows (name, glyph and hearts on one line), as the 其他选择 boxes do;
      boxes that already fit keep their width. */
   .exam-dialog:not(.better-mobile) .exam-node .better-ridebox { max-width:none; }

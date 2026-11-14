@@ -6,20 +6,20 @@ window.RiggingActions = (() => {
   /* 其他线 in 第1-2部: mounted classes have no ride there, so nothing asks for one or counts one, except for
      the two people who bring their own (Person table field 0x68): 伊欧 with 罗西南 on horse classes and
      亚历珊德拉 with 布克发拉斯 on pegasus classes. They may ride it, at any friendship level, or ride none.
-     Reads the page state when there is one (the app's global); without it the catalogue applies. */
+     A saved row uses its own part, independently of the page switch. */
   const OWN_RIDES = { c044: 'RID_ロシナン', c054: 'RID_ブーケパラス' };
-  const otherRoute = () => typeof state !== 'undefined' && state.part3 !== true && state.route === 'other';
-  const rideKind = (profession, id) => {
+  const rideKind = (state, profession, id, part3 = state.part3 === true) => {
     const kind = catalog.mountOf[profession] || null;
-    if (!kind || !otherRoute()) return kind;
+    if (!kind || part3 || state.route !== 'other') return kind;
     const own = window.RIDES.byId[OWN_RIDES[id]];
     return own?.kind === kind ? kind : null;
   };
   // The rides a person can pick for a kind; Part 3 mounts, like Part 3 classes, only in Part 3 (the switch's, or a record's own).
-  const rideOptions = (kind, id, part3 = typeof state === 'undefined' || state.part3 === true) => !kind ? [] : otherRoute() ? window.RIDES.list.filter(ride => ride.id === OWN_RIDES[id] && ride.kind === kind)
-    : window.RIDES.list.filter(ride => ride.kind === kind && (part3 || !window.RIDES.part3Only.has(ride.id)));
+  const rideAllowed = (state, ride, kind, id, part3) => ride?.kind === kind && (part3 ||
+    (!window.RIDES.part3Only.has(ride.id) && (state.route !== 'other' || ride.id === OWN_RIDES[id])));
+  const rideOptions = (state, kind, id, part3 = state.part3 === true) => !kind ? [] : window.RIDES.list.filter(ride => rideAllowed(state, ride, kind, id, part3));
   // A stored ride the person cannot ride right now counts as none.
-  const usableRide = (ride, kind, id, part3) => ride && kind && rideOptions(kind, id, part3).some(option => option.id === ride.id) ? ride : null;
+  const usableRide = (state, ride, kind, id, part3 = state.part3 === true) => ride && kind && rideAllowed(state, window.RIDES.byId[ride.id], kind, id, part3) ? ride : null;
   const classAvailable = (state, name) => state.part3 === true || !catalog.part3Only.has(name);
   /* Whether this person may take this class at all, the one rule for every picker and every suggestion:
      Part 3 classes only in Part 3; in Part 1-2 only 蕾达 (c017) can be 舞者; and the game's own limits
@@ -53,15 +53,18 @@ window.RiggingActions = (() => {
     return { profession: catalog.part3Only.has(item.initialProfession) ? null : item.initialProfession || null, ride: null };
   }
 
-  function rememberedRide(state, id, kind, unsaved) {
+  // Read inheritance without filtering: a temporarily unavailable ride must survive a part/route switch.
+  function storedRide(state, id, kind, unsaved) {
     if (!kind) return null;
-    if (unsaved && Object.hasOwn(unsaved, kind)) return usableRide(unsaved[kind], kind, id);
+    if (unsaved && Object.hasOwn(unsaved, kind)) return unsaved[kind];
     const memory = state.rideMemory?.[id];
-    if (memory && Object.hasOwn(memory, kind)) return usableRide(memory[kind], kind, id);
+    if (memory && Object.hasOwn(memory, kind)) return memory[kind];
     const item = state.roster.find(i => i.id === id);
     const latest = item && model.live(item).findLast(r => catalog.mountOf[r.profession] === kind);
-    return latest?.ride ? usableRide({ ...latest.ride }, kind, id) : null;
+    return latest?.ride ? { ...latest.ride } : null;
   }
+
+  const rememberedRide = (state, id, kind, unsaved, part3) => usableRide(state, storedRide(state, id, kind, unsaved), kind, id, part3);
 
   function rememberRides(state, id, rides) {
     if (!rides || !Object.keys(rides).length) return;
@@ -91,8 +94,9 @@ window.RiggingActions = (() => {
   function applyRecordClass(state, item, record, choice, scope) {
     const live = model.live(item), same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
     const before = { profession: record.profession ?? null, ride: record.ride ?? null };
-    const nextClass = currentProfession(state, item), nextKind = rideKind(nextClass, item.id), nextRide = rememberedRide(state, item.id, nextKind);
-    const kind = rideKind(choice.profession, item.id), ride = kind && choice.ride ? { ...choice.ride } : null;
+    const nextClass = currentProfession(state, item), nextKind = rideKind(state, nextClass, item.id), nextRide = rememberedRide(state, item.id, nextKind);
+    const part3 = model.recordParts(item)[live.indexOf(record)];
+    const kind = rideKind(state, choice.profession, item.id, part3), ride = usableRide(state, choice.ride && { ...choice.ride }, kind, item.id, part3);
     const targets = [record];
     if (scope === 'later') {
       for (const later of live.slice(live.indexOf(record) + 1)) {
@@ -128,7 +132,7 @@ window.RiggingActions = (() => {
   function newRecordDraft(state, id) {
     const item = state.roster.find(i => i.id === id);
     const profession = currentProfession(state, item);
-    return { id, profession, ride: rememberedRide(state, id, rideKind(profession, id)), rides: {}, stats: [], happy: model.evaluate(model.ruleAt(item, model.nextSeq(item)), []), ratingSource: 'auto' };
+    return { id, profession, ride: rememberedRide(state, id, rideKind(state, profession, id)), rides: {}, stats: [], happy: model.evaluate(model.ruleAt(item, model.nextSeq(item)), []), ratingSource: 'auto' };
   }
 
   function applyDraftRating(state, draft) {
@@ -139,7 +143,8 @@ window.RiggingActions = (() => {
   function saveRecord(state, draft) {
     if (!draft || draft.happy === null) return { saved: false, reason: 'pending' };
     const item = state.roster.find(r => r.id === draft.id);
-    const kind = rideKind(draft.profession, draft.id), ride = kind && draft.ride ? { ...draft.ride } : null;
+    const part3 = draft.editIndex === undefined ? state.part3 === true : model.recordParts(item)[model.live(item).indexOf(item.records[draft.editIndex])];
+    const kind = rideKind(state, draft.profession, draft.id, part3), ride = usableRide(state, draft.ride && { ...draft.ride }, kind, draft.id, part3);
     const usedRides = kind ? { ...draft.rides, [kind]: ride } : draft.rides;
     if (draft.editIndex === undefined && (model.nextSeq(item) > model.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= model.limits.records)) {
       return { saved: false, reason: 'limit' };
@@ -236,7 +241,7 @@ window.RiggingActions = (() => {
     if (Object.keys(range).length) item.examRange = range; else delete item.examRange;
   }
 
-  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, rememberedRide, rememberRides, applyRecordClass,
+  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

@@ -67,8 +67,9 @@ function openSummaryRecord(b) {
       : { opacity: [0, getComputedStyle(overlay).opacity] }, { duration: MOTION.fast, easing: 'ease-out' });
     return true;
   }
-  const savedKind = rideKind(record.profession, item.id);
-  const savedRide = savedKind ? window.RiggingActions.usableRide(record.ride && { ...record.ride }, savedKind, item.id, record.part3 === true) : null;
+  const part3 = M.recordParts(item, char(item.id).part3Only === true)[M.live(item).indexOf(record)];
+  const savedKind = rideKind(record.profession, item.id, part3);
+  const savedRide = savedKind ? window.RiggingActions.usableRide(state, record.ride && { ...record.ride }, savedKind, item.id, part3) : null;
   activeRecord = takeRecordDraft(b.dataset.edit, index) || { id: b.dataset.edit, editIndex: index, profession: record.profession || null, ride: savedRide, rides: savedKind ? { [savedKind]: savedRide } : {}, stats: [...record.stats], happy: record.ratingPending ? null : record.happy, ratingSource: record.ratingSource || 'legacy' };
    page = 'record'; render(); window.scrollTo(0, 0);
 }

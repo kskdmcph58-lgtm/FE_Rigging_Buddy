@@ -45,8 +45,8 @@ function setupProfessionContent(id) {
   const name=setupProfession(id);
   return name ? `<img src="${imageSrc(`assets/classes/${window.PROFESSIONS.icons[name]}.webp`)}" alt="" draggable="false"><span class="game-text">${name}</span>` : '<span class="profession-placeholder">选择兵种</span>';
 }
-function rideKind(profession, id) { return window.RiggingActions.rideKind(profession, id); }
-function rememberedRide(id, kind, unsaved) { return window.RiggingActions.rememberedRide(state, id, kind, unsaved); }
+function rideKind(profession, id, part3) { return window.RiggingActions.rideKind(state, profession, id, part3); }
+function rememberedRide(id, kind, unsaved, part3) { return window.RiggingActions.rememberedRide(state, id, kind, unsaved, part3); }
 function rememberRides(id, rides) { window.RiggingActions.rememberRides(state, id, rides); }
 
 function rideText(ride) {
@@ -55,8 +55,15 @@ function rideText(ride) {
 function rideIcon(kind, ride) {
   return `<img class="ride-icon ${ride ? '' : 'no-ride'}" src="${imageSrc(`assets/rides/${kind}.webp`)}" alt="" draggable="false">`;
 }
+// Saved attempts keep their own part; only a new attempt follows the page switch.
+function recordPart(d) {
+  const item = state.roster.find(item => item.id === d.id), c = char(d.id);
+  if (d.queueIndex !== undefined) return window.RiggingSeed.queueRows(state, item, c, d.queueIndex + 1)[d.queueIndex].part3;
+  if (d.editIndex !== undefined) return M.recordParts(item, c.part3Only === true)[M.live(item).indexOf(item.records[d.editIndex])];
+  return state.part3 === true || c.part3Only === true;
+}
 function recordRideMarkup(d) {
-  const kind = rideKind(d.profession, d.id);
+  const kind = rideKind(d.profession, d.id, recordPart(d));
   if (!kind) return '';
   const ride = d.ride;
   return `<button class="ride-field" data-ride aria-haspopup="dialog" aria-label="配属，${rideText(ride)}">${rideIcon(kind, ride)}<span class="game-text ${ride ? '' : 'ride-none'}">${ride ? window.RIDES.byId[ride.id].name : '无配属'}</span>${ride ? `<img class="ride-level" src="${imageSrc(`assets/rides/heart-${ride.level}.webp`)}" alt="" draggable="false">` : ''}</button>`;
@@ -74,7 +81,7 @@ function refreshSetupRide(id) {
 }
 
 // Nothing here reaches the data: onConfirm receives the choice once the player confirms.
-function rideDialog(kind, current, onConfirm, onClose, back = false, id = null, stack = null) {
+function rideDialog(kind, current, onConfirm, onClose, back = false, id = null, stack = null, part3 = state.part3 === true) {
   let chosen = current?.id || '';
   const levels = current ? { [current.id]: current.level } : {};
   const hearts = ride => `<div class="ride-hearts" role="group" aria-label="${ride.name}友好LV">${[1, 2, 3, 4, 5].map(level => `<button data-heart="${level}" aria-label="友好LV${level}"><img src="${imageSrc(`assets/rides/heart-${level}.webp`)}" alt="" draggable="false"></button>`).join('')}</div>`;
@@ -83,7 +90,7 @@ function rideDialog(kind, current, onConfirm, onClose, back = false, id = null, 
   dialog.className = 'app-dialog ride-picker';
   animateMobilePickerClose(dialog);
   dialog.setAttribute('aria-labelledby', 'ride-title');
-  dialog.innerHTML = `<div class="ride-titlebar"><h2 id="ride-title">配属</h2><span class="game-text">友好LV</span></div><div class="ride-list">${row('', '无配属', rideIcon(kind, null))}${window.RiggingActions.rideOptions(kind, id).map(ride => row(ride.id, ride.name, rideIcon(kind, ride), hearts(ride))).join('')}</div><div class="profession-footer"><button data-dismiss>${back ? '返回' : '取消'}</button><button class="primary" data-confirm>确定</button></div>`;
+  dialog.innerHTML = `<div class="ride-titlebar"><h2 id="ride-title">配属</h2><span class="game-text">友好LV</span></div><div class="ride-list">${row('', '无配属', rideIcon(kind, null))}${window.RiggingActions.rideOptions(state, kind, id, part3).map(ride => row(ride.id, ride.name, rideIcon(kind, ride), hearts(ride))).join('')}</div><div class="profession-footer"><button data-dismiss>${back ? '返回' : '取消'}</button><button class="primary" data-confirm>确定</button></div>`;
   const sync = () => dialog.querySelectorAll('.ride-row').forEach(line => {
     const selected = line.dataset.rideRow === chosen;
     line.classList.toggle('chosen', selected);
@@ -118,7 +125,8 @@ function openRidePicker(anchor) {
   hideExpectationTip();
   const setupId = anchor.dataset.setupRide || null;
   const draft = setupId ? null : activeRecord;
-  const kind = rideKind(setupId ? setupProfession(setupId) : draft?.profession, setupId || draft?.id);
+  const part3 = setupId ? state.part3 === true : recordPart(draft);
+  const kind = rideKind(setupId ? setupProfession(setupId) : draft?.profession, setupId || draft?.id, part3);
   if (!kind) return;
   rideDialog(kind, setupId ? setupRide(setupId) : draft.ride, value => {
     if (setupId) {
@@ -133,7 +141,7 @@ function openRidePicker(anchor) {
   }, () => {
     const visible = [...app.querySelectorAll(setupId ? `[data-setup-ride="${setupId}"]` : '[data-ride]')].find(button => button.checkVisibility());
     (anchor.isConnected ? anchor : visible)?.focus({ preventScroll: true });
-  }, false, setupId || draft.id);
+  }, false, setupId || draft.id, null, part3);
 }
 
 function setupProfessionButton(id) {
@@ -199,10 +207,10 @@ function openProfessionPicker(anchor) {
       setupIds.forEach(refreshSetupRide);
       if (setupIds.length > 1) notify(`已为 ${setupIds.length} 位人物${value ? '设置兵种：' + value : '清除兵种'}`);
     } else {
-      const nextKind = rideKind(value, record.id);
+      const part3 = recordPart(record), nextKind = rideKind(value, record.id, part3);
       // A mount stays with its kind: switching kinds brings back what that kind last used.
       if (data.part3Only.has(value) && !data.part3Only.has(record.profession)) record.storyClass = record.profession;
-      const nextRide = nextKind === rideKind(record.profession, record.id) ? record.ride || null : rememberedRide(record.id, nextKind, record.rides);
+      const nextRide = nextKind === rideKind(record.profession, record.id, part3) ? record.ride || null : rememberedRide(record.id, nextKind, record.rides, part3);
       record.profession = value;
       record.ride = nextRide;
       updateRecordControls();
@@ -221,29 +229,21 @@ function cardClass(anchor) {
     const index = Number(anchor.dataset.queueIndex);
     if (!window.RiggingSeed.ready()) return null;
     const row = window.RiggingSeed.queueRows(state, item, char(item.id), index + 1)[index];
-    return row ? { item, index, queued: true, profession: row.profession ?? null, ride: row.ride ?? null } : null;
+    return row ? { item, index, queued: true, part3: row.part3, profession: row.profession ?? null, ride: row.ride ?? null } : null;
   }
   const record = item.records[Number(anchor.dataset.recordIndex)];
   // The class the card shows (第1-2部 shows the class before a Part 3 one), so the tip and pickers match the card.
-  return record ? { item, record, queued: false, ...window.RiggingActions.shownClass(state, item, record) } : null;
+  return record ? { item, record, queued: false, part3: M.recordParts(item, char(item.id).part3Only === true)[M.live(item).indexOf(record)], ...window.RiggingActions.shownClass(state, item, record) } : null;
 }
 function cardClassTip(anchor) {
   const card = cardClass(anchor), name = card?.profession;
   if (!name || !window.PROFESSIONS.names.includes(name)) return '<p class="rule-default">未设置兵种</p>';
-  const kind = rideKind(name, card.item.id), ride = card.ride;
+  const kind = rideKind(name, card.item.id, card.part3), ride = card.ride;
   // Each row starts its own step: the class row is the same as clicking the field, the ride row goes straight to 配属.
   // With a better choice marked, a button below opens the same choices as the mark.
   // Mouse only; the keyboard reaches all of these through the field, the mark and their dialogs.
   return `<div class="class-tip"><button type="button" class="class-tip-row" data-tip-step="profession" tabindex="-1"><img src="${imageSrc(`assets/classes/${window.PROFESSIONS.icons[name]}.webp`)}" alt="" draggable="false"><span class="game-text">${name}</span></button>${kind ? `<button type="button" class="class-tip-row" data-tip-step="ride" tabindex="-1">${rideIcon(kind, ride)}<span class="game-text">${ride ? window.RIDES.byId[ride.id].name : '无配属'}</span>${ride ? `<img class="ride-level" src="${imageSrc(`assets/rides/heart-${ride.level}.webp`)}" alt="友好LV${ride.level}" draggable="false">` : ''}</button>` : ''}${anchor.querySelector('[data-better]') ? `<button type="button" class="class-tip-more" data-tip-step="better" tabindex="-1">${BETTER_ICON}查看其他选择</button>` : ''}</div>`;
 }
-const pickClass = (selected, clearable, id) => new Promise(resolve => {
-  let chosen;
-  professionDialog(selected, false, clearable, value => { chosen = value; }, () => resolve(chosen), [id]);
-});
-const pickRide = (kind, current, id) => new Promise(resolve => {
-  let chosen;
-  rideDialog(kind, current, value => { chosen = value; }, () => resolve(chosen), true, id);
-});
 function cardClassScopeDialog(subject, stack = null) {
   // Lit cells show which levels the change reaches, in place of a description.
   const reach = lit => `<span class="class-scope-reach" aria-hidden="true">${[0, 1, 2, 3].map(cell => `<i class="${cell < lit ? 'lit' : ''}"></i>`).join('')}</span>`;
@@ -280,7 +280,7 @@ function openCardClass(anchor, start = 'profession') {
   let profession = card.profession, ride = card.ride;
   const stack = createPickerStack();
   // Started from the ride, backing out of the ride leaves the flow instead of opening the class list.
-  const fromRide = start === 'ride' && Boolean(rideKind(profession, id));
+  const fromRide = start === 'ride' && Boolean(rideKind(profession, id, card.part3));
   const finish = async scope => {
     await stack.closeAll();
     if (scope === 'once' || scope === 'later') {
@@ -297,22 +297,22 @@ function openCardClass(anchor, start = 'profession') {
   const showScope = () => {
     if (profession === card.profession && JSON.stringify(ride) === JSON.stringify(card.ride)) { void finish(); return; }
     const classChanged = profession !== card.profession;
-    const rideChanged = Boolean(rideKind(profession, id)) && JSON.stringify(ride) !== JSON.stringify(card.ride);
+    const rideChanged = Boolean(rideKind(profession, id, card.part3)) && JSON.stringify(ride) !== JSON.stringify(card.ride);
     void cardClassScopeDialog(classChanged && rideChanged ? '兵种及配属' : rideChanged ? '配属' : '兵种', stack).then(scope => {
       if (scope === 'once' || scope === 'later') void finish(scope);
     });
   };
   const showRide = () => {
-    rideDialog(rideKind(profession, id), ride, value => { ride = value; showScope(); }, () => {
+    rideDialog(rideKind(profession, id, card.part3), ride, value => { ride = value; showScope(); }, () => {
       if (fromRide && !stack.closing) refocus();
-    }, true, id, stack);
+    }, true, id, stack, card.part3);
   };
   if (fromRide) showRide();
   else {
     professionDialog(profession, false, !item.seed, chosen => {
-      if (rideKind(chosen, id) !== rideKind(profession, id)) ride = rememberedRide(id, rideKind(chosen, id));
+      if (rideKind(chosen, id, card.part3) !== rideKind(profession, id, card.part3)) ride = rememberedRide(id, rideKind(chosen, id, card.part3), undefined, card.part3);
       profession = chosen;
-      if (rideKind(profession, id)) showRide();
+      if (rideKind(profession, id, card.part3)) showRide();
       else { ride = null; showScope(); }
     }, () => { if (!stack.closing) refocus(); }, [id], stack);
   }
@@ -327,7 +327,7 @@ function rideLevelText(levels) {
   return last - first === sorted.length - 1 ? ` 友好LV${first}–${last}` : ` 友好LV${sorted.join('、')}`;
 }
 // Every ride at every friendship level gives this result, so the class alone decides it: one 任意配属 line.
-const anyRide = (kind, rides, id) => rides.filter(Boolean).length === window.RiggingActions.rideOptions(kind, id).length * 5;
+const anyRide = (kind, rides, id, part3) => rides.filter(Boolean).length === window.RiggingActions.rideOptions(state, kind, id, part3).length * 5;
 /* A second copy of a unique ride turns into its twin (the game's 重複変換); the two grow alike, so when
    both give the result at the same levels they share the original's line. */
 const RIDE_TWINS = { 'RID_ロシナンの仔': 'RID_ロシナン', 'RID_ブーケパラスの仔': 'RID_ブーケパラス' };
@@ -353,9 +353,9 @@ const heartIcon = level => `<img class="ride-level" src="${imageSrc(`assets/ride
 const heartRange = levels => [...levels].sort((a, b) => a - b).map(heartIcon).join('');
 // Each line is a ride the user can pick: its name, then one button per friendship level that gives the result.
 // data-ride is the ride id, '' for 无配属 and '*' for 任意配属.
-function betterRideLines(kind, rides, id) {
+function betterRideLines(kind, rides, id, part3) {
   const name = (id, label, icon) => `<button type="button" class="better-ride-name" tabindex="-1">${icon}<span>${label}</span></button>`;
-  if (anyRide(kind, rides, id)) return `<span class="better-ride" data-ride="*">${name('*', '任意配属', rideIcon(kind, {}))}</span>`;
+  if (anyRide(kind, rides, id, part3)) return `<span class="better-ride" data-ride="*">${name('*', '任意配属', rideIcon(kind, {}))}</span>`;
   return rideEntries(rides).map(({ id, name: label, levels }) => `<span class="better-ride" data-ride="${id}">${name(id, label, rideIcon(kind, id ? { id, level: levels[0] } : null))}${id ? `<span class="better-hearts">${[...levels].sort((a, b) => a - b).map(level => `<button type="button" class="better-heart" data-level="${level}" tabindex="-1" aria-label="${label} 友好LV${level}">${heartIcon(level)}</button>`).join('')}</span>` : ''}</span>`).join('');
 }
 // Results with the same stats share one card, listing every class (with its rides) that gives them.
@@ -389,42 +389,43 @@ const TIER_LABELS = ['基础', '初级', '中级', '上级', '最上级', '神�
 // The phone pick button's arrow, shared by 其他选择 and 考试推荐.
 const PICK_CHEVRON = '<svg class="exam-pick-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 // What a phone tier button shows: 到 and the highest tier kept.
+// 兵种范围's two stops, narrowest first like the tiers: the value is 0 for 已解锁 and 1 for 全部 (which contains it).
+const SCOPE_STOPS = ['已解锁', '全部'];
 const tierPickValue = cap => `<span class="exam-tier-prefix">到</span><span class="exam-tier-name">${TIER_LABELS[cap]}</span>`;
-/* Phones: the tier cap as one wheel in a bottom sheet, as 考试推荐's 阶级. The wheel only picks; 完成 applies
-   it, and closing any other way leaves the cap as it was. */
-function openTierSheet({ stack, title, highest, cap, apply, button }) {
+/* Phones: the tier cap as one wheel in a bottom sheet, as 考试推荐's 阶级; with `scope` (0 已解锁, 1 全部) the 兵种范围
+   wheel stands beside it. The wheels only pick; 完成 applies them, and closing any other way leaves the filter as it was. */
+function openTierSheet({ stack, title, highest, cap, scope, apply, button }) {
   const sheet = document.createElement('dialog');
   sheet.className = 'app-dialog ride-picker exam-wheel-sheet';
   animateMobilePickerClose(sheet);
   stack.add(sheet);
   sheet.setAttribute('aria-labelledby', 'tier-sheet-title');
-  sheet.innerHTML = `<div class="ride-titlebar"><h2 id="tier-sheet-title">${title}</h2></div><div class="exam-wheels">${wheelMarkup('tier', title, TIER_LABELS.slice(0, highest + 1).map((label, t) => ({ value: t, label })), cap)}<span class="wheel-band" aria-hidden="true"></span></div><div class="profession-footer"><button type="button" class="primary" data-done>完成</button></div>`;
-  const wheel = sheet.querySelector('.wheel[data-wheel="tier"]');
-  let picked = cap, done = false;
+  sheet.innerHTML = `<div class="ride-titlebar"><h2 id="tier-sheet-title">${scope === undefined ? title : '筛选'}</h2></div><div class="exam-wheels">${scope === undefined ? '' : wheelMarkup('scope', '兵种范围', SCOPE_STOPS.map((label, value) => ({ value, label })), scope)}${wheelMarkup('tier', title, TIER_LABELS.slice(0, highest + 1).map((label, t) => ({ value: t, label })), cap, scope !== undefined)}<span class="wheel-band" aria-hidden="true"></span></div><div class="profession-footer"><button type="button" class="primary" data-done>完成</button></div>`;
+  const wheel = sheet.querySelector('.wheel[data-wheel="tier"]'), scopeWheel = sheet.querySelector('.wheel[data-wheel="scope"]');
+  let picked = cap, pickedScope = scope, done = false;
   const control = wireWheel(wheel, { settle: value => { picked = value; } });
+  const scopeControl = scopeWheel && wireWheel(scopeWheel, { settle: value => { pickedScope = value; } });
   sheet.addEventListener('click', e => { if (e.target.closest('[data-done]')) { done = true; sheet.close(); } });
   sheet.addEventListener('close', () => {
     retireDialog(sheet);
-    if (done && picked !== cap) apply(picked);
+    if (done && (picked !== cap || pickedScope !== scope)) apply(picked, pickedScope);
     if (!stack.closing && !UI_MEDIA.coarseInput.matches) button?.focus({ preventScroll: true });
   }, { once: true });
   document.body.append(sheet);
   sheet.showModal();
-  control.go(cap, false);
+  control.go(cap, false); scopeControl?.go(scope, false);
   if (UI_MEDIA.coarseInput.matches) { sheet.tabIndex = -1; sheet.style.outline = 'none'; sheet.focus({ preventScroll: true }); }
-  else wheel.focus({ preventScroll: true });
+  else (scopeWheel || wheel).focus({ preventScroll: true });
 }
 // The vertical tier slider's pointer and keyboard handling, shared by 其他选择 and 考试推荐.
 function wireTierSlider(track, highest, getCap, setCap) {
   const stops = highest + 1;
   const stopAt = y => { const box = track.getBoundingClientRect(); return highest - Math.round((y - box.top) / box.height * stops - .5); };
-  let dragging = false, pointerFocus = false;
-  track.addEventListener('focus', () => { if (!pointerFocus) track.classList.add('key-focus'); });
-  track.addEventListener('blur', () => track.classList.remove('key-focus'));
+  let dragging = false;
   track.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
-    // Focus for the arrow keys, but no ring: the ring is for reaching the slider by keyboard only.
-    e.preventDefault(); pointerFocus = true; track.classList.remove('key-focus'); track.focus({ preventScroll: true }); pointerFocus = false;
+    // Focus for the arrow keys; the ring only shows in keyboard mode (styles.css), which this press leaves.
+    e.preventDefault(); track.focus({ preventScroll: true });
     dragging = true; track.setPointerCapture(e.pointerId); track.classList.add('tier-dragging');
     const next = stopAt(e.clientY); if (next !== getCap()) setCap(next);
   });
@@ -435,7 +436,7 @@ function wireTierSlider(track, highest, getCap, setCap) {
   track.addEventListener('keydown', e => {
     const cap = getCap(), next = { ArrowUp: cap + 1, ArrowRight: cap + 1, ArrowDown: cap - 1, ArrowLeft: cap - 1, Home: 0, End: highest, PageUp: highest, PageDown: 0 }[e.key];
     if (next === undefined) return;
-    e.preventDefault(); e.stopPropagation(); track.classList.add('key-focus');
+    e.preventDefault(); e.stopPropagation();
     if (Math.max(0, Math.min(highest, next)) !== cap) setCap(next);
   });
 }
@@ -451,13 +452,13 @@ function betterDialog(title, current, groups) {
     const unit = result => {
       const rows = result.classes.map(entry => {
         options.push({ profession: entry.profession, outcome: { stats: result.stats, plus2: result.plus2, happy: result.happy, rides: entry.rides } });
-        return { ...entry, index: options.length - 1, kind: rideKind(entry.profession, current.id) };
+        return { ...entry, index: options.length - 1, kind: rideKind(entry.profession, current.id, current.part3) };
       });
-      const label = row => `${row.profession}${row.kind ? '，' + (anyRide(row.kind, row.rides, current.id) ? '任意配属' : betterRideText(row.rides)) : ''}，提升 ${points(result)} 点：${result.stats.join('、')}`;
-      const entries = rows.map(row => `<div class="better-entry" data-choice="${row.index}"><button type="button" class="better-class-pick better-option" aria-label="${label(row)}">${classLine(row.profession)}</button>${row.kind ? `<span class="better-pick">选一个配属和友好LV</span><span class="better-rides">${betterRideLines(row.kind, row.rides, current.id)}</span>` : ''}</div>`).join('');
+      const label = row => `${row.profession}${row.kind ? '，' + (anyRide(row.kind, row.rides, current.id, current.part3) ? '任意配属' : betterRideText(row.rides)) : ''}，提升 ${points(result)} 点：${result.stats.join('、')}`;
+      const entries = rows.map(row => `<div class="better-entry" data-choice="${row.index}"><button type="button" class="better-class-pick better-option" aria-label="${label(row)}">${classLine(row.profession)}</button>${row.kind ? `<span class="better-pick">选一个配属和友好LV</span><span class="better-rides">${betterRideLines(row.kind, row.rides, current.id, current.part3)}</span>` : ''}</div>`).join('');
       return `<div class="better-node">${card(result, current, rows.length === 1 ? ` data-choice="${rows[0].index}"` : '')}<span class="better-ridebox">${entries}</span></div>`;
     };
-    const kind = rideKind(current.profession, current.id);
+    const kind = rideKind(current.profession, current.id, current.part3);
     const currentRide = kind ? `<span class="better-rides"><span class="better-ride">${rideIcon(kind, current.ride)}<span>${current.ride ? window.RIDES.byId[current.ride.id].name : '无配属'}</span>${current.ride ? `<span class="better-hearts">${heartIcon(current.ride.level)}</span>` : ''}</span></span>` : '';
     // Built like the other cards; the two sides are told apart only by their captions.
     /* A vertical stepped slider caps the class tier of the results shown (基础 at the bottom; Part 1-2 goes up
@@ -468,10 +469,16 @@ function betterDialog(title, current, groups) {
     // Shown only when it can change something: the results span at least two tiers.
     const filterable = new Set(groups.flatMap(result => result.classes.map(entry => tierOf(entry.profession)))).size > 1;
     // How many result cards each stop keeps: a card stays while any of its classes is within the cap.
-    const kept = tier => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier)).length;
-    const slider = !filterable ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div></div>`;
+    /* 兵种范围: a person with a marked class may narrow the results to the classes they have unlocked; the filter
+       then counts and shows only those. It starts at the toolbar's 兵种范围 (current.unlockedOnly). */
+    const marked = current.marked === true, filtered = filterable || marked;
+    let unlockedOnly = marked && current.unlockedOnly === true;
+    const kept = (tier, only = unlockedOnly) => groups.filter(result => result.classes.some(entry => tierOf(entry.profession) <= tier && (!only || current.unlocked(entry.profession)))).length;
+    // 全部 on top, as the widest tier is, so both sliders read the same way: what is shown is what lies below the knob.
+    const scopeSlider = !marked ? '' : `<div class="tier-slider scope-slider" role="slider" tabindex="0" aria-label="兵种范围" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="1" style="--stops:2"><span class="tier-track"><span class="tier-fill"></span></span>${[1, 0].map(stop => `<span class="tier-stop" data-tier="${stop}"><i></i><span>${SCOPE_STOPS[stop]}</span><small class="tier-count" aria-hidden="true"></small></span>`).join('')}<span class="tier-thumb"></span></div>`;
+    const slider = !filtered ? '' : `<div class="tier-filter"><h3 class="better-caption" id="tier-caption">筛选</h3><div class="tier-slider" role="slider" tabindex="0" aria-labelledby="tier-caption" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="${highest}" style="--stops:${stops.length}"><span class="tier-track"><span class="tier-fill"></span></span>${stops.map(tier => `<span class="tier-stop" data-tier="${tier}"><i></i><span>${TIER_LABELS[tier]}</span><small class="tier-count" aria-hidden="true">${kept(tier)}</small></span>`).join('')}<span class="tier-thumb"></span></div>${scopeSlider}</div>`;
     // Phones: the same filter as 考试推荐's 阶级 button, under the current class's box (not inside it).
-    const mobileFilter = !filterable ? '' : `<div class="better-mobile-filter"><span>筛选</span><button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${PICK_CHEVRON}</button></div>`;
+    const mobileFilter = !filtered ? '' : `<div class="better-mobile-filter"><span>筛选</span><button type="button" class="exam-pick${marked ? ' has-scope' : ''}" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span>${marked ? '<span class="exam-pick-scope" data-pick-value="scope"></span>' : ''}<span class="exam-pick-value" data-pick-value="tier"></span></span>${PICK_CHEVRON}</button></div>`;
     const root = `<section class="better-side-current"><h3 class="better-caption">当前</h3><div class="better-node better-root">${card(current, null)}<span class="better-ridebox"><span class="better-entry">${current.profession ? classLine(current.profession) : ''}${currentRide}</span></span>${mobileFilter}</div>${slider}</section>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog';
@@ -500,27 +507,48 @@ function betterDialog(title, current, groups) {
       chosen = { ...options[Number(index)], ride };
       void stack.closeAll();
     };
-    const track = dialog.querySelector('.tier-slider');
+    const track = dialog.querySelector('.tier-slider'), scopeTrack = dialog.querySelector('.scope-slider');
     // Starts at the toolbar's 推荐 stop; moving it here changes this dialog only.
-    let cap = filterable ? Math.min(current.cap ?? highest, highest) : highest;
+    let cap = filtered ? Math.min(current.cap ?? highest, highest) : highest;
     const setCap = (value, relayout = true) => {
       if (!track) return;
       const before = relayout ? betterSnapshot(dialog) : null;
       cap = Math.max(0, Math.min(highest, value));
-      const pickValue = dialog.querySelector('.better-mobile-filter [data-pick-value]');
+      const pickValue = dialog.querySelector('.better-mobile-filter [data-pick-value="tier"]');
       if (pickValue) pickValue.innerHTML = tierPickValue(cap);
+      const pickScope = dialog.querySelector('.better-mobile-filter [data-pick-value="scope"]');
+      if (pickScope) pickScope.textContent = SCOPE_STOPS[unlockedOnly ? 0 : 1];
       track.style.setProperty('--at', String(highest - cap));
       track.setAttribute('aria-valuenow', String(cap));
       track.setAttribute('aria-valuetext', cap === highest ? `全部（到${TIER_LABELS[cap]}职业）` : `到${TIER_LABELS[cap]}职业为止`);
-      for (const stop of track.querySelectorAll('.tier-stop')) stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
+      for (const stop of track.querySelectorAll('.tier-stop')) {
+        stop.classList.toggle('in', Number(stop.dataset.tier) <= cap);
+        stop.querySelector('.tier-count').textContent = kept(Number(stop.dataset.tier));
+      }
+      if (scopeTrack) {
+        const value = unlockedOnly ? 0 : 1;
+        scopeTrack.style.setProperty('--at', String(1 - value));
+        scopeTrack.setAttribute('aria-valuenow', String(value));
+        scopeTrack.setAttribute('aria-valuetext', SCOPE_STOPS[value]);
+        for (const stop of scopeTrack.querySelectorAll('.tier-stop')) {
+          stop.classList.toggle('in', Number(stop.dataset.tier) <= value);
+          // What each scope would keep at the current tier.
+          stop.querySelector('.tier-count').textContent = kept(cap, stop.dataset.tier === '0');
+        }
+      }
       // Cards filtered out leave the page, so go through every stored card, not what the page holds now.
       for (const node of dialog.betterNodes) {
-        for (const entry of node.querySelectorAll('.better-entry[data-choice]')) entry.hidden = tierOf(options[Number(entry.dataset.choice)].profession) > cap;
+        for (const entry of node.querySelectorAll('.better-entry[data-choice]')) {
+          const name = options[Number(entry.dataset.choice)].profession;
+          entry.hidden = tierOf(name) > cap || (unlockedOnly && !current.unlocked(name));
+        }
         node.hidden = !node.querySelector('.better-entry[data-choice]:not([hidden])');
       }
       if (relayout) { pinned = null; animateBetter(dialog, before); }
     };
-    dialog.querySelector('.better-mobile-filter .exam-pick')?.addEventListener('click', e => openTierSheet({ stack, title: '阶级', highest, cap, apply: setCap, button: e.currentTarget }));
+    dialog.querySelector('.better-mobile-filter .exam-pick')?.addEventListener('click', e => openTierSheet({ stack, title: '阶级', highest, cap, scope: marked ? (unlockedOnly ? 0 : 1) : undefined, button: e.currentTarget,
+      apply: (value, scope) => { if (scope !== undefined) unlockedOnly = scope === 0; setCap(value); } }));
+    if (scopeTrack) wireTierSlider(scopeTrack, 1, () => unlockedOnly ? 0 : 1, value => { unlockedOnly = value === 0; setCap(cap); });
     if (track) wireTierSlider(track, highest, () => cap, setCap);
     /* Compact layout (layoutBetter): a card's class box floats beside it, inside the dialog, while the card
        or its box is pointed at or focused; a click on the card pins it so the pointer can travel there. */
@@ -573,12 +601,12 @@ function betterDialog(title, current, groups) {
        takes none (or keeps any ride) is taken at once. Each ride shows its five friendship slots in place,
        only the levels that give this result filled in; the ride in use comes first. */
     const rideSheet = entry => {
-      const index = entry.dataset.choice, option = options[Number(index)], kind = rideKind(option.profession, current.id);
+      const index = entry.dataset.choice, option = options[Number(index)], kind = rideKind(option.profession, current.id, current.part3);
       const used = current.ride?.id;
       // 任意配属 (every ride at every level gives this result) still asks which ride: 无配属 and each ride, all five levels.
       const all = [1, 2, 3, 4, 5];
       const lines = entry.querySelector('.better-ride[data-ride="*"]')
-        ? [{ id: '', levels: [] }, ...window.RiggingActions.rideOptions(kind, current.id).map(ride => ({ id: ride.id, levels: all }))]
+        ? [{ id: '', levels: [] }, ...window.RiggingActions.rideOptions(state, kind, current.id, current.part3).map(ride => ({ id: ride.id, levels: all }))]
         : [...entry.querySelectorAll('.better-ride[data-ride]')].map(line => ({ id: line.dataset.ride, levels: [...line.querySelectorAll('[data-level]')].map(heart => Number(heart.dataset.level)) }));
       lines.sort((a, b) => (b.id === used) - (a.id === used));
       const rows = lines.map(line => {
@@ -657,11 +685,11 @@ function betterDialog(title, current, groups) {
        slider stays under the pointer while dragged. A filter remembered from before still opens at the size
        of everything, so the size is taken with all results first. */
     // Once locked, lay out again inside the lock, so opening and coming back to the top look the same.
-    if (track && cap !== highest) {
-      const kept = cap;
-      setCap(highest, false); layoutBetter(dialog);
+    if (track && (cap !== highest || unlockedOnly)) {
+      const keptCap = cap, keptScope = unlockedOnly;
+      unlockedOnly = false; setCap(highest, false); layoutBetter(dialog);
       lockBetterSize(dialog); layoutBetter(dialog);
-      setCap(kept);
+      unlockedOnly = keptScope; setCap(keptCap);
     } else { lockBetterSize(dialog); layoutBetter(dialog); }
     window.addEventListener('resize', relayout);
     /* Touch: nothing starts chosen, so focus the dialog itself (focusing an option would light it). */
@@ -867,13 +895,13 @@ async function openBetterChoices(anchor) {
   const field = () => app.querySelector(`[data-better="${item.id}"][data-better-index="${index}"]`) || app.querySelector(`[data-character="${item.id}"][data-queue-index="${index}"]`);
   const refocus = () => field()?.focus({ preventScroll: true });
   if (!choices.length) { refocus(); return; }
-  const groups = betterGroups(choices), current = { id: item.id, part3: row.part3 === true, cap: window.RiggingSeed.recommendCap(state, row.part3 === true), profession: row.profession, ride: row.ride, stats: row.stats, plus2: row.plus2, happy: row.happy === true };
+  const groups = betterGroups(choices), current = { id: item.id, part3: row.part3 === true, cap: window.RiggingSeed.recommendCap(state, row.part3 === true), marked: Boolean(item.unlockedClasses?.length), unlockedOnly: window.RiggingSeed.recommendUnlockedOnly(state, item), unlocked: name => window.RiggingActions.classUnlocked(item, name), profession: row.profession, ride: row.ride, stats: row.stats, plus2: row.plus2, happy: row.happy === true };
   // The level in the title is written like LEVEL UP on the record page: its font, in gold.
   const picked = await betterDialog(`<span class="better-level">${levelLabel(item, row.displayLevel)}</span> 的其他选择`, current, groups);
   if (!picked) { refocus(); return; }
   // The user picked a ride and level, or 任意配属: then keep the one in use when it gives this result.
-  const kind = rideKind(picked.profession, item.id), rides = picked.outcome.rides, same = a => b => JSON.stringify(a) === JSON.stringify(b);
-  const ride = !kind ? null : picked.ride !== undefined ? picked.ride : rides.find(same(row.ride)) || rides.find(same(rememberedRide(item.id, kind))) || rides[0];
+  const kind = rideKind(picked.profession, item.id, row.part3), rides = picked.outcome.rides, same = a => b => JSON.stringify(a) === JSON.stringify(b);
+  const ride = !kind ? null : picked.ride !== undefined ? picked.ride : rides.find(same(row.ride)) || rides.find(same(rememberedRide(item.id, kind, undefined, row.part3))) || rides[0];
   // A choice made here is for this level only, so there is no scope to ask about.
   window.RiggingSeed.applyRowClass(state, item, c, index, { profession: picked.profession, ride }, 'once');
   const rail = anchor.closest('.records');
@@ -912,14 +940,17 @@ async function openExamRecommend(id) {
   examPending.delete(id);
   const button = () => app.querySelector(`[data-exam="${id}"]`);
   if (!stats || page !== 'summary') return;
+  const marks = JSON.stringify(item.unlockedClasses);
   await examDialog(item, c, stats);
+  // The marks decide the 兵种范围 switch and, in 已解锁, which hints show.
+  if (JSON.stringify(item.unlockedClasses) !== marks) render();
   button()?.focus({ preventScroll: true });
 }
 // Rides as text, like the class box in 其他选择 but nothing to pick. A ride with hearts keeps its name and hearts in
 // one wrapping box (.better-ride-text): the hearts sit after the name while both fit, else drop under the name.
 // The name is a button with an info glyph that opens 配属详情 (ui/exam-detail.js); the whole row is its hit area.
-function examRideLines(kind, rides, id) {
-  if (anyRide(kind, rides, id)) return `<span class="better-ride">${rideIcon(kind, {})}<span>任意配属</span></span>`;
+function examRideLines(kind, rides, id, part3) {
+  if (anyRide(kind, rides, id, part3)) return `<span class="better-ride">${rideIcon(kind, {})}<span>任意配属</span></span>`;
   return rideEntries(rides).map(({ id: rideId, name, levels }) => {
     if (!rideId) return `<span class="better-ride">${rideIcon(kind, null)}<span>${name}</span></span>`;
     const detail = examDetailButton('ride', name);
@@ -1022,8 +1053,8 @@ function wireLevelRange(box, { min, max, get, show, commit }) {
    column scrolls and snaps on its own; when it settles, its value counts. A mouse can scroll it, drag it or
    click a row, and the keyboard steps it, so a narrow desktop window works as well. */
 const WHEEL_ROW = 32;
-function wheelMarkup(name, label, options, value) {
-  return `<div class="wheel-column"><span class="wheel-caption" id="wheel-${name}"${name === 'tier' ? ' hidden' : ''}>${label}</span><div class="wheel" data-wheel="${name}" role="spinbutton" tabindex="0" aria-labelledby="wheel-${name}" aria-valuemin="${options[0].value}" aria-valuemax="${options.at(-1).value}">${options.map(option => `<span class="wheel-item${option.value === value ? ' selected' : ''}" data-value="${option.value}">${option.label}</span>`).join('')}</div></div>`;
+function wheelMarkup(name, label, options, value, captioned = name !== 'tier') {
+  return `<div class="wheel-column"><span class="wheel-caption" id="wheel-${name}"${captioned ? '' : ' hidden'}>${label}</span><div class="wheel" data-wheel="${name}" role="spinbutton" tabindex="0" aria-labelledby="wheel-${name}" aria-valuemin="${options[0].value}" aria-valuemax="${options.at(-1).value}">${options.map(option => `<span class="wheel-item${option.value === value ? ' selected' : ''}" data-value="${option.value}">${option.label}</span>`).join('')}</div></div>`;
 }
 function wireWheel(wheel, { settle }) {
   const items = [...wheel.querySelectorAll('.wheel-item')], values = items.map(item => Number(item.dataset.value));
@@ -1087,12 +1118,12 @@ function examDialog(item, c, stats) {
   return new Promise(resolve => {
     const actions = window.RiggingActions, seed = window.RiggingSeed, highest = stats.part3 || state.part3 === true || c.part3Only === true ? 5 : 3;
     const icon = name => `<img src="${imageSrc(`assets/classes/${window.PROFESSIONS.icons[name]}.webp`)}" alt="" draggable="false">`;
-    const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
+    const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id, stats.part3) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
     const counted = stats.levels.length > 0, ranged = counted && stats.min < stats.max;
     let range = counted ? seed.examRange(item, stats) : { from: null, to: null };
     let entries = [];
     const compute = () => {
-      entries = counted ? seed.examEntries(stats, range.from, range.to).entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id), key: encodeURIComponent(`${entry.profession}|${JSON.stringify(entry.rides)}`) })) : [];
+      entries = counted ? seed.examEntries(stats, range.from, range.to).entries.map(entry => ({ ...entry, kind: rideKind(entry.profession, item.id, stats.part3), key: encodeURIComponent(`${entry.profession}|${JSON.stringify(entry.rides)}`) })) : [];
     };
     compute();
     // The class name opens 兵种详情 (ui/exam-detail.js); 平民 and 贵族 have no exam and stay plain text.
@@ -1103,7 +1134,7 @@ function examDialog(item, c, stats) {
     const node = (entry, unlocked) => {
       const base = window.PROFESSIONS.base.includes(entry.profession);
       const toggle = base ? '' : `<button type="button" class="exam-unlock" data-unlock="${entry.profession}" aria-pressed="${unlocked}">${unlocked ? '取消已解锁' : '标为已解锁'}</button>`;
-      return `<div class="better-node exam-node" data-tier="${entry.tier}" data-key="${entry.key}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry">${classRow(entry.profession)}${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
+      return `<div class="better-node exam-node" data-tier="${entry.tier}" data-key="${entry.key}" role="group" aria-label="${words(entry)}"><span class="better-card"><span class="exam-gain"><b>+${entry.gainTotal}</b>${entry.lossTotal ? `<small>−${entry.lossTotal}</small>` : ''}</span>${examMiniStats(entry)}</span><span class="better-ridebox"><span class="better-entry">${classRow(entry.profession)}${entry.kind ? `<span class="better-rides">${examRideLines(entry.kind, entry.rides, item.id, stats.part3)}</span>` : ''}<span class="exam-count">共推荐 ${entry.count} 次<br>强烈推荐 ${entry.strong} 次</span>${toggle}</span></span></div>`;
     };
     const column = unlocked => {
       const list = entries.filter(entry => actions.classUnlocked(item, entry.profession) === unlocked);

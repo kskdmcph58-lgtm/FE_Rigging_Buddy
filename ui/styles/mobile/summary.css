@@ -157,8 +157,11 @@
     border: 0;
     border-bottom: .5px solid var(--m-hairline);
     border-radius: 0;
-    /* The nav bar's colour (--m-chrome is --bg made translucent), solid: what it covers must not show through. */
-    background: var(--bg);
+    /* The nav bar's own material (shell.css), so the two render as one colour: a plain --bg would miss the bar's
+       frosted tint and the page's grain. */
+    background: var(--m-chrome);
+    -webkit-backdrop-filter: saturate(1.6) blur(20px);
+    backdrop-filter: saturate(1.6) blur(20px);
     box-shadow: 0 12px 24px #0004;
     opacity: 0;
     clip-path: inset(0 -32px 100%);
@@ -213,6 +216,8 @@
     border-radius: 0;
     background: none;
   }
+  /* 兵种范围 right under the tier slider, the two reading as one group; its stops sit under 基础 and 初级. */
+  #app.summary-page .m-settings .recommend-sliders { flex-direction: column; align-items: flex-start; gap: 2px; }
   #app.summary-page .m-settings .recommend-caption { color: var(--text); font-size: 14px; line-height: 20px; }
   /* Reserve the six-stop footprint so 基础 stays anchored, including when the slider wraps below its caption. */
   #app.summary-page .m-settings .recommend-slider {
