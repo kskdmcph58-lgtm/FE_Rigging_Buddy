@@ -4661,8 +4661,10 @@ html[data-input-mode="keyboard"] .tier-slider:focus { box-shadow:0 0 0 2px var(-
 /* Phones keep the desktop card (156px) with its classes in the box to its right; rides are picked in a sheet. */
 .better-mobile .better-node { display:flex; align-items:flex-start; gap:6px; width:100%; }
 .better-mobile .better-card { flex:none; width:156px; cursor:default; }
-/* A long class list scrolls past its card: the card holds at the top until the list's end reaches it, then both leave together. */
-.better-mobile .better-side-others .better-card { position:sticky; top:0; }
+/* A long class list scrolls past its card: the card holds at the top until the list's end reaches it, then both leave together.
+   考试推荐 holds it just under its sticky header: examDialog sets --card-stick to that header's bottom edge, and marks the pairs whose
+   box is taller than the card (.exam-tall): every sticky card is its own compositor layer, so equal pairs, which have nothing to hold, get none. */
+.better-mobile :is(.better-side-others,.exam-tall) .better-card { position:sticky; top:var(--card-stick,0px); }
 .better-mobile .better-ridebox { flex:1; min-width:0; overflow:visible; gap:0; padding:2px 8px; }
 .better-mobile .better-root .better-ridebox { gap:6px; padding:8px; }
 .better-mobile .tier-filter { display:none; }
@@ -4740,7 +4742,10 @@ html[data-input-mode="keyboard"] .level-thumb:focus { box-shadow:0 0 0 1px var(-
 .exam-dialog.better-mobile button.exam-collapse::after { content:''; position:absolute; inset:-4px 0; }
 .exam-collapse[aria-expanded="false"] .exam-pick-chevron { transform:rotate(-90deg); }
 .exam-dialog.better-mobile .exam-locked > .better-caption { display:none; }
-.exam-dialog.better-mobile.exam-locked-collapsed .exam-locked { display:none; }
+/* While 未解锁 folds (profession-controls.js) the list stays displayed, its edge clipped; the map must not scroll-anchor to the moving edge. */
+.exam-dialog.better-mobile.exam-locked-collapsed:not(.exam-locked-moving) .exam-locked { display:none; }
+.exam-dialog.better-mobile.exam-locked-moving .exam-locked { overflow:clip; }
+.exam-dialog.better-mobile.exam-locked-moving .exam-map { overflow-anchor:none; }
 .exam-dialog.better-mobile .exam-filters { display:none; }
 /* Phones and narrow windows: two compact buttons show the choice; each opens its wheels in a bottom sheet. */
 .exam-dialog.better-mobile .exam-picks { display:flex; gap:8px; }

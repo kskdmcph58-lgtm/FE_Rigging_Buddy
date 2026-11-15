@@ -708,6 +708,8 @@ function betterDialog(title, current, groups) {
 const BETTER_SLACK = 2;
 // MOTION.large with the standard curve; this file loads before features.js defines MOTION.
 const BETTER_MOTION = { duration: 200, easing: 'cubic-bezier(.16,1,.3,1)' };
+// The exam dialog's resize motion: the sheet's own entrance (m-sheet-in), used by the 未解锁 fold here and the route disclosure in exam-detail.js.
+const EXAM_RESIZE = { duration: 280, easing: 'cubic-bezier(.32,.72,0,1)' };
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* The dialog keeps the size it opened at (with every result shown) while filtering: neither smaller nor larger.
    layoutBetter reads the height from max-height, so the filtered results are laid out within that same box. */
@@ -1166,6 +1168,15 @@ function examDialog(item, c, stats) {
     const filter = () => {
       for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
       for (const col of dialog.querySelectorAll('.exam-col')) col.querySelector('.exam-none').hidden = Boolean(col.querySelector('.exam-node:not([hidden])'));
+      markTall();
+    };
+    /* Only a pair whose class box is taller than its card has anything for the card to hold (styles.css): mark those, measured
+       together in one layout, whenever the pairs are drawn, filtered or resized. */
+    const markTall = () => {
+      if (!dialog.isConnected) return;
+      // Pairs that are not displayed (a folded list) have no height to compare; they are measured when they show.
+      const pairs = [...dialog.querySelectorAll('.exam-node:not([hidden])')].map(node => [node, node.firstElementChild.getBoundingClientRect().height, node.lastElementChild.getBoundingClientRect().height]).filter(([, card]) => card);
+      for (const [node, card, box] of pairs) node.classList.toggle('exam-tall', box > card);
     };
     const draw = () => {
       details.close();
@@ -1261,30 +1272,69 @@ function examDialog(item, c, stats) {
       dialog.querySelector(`[data-unlock="${CSS.escape(name)}"]`)?.focus({ preventScroll: true });
     };
     const details = examDetails({ dialog, stack, unlocked: name => actions.classUnlocked(item, name), toggleUnlock });
+    /* 未解锁 folds like an iOS disclosure group: the section's own height runs from where it is to its end state with
+       its overflow clipped, so the edge reveals or conceals the rows, the chevron turns on the same clock, and what
+       follows (the margin and 已解锁) rides the edge. Nothing scales, so no text reflows. Only the part of the list in
+       view travels: a long list is cut at the bottom of the scroll area (the cut is out of sight) and settles at once
+       when the motion ends, so the distance never exceeds the screen.
+       Collapsing from inside the list ends at the top of 已解锁, right under the header, however far the view had
+       scrolled: the edge rides up to the header with the view held, then the scroll position goes to 0 in the same frame
+       the list is hidden (the two layouts show the same pixels). Past the list the view keeps what it shows. */
+    const map = dialog.querySelector('.exam-map'), side = dialog.querySelector('.exam-side');
+    const lockedList = dialog.querySelector('.exam-locked'), unlockedList = dialog.querySelector('.exam-unlocked');
     const collapseAnimations = new Set();
-    const stopCollapseAnimation = () => { for (const animation of collapseAnimations) animation.cancel(); collapseAnimations.clear(); };
+    // Back to the static layout: nothing animated, the list displayed or hidden by the class alone.
+    const stopCollapseAnimation = () => {
+      for (const animation of collapseAnimations) animation.cancel();
+      collapseAnimations.clear();
+      dialog.classList.remove('exam-locked-moving');
+      lockedList.inert = false;
+    };
     const animateCollapse = (node, frames) => {
-      const animation = node.animate(frames, BETTER_MOTION);
+      const animation = node.animate(frames, { ...EXAM_RESIZE, fill: 'forwards' });
       collapseAnimations.add(animation);
-      animation.finished.then(() => collapseAnimations.delete(animation), () => collapseAnimations.delete(animation));
+      return animation.finished;
     };
     dialog.addEventListener('click', e => {
       const collapse = e.target.closest('.exam-collapse');
       if (collapse) {
-        // Read the visible height before cancelling, so rapid reversals continue from the current frame.
-        const height = dialog.getBoundingClientRect().height;
-        const arrow = collapse.querySelector('.exam-pick-chevron'), rotation = getComputedStyle(arrow).transform;
+        const collapsing = collapse.getAttribute('aria-expanded') === 'true';
+        const arrow = collapse.querySelector('.exam-pick-chevron');
+        // Read where everything is now, mid-motion included, before cancelling, so a quick reversal continues from here.
+        const hold = side.getBoundingClientRect().bottom, before = lockedList.getBoundingClientRect(), anchor = unlockedList.getBoundingClientRect().top;
+        const now = reduceMotion() ? null : { height: before.height, margin: getComputedStyle(unlockedList).marginTop, turn: getComputedStyle(arrow).transform };
+        const inside = collapsing && before.top < hold - .5 && before.bottom > hold, past = collapsing && before.bottom <= hold;
+        // Where the view ends up: at the top of what follows when it was inside the list; unchanged on screen when it was past it.
+        const settleScroll = () => {
+          if (inside) map.scrollTop = 0;
+          else if (past) map.scrollTop += unlockedList.getBoundingClientRect().top - anchor;
+        };
         stopCollapseAnimation();
-        const collapsed = collapse.getAttribute('aria-expanded') === 'true';
-        collapse.setAttribute('aria-expanded', String(!collapsed));
-        dialog.classList.toggle('exam-locked-collapsed', collapsed);
-        if (!reduceMotion()) {
-          const nextHeight = dialog.getBoundingClientRect().height;
-          // Animate real height, keeping the sheet's bottom edge and text size stable as its top moves.
-          if (Math.abs(height - nextHeight) > .5) animateCollapse(dialog, [{ height: `${height}px` }, { height: `${nextHeight}px` }]);
-          animateCollapse(arrow, [{ transform: rotation }, { transform: getComputedStyle(arrow).transform }]);
-          animateCollapse(dialog.querySelector(collapsed ? '.exam-unlocked' : '.exam-locked'), [{ opacity: .4 }, { opacity: 1 }]);
+        collapse.setAttribute('aria-expanded', String(!collapsing));
+        dialog.classList.toggle('exam-locked-collapsed', collapsing);
+        if (!now || past) {
+          // Instant, or the list is out of sight (only the chevron turns).
+          settleScroll();
+          markTall();
+          if (now) Promise.all([animateCollapse(arrow, [{ transform: now.turn }, { transform: getComputedStyle(arrow).transform }])]).then(stopCollapseAnimation, () => {});
+          return;
         }
+        // The list stays displayed (clipped, and unreadable while it leaves) until the motion ends.
+        dialog.classList.add('exam-locked-moving');
+        lockedList.inert = collapsing;
+        markTall();
+        const full = lockedList.getBoundingClientRect(), view = map.getBoundingClientRect();
+        const shown = Math.min(full.height, Math.max(0, view.top + map.clientHeight - full.top));
+        // From inside the list the edge rides up to the header when what follows still fills the view (the view is held until the end); otherwise the scroll area shrinks and clamps the view by itself.
+        const end = !collapsing ? shown : inside && map.scrollHeight - full.height >= map.clientHeight ? hold - full.top : 0;
+        const margin = getComputedStyle(unlockedList).marginTop;
+        const folds = [
+          animateCollapse(lockedList, [{ height: `${Math.min(now.height, shown)}px` }, { height: `${end}px` }]),
+          animateCollapse(arrow, [{ transform: now.turn }, { transform: getComputedStyle(arrow).transform }])
+        ];
+        if (margin !== now.margin) folds.push(animateCollapse(unlockedList, [{ marginTop: now.margin }, { marginTop: margin }]));
+        // The last frame holds until the class settles, so the list never shows at its full height for a frame.
+        Promise.all(folds).then(() => { stopCollapseAnimation(); settleScroll(); }, () => {});
         return;
       }
       const pick = e.target.closest('[data-pick]');
@@ -1293,15 +1343,23 @@ function examDialog(item, c, stats) {
       if (unlock) { toggleUnlock(unlock.dataset.unlock); return; }
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
-    const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
+    // Stuck cards stop just under the sticky header, which sits at its height plus its (negative) sticky top. The observer follows
+    // any change in that height; the custom property is written only when its value changes.
+    const watchHeader = new ResizeObserver(([{ borderBoxSize: [box] }]) => {
+      const stop = `${box.blockSize + parseFloat(getComputedStyle(side).top)}px`;
+      if (map.style.getPropertyValue('--card-stick') !== stop) map.style.setProperty('--card-stick', stop);
+    });
+    const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); markTall(); };
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); watchHeader.disconnect(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);
     showRange(range);
     document.body.append(dialog);
     dialog.showModal();
+    // Holding cards changes nothing at the top of the list, so it starts once the dialog has been painted.
+    requestAnimationFrame(() => setTimeout(() => { if (!dialog.isConnected) return; watchHeader.observe(side); markTall(); }));
     if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }
     else dialog.querySelector('[data-dismiss]')?.focus({ preventScroll: true });
   });

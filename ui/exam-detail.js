@@ -117,8 +117,7 @@ const { examDetailButton, examDetails } = (() => {
      popover's height and translated position with its arrow staying on the row. Everything is measured once (the end state is laid
      out as it will stay), then each size animates from where it is now, also mid-motion, so a second tap retargets
      without a jump. The sheet grows upward, so the rows under the text and the footer hold still. Same curve and time as
-     the sheet's own entrance (m-sheet-in in dialogs.css); Reduce Motion changes at once. */
-  const EXAM_DETAIL_RESIZE = { duration: 280, easing: 'cubic-bezier(.32,.72,0,1)' };
+     the sheet's own entrance (m-sheet-in in dialogs.css; EXAM_RESIZE in profession-controls.js); Reduce Motion changes at once. */
   const examDetailMotion = new WeakMap();
   function examDetailToggle(box, disclosure, place) {
     const full = box.querySelector(`#${disclosure.getAttribute('aria-controls')}`), scroll = box.querySelector('.exam-detail-scroll');
@@ -160,7 +159,7 @@ const { examDetailButton, examDetails } = (() => {
     // Include every row still closing: switching rows must not strand canceled content or snap a chevron.
     rows.forEach(({ text }) => { if (text.hidden) text.hidden = false; });
     scroll.scrollTop = scrolled;
-    const animations = from.map(([element, start], i) => element.animate([start, to[i][1]], { ...EXAM_DETAIL_RESIZE, fill: 'both' }));
+    const animations = from.map(([element, start], i) => element.animate([start, to[i][1]], { ...EXAM_RESIZE, fill: 'both' }));
     examDetailMotion.set(box, animations);
     Promise.all(animations.map(animation => animation.finished)).then(() => {
       // Keep the last frame until hidden is settled; releasing a closing row first restores its full height.
