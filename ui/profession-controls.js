@@ -1333,14 +1333,36 @@ function examDialog(item, c, stats) {
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
     const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
+    const lockedCaption = dialog.querySelector('.exam-collapse-caption');
+    let captionFrame = 0, captionPush = null;
+    const pushCaption = () => {
+      captionFrame = 0;
+      if (!dialog.classList.contains('better-mobile')) {
+        map.style.removeProperty('--exam-caption-shift');
+        captionPush = null;
+        return;
+      }
+      // Read the section boundary, not its already-sticky heading. Normalize the sheet's entrance scale.
+      const header = side.getBoundingClientRect(), scale = header.height / side.offsetHeight || 1;
+      const push = Math.min(lockedCaption.offsetHeight, Math.max(0, (header.bottom - unlockedList.getBoundingClientRect().top) / scale));
+      if (push !== captionPush) {
+        captionPush = push;
+        map.style.setProperty('--exam-caption-shift', `${-push}px`);
+      }
+    };
+    const queueCaption = () => { if (!captionFrame) captionFrame = requestAnimationFrame(pushCaption); };
     const syncCaptionTop = () => {
-      if (dialog.classList.contains('better-mobile')) map.style.setProperty('--exam-caption-top', `${side.offsetHeight + parseFloat(getComputedStyle(side).top) - dialog.querySelector('.exam-collapse-caption').offsetHeight}px`);
+      if (dialog.classList.contains('better-mobile')) map.style.setProperty('--exam-caption-top', `${side.offsetHeight + parseFloat(getComputedStyle(side).top) - lockedCaption.offsetHeight}px`);
       else map.style.removeProperty('--exam-caption-top');
+      queueCaption();
     };
     const headerObserver = new ResizeObserver(syncCaptionTop);
     headerObserver.observe(side);
+    headerObserver.observe(lockedList);
+    headerObserver.observe(unlockedList);
+    map.addEventListener('scroll', queueCaption, { passive: true });
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { headerObserver.disconnect(); details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { headerObserver.disconnect(); cancelAnimationFrame(captionFrame); map.removeEventListener('scroll', queueCaption); details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);

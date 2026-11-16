@@ -4736,12 +4736,12 @@ html[data-input-mode="keyboard"] .level-thumb:focus { box-shadow:0 0 0 1px var(-
 @media (width > 600px) { .better-dialog.exam-dialog.better-mobile { width:min(560px,calc(100% - 24px)); max-width:calc(100% - 24px); } }
 .exam-dialog.better-mobile .exam-map { display:block; padding:12px 16px 20px; overflow-x:hidden; overflow-y:auto; }
 .exam-dialog.better-mobile .exam-side { position:sticky; top:-12px; z-index:2; gap:0; margin:-12px 0 0; padding-top:12px; background:var(--surface-dialog); }
-.exam-dialog.better-mobile .exam-collapse-caption { display:block; margin:0; padding:8px 0 12px; }
+.exam-dialog.better-mobile .exam-collapse-caption { display:block; margin:0; padding:8px 0 12px; transform:translateY(var(--exam-caption-shift,0px)); clip-path:inset(calc(0px - var(--exam-caption-shift,0px)) 0 0); }
 .exam-dialog.better-mobile button.exam-collapse { display:inline-flex; align-items:center; gap:6px; position:relative; min-height:28px; width:auto; margin:0; padding:0; border:0; border-radius:4px; background:none; color:var(--muted); font:inherit; }
 .exam-dialog.better-mobile button.exam-collapse::after { content:''; position:absolute; inset:-4px 0; }
 .exam-collapse[aria-expanded="false"] .exam-pick-chevron { transform:rotate(-90deg); }
 .exam-dialog.better-mobile .exam-locked > .better-caption { display:none; }
-/* Replace 未解锁 in the sticky title slot only when 已解锁 reaches it. */
+/* 已解锁 pushes 未解锁 out of the title slot; its own heading then stays below the filters. */
 .exam-dialog.better-mobile .exam-unlocked > .better-caption { position:sticky; top:var(--exam-caption-top,0px); z-index:3; padding:8px 0 12px; line-height:28px; background:var(--surface-dialog); }
 /* While 未解锁 folds (profession-controls.js) the list stays displayed, its edge clipped; the map must not scroll-anchor to the moving edge. */
 .exam-dialog.better-mobile.exam-locked-collapsed:not(.exam-locked-moving) .exam-locked { display:none; }
