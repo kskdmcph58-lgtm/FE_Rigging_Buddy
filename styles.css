@@ -5321,7 +5321,7 @@ html[data-input-mode="keyboard"] .profession-option:focus-visible .profession-ic
   line-height: 18px;
 }
 .select-page .character:disabled {
-  opacity: .6;
+  opacity: .15;
 }
 @media(hover:hover) and (pointer:fine) {
   .select-page .character:hover:not(:disabled) {
