@@ -1168,15 +1168,6 @@ function examDialog(item, c, stats) {
     const filter = () => {
       for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
       for (const col of dialog.querySelectorAll('.exam-col')) col.querySelector('.exam-none').hidden = Boolean(col.querySelector('.exam-node:not([hidden])'));
-      markTall();
-    };
-    /* Only a pair whose class box is taller than its card has anything for the card to hold (styles.css): mark those, measured
-       together in one layout, whenever the pairs are drawn, filtered or resized. */
-    const markTall = () => {
-      if (!dialog.isConnected) return;
-      // Pairs that are not displayed (a folded list) have no height to compare; they are measured when they show.
-      const pairs = [...dialog.querySelectorAll('.exam-node:not([hidden])')].map(node => [node, node.firstElementChild.getBoundingClientRect().height, node.lastElementChild.getBoundingClientRect().height]).filter(([, card]) => card);
-      for (const [node, card, box] of pairs) node.classList.toggle('exam-tall', box > card);
     };
     const draw = () => {
       details.close();
@@ -1315,14 +1306,12 @@ function examDialog(item, c, stats) {
         if (!now || past) {
           // Instant, or the list is out of sight (only the chevron turns).
           settleScroll();
-          markTall();
           if (now) Promise.all([animateCollapse(arrow, [{ transform: now.turn }, { transform: getComputedStyle(arrow).transform }])]).then(stopCollapseAnimation, () => {});
           return;
         }
         // The list stays displayed (clipped, and unreadable while it leaves) until the motion ends.
         dialog.classList.add('exam-locked-moving');
         lockedList.inert = collapsing;
-        markTall();
         const full = lockedList.getBoundingClientRect(), view = map.getBoundingClientRect();
         const shown = Math.min(full.height, Math.max(0, view.top + map.clientHeight - full.top));
         // From inside the list the edge rides up to the header when what follows still fills the view (the view is held until the end); otherwise the scroll area shrinks and clamps the view by itself.
@@ -1343,23 +1332,15 @@ function examDialog(item, c, stats) {
       if (unlock) { toggleUnlock(unlock.dataset.unlock); return; }
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
-    // Stuck cards stop just under the sticky header, which sits at its height plus its (negative) sticky top. The observer follows
-    // any change in that height; the custom property is written only when its value changes.
-    const watchHeader = new ResizeObserver(([{ borderBoxSize: [box] }]) => {
-      const stop = `${box.blockSize + parseFloat(getComputedStyle(side).top)}px`;
-      if (map.style.getPropertyValue('--card-stick') !== stop) map.style.setProperty('--card-stick', stop);
-    });
-    const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); markTall(); };
+    const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); watchHeader.disconnect(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);
     showRange(range);
     document.body.append(dialog);
     dialog.showModal();
-    // Holding cards changes nothing at the top of the list, so it starts once the dialog has been painted.
-    requestAnimationFrame(() => setTimeout(() => { if (!dialog.isConnected) return; watchHeader.observe(side); markTall(); }));
     if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }
     else dialog.querySelector('[data-dismiss]')?.focus({ preventScroll: true });
   });

@@ -4661,10 +4661,9 @@ html[data-input-mode="keyboard"] .tier-slider:focus { box-shadow:0 0 0 2px var(-
 /* Phones keep the desktop card (156px) with its classes in the box to its right; rides are picked in a sheet. */
 .better-mobile .better-node { display:flex; align-items:flex-start; gap:6px; width:100%; }
 .better-mobile .better-card { flex:none; width:156px; cursor:default; }
-/* A long class list scrolls past its card: the card holds at the top until the list's end reaches it, then both leave together.
-   考试推荐 holds it just under its sticky header: examDialog sets --card-stick to that header's bottom edge, and marks the pairs whose
-   box is taller than the card (.exam-tall): every sticky card is its own compositor layer, so equal pairs, which have nothing to hold, get none. */
-.better-mobile :is(.better-side-others,.exam-tall) .better-card { position:sticky; top:var(--card-stick,0px); }
+/* 其他选择 only: a long class list scrolls past its card until the two leave together.
+   考试推荐 cards scroll normally with their paired class boxes. */
+.better-mobile .better-side-others .better-card { position:sticky; top:0; }
 .better-mobile .better-ridebox { flex:1; min-width:0; overflow:visible; gap:0; padding:2px 8px; }
 .better-mobile .better-root .better-ridebox { gap:6px; padding:8px; }
 .better-mobile .tier-filter { display:none; }
