@@ -4741,6 +4741,8 @@ html[data-input-mode="keyboard"] .level-thumb:focus { box-shadow:0 0 0 1px var(-
 .exam-dialog.better-mobile button.exam-collapse::after { content:''; position:absolute; inset:-4px 0; }
 .exam-collapse[aria-expanded="false"] .exam-pick-chevron { transform:rotate(-90deg); }
 .exam-dialog.better-mobile .exam-locked > .better-caption { display:none; }
+/* Replace 未解锁 in the sticky title slot only when 已解锁 reaches it. */
+.exam-dialog.better-mobile .exam-unlocked > .better-caption { position:sticky; top:var(--exam-caption-top,0px); z-index:3; padding:8px 0 12px; line-height:28px; background:var(--surface-dialog); }
 /* While 未解锁 folds (profession-controls.js) the list stays displayed, its edge clipped; the map must not scroll-anchor to the moving edge. */
 .exam-dialog.better-mobile.exam-locked-collapsed:not(.exam-locked-moving) .exam-locked { display:none; }
 .exam-dialog.better-mobile.exam-locked-moving .exam-locked { overflow:clip; }

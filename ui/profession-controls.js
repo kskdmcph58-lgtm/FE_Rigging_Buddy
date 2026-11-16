@@ -1333,14 +1333,21 @@ function examDialog(item, c, stats) {
       if (e.target.closest('[data-dismiss]')) dialog.close();
     });
     const mobile = () => { stopCollapseAnimation(); dialog.classList.toggle('better-mobile', !UI_MEDIA.wideRecordRow.matches); };
+    const syncCaptionTop = () => {
+      if (dialog.classList.contains('better-mobile')) map.style.setProperty('--exam-caption-top', `${side.offsetHeight + parseFloat(getComputedStyle(side).top) - dialog.querySelector('.exam-collapse-caption').offsetHeight}px`);
+      else map.style.removeProperty('--exam-caption-top');
+    };
+    const headerObserver = new ResizeObserver(syncCaptionTop);
+    headerObserver.observe(side);
     window.addEventListener('resize', mobile);
-    dialog.addEventListener('close', () => { details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
+    dialog.addEventListener('close', () => { headerObserver.disconnect(); details.dispose(); stopCollapseAnimation(); disposeLevelRange?.(); window.removeEventListener('resize', mobile); retireDialog(dialog); resolve(); }, { once: true });
     mobile();
     draw();
     setCap(cap, false);
     showRange(range);
     document.body.append(dialog);
     dialog.showModal();
+    syncCaptionTop();
     if (UI_MEDIA.coarseInput.matches) { dialog.tabIndex = -1; dialog.style.outline = 'none'; dialog.focus({ preventScroll: true }); }
     else dialog.querySelector('[data-dismiss]')?.focus({ preventScroll: true });
   });
