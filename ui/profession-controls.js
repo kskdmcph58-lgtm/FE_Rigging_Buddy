@@ -149,13 +149,13 @@ function setupProfessionButton(id) {
 }
 
 // ids: the people the class is for; only classes every one of them may take are offered.
-function professionDialog(selected, mixed, clearable, onChoice, onClose, ids = [], stack = null) {
+function professionDialog(selected, mixed, clearable, onChoice, onClose, ids = [], stack = null, part3 = state.part3 === true) {
   const data = window.PROFESSIONS;
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog profession-picker';
   animateMobilePickerClose(dialog);
   dialog.setAttribute('aria-labelledby', 'profession-title');
-  const available = name => ids.length ? ids.every(id => window.RiggingActions.classAllowed(state, id, name)) : state.part3 === true || !data.part3Only.has(name);
+  const available = name => ids.length ? ids.every(id => window.RiggingActions.classAllowed(state, id, name, part3)) : part3 || !data.part3Only.has(name);
   const option = name => `<button class="profession-option" data-class="${name}" aria-pressed="${!mixed && selected === name}"><span class="profession-icon"><img src="${imageSrc(`assets/classes/${data.icons[name]}.webp`)}" alt="" loading="lazy"></span><span class="profession-name">${name}</span></button>`;
   const group = (title, cells, base = false) => `<section class="profession-tier ${base ? 'profession-base' : ''}"><h3>${title}</h3>${cells.map(names => `<div class="profession-options">${names.filter(available).map(option).join('')}</div>`).join('')}</section>`;
   dialog.innerHTML = `<div class="profession-titlebar"><h2 id="profession-title">更改兵种</h2></div><div class="profession-scroll"><div class="profession-table">${group('基础职业', [data.base], true)}${data.rows.map((row, t) => row.flat().some(available) ? group(data.tiers[t], row) : '').join('')}</div></div><div class="profession-footer">${clearable ? '<button data-class="">清除兵种</button>' : ''}<button data-dismiss>关闭</button></div>`;
@@ -281,10 +281,10 @@ function openCardClass(anchor, start = 'profession') {
   const stack = createPickerStack();
   // Started from the ride, backing out of the ride leaves the flow instead of opening the class list.
   const fromRide = start === 'ride' && Boolean(rideKind(profession, id, card.part3));
-  const finish = async scope => {
+  const finish = async (scope, reapplyProfession = false) => {
     await stack.closeAll();
     if (scope === 'once' || scope === 'later') {
-      const choice = { profession, ride };
+      const choice = { profession, ride, reapplyProfession };
       if (card.queued) window.RiggingSeed.applyRowClass(state, item, char(id), card.index, choice, scope);
       else window.RiggingActions.applyRecordClass(state, item, card.record, choice, scope);
       const rail = anchor.closest('.records');
@@ -295,11 +295,14 @@ function openCardClass(anchor, start = 'profession') {
     refocus();
   };
   const showScope = () => {
-    if (profession === card.profession && JSON.stringify(ride) === JSON.stringify(card.ride)) { void finish(); return; }
     const classChanged = profession !== card.profession;
-    const rideChanged = Boolean(rideKind(profession, id, card.part3)) && JSON.stringify(ride) !== JSON.stringify(card.ride);
+    const sameRide = JSON.stringify(ride) === JSON.stringify(card.ride);
+    const reapplyProfession = !classChanged && sameRide;
+    if (reapplyProfession && fromRide) { void finish(); return; }
+    const rideChanged = Boolean(rideKind(profession, id, card.part3)) && !sameRide;
     void cardClassScopeDialog(classChanged && rideChanged ? '兵种及配属' : rideChanged ? '配属' : '兵种', stack).then(scope => {
-      if (scope === 'once' || scope === 'later') void finish(scope);
+      if (scope === 'later') void finish(scope, reapplyProfession);
+      else if (scope === 'once') void finish(reapplyProfession ? undefined : scope);
     });
   };
   const showRide = () => {
@@ -314,7 +317,7 @@ function openCardClass(anchor, start = 'profession') {
       profession = chosen;
       if (rideKind(profession, id, card.part3)) showRide();
       else { ride = null; showScope(); }
-    }, () => { if (!stack.closing) refocus(); }, [id], stack);
+    }, () => { if (!stack.closing) refocus(); }, [id], stack, state.part3 === true && (!card.queued || card.part3));
   }
 }
 

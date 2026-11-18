@@ -333,11 +333,22 @@ window.RiggingSeed = (() => {
     return true;
   }
 
-  /* Changes a forecast row's class from its card. Later rows inherit it, up to their own change;
-     "once" gives the next row back the class it had. Results follow, and it is not a correction. */
+  /* A class change for "later" replaces the rest of the forecast's class choices.
+     "once" gives the next row back the class it had. Neither is a correction. */
   function applyRowClass(state, item, c, index, choice, scope) {
-    const rows = queueRows(state, item, c, index + 2), row = rows[index], next = rows[index + 1];
+    const rows = queueRows(state, item, c, 0, index + 2), row = rows[index], next = rows[index + 1];
     if (!row) return false;
+    const kind = actions.rideKind(state, choice.profession, item.id, row.part3);
+    const ride = actions.usableRide(state, choice.ride && { ...choice.ride }, kind, item.id, row.part3);
+    if (scope === 'later' && (choice.reapplyProfession || choice.profession !== row.profession)) {
+      if (!actions.classAllowed(state, item.id, choice.profession, row.part3)) return false;
+      actions.clearForecastClassOverrides(item, index + 1);
+      const saved = savedRow(item, index);
+      saved.profession = choice.profession;
+      saved.ride = ride;
+      if (kind) actions.rememberRides(state, item.id, { [kind]: ride });
+      return true;
+    }
     const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
     const write = (at, profession, ride, before) => {
       const saved = savedRow(item, at);
@@ -348,8 +359,6 @@ window.RiggingSeed = (() => {
     };
     const first = actions.currentProfession(state, item);
     const before = index ? rows[index - 1] : { profession: first, storedRide: actions.storedRide(state, item.id, window.PROFESSIONS.mountOf[first]) };
-    const kind = actions.rideKind(state, choice.profession, item.id, row.part3);
-    const ride = actions.usableRide(state, choice.ride && { ...choice.ride }, kind, item.id, row.part3);
     write(index, choice.profession, ride, before);
     if (scope === 'once' && next) write(index + 1, next.profession, next.storedRide, { profession: choice.profession, storedRide: ride });
     if (scope === 'later' && kind) actions.rememberRides(state, item.id, { [kind]: ride });

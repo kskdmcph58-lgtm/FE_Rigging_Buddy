@@ -89,33 +89,55 @@ window.RiggingActions = (() => {
     }
   }
 
-  /* Changes a saved record's class from its card. "later" follows the unbroken run of identical
-     records after it; a different class further on is a separate change and stays. */
+  function clearForecastClassOverrides(item, from) {
+    const rows = item.seed?.rows;
+    if (!rows) return;
+    for (const [index, row] of Object.entries(rows)) {
+      if (Number(index) < from || (!Object.hasOwn(row, 'profession') && !Object.hasOwn(row, 'ride'))) continue;
+      delete row.profession;
+      delete row.ride;
+      if (!Object.keys(row).length) delete rows[index];
+    }
+    if (!Object.keys(rows).length) delete item.seed.rows;
+  }
+
   function applyRecordClass(state, item, record, choice, scope) {
     const live = model.live(item), same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+    const index = live.indexOf(record);
+    if (index < 0) return;
     const before = { profession: record.profession ?? null, ride: record.ride ?? null };
+    const replaceLaterClasses = scope === 'later' && (choice.reapplyProfession || choice.profession !== shownClass(state, item, record).profession);
     const nextClass = currentProfession(state, item), nextKind = rideKind(state, nextClass, item.id), nextRide = rememberedRide(state, item.id, nextKind);
-    const part3 = model.recordParts(item)[live.indexOf(record)];
+    const parts = model.recordParts(item);
+    const part3Class = catalog.part3Only.has(choice.profession);
+    const part3 = parts[index] || (replaceLaterClasses && part3Class);
     const kind = rideKind(state, choice.profession, item.id, part3), ride = usableRide(state, choice.ride && { ...choice.ride }, kind, item.id, part3);
     const targets = [record];
     if (scope === 'later') {
-      for (const later of live.slice(live.indexOf(record) + 1)) {
-        if (!same(later.profession, before.profession) || !same(later.ride, before.ride)) break;
+      for (const later of live.slice(index + 1)) {
+        if (!replaceLaterClasses && (!same(later.profession, before.profession) || !same(later.ride, before.ride))) break;
         targets.push(later);
       }
     }
     const reachesEnd = targets.at(-1) === live.at(-1);
-    for (const target of targets) {
+    const updatedAt = new Date().toISOString();
+    for (const [offset, target] of targets.entries()) {
+      const targetRide = replaceLaterClasses ? usableRide(state, ride, kind, item.id, parts[index + offset] || part3Class) : ride;
+      if (replaceLaterClasses && target.profession === choice.profession && same(target.ride, targetRide)) continue;
       const before = { ...target };
       target.profession = choice.profession ?? null;
-      target.ride = ride ? { ...ride } : null;
-      target.updatedAt = new Date().toISOString();
+      target.ride = targetRide ? { ...targetRide } : null;
+      if (replaceLaterClasses && part3Class) target.part3 = true;
+      target.updatedAt = updatedAt;
       // Same as editing the record: a changed input is what 重新反推 searches back from.
       trackSeedInput(item, before, target);
     }
     if (!reachesEnd) return;
     if (scope === 'later') {
-      if (item.pendingProfession === before.profession) delete item.pendingProfession;
+      if (replaceLaterClasses) {
+        delete item.pendingProfession;
+        clearForecastClassOverrides(item, 0);
+      } else if (item.pendingProfession === before.profession) delete item.pendingProfession;
       if (kind) rememberRides(state, item.id, { [kind]: ride });
     } else {
       // "This one only" on the newest record: what comes next keeps the class it would have had.
@@ -241,7 +263,7 @@ window.RiggingActions = (() => {
     if (Object.keys(range).length) item.examRange = range; else delete item.examRange;
   }
 
-  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass,
+  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass, clearForecastClassOverrides,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();
