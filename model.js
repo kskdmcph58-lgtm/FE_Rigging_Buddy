@@ -62,6 +62,33 @@ window.RiggingModel = (() => {
     if (rule !== null) visit(rule, 0);
     return true;
   }
+  function directRuleStat(node) {
+    if (node.type === 'not') return directRuleStat(node.child);
+    return node.type === 'stat' ? node.stat : null;
+  }
+  function validExpectationDraft(rule) {
+    validRule(rule);
+    function visit(node) {
+      if (node.type === 'not') visit(node.child);
+      if (node.type !== 'all' && node.type !== 'any') return;
+      const names = node.children.map(directRuleStat).filter(Boolean);
+      if (new Set(names).size !== names.length) throw Error('同一条件组内，每种属性只能设置一次，请移除重复条件。');
+      node.children.forEach(visit);
+    }
+    if (rule) visit(rule);
+  }
+  const templateNameLimit = 40;
+  function validateExpectationTemplates(templates) {
+    if (!Array.isArray(templates)) throw Error('属性期望模板格式不正确');
+    const ids = new Set();
+    for (const template of templates) {
+      if (!template || typeof template.id !== 'string' || !template.id || template.id.length > 128 ||
+          ids.has(template.id) || typeof template.name !== 'string' || !template.name.trim() ||
+          template.name.length > templateNameLimit || !template.rule) throw Error('属性期望模板格式不正确');
+      validExpectationDraft(template.rule);
+      ids.add(template.id);
+    }
+  }
   function ruleSize(rule) {
     let nodes = 0, depth = 0;
     function visit(node, level) {
@@ -260,6 +287,7 @@ window.RiggingModel = (() => {
       if (!data.draftExpectations || typeof data.draftExpectations !== 'object' || Array.isArray(data.draftExpectations)) throw Error('待设置期望不正确');
       for (const [id, rule] of Object.entries(data.draftExpectations)) { if (!characterIds.includes(id)) throw Error('未知人物'); validRule(rule); }
     }
+    if (data.expectationTemplates !== undefined) validateExpectationTemplates(data.expectationTemplates);
     return normalize({ ...data, version: 2, selection: data.selection || [], initialLevels: data.initialLevels || {} });
   }
   /* Required fields are always written, so no part of the app has to guess what a missing one means.
@@ -283,5 +311,5 @@ window.RiggingModel = (() => {
     }
     return data;
   }
-  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, ruleSize, evaluate, setRule, validRide, renameClass, migrate, normalize };
+  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, directRuleStat, validExpectationDraft, templateNameLimit, ruleSize, evaluate, setRule, validRide, renameClass, migrate, normalize };
 })();

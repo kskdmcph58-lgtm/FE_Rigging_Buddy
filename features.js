@@ -486,11 +486,12 @@ function recordExpectationMarkup() {
 }
 function openRecordExpectationDetails() {
   hideExpectationTip();
+  const id = activeRecord.id;
   const dialog=document.createElement('dialog');dialog.className='app-dialog expectation-dialog';animateMobilePickerClose(dialog);closeOnOutsideTap(dialog);
   dialog.setAttribute('aria-labelledby','record-expectation-title');
-  dialog.innerHTML=`<header><h2 id="record-expectation-title">属性期望</h2></header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  dialog.innerHTML=`<header class="expectation-header"><h2 id="record-expectation-title">属性期望</h2>${expectationToolButtons}</header><div class="expectation-body">${recordExpectationMarkup()}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
-  dialog.querySelector('[data-edit-expectation]').onclick=()=>{const id=activeRecord.id;dialog.close();openExpectationEditor([id]);};
+  bindExpectationDetails(dialog, id, () => [{ rule: draftRule(activeRecord) }]);
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
   document.body.append(dialog);dialog.showModal();
 }
@@ -517,9 +518,8 @@ function expectationLink(item, editing) {
   const configured = item.expectations?.some(range => range.rule);
   return `<button class="expectation-link" ${!configured && !editing ? 'style="visibility:hidden" aria-hidden="true" tabindex="-1"' : ''} data-expectation-detail="${item.id}">${configured ? '属性期望' : '设置属性期望'}</button>`;
 }
-function expectationRanges(item) {
+function expectationRangeOptions(item) {
   const ranges = item.expectations || [];
-  if (!ranges.length) return ruleMarkup(null);
   const hasInitial = Number.isInteger(item.initialLevel);
   // A skipped attempt shares the next effective level; deleted attempts do not advance it.
   const boundaryLevel = seq => item.initialLevel + item.records.filter(r => r.seq < seq && !r.deleted && r.status !== 'skipped').length + 1;
@@ -527,19 +527,24 @@ function expectationRanges(item) {
     const end = ranges[i+1]?.from - 1;
     const startLabel = hasInitial ? `LV ${boundaryLevel(range.from)}` : `记录 +${range.from}`;
     const endLabel = hasInitial ? `LV ${boundaryLevel(end)}` : `+${end}`;
-    return `<section class="expectation-range"><h3>${startLabel}${Number.isFinite(end) ? ` 至 ${endLabel}` : ' 起'}</h3>${ruleMarkup(range.rule)}</section>`;
-  }).join('');
+    return { rule: range.rule, label: `${startLabel}${Number.isFinite(end) ? ` 至 ${endLabel}` : ' 起'}` };
+  });
+}
+function expectationRanges(item, ranges = expectationRangeOptions(item)) {
+  return ranges.length ? ranges.map(({ rule, label }) => `<section class="expectation-range"><h3>${label}</h3>${ruleMarkup(rule)}</section>`).join('') : ruleMarkup(null);
 }
 function openExpectationDetails(id) {
   hideExpectationTip();
   const item = state.roster.find(r => r.id === id);
   if (!item.expectations?.length) { openExpectationEditor([id]); return; }
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';animateMobilePickerClose(dialog);closeOnOutsideTap(dialog);
-  dialog.innerHTML = `<header><h2 id="expectation-detail-title">${char(id).name} · 属性期望</h2></header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  const sources = expectationRangeOptions(item);
+  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="expectation-detail-title">属性期望</h2><p id="expectation-detail-character">${escapeValue(char(id).name)}</p></div>${expectationToolButtons}</header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationSourcePicker(sources)}${expectationRanges(item, sources)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
+  dialog.setAttribute('aria-describedby','expectation-detail-character');
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
   dialog.querySelector('[data-close]').onclick=()=>dialog.close();
-  dialog.querySelector('[data-edit-expectation]').onclick=()=>{dialog.close();openExpectationEditor([id]);};
+  bindExpectationDetails(dialog, id, () => sources);
   document.body.append(dialog);dialog.showModal();
 }
 
@@ -648,14 +653,29 @@ document.addEventListener('pointerdown',e=>{if(styledSelect&&!styledSelect.list.
 document.addEventListener('scroll',e=>{if(styledSelect&&!styledSelect.list.contains(e.target))closeStyledSelect();},true);
 window.addEventListener('resize',()=>closeStyledSelect());
 
-function openExpectationEditor(ids) {
-  let rule = null;
+function openExpectationEditor(ids, initialRule) {
   const rules = ids.map(id => page === 'levels' ? state.draftExpectations?.[id] || null : page==='record' && activeRecord?.id===id ? draftRule(activeRecord) : M.ruleAt(state.roster.find(i => i.id === id), M.nextSeq(state.roster.find(i => i.id === id))));
   const mixed = rules.some(r => JSON.stringify(r) !== JSON.stringify(rules[0]));
-  rule = M.copy(mixed ? null : rules[0]);
+  openRuleEditor({
+    title: '属性期望',
+    subtitle: ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`,
+    initialRule: initialRule === undefined ? (mixed ? null : rules[0]) : initialRule,
+    mixed,
+    hasSource: initialRule !== undefined || !mixed,
+    onSave: rule => saveExpectations(ids, rule),
+    afterSave: render
+  });
+}
+
+function openRuleEditor({ title, subtitle, initialRule, mixed, hasSource, templateName, namePlaceholder, onSave, afterSave, parent }) {
+  let rule = M.copy(initialRule);
+  const isTemplate = templateName !== undefined;
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';animateMobilePickerClose(dialog);
-  dialog.setAttribute('aria-labelledby','expectation-editor-title');
-  dialog.innerHTML = `<header><div><h2 id="expectation-editor-title">属性期望</h2><p>${ids.length === 1 ? char(ids[0]).name : `已选 ${ids.length} 位人物`}</p></div></header><div class="expectation-body"><p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div id="rule-editor"></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer><button data-reset-rule>恢复默认</button><button data-close autofocus>返回</button><button class="primary" data-save-rule>保存期望</button></footer>`;
+  const titleId = isTemplate ? 'expectation-template-editor-title' : 'expectation-editor-title';
+  dialog.setAttribute('aria-labelledby', titleId);
+  const nameField = isTemplate ? `<label class="expectation-field">模板名称<input data-template-name maxlength="${M.templateNameLimit}" placeholder="${escapeValue(namePlaceholder)}" value="${escapeValue(templateName)}"></label>` : '';
+  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="${titleId}">${title}</h2>${subtitle ? `<p>${escapeValue(subtitle)}</p>` : ''}</div>${isTemplate ? '' : expectationToolButtons}</header><div class="expectation-body">${nameField}<p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div ${isTemplate ? '' : 'id="rule-editor"'} data-rule-editor></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer>${isTemplate ? '' : '<button data-reset-rule>恢复默认</button>'}<button data-close autofocus>返回</button><button class="primary" data-save-rule>${isTemplate ? '保存模板' : '保存期望'}</button></footer>`;
+  const error = dialog.querySelector('.editor-error');
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }
   function replace(path, value) {
     if (!path) { rule=value; return; }
@@ -667,8 +687,7 @@ function openExpectationEditor(ids) {
     const parts=path.split('.'),index=Number(parts.pop());nodeAt(parts.join('.')).splice(index,1);
   }
   const options = (values, selected) => values.map(([v,label,disabled])=>`<option value="${v}" ${v===selected?'selected':''} ${disabled?'disabled':''}>${label}</option>`).join('');
-  const directStat = node => node.type==='stat' ? node.stat : node.type==='not' ? directStat(node.child) : null;
-  function usedStats(group, except) { return new Set(group.children?.filter(n=>n!==except).map(directStat).filter(Boolean)); }
+  function usedStats(group, except) { return new Set(group.children?.filter(n=>n!==except).map(M.directRuleStat).filter(Boolean)); }
   function unavailableStats(path) {
     const parts=path.split('.'), index=parts.lastIndexOf('children');
     if(index<0)return new Set();
@@ -688,9 +707,10 @@ function openExpectationEditor(ids) {
     const focusPath = focused?.closest('[data-path]')?.dataset.path;
     const focusField = focused?.dataset.field || (focused?.classList.contains('select-trigger') ? focused.previousElementSibling?.dataset.field : undefined);
     const focusAdd = focused?.classList.contains('select-trigger') ? focused.previousElementSibling?.dataset.add : undefined;
-    dialog.querySelector('#rule-editor').innerHTML = rule ? editor(rule) + '<button class="wrap-rule" data-wrap>将当前规则放入新条件组</button>' : '<div class="rule-empty"><p>未设置，使用默认判定</p><button data-enable class="primary">设置条件</button></div>';
+    dialog.querySelector('[data-rule-editor]').innerHTML = rule ? editor(rule) + '<button class="wrap-rule" data-wrap>将当前规则放入新条件组</button>' : `<div class="rule-empty"><p>${isTemplate ? '尚未设置条件' : '未设置，使用默认判定'}</p><button data-enable class="primary">设置条件</button></div>`;
     dialog.querySelector('.rule-preview div').innerHTML=ruleMarkup(rule);
     const size = M.ruleSize(rule);
+    refreshTools?.();
     const wrap = dialog.querySelector('[data-wrap]');
     if (wrap) wrap.disabled = size.depth >= M.limits.ruleDepth || size.nodes >= M.limits.ruleNodes;
     dialog.querySelectorAll('select[data-add]').forEach(select=>{
@@ -725,9 +745,43 @@ function openExpectationEditor(ids) {
       node[field]=field==='value'?Number(e.target.value):e.target.value;
       if(node.type==='total')node.value=Math.max(node.op==='lt'?1:0,Math.min(node.op==='gt'?8:9,node.value));
     } else return;
+    hasSource = true;
+    error.textContent = '';
     draw();
   });
   let saving=false;
+  const saveButton = dialog.querySelector('[data-save-rule]');
+  async function save() {
+    if (saving) return;
+    try {
+      if (isTemplate && !rule) throw Error('请先设置模板条件。');
+      M.validExpectationDraft(rule);
+    } catch (failure) {
+      error.textContent = failure.message;
+      return;
+    }
+    saving = true;
+    saveButton.disabled = true;
+    try {
+      const name = dialog.querySelector('[data-template-name]')?.value.trim();
+      if (await onSave(rule, name)) {
+        if (isTemplate) closeExpectationThen(dialog, afterSave);
+        else {
+          dialog.close();
+          afterSave();
+        }
+      }
+    } finally {
+      saving = false;
+      saveButton.disabled = false;
+    }
+  }
+  const refreshTools = isTemplate ? null : bindExpectationTools(dialog, () => hasSource ? [{ rule }] : [], nextRule => {
+    rule = M.copy(nextRule);
+    hasSource = true;
+    error.textContent = '';
+    draw();
+  });
   dialog.addEventListener('click',async e=>{
     const b=e.target.closest('button');if(!b||saving)return;
     if(b.hasAttribute('data-close')){dialog.close();return;}
@@ -739,24 +793,327 @@ function openExpectationEditor(ids) {
     else if(b.hasAttribute('data-remove')){
       removeNode(b.dataset.remove);
     } else if(b.hasAttribute('data-save-rule')) {
-      function hasDuplicate(node) {
-        if(!node)return false;
-        if(node.type==='not')return hasDuplicate(node.child);
-        if(!node.children)return false;
-        const stats=node.children.map(directStat).filter(Boolean);
-        return new Set(stats).size!==stats.length || node.children.some(hasDuplicate);
-      }
-      if(hasDuplicate(rule)){dialog.querySelector('.editor-error').textContent='同一条件组内，每种属性只能设置一次，请移除重复条件。';return;}
-      try { M.validRule(rule); } catch(error) {dialog.querySelector('.editor-error').textContent=error.message;return;}
-      saving=true;b.disabled=true;
-      const ok=await saveExpectations(ids,rule);
-      saving=false;b.disabled=false;
-      if(ok){dialog.close();render();}return;
+      await save();
+      return;
     } else return;
-    dialog.querySelector('.editor-error').textContent='';draw();
+    hasSource = true;
+    error.textContent = '';
+    draw();
   });
-  dialog.addEventListener('close',()=>{closeStyledSelect();retireDialog(dialog);},{once:true});
-  document.body.append(dialog);draw();dialog.showModal();
+  dialog.addEventListener('close',()=>{closeStyledSelect();},{once:true});
+  draw();
+  showExpectationDialog(dialog, parent);
+}
+
+const expectationToolButtons = '<div class="expectation-tool-actions"><button data-paste-expectation>粘贴</button><button data-copy-expectation>复制</button><button data-expectation-templates aria-haspopup="dialog">模板</button><span class="visually-hidden" role="status"></span></div>';
+let copiedExpectation;
+
+function closeExpectationThen(dialog, next) {
+  if (!dialog.open || dialog.inert) return;
+  dialog.addEventListener('close', next, { once: true });
+  dialog.close();
+}
+
+function showExpectationDialog(dialog, parent) {
+  if (parent) {
+    if (!parent.classList.contains('picker-stack-layer')) parent.classList.add('picker-stack-root');
+    parent.classList.add('picker-stack-covered');
+    dialog.classList.add('picker-stack-layer');
+  }
+  dialog.addEventListener('close', () => {
+    parent?.classList.remove('picker-stack-root', 'picker-stack-covered');
+    retireDialog(dialog);
+  }, { once: true });
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
+function bindExpectationDetails(dialog, id, sources) {
+  const edit = rule => {
+    if (!dialog.open || dialog.inert) return;
+    // This replaces the preview in the same frame, without its normal exit animation.
+    HTMLDialogElement.prototype.close.call(dialog);
+    dialog.remove();
+    openExpectationEditor([id], rule);
+  };
+  dialog.querySelector('[data-edit-expectation]').onclick = () => edit();
+  bindExpectationTools(dialog, sources, edit);
+}
+
+function bindExpectationTools(parent, sources, apply) {
+  const copy = parent.querySelector('[data-copy-expectation]');
+  const paste = parent.querySelector('[data-paste-expectation]');
+  const status = parent.querySelector('[role="status"]');
+  function refresh() {
+    copy.disabled = !canCopyExpectation(selectedExpectationRule(parent, sources()));
+    copy.textContent = '复制';
+    paste.disabled = copiedExpectation === undefined;
+    status.textContent = '';
+  }
+  copy.onclick = () => {
+    const rule = selectedExpectationRule(parent, sources());
+    if (!canCopyExpectation(rule)) return;
+    copiedExpectation = M.copy(rule);
+    paste.disabled = false;
+    copy.textContent = '已复制';
+    status.textContent = '已复制期望';
+  };
+  paste.onclick = () => apply(copiedExpectation);
+  parent.querySelector('[data-expectation-source]')?.addEventListener('change', refresh);
+  parent.querySelector('[data-expectation-templates]').onclick = () => openExpectationTemplates(parent, sources(), apply);
+  refresh();
+  return refresh;
+}
+
+function expectationSourcePicker(options) {
+  if (options.length < 2) return '';
+  return `<label class="expectation-field">规则区间<select data-expectation-source><option value="">选择区间</option>${options.map(({ label }, index) => `<option value="${index}">${escapeValue(label)}</option>`).join('')}</select></label>`;
+}
+
+function selectedExpectationRule(dialog, options) {
+  return options[dialog.querySelector('[data-expectation-source]')?.value ?? 0]?.rule;
+}
+
+function canCopyExpectation(rule) {
+  if (!rule) return false;
+  try { M.validExpectationDraft(rule); return true; }
+  catch { return false; }
+}
+
+function defaultExpectationTemplateName(exceptId) {
+  const names = new Set((state.expectationTemplates || []).filter(template => template.id !== exceptId).map(template => template.name));
+  let number = 1;
+  while (names.has(`模板${number}`)) number++;
+  return `模板${number}`;
+}
+
+function openExpectationTemplates(parent, sources, apply) {
+  const usableSources = sources.filter(({ rule }) => canCopyExpectation(rule));
+  const dialog = document.createElement('dialog');
+  dialog.className = 'app-dialog expectation-dialog expectation-templates';
+  dialog.setAttribute('aria-labelledby', 'expectation-templates-title');
+  dialog.innerHTML = `<header class="expectation-header"><h2 id="expectation-templates-title">属性期望模板</h2><button data-select-templates aria-pressed="false">多选</button></header>
+    <div class="expectation-body">
+      <div data-template-create>${expectationSourcePicker(usableSources)}
+        <div class="expectation-tool-actions"><button data-new-template>新建模板</button><button data-save-template>另存为新模板</button></div>
+      </div>
+      <div class="expectation-tool-actions" data-template-manage hidden><button data-edit-selected-template>编辑</button><button class="danger" data-delete-selected-templates>删除</button><span role="status"></span></div>
+      <div data-template-list></div>
+    </div><footer><button data-close autofocus>返回</button></footer>`;
+  animateMobilePickerClose(dialog);
+  dialog.querySelector('[data-close]').onclick = () => dialog.close();
+  const body = dialog.querySelector('.expectation-body');
+  const list = dialog.querySelector('[data-template-list]');
+  const saveCurrent = dialog.querySelector('[data-save-template]');
+  const select = dialog.querySelector('[data-select-templates]');
+  const manage = dialog.querySelector('[data-template-manage]');
+  const selected = new Set();
+  let multiple = false;
+  let previewRow;
+  const tip = document.createElement('div');
+  tip.className = 'expectation-tip template-hover-tip';
+  tip.id = 'expectation-template-tip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  dialog.append(tip);
+  const revealDelete = bindTemplateSwipe(list, () => UI_MEDIA.mobileShell.matches);
+
+  function hidePreview() {
+    previewRow?.removeAttribute('aria-describedby');
+    previewRow = undefined;
+    tip.hidden = true;
+  }
+  function preview(name, rule) {
+    if (multiple || UI_MEDIA.mobileShell.matches) return;
+    hidePreview();
+    previewRow = name;
+    name.setAttribute('aria-describedby', tip.id);
+    tip.innerHTML = ruleMarkup(rule);
+    tip.hidden = false;
+    const row = name.getBoundingClientRect();
+    const box = dialog.getBoundingClientRect();
+    const left = box.right + 8 + tip.offsetWidth <= innerWidth - 12 ? box.right + 8 : box.left - tip.offsetWidth - 8;
+    tip.style.left = `${Math.max(12, left)}px`;
+    tip.style.top = `${Math.max(12, Math.min(row.top, innerHeight - tip.offsetHeight - 12))}px`;
+  }
+  body.addEventListener('scroll', hidePreview, { passive: true });
+
+  function updateSelection() {
+    const count = selected.size;
+    manage.querySelector('[data-edit-selected-template]').disabled = count !== 1;
+    manage.querySelector('[data-delete-selected-templates]').disabled = count === 0;
+    manage.querySelector('[role="status"]').textContent = `已选 ${count} 项`;
+  }
+  function selectMode(value) {
+    multiple = value;
+    selected.clear();
+    select.setAttribute('aria-pressed', String(value));
+    select.textContent = value ? '完成' : '多选';
+    dialog.querySelector('[data-template-create]').hidden = value;
+    manage.hidden = !value;
+    updateSelection();
+    draw();
+  }
+  select.onclick = () => selectMode(!multiple);
+
+  async function removeTemplates(ids, label) {
+    if (!ids.length || !await confirmRecordDeletion(`删除${label}？`)) return;
+    const removed = new Set(ids);
+    state.expectationTemplates = state.expectationTemplates.filter(template => !removed.has(template.id));
+    ids.forEach(id => selected.delete(id));
+    updateSelection();
+    draw();
+    (multiple ? select : dialog.querySelector('[data-new-template]')).focus({ preventScroll: true });
+  }
+
+  function draw() {
+    hidePreview();
+    revealDelete(null);
+    const mobile = UI_MEDIA.mobileShell.matches;
+    select.hidden = mobile;
+    const templates = state.expectationTemplates || [];
+    list.replaceChildren();
+    if (!templates.length) {
+      list.innerHTML = '<p class="muted">暂无模板</p>';
+      return;
+    }
+    const entries = document.createElement('ul');
+    entries.className = 'expectation-template-list';
+    templates.forEach(template => {
+      const entry = document.createElement('li');
+      entry.dataset.templateRow = template.id;
+      const use = () => closeExpectationThen(dialog, () => apply(template.rule));
+      const nameMarkup = `<button class="expectation-template-name">${multiple ? '<span class="template-check" aria-hidden="true"></span>' : ''}${escapeValue(template.name)}</button>`;
+      if (mobile) {
+        entry.innerHTML = `<div class="template-swipe-row"><button class="danger template-swipe-delete" data-delete-template hidden>删除</button><div class="template-row-main">${nameMarkup}<button data-use-template>使用</button><button data-edit-template>编辑</button></div></div><div class="expectation-template-preview" hidden></div>`;
+        const name = entry.querySelector('.expectation-template-name');
+        const details = entry.querySelector('.expectation-template-preview');
+        name.setAttribute('aria-expanded', 'false');
+        name.onclick = () => {
+          const expanded = details.hidden;
+          const previous = list.querySelector('.expectation-template-preview:not([hidden])');
+          if (previous) {
+            previous.hidden = true;
+            previous.replaceChildren();
+            previous.parentElement.querySelector('.expectation-template-name').setAttribute('aria-expanded', 'false');
+          }
+          if (expanded) details.innerHTML = ruleMarkup(template.rule);
+          details.hidden = !expanded;
+          name.setAttribute('aria-expanded', String(expanded));
+        };
+        entry.querySelector('[data-use-template]').onclick = use;
+        entry.querySelector('[data-edit-template]').onclick = () => editTemplate(template.rule, template);
+        entry.querySelector('[data-delete-template]').onclick = () => removeTemplates([template.id], `模板「${template.name}」`);
+        entry.addEventListener('keydown', event => {
+          if (event.key === 'Delete') {
+            revealDelete(entry);
+            entry.querySelector('[data-delete-template]').focus();
+          }
+        });
+      } else {
+        entry.innerHTML = nameMarkup;
+        const name = entry.firstElementChild;
+        if (multiple) {
+          function updateRow() {
+            name.setAttribute('aria-pressed', String(selected.has(template.id)));
+          }
+          updateRow();
+          name.onclick = () => {
+            if (!selected.delete(template.id)) selected.add(template.id);
+            updateRow();
+            updateSelection();
+          };
+        } else {
+          name.onclick = use;
+          name.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') preview(name, template.rule); });
+          name.addEventListener('pointerleave', hidePreview);
+          name.addEventListener('focus', () => { if (document.documentElement.dataset.inputMode === 'keyboard') preview(name, template.rule); });
+          name.addEventListener('blur', hidePreview);
+        }
+      }
+      entries.append(entry);
+    });
+    list.append(entries);
+  }
+  function editTemplate(rule, template) {
+    hidePreview();
+    revealDelete(null);
+    const id = template?.id || M.uid();
+    openRuleEditor({
+      title: template ? '编辑模板' : '新建模板',
+      initialRule: rule,
+      templateName: template?.name || '',
+      namePlaceholder: defaultExpectationTemplateName(id),
+      parent: dialog,
+      onSave: (rule, name) => {
+        const entry = { id, name: name || defaultExpectationTemplateName(id), rule: M.copy(rule) };
+        const templates = state.expectationTemplates || [];
+        state.expectationTemplates = template ? templates.map(item => item.id === id ? entry : item) : [...templates, entry];
+        return true;
+      },
+      afterSave: () => {
+        draw();
+        [...list.querySelectorAll('[data-template-row]')].find(row => row.dataset.templateRow === id)?.querySelector('button.expectation-template-name')?.focus();
+      }
+    });
+  }
+  function updateSaveCurrent() {
+    saveCurrent.disabled = selectedExpectationRule(dialog, usableSources) === undefined;
+  }
+  dialog.querySelector('[data-expectation-source]')?.addEventListener('change', updateSaveCurrent);
+  dialog.querySelector('[data-new-template]').onclick = () => editTemplate(null);
+  saveCurrent.onclick = () => editTemplate(selectedExpectationRule(dialog, usableSources));
+  manage.querySelector('[data-edit-selected-template]').onclick = () => {
+    const template = state.expectationTemplates.find(entry => selected.has(entry.id));
+    if (template) editTemplate(template.rule, template);
+  };
+  manage.querySelector('[data-delete-selected-templates]').onclick = () => removeTemplates([...selected], `选中的 ${selected.size} 个模板`);
+  const switchLayout = () => selectMode(false);
+  UI_MEDIA.mobileShell.addEventListener('change', switchLayout);
+  dialog.addEventListener('close', () => UI_MEDIA.mobileShell.removeEventListener('change', switchLayout), { once: true });
+  updateSaveCurrent();
+  draw();
+  showExpectationDialog(dialog, parent);
+}
+
+function bindTemplateSwipe(list, enabled) {
+  let opened, gesture;
+  function reveal(row) {
+    if (opened) {
+      delete opened.dataset.swipeOpen;
+      opened.querySelector('[data-delete-template]').hidden = true;
+    }
+    opened = row;
+    if (row) {
+      row.dataset.swipeOpen = '';
+      row.querySelector('[data-delete-template]').hidden = false;
+    }
+  }
+  list.addEventListener('pointerdown', event => {
+    if (!enabled() || !event.isPrimary || event.button !== 0) return;
+    const row = event.target.closest('[data-template-row]');
+    if (opened && row !== opened) reveal(null);
+    if (event.target.closest('.template-row-main')) gesture = { id: event.pointerId, row, x: event.clientX, y: event.clientY, active: false };
+  });
+  list.addEventListener('pointermove', event => {
+    if (gesture?.id !== event.pointerId || gesture.active) return;
+    if (!gesture.row.isConnected || (event.pointerType === 'mouse' && !(event.buttons & 1))) { gesture = null; return; }
+    const dx = event.clientX - gesture.x;
+    const dy = Math.abs(event.clientY - gesture.y);
+    if (dy > 10 && dy >= Math.abs(dx)) { gesture = null; return; }
+    if ((dx < -24 || dx > 24 && opened === gesture.row) && Math.abs(dx) > dy * 1.25) {
+      gesture.active = true;
+      gesture.row.setPointerCapture(event.pointerId);
+      reveal(dx < 0 ? gesture.row : null);
+    }
+  });
+  list.addEventListener('pointerup', event => { if (gesture?.id === event.pointerId) gesture = null; });
+  list.addEventListener('pointercancel', event => { if (gesture?.id === event.pointerId) gesture = null; });
+  // Once the row handles the horizontal swipe, cancel the browser's touch gesture.
+  list.addEventListener('touchmove', event => {
+    if (gesture?.active && event.touches.length === 1 && event.cancelable) event.preventDefault();
+  }, { passive: false });
+  return reveal;
 }
 
 let expectationTip = null, expectationTipTimer, expectationTipOwner = null;

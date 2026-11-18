@@ -3308,6 +3308,204 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--muted);
   margin: 0 0 16px;
 }
+.expectation-dialog .expectation-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.expectation-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.expectation-header > .expectation-tool-actions { margin-inline-start: auto; }
+.expectation-header > .expectation-tool-actions > button {
+  width: 64px;
+  padding-inline: 8px;
+  white-space: nowrap;
+}
+.expectation-dialog button:where(
+  .expectation-header > .expectation-tool-actions > button,
+  [data-select-templates],
+  [data-template-create] button,
+  [data-template-manage] button,
+  .template-row-main > [data-use-template],
+  .template-row-main > [data-edit-template]
+) {
+  border-color: transparent;
+  background: transparent;
+}
+.expectation-dialog :is([data-expectation-templates], [data-select-templates][aria-pressed="true"], [data-new-template]) {
+  background: var(--surface-floating);
+  color: var(--gold);
+}
+.expectation-dialog :is([data-select-templates], [data-use-template]) { color: var(--gold); }
+.expectation-dialog :is([data-delete-selected-templates], [data-delete-template]) { color: var(--red); }
+@media (hover: hover) {
+  .expectation-dialog button:where(
+    .expectation-header > .expectation-tool-actions > button,
+    [data-select-templates],
+    [data-template-create] button,
+    [data-template-manage] button,
+    .expectation-template-name,
+    [data-use-template],
+    [data-edit-template]
+  ):hover:not(:disabled) { background-color: color-mix(in srgb, var(--gold) 10%, var(--surface-raised)); }
+}
+.expectation-dialog button:where(
+  .expectation-header > .expectation-tool-actions > button,
+  [data-select-templates],
+  [data-template-create] button,
+  [data-template-manage] button,
+  .expectation-template-name,
+  [data-use-template],
+  [data-edit-template]
+):is(:active, .touch-pressed):not(:disabled) {
+  background-color: color-mix(in srgb, var(--gold) 18%, var(--surface-raised));
+}
+.expectation-field {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.expectation-field :is(input,select) {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: 6px 10px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--control-radius);
+  background: var(--surface-input);
+  color: var(--text);
+  font: 16px/1.4 var(--font-ui);
+}
+.expectation-templates {
+  height: min(520px, 85vh);
+  height: min(520px, 85dvh);
+}
+.expectation-templates > .expectation-body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+}
+.expectation-templates > .expectation-body > * { flex: none; }
+.expectation-templates [data-template-manage] [role="status"] {
+  color: var(--muted);
+  font-size: 13px;
+  margin-inline-start: auto;
+}
+.expectation-template-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border-radius: var(--control-radius);
+  background: var(--surface-raised);
+}
+.expectation-template-list > li {
+  padding-block: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.expectation-template-list > li:last-child { border-bottom-color: transparent; }
+.expectation-dialog .expectation-template-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.expectation-dialog .expectation-template-name:is([aria-expanded="true"], [aria-pressed="true"]) {
+  background: color-mix(in srgb, var(--gold) 11%, var(--surface-raised));
+  color: var(--gold);
+}
+.template-check {
+  flex: 0 0 16px;
+  height: 16px;
+  border: 1px solid var(--control-line);
+  border-radius: 4px;
+  text-align: center;
+  line-height: 14px;
+}
+[aria-pressed="true"] > .template-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--surface-input);
+}
+[aria-pressed="true"] > .template-check::before { content: '✓'; }
+.template-hover-tip { pointer-events: none; }
+.expectation-template-preview {
+  padding: 8px 12px 12px;
+  overflow-wrap: anywhere;
+}
+.expectation-template-preview > .rule-description {
+  border-color: transparent;
+  background: transparent;
+}
+.template-swipe-row {
+  --template-delete-width: 70px;
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+}
+.template-row-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 4px;
+  background: var(--surface-raised);
+  transition: transform var(--motion-medium) var(--ease-standard);
+}
+.template-row-main > .expectation-template-name {
+  flex: 1 1 0;
+  width: auto;
+}
+.template-row-main > .expectation-template-name::before {
+  content: '';
+  order: 1;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-inline-start: auto;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  opacity: .65;
+  transform: rotate(45deg);
+}
+.template-row-main > .expectation-template-name[aria-expanded="true"]::before { transform: rotate(135deg); }
+.template-row-main > :is([data-use-template], [data-edit-template]) { flex: none; }
+.expectation-dialog .template-swipe-row .template-swipe-delete {
+  position: absolute;
+  inset: 4px 0 4px auto;
+  width: var(--template-delete-width);
+}
+[data-swipe-open] .template-row-main { transform: translateX(calc(-1 * var(--template-delete-width))); }
+@media (prefers-reduced-motion: reduce) {
+  .template-row-main { transition: none; }
+}
+.expectation-templates [data-template-list]:has(> .muted) {
+  display: grid;
+  flex: 1;
+  place-items: center;
+}
+.expectation-templates [data-template-list] > .muted {
+  margin: 0;
+  color: var(--muted);
+}
+.expectation-dialog [hidden] { display: none; }
 .rule-group,.rule-description {
   padding: 12px;
   border: 1px solid #64756966;
