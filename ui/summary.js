@@ -49,6 +49,58 @@ function fitCardClasses(root = app) {
     const before = getComputedStyle(field, '::before'), shrunk = field.classList.contains('better') && parseFloat(before.width) < parseFloat(before.flexBasis) - 0.5;
     if (text.scrollWidth > text.clientWidth + 0.5 || shrunk) chip.classList.add('rating-face-only');
   }
+  const marks = [...root.querySelectorAll('.hand-drawn-mark')];
+  const paths = marks.map(handDrawnMarkPath);
+  marks.forEach((mark, index) => mark.firstElementChild.setAttribute('d', paths[index]));
+}
+
+const HAND_DRAWN_MARK = '<svg class="hand-drawn-mark" aria-hidden="true"><path/></svg>';
+
+function queueExamMarkup(row) {
+  const toggle = row.status === 'normal'
+    ? ` role="button" tabindex="0" aria-pressed="${Boolean(row.handDrawnMark)}" aria-label="及格率至少 ${row.examMinimum}%"`
+    : '';
+  return `<span class="queue-exam"${toggle}><span class="queue-exam-compact">${row.corrected ? '已修正 · ' : '预测 · '}考试 ≥${row.examMinimum}%</span><span class="queue-exam-rate"><span class="queue-exam-label">及格率</span><span class="queue-exam-ge" aria-hidden="true"></span><b>${row.examMinimum}</b><span class="queue-exam-percent">%</span></span></span>`;
+}
+
+function handDrawnMarkPath(svg) {
+  const chip = svg.parentElement, bounds = svg.getBoundingClientRect();
+  if (!bounds.width || !bounds.height) return '';
+  const name = chip.querySelector('.m-card-class, .profession-field > :is(.game-text,.profession-placeholder)');
+  const range = document.createRange();
+  range.selectNodeContents(name);
+  const text = range.getBoundingClientRect(), field = name.getBoundingClientRect();
+  const rate = chip.querySelector('.queue-exam-rate').getBoundingClientRect();
+  const left = Math.max(2, rate.left - bounds.left - 8), right = Math.min(bounds.width - 2, rate.right - bounds.left + 7);
+  const top = rate.top - bounds.top - 4, bottom = Math.min(bounds.height - 2, rate.bottom - bounds.top + 5);
+  const center = (left + right) / 2, middle = (top + bottom) / 2;
+  const start = Math.max(2, Math.max(text.left, field.left) - bounds.left - 2);
+  const end = Math.min(bounds.width - 2, Math.min(text.right, field.right) - bounds.left + 2);
+  const underline = field.bottom - bounds.top + 1, tip = (start + end) / 2;
+  const arrow = underline + 8;
+  return `M${center + 3} ${bottom} C${left + 12} ${bottom + 1} ${left - 3} ${middle + 13} ${left} ${middle + 2}
+    C${left + 1} ${top + 3} ${center - 12} ${top - 2} ${center + 1} ${top}
+    C${right - 9} ${top - 1} ${right + 1} ${middle - 11} ${right} ${middle + 1}
+    C${right - 1} ${bottom - 6} ${center + 15} ${bottom + 1} ${center - 4} ${bottom - 1}
+    M${start} ${underline} Q${tip - 4} ${underline + 1.5} ${end} ${underline - 1}
+    M${start + 2} ${underline + 4} Q${tip + 3} ${underline + 3} ${end - 1} ${underline + 3}
+    M${left} ${middle + 2} C${left - 19} ${middle - 1} ${tip + 8} ${middle - 14} ${tip + 2} ${arrow + 13}
+    Q${tip + 0.5} ${arrow + 6} ${tip} ${arrow}
+    M${tip - 6} ${arrow + 10} Q${tip - 3} ${arrow + 4} ${tip} ${arrow} Q${tip + 3} ${arrow + 4} ${tip + 7} ${arrow + 9}`;
+}
+
+function toggleCardHandDrawnMark(rate) {
+  if (!rate.hasAttribute('aria-pressed')) return;
+  const chip = rate.closest('.queue-row');
+  const item = state.roster.find(entry => entry.id === chip.dataset.queue);
+  if (!item?.seed) return;
+  const marked = window.RiggingSeed.toggleHandDrawnMark(item, Number(chip.dataset.index));
+  rate.setAttribute('aria-pressed', String(marked));
+  if (marked) {
+    chip.insertAdjacentHTML('beforeend', HAND_DRAWN_MARK);
+    const svg = chip.lastElementChild;
+    svg.firstElementChild.setAttribute('d', handDrawnMarkPath(svg));
+  } else chip.querySelector('.hand-drawn-mark')?.remove();
 }
 if (document.fonts?.ready) document.fonts.ready.then(() => fitCardClasses());
 function toggleCardRating(anchor) {
@@ -72,6 +124,12 @@ function toggleCardRating(anchor) {
   app.querySelector(`[data-card-rating="${item.id}"][${queued ? 'data-queue-index' : 'data-record-index'}="${index}"]`)?.focus({ preventScroll: true });
 }
 document.addEventListener('keydown', e => {
+  if (e.target.matches?.('.queue-exam[aria-pressed]') && ['Enter', ' '].includes(e.key)) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (!e.repeat) toggleCardHandDrawnMark(e.target);
+    return;
+  }
   if (e.target.matches?.('[data-card-rating]') && ['Enter', ' '].includes(e.key)) {
     e.preventDefault(); e.stopImmediatePropagation(); toggleCardRating(e.target);
   }
@@ -100,7 +158,7 @@ function renderSummary() {
       return `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span><span class="journal-portrait">${(!phone && portrait(c, 'list')) || portrait(c, 'narrow', '(width < 1750px) 178px, 116px')}${seedStatusMarkup(item, c)}</span><div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions">${mainAction}<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
-        <div class="records">${M.live(item).length || queue.length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.status === 'skipped' ? '已跳过，' : r.status === 'upgraded' ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.status === 'skipped' ? '标记已升级' : r.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.status === 'skipped' ? 'skipped' : r.status === 'upgraded' ? 'upgraded' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, displayLevels[recordIndex]), shownClass(item, r).profession) : `<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${summaryClassMarkup(shownClass(item, r).profession, c.id, recordIndex, false)}${cardRatingMarkup(r.ratingPending ? null : r.happy, c.id, recordIndex, false)}</div>`}<strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${phone ? mobileCardSide(shownClass(item, r).profession, shownClass(item, r).ride, r.ratingPending ? null : r.happy, c.id, recordIndex, false, false) : ''}${r.status !== 'normal' ? `<span class="record-overlay ${r.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${r.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') + queue.map(row => `<button data-queue="${c.id}" data-index="${row.index}" data-growth="+${row.stats.length + row.plus2.length}" aria-label="${c.name} ${row.corrected ? '已修正' : '预测'} ${levelLabel(item, row.displayLevel)}，${row.status === 'skipped' ? '已跳过，' : row.status === 'upgraded' ? '已升级，' : ''}提升 ${row.stats.length} 点：${row.stats.join('、') || '无'}。考试至少 ${row.examMinimum}% 才能合格。${editing ? '修正这一条' : row.status === 'skipped' ? '标记已升级' : row.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip queue-row ${row.happy === null ? 'rating-pending' : row.happy ? 'happy' : 'angry'} ${row.status === 'skipped' ? 'skipped' : row.status === 'upgraded' ? 'upgraded' : ''} ${row.corrected ? 'corrected' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, row.displayLevel), row.profession) : `<div><b>${levelLabel(item, row.displayLevel)}</b>${summaryClassMarkup(row.profession, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0)}${cardRatingMarkup(row.happy, c.id, row.index, true)}</div>`}<strong>+${row.stats.length + row.plus2.length}</strong><p>${recordStats(row.stats)}</p><span class="queue-exam"><span class="queue-exam-compact">${row.corrected ? '已修正 · ' : '预测 · '}考试 ≥${row.examMinimum}%</span><span class="queue-exam-rate"><span class="queue-exam-label">及格率</span><span class="queue-exam-ge" aria-hidden="true"></span><b>${row.examMinimum}</b><span class="queue-exam-percent">%</span></span></span>${phone ? mobileCardSide(row.profession, row.ride, row.happy, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0) : ''}${row.status !== 'normal' ? `<span class="record-overlay ${row.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${row.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
+        <div class="records">${M.live(item).length || queue.length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.status === 'skipped' ? '已跳过，' : r.status === 'upgraded' ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.status === 'skipped' ? '标记已升级' : r.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.status === 'skipped' ? 'skipped' : r.status === 'upgraded' ? 'upgraded' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, displayLevels[recordIndex]), shownClass(item, r).profession) : `<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${summaryClassMarkup(shownClass(item, r).profession, c.id, recordIndex, false)}${cardRatingMarkup(r.ratingPending ? null : r.happy, c.id, recordIndex, false)}</div>`}<strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${phone ? mobileCardSide(shownClass(item, r).profession, shownClass(item, r).ride, r.ratingPending ? null : r.happy, c.id, recordIndex, false, false) : ''}${r.status !== 'normal' ? `<span class="record-overlay ${r.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${r.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') + queue.map(row => `<button data-queue="${c.id}" data-index="${row.index}" data-growth="+${row.stats.length + row.plus2.length}" aria-label="${c.name} ${row.corrected ? '已修正' : '预测'} ${levelLabel(item, row.displayLevel)}，${row.status === 'skipped' ? '已跳过，' : row.status === 'upgraded' ? '已升级，' : ''}提升 ${row.stats.length} 点：${row.stats.join('、') || '无'}。考试至少 ${row.examMinimum}% 才能合格。${editing ? '修正这一条' : row.status === 'skipped' ? '标记已升级' : row.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip queue-row ${row.happy === null ? 'rating-pending' : row.happy ? 'happy' : 'angry'} ${row.status === 'skipped' ? 'skipped' : row.status === 'upgraded' ? 'upgraded' : ''} ${row.corrected ? 'corrected' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, row.displayLevel), row.profession) : `<div><b>${levelLabel(item, row.displayLevel)}</b>${summaryClassMarkup(row.profession, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0)}${cardRatingMarkup(row.happy, c.id, row.index, true)}</div>`}<strong>+${row.stats.length + row.plus2.length}</strong><p>${recordStats(row.stats)}</p>${queueExamMarkup(row)}${phone ? mobileCardSide(row.profession, row.ride, row.happy, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0) : ''}${row.handDrawnMark && row.status !== 'upgraded' ? HAND_DRAWN_MARK : ''}${row.status !== 'normal' ? `<span class="record-overlay ${row.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${row.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
     }).join('') || '<div class="panel empty">添加人物</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
     const template = document.createElement('template');

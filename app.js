@@ -616,7 +616,7 @@ function closeInitialLevel(form, save, quiet = false) {
     const item = state.roster.find(r => r.id === form.dataset.initialForm);
     item.initialLevel = input.value === '' ? null : Number(input.value);
     // The forecast needs a level, so without one this person goes back to plain records.
-    if (item.initialLevel === null) delete item.seed;
+    if (item.initialLevel === null) window.RiggingSeed.clearForecast(item);
   }
   form.dataset.closing = '1';
   if (quiet) return;
@@ -807,7 +807,7 @@ document.addEventListener('pointerdown', e => {
   // completed drag, never the user's next button press.
   suppressGestureClickUntil = 0;
   clearTouchPress();
-  if (e.pointerType === 'mouse') return;
+  if (e.pointerType === 'mouse' || e.target.closest('.queue-exam')) return;
   const button = e.target.closest('button:not(:disabled)');
   if (button?.matches('.expectation-link') || (UI_MEDIA.narrowLayout.matches && button?.matches('.expectation-setting'))) return;
   if (button) { touchPressedButton = button; button.classList.add('touch-pressed'); }
@@ -856,6 +856,8 @@ window.addEventListener('pointerdown', e => {
   } else dismissSeedMessage(bubble.dataset.seedStatus);
 }, true);
 app.addEventListener('click', async e => {
+  const rate = e.target.closest('.queue-exam');
+  if (rate) { toggleCardHandDrawnMark(rate); return; }
   // With a better choice marked, clicking anywhere on the class name opens the choices; changing the class
   // is the class row in its hover tip. The keyboard keeps both: Enter on the field changes the class,
   // Enter on the mark opens the choices.
@@ -974,7 +976,7 @@ app.addEventListener('click', async e => {
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); visibleRoster().forEach(item => { delete item.seed; }); }
+  if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); visibleRoster().forEach(window.RiggingSeed.clearForecast); }
   if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
     softDelete(visibleRoster().flatMap(item => M.live(item)));

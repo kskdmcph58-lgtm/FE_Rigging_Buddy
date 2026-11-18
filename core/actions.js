@@ -194,6 +194,7 @@ window.RiggingActions = (() => {
 
   function cycleRecordStatus(record, item) {
     if (record.status === 'skipped') {
+      if (item) revertSkipUnlock(item, record);
       // A 已升级 made while locked counts as a Part 3 mark of its own, and survives removing the earlier one.
       if (item && model.recordParts(item)[model.live(item).indexOf(record)]) record.part3 = true;
       record.status = 'upgraded';
@@ -251,7 +252,23 @@ window.RiggingActions = (() => {
     const list = (item.unlockedClasses || []).filter(entry => entry !== name);
     if (unlocked) list.push(name);
     if (list.length) item.unlockedClasses = list; else delete item.unlockedClasses;
+    if (!unlocked) {
+      // A manual lock ends the old skip's ownership, even if the class is unlocked again later.
+      for (const record of item.records) {
+        if (record.skipUnlockedProfession === name) delete record.skipUnlockedProfession;
+      }
+      for (const row of Object.values(item.seed?.rows || {})) {
+        if (row.skipUnlockedProfession === name) delete row.skipUnlockedProfession;
+      }
+    }
     return true;
+  }
+
+  function revertSkipUnlock(item, attempt) {
+    const name = attempt.skipUnlockedProfession;
+    if (!name) return;
+    delete attempt.skipUnlockedProfession;
+    setClassUnlocked(item, name, false);
   }
 
   /* 考试推荐's level range for a person. Only an end the user moved off the full range is kept, so the range
@@ -263,7 +280,7 @@ window.RiggingActions = (() => {
     if (Object.keys(range).length) item.examRange = range; else delete item.examRange;
   }
 
-  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass, clearForecastClassOverrides,
+  return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, revertSkipUnlock, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass, clearForecastClassOverrides,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, undoDelete, planMove, setExpectations };
 })();

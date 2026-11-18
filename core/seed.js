@@ -217,7 +217,9 @@ window.RiggingSeed = (() => {
     return current + 1;
   }
   const rowCount = item => {
-    const marked = Object.keys(item.seed?.rows || {}).map(Number);
+    const marked = Object.entries(item.seed?.rows || {})
+      .filter(([, row]) => !row.handDrawnMark || Object.keys(row).length > 1)
+      .map(([index]) => Number(index));
     return (marked.length ? Math.max(...marked) + 1 : 0) + QUEUE_SIZE;
   };
 
@@ -258,7 +260,8 @@ window.RiggingSeed = (() => {
       const rule = model.ruleAt(item, model.nextSeq(item) + n);
       const happy = saved.happy ?? model.evaluate(rule, stats);
       rows.push({ ...row, index: n, seed, stats, plus2, predicted: predicted.stats, corrected: saved.stats !== undefined, status: saved.status || 'normal',
-        happy, displayLevel: level + 1, examMinimum: engine.simulateExam(seed, 100).minimumProbability, ratingSource: saved.happy === undefined ? 'auto' : 'manual' });
+        happy, displayLevel: level + 1, examMinimum: engine.simulateExam(seed, 100).minimumProbability, ratingSource: saved.happy === undefined ? 'auto' : 'manual',
+        ...(saved.handDrawnMark ? { handDrawnMark: true } : {}) });
       seed = result.next;
       if (saved.status !== 'skipped') level++;
     }
@@ -274,6 +277,14 @@ window.RiggingSeed = (() => {
     item.seed.rows ||= {};
     return item.seed.rows[index] ||= {};
   }
+  function toggleHandDrawnMark(item, index) {
+    const saved = savedRow(item, index);
+    if (saved.status) return Boolean(saved.handDrawnMark);
+    if (saved.handDrawnMark) delete saved.handDrawnMark;
+    else saved.handDrawnMark = true;
+    prune(item, index);
+    return Boolean(saved.handDrawnMark);
+  }
   // A forecast row's rating, flipped from its card. Flipping back to what the rule says stores nothing.
   function toggleRowHappy(state, item, c, index) {
     const row = queueRows(state, item, c, index + 1)[index];
@@ -286,15 +297,27 @@ window.RiggingSeed = (() => {
   }
   // Same order as saved records. A mark holds the part it was made in, so the switch cannot move it.
   function cycleRowStatus(state, item, c, index) {
-    const row = queueRows(state, item, c, index + 1)[index], saved = savedRow(item, index);
+    const row = queueRows(state, item, c, index + 1)[index];
+    if (!row) return;
+    const saved = savedRow(item, index);
     if (saved.status === 'skipped') {
+      actions.revertSkipUnlock(item, saved);
       saved.status = 'upgraded'; saved.part3 = row.part3;
     } else if (saved.status === 'upgraded') {
       delete saved.status; delete saved.part3;
     } else {
       saved.status = 'skipped'; saved.part3 = row.part3;
+      if (saved.handDrawnMark && row.profession && actions.setClassUnlocked(item, row.profession, true)) {
+        saved.skipUnlockedProfession = row.profession;
+      }
     }
     prune(item, index);
+  }
+
+  function clearForecast(item) {
+    if (!item.seed) return;
+    for (const row of Object.values(item.seed.rows || {})) actions.revertSkipUnlock(item, row);
+    delete item.seed;
   }
 
   function rowDraft(state, item, c, index) {
@@ -505,9 +528,10 @@ window.RiggingSeed = (() => {
       let seq = model.nextSeq(item);
       records = [...records];
       for (const row of old.slice(0, lift)) {
+        const unlocked = item.seed.rows?.[row.index]?.skipUnlockedProfession;
         records.push({ id: model.uid(), seq: seq++, profession: row.profession, ride: row.storedRide ? { ...row.storedRide } : null, stats: [...row.stats], ...(row.plus2.length ? { plus2: [...row.plus2] } : {}),
           part3: row.part3 === true || window.PROFESSIONS.part3Only.has(row.profession), status: row.status, deleted: false, happy: row.happy === true, ...(row.happy === null ? { ratingPending: true } : {}),
-          ratingSource: row.ratingSource, ...(row.corrected ? {} : { calculated: true }), createdAt: now });
+          ratingSource: row.ratingSource, ...(row.corrected ? {} : { calculated: true }), ...(unlocked ? { skipUnlockedProfession: unlocked } : {}), createdAt: now });
       }
     }
     // Deleted records after the first converted one go too: restoring one would put a record after the forecast.
@@ -516,7 +540,8 @@ window.RiggingSeed = (() => {
     const rows = {};
     convert.forEach(({ record, part3 }, n) => {
       rows[n] = { profession: record.profession ?? null, ride: record.ride ? { ...record.ride } : null, part3,
-        ...(record.status !== 'normal' ? { status: record.status } : {}), ...(record.ratingSource === 'manual' ? { happy: record.happy } : {}) };
+        ...(record.status !== 'normal' ? { status: record.status } : {}), ...(record.ratingSource === 'manual' ? { happy: record.happy } : {}),
+        ...(record.skipUnlockedProfession ? { skipUnlockedProfession: record.skipUnlockedProfession } : {}) };
     });
     const shift = convert.length - lift;
     for (const [index, row] of Object.entries(item.seed?.rows || {})) {
@@ -578,6 +603,11 @@ window.RiggingSeed = (() => {
       if (backup.pending) item.pendingProfession = backup.pendingProfession;
       return { applied: false, reason: 'mismatch' };
     }
+    if (convert.length) {
+      for (const record of backup.records) {
+        if (record.deleted && record.seq >= convert[0].record.seq) actions.revertSkipUnlock(item, record);
+      }
+    }
     for (const n of Object.keys(item.seed.rows || {})) prune(item, Number(n));
     for (const record of item.records) { delete record.corrected; delete record.seedInput; delete record.anchor; }
     return { applied: true };
@@ -598,6 +628,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, toggleHandDrawnMark, clearForecast, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

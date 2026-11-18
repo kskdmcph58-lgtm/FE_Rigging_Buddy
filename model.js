@@ -127,7 +127,7 @@ window.RiggingModel = (() => {
     if (object.skipped === true && object.upgraded === true) return null;
     return object.skipped === true ? 'skipped' : object.upgraded === true ? 'upgraded' : undefined;
   }
-  function seedValid(seed) {
+  function seedValid(seed, validateSkipUnlock) {
     if (seed === undefined) return;
     const bad = () => { throw Error('种子数据不正确'); };
     if (!seed || typeof seed !== 'object' || !Number.isSafeInteger(seed.value) || seed.value < 0 || seed.value >= 2 ** 32) bad();
@@ -135,12 +135,14 @@ window.RiggingModel = (() => {
     if (!seed.rows || typeof seed.rows !== 'object' || Array.isArray(seed.rows)) bad();
     for (const [index, row] of Object.entries(seed.rows)) {
       if (!/^(0|[1-9]\d{0,4})$/.test(index) || !row || typeof row !== 'object') bad();
-      for (const key of ['skipped', 'upgraded', 'part3', 'happy']) if (row[key] !== undefined && typeof row[key] !== 'boolean') bad();
+      for (const key of ['skipped', 'upgraded', 'part3', 'happy', 'handDrawnMark']) if (row[key] !== undefined && typeof row[key] !== 'boolean') bad();
       // A queue row stores a status only once it is marked, so an unmarked row has none.
       const legacy = legacyStatus(row);
       if (legacy === null || (row.status !== undefined && !['skipped', 'upgraded'].includes(row.status)) || (legacy && row.status && legacy !== row.status)) bad();
       if (legacy) row.status = legacy;
       delete row.skipped; delete row.upgraded;
+      if (!row.handDrawnMark) delete row.handDrawnMark;
+      validateSkipUnlock(row);
       if (row.stats !== undefined && (!Array.isArray(row.stats) || new Set(row.stats).size !== row.stats.length || row.stats.some(s => !stats.includes(s)))) bad();
       if (row.plus2 !== undefined && (!Array.isArray(row.plus2) || new Set(row.plus2).size !== row.plus2.length || row.plus2.some(s => !row.stats?.includes(s)))) bad();
       renameClass(row, 'profession');
@@ -186,7 +188,16 @@ window.RiggingModel = (() => {
       }
       recordCount += item.records.length;
       if (recordCount > limits.records) throw Error('备份记录过多，请分开保存');
-      ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed);
+      const automaticUnlocks = new Set();
+      const validateSkipUnlock = attempt => {
+        if (attempt.skipUnlockedProfession === undefined) return;
+        renameClass(attempt, 'skipUnlockedProfession');
+        const name = attempt.skipUnlockedProfession;
+        if (attempt.status !== 'skipped' || !item.unlockedClasses?.includes(name) ||
+          window.PROFESSIONS.base.includes(name) || automaticUnlocks.has(name)) throw Error('跳过解锁记录不正确');
+        automaticUnlocks.add(name);
+      };
+      ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed, validateSkipUnlock);
       if (item.deleted !== undefined && typeof item.deleted !== 'boolean') throw Error('删除标记不正确');
       let last = 0, legacyLevel = (item.initialLevel ?? 0) + 1;
       for (const r of item.records) {
@@ -196,6 +207,7 @@ window.RiggingModel = (() => {
         if (legacy === null || (r.status !== undefined && !statuses.includes(r.status)) || (legacy && r.status && legacy !== r.status)) throw Error('记录状态冲突');
         r.status ||= legacy || 'normal';
         delete r.skipped; delete r.upgraded;
+        validateSkipUnlock(r);
         if (r.plus2 !== undefined && (!Array.isArray(r.plus2) || new Set(r.plus2).size !== r.plus2.length || r.plus2.some(s => !r.stats.includes(s)))) throw Error('升级记录不正确');
         if (old) {
           if (r.level !== legacyLevel) throw Error('旧记录等级不正确');
