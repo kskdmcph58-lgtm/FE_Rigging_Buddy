@@ -289,8 +289,16 @@ function syncChildren(current, desired) {
   // Selection owns this leading checkbox; it is absent from the render template.
   // Keep it out of reconciliation so updates retain the journal's record rail.
   if (current.matches?.('.journal') && cursor?.nodeType === 1 && cursor.matches('.row-select')) cursor = cursor.nextSibling;
+  const same = (node, next) => node && node.nodeType === next.nodeType && node.nodeName === next.nodeName && key(node) === key(next);
   for (const next of [...desired.childNodes]) {
     const id = key(next);
+    // A node dropped from the front (the edit pencil when 完成编辑) would misalign every later sibling and rebuild
+    // the whole card; WebKit then loses the column's scroll position. Remove just that node instead.
+    if (!id) while (cursor && !key(cursor) && !same(cursor, next) && same(cursor.nextSibling, next)) {
+      const dropped = cursor;
+      cursor = cursor.nextSibling;
+      dropped.remove();
+    }
     let node = id ? keyed.get(id) : cursor;
     if (!node || node.nodeType !== next.nodeType || node.nodeName !== next.nodeName || key(node) !== id) {
       node = next.cloneNode(true);
