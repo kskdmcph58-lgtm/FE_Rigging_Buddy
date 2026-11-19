@@ -1136,7 +1136,7 @@ function showExpectationTip(b) {
   const height=Math.min(tip.height,useBelow?below:above);
   expectationTip.style.left=`${Math.max(edge,Math.min(innerWidth-tip.width-edge,r.left))}px`;
   expectationTip.style.top=`${useBelow?r.bottom+gap:r.top-gap-height}px`;
-  expectationTip.addEventListener('pointerleave',hideExpectationTip);
+  expectationTip.addEventListener('pointerleave',e=>{if(inTipBridge(e.clientX,e.clientY)){clearTimeout(expectationTipTimer);expectationTipTimer=setTimeout(settleExpectationTip,180);}else hideExpectationTip();});
   if(classOwner) expectationTip.addEventListener('click',e=>{
     const row=e.target.closest('[data-tip-step]');
     if(row?.dataset.tipStep==='better'){const mark=b.querySelector('[data-better]');if(mark)openBetterChoices(mark);}
@@ -1159,8 +1159,23 @@ document.addEventListener('pointerout',e=>{
   const owner=e.target.closest(TIP_OWNERS);
   if(!owner||owner.contains(e.relatedTarget)||expectationTip?.contains(e.relatedTarget))return;
   clearTimeout(expectationTipTimer);
-  expectationTipTimer=setTimeout(()=>{if(!expectationTip?.matches(':hover')&&!expectationTipOwner?.matches(':hover'))hideExpectationTip();},180);
+  expectationTipTimer=setTimeout(settleExpectationTip,180);
 });
+/* The gap between the owner and its tip counts as part of the tip, so a slow move from one to the other
+   (or a pause on the way) keeps it open. Only the hover area grows; nothing is drawn there. */
+let tipPointerX=-1,tipPointerY=-1;
+document.addEventListener('pointermove',e=>{if(expectationTip&&e.pointerType==='mouse'){tipPointerX=e.clientX;tipPointerY=e.clientY;}},{passive:true});
+function inTipBridge(x,y){
+  if(!expectationTip||!expectationTipOwner?.isConnected)return false;
+  const r=expectationTipOwner.getBoundingClientRect(),t=expectationTip.getBoundingClientRect();
+  const top=Math.min(r.bottom,t.bottom),bottom=Math.max(r.top,t.top);
+  return x>=Math.min(r.left,t.left)&&x<=Math.max(r.right,t.right)&&y>=top&&y<=bottom;
+}
+function settleExpectationTip(){
+  if(!expectationTip||expectationTip.matches(':hover')||expectationTipOwner?.matches(':hover'))return;
+  if(inTipBridge(tipPointerX,tipPointerY))expectationTipTimer=setTimeout(settleExpectationTip,180);
+  else hideExpectationTip();
+}
 document.addEventListener('scroll',e=>{if(!expectationTip?.contains(e.target))hideExpectationTip();},true);
 window.addEventListener('resize',hideExpectationTip);
 document.addEventListener('focusin',e=>{if(e.target.matches(TIP_OWNERS)&&document.documentElement.dataset.inputMode==='keyboard')showExpectationTip(e.target);});
