@@ -3319,53 +3319,47 @@ body.marquee-selecting,body.marquee-selecting * {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   min-width: 0;
 }
-.expectation-header > .expectation-tool-actions { margin-inline-start: auto; }
+.expectation-header > .expectation-tool-actions {
+  margin-inline-start: auto;
+  margin-inline-end: -8px;
+}
 .expectation-header > .expectation-tool-actions > button {
   width: 64px;
   padding-inline: 8px;
   white-space: nowrap;
 }
-.expectation-dialog button:where(
-  .expectation-header > .expectation-tool-actions > button,
-  [data-select-templates],
-  [data-template-create] button,
-  [data-template-manage] button,
-  .template-row-main > [data-use-template],
-  .template-row-main > [data-edit-template]
-) {
+.expectation-header > .template-tool-actions > button {
+  width: auto;
+  min-width: 64px;
+}
+/* Toolbar and row actions are borderless text buttons in the accent colour, like iOS bar buttons and
+   macOS toolbar items: no resting or hover fill, a light fill only while pressed. */
+.expectation-dialog button:where(.expectation-tool-actions > button, .template-row-main > button) {
   border-color: transparent;
   background: transparent;
 }
-.expectation-dialog :is([data-expectation-templates], [data-select-templates][aria-pressed="true"], [data-new-template]) {
-  background: var(--surface-floating);
-  color: var(--gold);
+.expectation-dialog button:where(.expectation-tool-actions > button, [data-use-template]) { color: var(--gold); }
+@media (hover: hover) and (pointer: fine) {
+  .expectation-dialog button:is(.expectation-tool-actions > button, .template-row-main > button):hover:not(:disabled) {
+    border-color: transparent;
+    background: transparent;
+  }
+  .expectation-dialog button:is(.expectation-tool-actions > button, [data-use-template]):hover:not(:disabled) { color: var(--stat-active-text); }
+  .expectation-dialog button:is([data-edit-template], .expectation-template-name):hover:not(:disabled) { color: var(--gold); }
 }
-.expectation-dialog :is([data-select-templates], [data-use-template]) { color: var(--gold); }
-.expectation-dialog :is([data-delete-selected-templates], [data-delete-template]) { color: var(--red); }
-@media (hover: hover) {
-  .expectation-dialog button:where(
-    .expectation-header > .expectation-tool-actions > button,
-    [data-select-templates],
-    [data-template-create] button,
-    [data-template-manage] button,
-    .expectation-template-name,
-    [data-use-template],
-    [data-edit-template]
-  ):hover:not(:disabled) { background-color: color-mix(in srgb, var(--gold) 10%, var(--surface-raised)); }
+.expectation-dialog button:is(.expectation-tool-actions > button, .template-row-main > button):is(:active, .touch-pressed):not(:disabled) {
+  background-color: color-mix(in srgb, var(--gold) 16%, transparent);
 }
-.expectation-dialog button:where(
-  .expectation-header > .expectation-tool-actions > button,
-  [data-select-templates],
-  [data-template-create] button,
-  [data-template-manage] button,
-  .expectation-template-name,
-  [data-use-template],
-  [data-edit-template]
-):is(:active, .touch-pressed):not(:disabled) {
-  background-color: color-mix(in srgb, var(--gold) 18%, var(--surface-raised));
+.expectation-dialog [data-delete-rule] {
+  margin-right: auto;
+}
+.select-options:focus { outline: 0; }
+.select-options .source-rule {
+  margin-inline-start: 12px;
+  color: var(--muted);
 }
 .expectation-field {
   display: grid;
@@ -3374,7 +3368,7 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--muted);
   font-size: 13px;
 }
-.expectation-field :is(input,select) {
+.expectation-field input {
   width: 100%;
   min-width: 0;
   min-height: var(--control-height);
@@ -3385,33 +3379,26 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--text);
   font: 16px/1.4 var(--font-ui);
 }
+/* A short list keeps the 520px frame; a long one grows the sheet up to the dialog max-height, then scrolls. */
 .expectation-templates {
-  height: min(520px, 85vh);
-  height: min(520px, 85dvh);
+  min-height: min(520px, 85vh);
+  min-height: min(520px, 85dvh);
 }
 .expectation-templates > .expectation-body {
   display: flex;
-  flex: 1 1 0;
+  flex: 1 1 auto;
   flex-direction: column;
 }
 .expectation-templates > .expectation-body > * { flex: none; }
-.expectation-templates [data-template-manage] [role="status"] {
-  color: var(--muted);
-  font-size: 13px;
-  margin-inline-start: auto;
-}
 .expectation-template-list {
   list-style: none;
-  margin: 12px 0 0;
+  margin: 0;
   padding: 0;
   border-radius: var(--control-radius);
   background: var(--surface-raised);
+  overflow: hidden;
 }
-.expectation-template-list > li {
-  padding-block: 4px;
-  border-bottom: 1px solid var(--line);
-}
-.expectation-template-list > li:last-child { border-bottom-color: transparent; }
+.expectation-template-list > li + li { border-top: 1px solid var(--line); }
 .expectation-dialog .expectation-template-name {
   display: flex;
   align-items: center;
@@ -3426,32 +3413,20 @@ body.marquee-selecting,body.marquee-selecting * {
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.expectation-dialog .expectation-template-name:is([aria-expanded="true"], [aria-pressed="true"]) {
-  background: color-mix(in srgb, var(--gold) 11%, var(--surface-raised));
-  color: var(--gold);
-}
-.template-check {
-  flex: 0 0 16px;
-  height: 16px;
-  border: 1px solid var(--control-line);
-  border-radius: 4px;
-  text-align: center;
-  line-height: 14px;
-}
-[aria-pressed="true"] > .template-check {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--surface-input);
-}
-[aria-pressed="true"] > .template-check::before { content: '✓'; }
 .template-hover-tip { pointer-events: none; }
 .expectation-template-preview {
-  padding: 8px 12px 12px;
+  padding: 0 12px 12px;
   overflow-wrap: anywhere;
 }
 .expectation-template-preview > .rule-description {
+  padding: 0;
   border-color: transparent;
   background: transparent;
+}
+.expectation-template-preview > :is(span, .rule-default) {
+  display: block;
+  margin: 0;
+  color: var(--muted);
 }
 .template-swipe-row {
   --template-delete-width: 70px;
@@ -3464,8 +3439,7 @@ body.marquee-selecting,body.marquee-selecting * {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-block: 4px;
+  padding: 4px 4px 4px 0;
   background: var(--surface-raised);
   transition: transform var(--motion-medium) var(--ease-standard);
 }
@@ -3473,20 +3447,24 @@ body.marquee-selecting,body.marquee-selecting * {
   flex: 1 1 0;
   width: auto;
 }
-.template-row-main > .expectation-template-name::before {
+.template-row-main > :is([data-use-template], [data-edit-template]) {
+  flex: none;
+  padding-inline: 12px;
+}
+/* Disclosure chevron (phone and middle shell only): points right when closed, down when open. */
+.template-row-main > .expectation-template-name[aria-expanded]::before {
   content: '';
   order: 1;
   flex: none;
   width: 6px;
   height: 6px;
-  margin-inline-start: auto;
-  border-top: 1px solid currentColor;
-  border-right: 1px solid currentColor;
-  opacity: .65;
+  margin-inline: auto 4px;
+  border-top: 1.5px solid var(--muted);
+  border-right: 1.5px solid var(--muted);
   transform: rotate(45deg);
+  transition: transform var(--motion-medium) var(--ease-standard);
 }
 .template-row-main > .expectation-template-name[aria-expanded="true"]::before { transform: rotate(135deg); }
-.template-row-main > :is([data-use-template], [data-edit-template]) { flex: none; }
 .expectation-dialog .template-swipe-row .template-swipe-delete {
   position: absolute;
   inset: 4px 0 4px auto;
@@ -3494,7 +3472,7 @@ body.marquee-selecting,body.marquee-selecting * {
 }
 [data-swipe-open] .template-row-main { transform: translateX(calc(-1 * var(--template-delete-width))); }
 @media (prefers-reduced-motion: reduce) {
-  .template-row-main { transition: none; }
+  .template-row-main,.template-row-main > .expectation-template-name::before { transition: none; }
 }
 .expectation-templates [data-template-list]:has(> .muted) {
   display: grid;

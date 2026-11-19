@@ -539,7 +539,7 @@ function openExpectationDetails(id) {
   if (!item.expectations?.length) { openExpectationEditor([id]); return; }
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog';animateMobilePickerClose(dialog);closeOnOutsideTap(dialog);
   const sources = expectationRangeOptions(item);
-  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="expectation-detail-title">属性期望</h2><p id="expectation-detail-character">${escapeValue(char(id).name)}</p></div>${expectationToolButtons}</header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationSourcePicker(sources)}${expectationRanges(item, sources)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
+  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="expectation-detail-title">属性期望</h2><p id="expectation-detail-character">${escapeValue(char(id).name)}</p></div>${expectationToolButtons}</header><div class="expectation-body"><p class="muted">未覆盖区间使用默认判定。${Number.isInteger(item.initialLevel) ? '显示等级随初始等级、跳过和删除重新计算，规则仍对应原记录范围。' : '未填写初始等级，范围以记录序号显示。'}</p>${expectationRanges(item, sources)}</div><footer><button data-close autofocus>关闭</button><button class="primary" data-edit-expectation>编辑期望</button></footer>`;
   dialog.setAttribute('aria-labelledby','expectation-detail-title');
   dialog.setAttribute('aria-describedby','expectation-detail-character');
   dialog.addEventListener('close',()=>retireDialog(dialog),{once:true});
@@ -609,6 +609,24 @@ function closeStyledSelect(restore = false) {
   } else list.remove();
   if (restore && button.isConnected) button.focus({preventScroll:true});
 }
+// Places a styled option list under (or above) its button; the shared close handlers below dismiss it.
+function showStyledList(button, list) {
+  (button.closest('dialog')||document.body).append(list);
+  styledSelect={button,list};button.setAttribute('aria-expanded','true');
+  const r=button.getBoundingClientRect(), availableBelow=innerHeight-r.bottom-12, availableAbove=r.top-12;
+  list.style.width=`${Math.min(innerWidth-24,Math.max(r.width,list.scrollWidth+2))}px`;
+  list.style.maxHeight=`${Math.max(availableBelow,availableAbove)}px`;
+  const h=list.getBoundingClientRect().height,w=list.getBoundingClientRect().width;
+  list.style.left=`${Math.max(12,Math.min(r.left,innerWidth-w-12))}px`;
+  list.style.top=`${availableBelow>=h?r.bottom+6:Math.max(12,r.top-h-6)}px`;
+  (list.querySelector('[aria-selected="true"]:not(:disabled)')||list.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});
+  list.addEventListener('keydown',e=>{
+    const enabled=[...list.querySelectorAll('button:not(:disabled)')],i=enabled.indexOf(document.activeElement);
+    if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();enabled[e.key==='Home'?0:e.key==='End'?enabled.length-1:(i+(e.key==='ArrowDown'?1:-1)+enabled.length)%enabled.length]?.focus();}
+    if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeStyledSelect(true);}
+    if(e.key==='Tab')closeStyledSelect(true);
+  });
+}
 function enhanceSelects(root) {
   root.querySelectorAll('select:not(.styled-select-source)').forEach(select=>{
     select.classList.add('styled-select-source');select.tabIndex=-1;select.setAttribute('aria-hidden','true');
@@ -629,21 +647,7 @@ function enhanceSelects(root) {
         item.textContent=option.textContent;item.disabled=option.disabled;item.setAttribute('aria-selected',String(option.selected));
         item.addEventListener('click',e=>{e.stopPropagation();select.value=option.value;closeStyledSelect(true);select.dispatchEvent(new Event('change',{bubbles:true}));});list.append(item);
       });
-      (select.closest('dialog')||document.body).append(list);
-      styledSelect={button,list};button.setAttribute('aria-expanded','true');
-      const r=button.getBoundingClientRect(), availableBelow=innerHeight-r.bottom-12, availableAbove=r.top-12;
-      list.style.width=`${Math.min(innerWidth-24,Math.max(r.width,list.scrollWidth+2))}px`;
-      list.style.maxHeight=`${Math.max(availableBelow,availableAbove)}px`;
-      const h=list.getBoundingClientRect().height,w=list.getBoundingClientRect().width;
-      list.style.left=`${Math.max(12,Math.min(r.left,innerWidth-w-12))}px`;
-      list.style.top=`${availableBelow>=h?r.bottom+6:Math.max(12,r.top-h-6)}px`;
-      (list.querySelector('[aria-selected="true"]:not(:disabled)')||list.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});
-      list.addEventListener('keydown',e=>{
-        const enabled=[...list.querySelectorAll('button:not(:disabled)')],i=enabled.indexOf(document.activeElement);
-        if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();enabled[e.key==='Home'?0:e.key==='End'?enabled.length-1:(i+(e.key==='ArrowDown'?1:-1)+enabled.length)%enabled.length]?.focus();}
-        if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeStyledSelect(true);}
-        if(e.key==='Tab')closeStyledSelect(true);
-      });
+      showStyledList(button,list);
     }
     button.addEventListener('click',e=>{e.stopPropagation();open();});
     button.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();open();}});
@@ -667,14 +671,14 @@ function openExpectationEditor(ids, initialRule) {
   });
 }
 
-function openRuleEditor({ title, subtitle, initialRule, mixed, hasSource, templateName, namePlaceholder, onSave, afterSave, parent }) {
+function openRuleEditor({ title, subtitle, initialRule, mixed, hasSource, templateName, namePlaceholder, onSave, onDelete, afterSave, parent }) {
   let rule = M.copy(initialRule);
   const isTemplate = templateName !== undefined;
   const dialog = document.createElement('dialog'); dialog.className = 'app-dialog expectation-dialog editor-dialog';animateMobilePickerClose(dialog);
   const titleId = isTemplate ? 'expectation-template-editor-title' : 'expectation-editor-title';
   dialog.setAttribute('aria-labelledby', titleId);
   const nameField = isTemplate ? `<label class="expectation-field">模板名称<input data-template-name maxlength="${M.templateNameLimit}" placeholder="${escapeValue(namePlaceholder)}" value="${escapeValue(templateName)}"></label>` : '';
-  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="${titleId}">${title}</h2>${subtitle ? `<p>${escapeValue(subtitle)}</p>` : ''}</div>${isTemplate ? '' : expectationToolButtons}</header><div class="expectation-body">${nameField}<p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div ${isTemplate ? '' : 'id="rule-editor"'} data-rule-editor></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer>${isTemplate ? '' : '<button data-reset-rule>恢复默认</button>'}<button data-close autofocus>返回</button><button class="primary" data-save-rule>${isTemplate ? '保存模板' : '保存期望'}</button></footer>`;
+  dialog.innerHTML = `<header class="expectation-header"><div><h2 id="${titleId}">${title}</h2>${subtitle ? `<p>${escapeValue(subtitle)}</p>` : ''}</div>${isTemplate ? '' : expectationToolButtons}</header><div class="expectation-body">${nameField}<p class="muted">${defaultRuleText} 自定义条件满足时判为满意，否则不满意。</p>${mixed ? '<p class="mixed-note">这些人物的设置不同，保存会统一替换。</p>' : ''}<div ${isTemplate ? '' : 'id="rule-editor"'} data-rule-editor></div><p class="editor-error" role="alert"></p><details class="rule-preview"><summary>规则预览</summary><div></div></details></div><footer>${isTemplate ? onDelete ? '<button class="danger" data-delete-rule>删除模板</button>' : '' : '<button data-reset-rule>恢复默认</button>'}<button data-close autofocus>返回</button><button class="primary" data-save-rule>${isTemplate ? '保存模板' : '保存期望'}</button></footer>`;
   const error = dialog.querySelector('.editor-error');
   function nodeAt(path) { return path ? path.split('.').reduce((n,key)=>n[key],rule) : rule; }
   function replace(path, value) {
@@ -795,6 +799,11 @@ function openRuleEditor({ title, subtitle, initialRule, mixed, hasSource, templa
     } else if(b.hasAttribute('data-save-rule')) {
       await save();
       return;
+    } else if(b.hasAttribute('data-delete-rule')) {
+      saving = true;
+      try { if (await onDelete()) closeExpectationThen(dialog, afterSave); }
+      finally { saving = false; }
+      return;
     } else return;
     hasSource = true;
     error.textContent = '';
@@ -844,34 +853,72 @@ function bindExpectationTools(parent, sources, apply) {
   const copy = parent.querySelector('[data-copy-expectation]');
   const paste = parent.querySelector('[data-paste-expectation]');
   const status = parent.querySelector('[role="status"]');
+  const copyable = () => sources().filter(({ rule }) => canCopyExpectation(rule));
   function refresh() {
-    copy.disabled = !canCopyExpectation(selectedExpectationRule(parent, sources()));
+    const count = copyable().length;
+    copy.disabled = !count;
+    setSourceMenu(copy, count);
     copy.textContent = '复制';
     paste.disabled = copiedExpectation === undefined;
     status.textContent = '';
   }
-  copy.onclick = () => {
-    const rule = selectedExpectationRule(parent, sources());
-    if (!canCopyExpectation(rule)) return;
+  copy.onclick = () => pickExpectationSource(copy, copyable(), rule => {
     copiedExpectation = M.copy(rule);
     paste.disabled = false;
     copy.textContent = '已复制';
     status.textContent = '已复制期望';
-  };
+  });
   paste.onclick = () => apply(copiedExpectation);
-  parent.querySelector('[data-expectation-source]')?.addEventListener('change', refresh);
   parent.querySelector('[data-expectation-templates]').onclick = () => openExpectationTemplates(parent, sources(), apply);
   refresh();
   return refresh;
 }
 
-function expectationSourcePicker(options) {
-  if (options.length < 2) return '';
-  return `<label class="expectation-field">规则区间<select data-expectation-source><option value="">选择区间</option>${options.map(({ label }, index) => `<option value="${index}">${escapeValue(label)}</option>`).join('')}</select></label>`;
+function setSourceMenu(button, count) {
+  if (count > 1) {
+    button.setAttribute('aria-haspopup', 'listbox');
+    button.setAttribute('aria-expanded', 'false');
+  } else {
+    button.removeAttribute('aria-haspopup');
+    button.removeAttribute('aria-expanded');
+  }
 }
 
-function selectedExpectationRule(dialog, options) {
-  return options[dialog.querySelector('[data-expectation-source]')?.value ?? 0]?.rule;
+// With one rule range the button acts at once; with several it first lists them (a macOS pull-down / iOS menu).
+function pickExpectationSource(button, options, pick) {
+  if (!options.length) return;
+  if (options.length === 1) { pick(options[0].rule); return; }
+  if (styledSelect?.button === button) { closeStyledSelect(true); return; }
+  closeStyledSelect();
+  const list = document.createElement('div');
+  list.className = 'select-options';
+  list.id = `select-${M.uid()}`;
+  list.setAttribute('role', 'listbox');
+  list.setAttribute('aria-label', '规则区间');
+  button.setAttribute('aria-controls', list.id);
+  options.forEach(({ label, rule }) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.tabIndex = -1;
+    item.setAttribute('role', 'option');
+    item.setAttribute('aria-selected', 'false');
+    item.innerHTML = `${escapeValue(label)}<span class="source-rule">${escapeValue(ruleSummary(rule))}</span>`;
+    item.addEventListener('click', event => {
+      event.stopPropagation();
+      closeStyledSelect(true);
+      pick(rule);
+    });
+    list.append(item);
+  });
+  showStyledList(button, list);
+  // These buttons sit at the trailing edge, so the list lines up with the button's right side.
+  const box = button.getBoundingClientRect();
+  list.style.left = `${Math.max(12, Math.min(box.right - list.offsetWidth, innerWidth - list.offsetWidth - 12))}px`;
+  // Nothing is preselected here: only keyboard use starts on the first item.
+  if (document.documentElement.dataset.inputMode !== 'keyboard') {
+    list.tabIndex = -1;
+    list.focus({ preventScroll: true });
+  }
 }
 
 function canCopyExpectation(rule) {
@@ -892,23 +939,16 @@ function openExpectationTemplates(parent, sources, apply) {
   const dialog = document.createElement('dialog');
   dialog.className = 'app-dialog expectation-dialog expectation-templates';
   dialog.setAttribute('aria-labelledby', 'expectation-templates-title');
-  dialog.innerHTML = `<header class="expectation-header"><h2 id="expectation-templates-title">属性期望模板</h2><button data-select-templates aria-pressed="false">多选</button></header>
-    <div class="expectation-body">
-      <div data-template-create>${expectationSourcePicker(usableSources)}
-        <div class="expectation-tool-actions"><button data-new-template>新建模板</button><button data-save-template>另存为新模板</button></div>
-      </div>
-      <div class="expectation-tool-actions" data-template-manage hidden><button data-edit-selected-template>编辑</button><button class="danger" data-delete-selected-templates>删除</button><span role="status"></span></div>
-      <div data-template-list></div>
-    </div><footer><button data-close autofocus>返回</button></footer>`;
+  dialog.innerHTML = `<header class="expectation-header"><h2 id="expectation-templates-title">属性期望模板</h2><div class="expectation-tool-actions template-tool-actions"><button data-save-template>另存为</button><button data-new-template>新建</button></div></header>
+    <div class="expectation-body"><div data-template-list></div></div><footer><button data-close autofocus>返回</button></footer>`;
   animateMobilePickerClose(dialog);
   dialog.querySelector('[data-close]').onclick = () => dialog.close();
   const body = dialog.querySelector('.expectation-body');
   const list = dialog.querySelector('[data-template-list]');
   const saveCurrent = dialog.querySelector('[data-save-template]');
-  const select = dialog.querySelector('[data-select-templates]');
-  const manage = dialog.querySelector('[data-template-manage]');
-  const selected = new Set();
-  let multiple = false;
+  const newTemplate = dialog.querySelector('[data-new-template]');
+  saveCurrent.disabled = !usableSources.length;
+  setSourceMenu(saveCurrent, usableSources.length);
   let previewRow;
   const tip = document.createElement('div');
   tip.className = 'expectation-tip template-hover-tip';
@@ -924,7 +964,7 @@ function openExpectationTemplates(parent, sources, apply) {
     tip.hidden = true;
   }
   function preview(name, rule) {
-    if (multiple || UI_MEDIA.mobileShell.matches) return;
+    if (UI_MEDIA.mobileShell.matches) return;
     hidePreview();
     previewRow = name;
     name.setAttribute('aria-describedby', tip.id);
@@ -938,39 +978,16 @@ function openExpectationTemplates(parent, sources, apply) {
   }
   body.addEventListener('scroll', hidePreview, { passive: true });
 
-  function updateSelection() {
-    const count = selected.size;
-    manage.querySelector('[data-edit-selected-template]').disabled = count !== 1;
-    manage.querySelector('[data-delete-selected-templates]').disabled = count === 0;
-    manage.querySelector('[role="status"]').textContent = `已选 ${count} 项`;
-  }
-  function selectMode(value) {
-    multiple = value;
-    selected.clear();
-    select.setAttribute('aria-pressed', String(value));
-    select.textContent = value ? '完成' : '多选';
-    dialog.querySelector('[data-template-create]').hidden = value;
-    manage.hidden = !value;
-    updateSelection();
-    draw();
-  }
-  select.onclick = () => selectMode(!multiple);
-
-  async function removeTemplates(ids, label) {
-    if (!ids.length || !await confirmRecordDeletion(`删除${label}？`)) return;
-    const removed = new Set(ids);
-    state.expectationTemplates = state.expectationTemplates.filter(template => !removed.has(template.id));
-    ids.forEach(id => selected.delete(id));
-    updateSelection();
-    draw();
-    (multiple ? select : dialog.querySelector('[data-new-template]')).focus({ preventScroll: true });
+  async function removeTemplate(template) {
+    if (!await confirmRecordDeletion(`删除模板「${template.name}」？`)) return false;
+    state.expectationTemplates = state.expectationTemplates.filter(entry => entry.id !== template.id);
+    return true;
   }
 
   function draw() {
     hidePreview();
     revealDelete(null);
     const mobile = UI_MEDIA.mobileShell.matches;
-    select.hidden = mobile;
     const templates = state.expectationTemplates || [];
     list.replaceChildren();
     if (!templates.length) {
@@ -982,11 +999,12 @@ function openExpectationTemplates(parent, sources, apply) {
     templates.forEach(template => {
       const entry = document.createElement('li');
       entry.dataset.templateRow = template.id;
+      entry.innerHTML = `<div class="template-swipe-row">${mobile ? '<button class="danger template-swipe-delete" data-delete-template hidden>删除</button>' : ''}<div class="template-row-main"><button class="expectation-template-name">${escapeValue(template.name)}</button><button data-use-template>使用</button><button data-edit-template>编辑</button></div></div>${mobile ? '<div class="expectation-template-preview" hidden></div>' : ''}`;
+      const name = entry.querySelector('.expectation-template-name');
       const use = () => closeExpectationThen(dialog, () => apply(template.rule));
-      const nameMarkup = `<button class="expectation-template-name">${multiple ? '<span class="template-check" aria-hidden="true"></span>' : ''}${escapeValue(template.name)}</button>`;
+      entry.querySelector('[data-use-template]').onclick = use;
+      entry.querySelector('[data-edit-template]').onclick = () => editTemplate(template.rule, template);
       if (mobile) {
-        entry.innerHTML = `<div class="template-swipe-row"><button class="danger template-swipe-delete" data-delete-template hidden>删除</button><div class="template-row-main">${nameMarkup}<button data-use-template>使用</button><button data-edit-template>编辑</button></div></div><div class="expectation-template-preview" hidden></div>`;
-        const name = entry.querySelector('.expectation-template-name');
         const details = entry.querySelector('.expectation-template-preview');
         name.setAttribute('aria-expanded', 'false');
         name.onclick = () => {
@@ -1000,10 +1018,14 @@ function openExpectationTemplates(parent, sources, apply) {
           if (expanded) details.innerHTML = ruleMarkup(template.rule);
           details.hidden = !expanded;
           name.setAttribute('aria-expanded', String(expanded));
+          // In a long list the last rows open below the fold; bring the whole row and its preview into view.
+          if (expanded) entry.scrollIntoView({ block: 'nearest', behavior: motionAllowed() ? 'smooth' : 'auto' });
         };
-        entry.querySelector('[data-use-template]').onclick = use;
-        entry.querySelector('[data-edit-template]').onclick = () => editTemplate(template.rule, template);
-        entry.querySelector('[data-delete-template]').onclick = () => removeTemplates([template.id], `模板「${template.name}」`);
+        entry.querySelector('[data-delete-template]').onclick = async () => {
+          if (!await removeTemplate(template)) return;
+          draw();
+          newTemplate.focus({ preventScroll: true });
+        };
         entry.addEventListener('keydown', event => {
           if (event.key === 'Delete') {
             revealDelete(entry);
@@ -1011,25 +1033,11 @@ function openExpectationTemplates(parent, sources, apply) {
           }
         });
       } else {
-        entry.innerHTML = nameMarkup;
-        const name = entry.firstElementChild;
-        if (multiple) {
-          function updateRow() {
-            name.setAttribute('aria-pressed', String(selected.has(template.id)));
-          }
-          updateRow();
-          name.onclick = () => {
-            if (!selected.delete(template.id)) selected.add(template.id);
-            updateRow();
-            updateSelection();
-          };
-        } else {
-          name.onclick = use;
-          name.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') preview(name, template.rule); });
-          name.addEventListener('pointerleave', hidePreview);
-          name.addEventListener('focus', () => { if (document.documentElement.dataset.inputMode === 'keyboard') preview(name, template.rule); });
-          name.addEventListener('blur', hidePreview);
-        }
+        name.onclick = use;
+        name.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') preview(name, template.rule); });
+        name.addEventListener('pointerleave', hidePreview);
+        name.addEventListener('focus', () => { if (document.documentElement.dataset.inputMode === 'keyboard') preview(name, template.rule); });
+        name.addEventListener('blur', hidePreview);
       }
       entries.append(entry);
     });
@@ -1051,27 +1059,20 @@ function openExpectationTemplates(parent, sources, apply) {
         state.expectationTemplates = template ? templates.map(item => item.id === id ? entry : item) : [...templates, entry];
         return true;
       },
+      onDelete: template && (() => removeTemplate(template)),
       afterSave: () => {
         draw();
-        [...list.querySelectorAll('[data-template-row]')].find(row => row.dataset.templateRow === id)?.querySelector('button.expectation-template-name')?.focus();
+        const row = [...list.querySelectorAll('[data-template-row]')].find(row => row.dataset.templateRow === id);
+        // A new template is added at the end of the list, which may be scrolled away.
+        row?.scrollIntoView({ block: 'nearest' });
+        (row?.querySelector('button.expectation-template-name') || newTemplate).focus({ preventScroll: true });
       }
     });
   }
-  function updateSaveCurrent() {
-    saveCurrent.disabled = selectedExpectationRule(dialog, usableSources) === undefined;
-  }
-  dialog.querySelector('[data-expectation-source]')?.addEventListener('change', updateSaveCurrent);
-  dialog.querySelector('[data-new-template]').onclick = () => editTemplate(null);
-  saveCurrent.onclick = () => editTemplate(selectedExpectationRule(dialog, usableSources));
-  manage.querySelector('[data-edit-selected-template]').onclick = () => {
-    const template = state.expectationTemplates.find(entry => selected.has(entry.id));
-    if (template) editTemplate(template.rule, template);
-  };
-  manage.querySelector('[data-delete-selected-templates]').onclick = () => removeTemplates([...selected], `选中的 ${selected.size} 个模板`);
-  const switchLayout = () => selectMode(false);
-  UI_MEDIA.mobileShell.addEventListener('change', switchLayout);
-  dialog.addEventListener('close', () => UI_MEDIA.mobileShell.removeEventListener('change', switchLayout), { once: true });
-  updateSaveCurrent();
+  newTemplate.onclick = () => editTemplate(null);
+  saveCurrent.onclick = () => pickExpectationSource(saveCurrent, usableSources, editTemplate);
+  UI_MEDIA.mobileShell.addEventListener('change', draw);
+  dialog.addEventListener('close', () => UI_MEDIA.mobileShell.removeEventListener('change', draw), { once: true });
   draw();
   showExpectationDialog(dialog, parent);
 }
