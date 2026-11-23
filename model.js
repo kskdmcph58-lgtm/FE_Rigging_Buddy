@@ -177,6 +177,31 @@ window.RiggingModel = (() => {
       if (row.ride !== undefined && row.ride !== null) validRide(row.ride);
     }
   }
+  /* The seed 撤回 brings back, set aside when a batch cleared its person. Its rows are checked like a live seed, but
+     the classes they unlocked are in `classes` (the list before), not in the person's unlockedClasses. */
+  function deletedSeedValid(item) {
+    const stash = item.deletedSeed;
+    if (stash === undefined) return;
+    const bad = () => { throw Error('撤回用的种子数据不正确'); };
+    const text = v => typeof v === 'string' && v.length > 0 && v.length <= 128;
+    if (!stash || typeof stash !== 'object' || Array.isArray(stash) || !text(stash.batch) || !text(stash.at) || !Number.isSafeInteger(stash.order) || stash.order < 0
+      || (stash.initialLevel !== null && (!Number.isSafeInteger(stash.initialLevel) || stash.initialLevel < 1 || stash.initialLevel > 99))
+      || !Array.isArray(stash.records) || stash.records.length > limits.records || !stash.records.every(text) || new Set(stash.records).size !== stash.records.length
+      || stash.seed === undefined) bad();
+    if (stash.classes !== undefined) {
+      if (!Array.isArray(stash.classes)) bad();
+      stash.classes.forEach((_, i) => renameClass(stash.classes, i));
+      if (new Set(stash.classes).size !== stash.classes.length || stash.classes.some(name => !window.PROFESSIONS.names.includes(name) || window.PROFESSIONS.base.includes(name))) bad();
+    }
+    const owners = new Set();
+    seedValid(stash.seed, row => {
+      if (row.skipUnlockedProfession === undefined) return;
+      renameClass(row, 'skipUnlockedProfession');
+      const name = row.skipUnlockedProfession;
+      if (row.status !== 'skipped' || !stash.classes?.includes(name) || owners.has(name)) throw Error('跳过解锁记录不正确');
+      owners.add(name);
+    });
+  }
   // Saved data keeps the class name it was written with, so older spellings are corrected on the way in.
   const renamedClasses = Object.freeze({ '骑甲驼兵': '骑甲鸵兵' });
   function renameClass(object, key) {
@@ -225,6 +250,7 @@ window.RiggingModel = (() => {
         automaticUnlocks.add(name);
       };
       ids.add(item.id); rangesValid(item.expectations); seedValid(item.seed, validateSkipUnlock);
+      deletedSeedValid(item);
       if (item.deleted !== undefined && typeof item.deleted !== 'boolean') throw Error('删除标记不正确');
       let last = 0, legacyLevel = (item.initialLevel ?? 0) + 1;
       for (const r of item.records) {
@@ -300,6 +326,8 @@ window.RiggingModel = (() => {
       item.deleted = item.deleted === true;
       if (item.initialProfession === undefined) item.initialProfession = null;
       item.expectations ||= [];
+      // A live seed and a saved one cannot both exist; the live one wins.
+      if (item.seed && item.deletedSeed) delete item.deletedSeed;
       for (const r of item.records) {
         r.status ||= 'normal';
         r.deleted = r.deleted === true;

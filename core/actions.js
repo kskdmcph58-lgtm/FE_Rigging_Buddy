@@ -205,17 +205,84 @@ window.RiggingActions = (() => {
     }
   }
 
-  function softDelete(state, objects) {
-    const batch = model.uid(), at = new Date().toISOString();
-    state.deletionCounter = state.roster.flatMap(i => [i, ...i.records]).reduce((max, o) => Math.max(max, Number(o.deletionOrder) || 0), Number(state.deletionCounter) || 0) + 1;
-    objects.filter(o => !o.deleted).forEach(o => { o.deleted = true; o.deletedAt = at; o.deletionBatch = batch; o.deletionOrder = state.deletionCounter; });
+  /* Forecast gone for good: its automatic unlocks are taken back, then the seed is dropped. */
+  function dropSeed(item) {
+    if (!item.seed) return;
+    for (const row of Object.values(item.seed.rows || {})) revertSkipUnlock(item, row);
+    delete item.seed;
   }
 
+  /* A deleted batch also holds the seed its people had: item.deletedSeed {batch, order, at, initialLevel, records, seed, classes?}
+     (order and at are the batch's own, so the undo finds batches that deleted nothing else). `records` is the ids of
+     the live records then, `classes` the person's unlockedClasses before, written only when a seed row had unlocked a
+     class; undo puts both back with the seed. */
+  function stashSeed(item, batch, order, at) {
+    if (!item.seed) return;
+    const stash = { batch, order, at, initialLevel: item.initialLevel, records: model.live(item).map(r => r.id), seed: model.copy(item.seed) };
+    if (Object.values(stash.seed.rows || {}).some(row => row.skipUnlockedProfession)) stash.classes = [...(item.unlockedClasses || [])];
+    dropSeed(item);
+    item.deletedSeed = stash;
+  }
+
+  /* Restoring a seed must not clash with anything done since. Once its batch is undone the person has to be as
+     the seed left them: no seed, the same starting level, exactly the same live records. Anything else is stale. */
+  function seedRestorable(item) {
+    const stash = item.deletedSeed, ids = item.records.filter(r => !r.deleted || r.deletionBatch === stash.batch).map(r => r.id);
+    return !item.seed && item.initialLevel === stash.initialLevel && ids.length === stash.records.length && ids.every((id, i) => id === stash.records[i]);
+  }
+
+  function restoreSeed(item) {
+    const { seed, classes } = item.deletedSeed;
+    delete item.deletedSeed;
+    if (classes) {
+      const owned = Object.values(seed.rows || {}).filter(row => row.skipUnlockedProfession);
+      const taken = new Set(owned.map(row => row.skipUnlockedProfession)), now = item.unlockedClasses || [], before = classes.filter(name => !taken.has(name));
+      // Nothing touched the list since: put it back exactly, order included.
+      if (now.length === before.length && now.every((name, i) => name === before[i])) {
+        if (classes.length) item.unlockedClasses = [...classes];
+      } else {
+        for (const row of owned) {
+          // Someone unlocked it meanwhile: the class stays, but this row did not make it, so it must not take it back.
+          if (!setClassUnlocked(item, row.skipUnlockedProfession, true) || item.records.some(record => record.skipUnlockedProfession === row.skipUnlockedProfession)) delete row.skipUnlockedProfession;
+        }
+      }
+    }
+    item.seed = seed;
+  }
+
+  /* One deletion batch: the objects are marked deleted, and the seeds of `seedItems` are set aside with them.
+     Returns the batch id, or null when there was nothing to delete. */
+  function softDelete(state, objects, seedItems = []) {
+    const marked = objects.filter(o => !o.deleted), stashed = seedItems.filter(item => item.seed);
+    if (!marked.length && !stashed.length) return null;
+    const batch = model.uid(), at = new Date().toISOString();
+    state.deletionCounter = state.roster.flatMap(i => [i, ...i.records, ...(i.deletedSeed ? [i.deletedSeed] : [])]).reduce((max, o) => Math.max(max, Number(o.deletionOrder ?? o.order) || 0), Number(state.deletionCounter) || 0) + 1;
+    // The seed is stashed first: the live records it remembers are those before this batch takes them.
+    stashed.forEach(item => stashSeed(item, batch, state.deletionCounter, at));
+    marked.forEach(o => { o.deleted = true; o.deletedAt = at; o.deletionBatch = batch; o.deletionOrder = state.deletionCounter; });
+    return batch;
+  }
+
+  /* 清空记录: the people's live records and their seed go in one batch, so one undo brings all of it back.
+     With people set, the people themselves are deleted; with records false only they are (清空全部 keeps the
+     records of a deleted person, as a person added again gets them back). */
+  function clearRecords(state, items, { records = true, people = false } = {}) {
+    return softDelete(state, items.flatMap(item => [...(people ? [item] : []), ...(records ? model.live(item) : [])]), items);
+  }
+
+  // Whether 撤回 has anything to bring back. A saved seed that could no longer fit does not count.
+  const canUndoDelete = items => items.some(item => item.deleted || item.records.some(record => record.deleted) || (item.deletedSeed && seedRestorable(item)));
+
   function undoDelete(items) {
+    // A saved seed that can no longer come back is dropped first, so it never counts as the latest batch.
+    for (const item of items) if (item.deletedSeed && !seedRestorable(item)) delete item.deletedSeed;
     const deleted = items.flatMap(item => [item, ...item.records]).filter(o => o.deleted);
-    const latest = deleted.reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
+    const stashed = items.filter(item => item.deletedSeed).map(item => ({ deletionBatch: item.deletedSeed.batch, deletionOrder: item.deletedSeed.order, deletedAt: item.deletedSeed.at }));
+    const latest = [...deleted, ...stashed].reduce((best, o) => !best || (o.deletionOrder || 0) > (best.deletionOrder || 0) || ((o.deletionOrder || 0) === (best.deletionOrder || 0) && (o.deletedAt || '') >= (best.deletedAt || '')) ? o : best, null);
     if (!latest) return false;
     const batch = latest.deletionBatch;
+    // The seed first: whether it fits depends on the records as they are now, before this batch brings its own back.
+    items.filter(item => batch && item.deletedSeed?.batch === batch).forEach(restoreSeed);
     deleted.filter(o => batch ? o.deletionBatch === batch : o === latest).forEach(o => { o.deleted = false; delete o.deletedAt; delete o.deletionBatch; });
     return true;
   }
@@ -282,5 +349,5 @@ window.RiggingActions = (() => {
 
   return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, revertSkipUnlock, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass, clearForecastClassOverrides,
     draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
-    softDelete, undoDelete, planMove, setExpectations };
+    softDelete, clearRecords, dropSeed, canUndoDelete, undoDelete, planMove, setExpectations };
 })();

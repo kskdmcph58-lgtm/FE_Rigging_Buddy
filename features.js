@@ -445,9 +445,15 @@ window.addEventListener('blur', ()=>finishMarquee(true));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&marquee){finishMarquee(true);e.stopImmediatePropagation();}},true);
 window.addEventListener('resize',()=>{if(typeof page!=='undefined'&&['levels','summary'].includes(page))refreshRowSelection();});
 
-function softDelete(objects) {
-  window.RiggingActions.softDelete(state, objects);
-  queueMicrotask(() => showUndoNotice(objects.length));
+function softDelete(objects, seedItems = []) {
+  window.RiggingActions.softDelete(state, objects, seedItems);
+  queueMicrotask(() => showUndoNotice(objects.length || seedItems.length));
+}
+// 清空记录: the people's records and seed in one batch, so a single 撤回 brings both back.
+function clearRecords(items, options) {
+  const count = items.reduce((n, item) => n + (options?.records === false ? 0 : M.live(item).length), 0) + (options?.people ? items.length : 0) || items.length;
+  window.RiggingActions.clearRecords(state, items, options);
+  queueMicrotask(() => showUndoNotice(count));
 }
 function showUndoNotice(count) {
   notify('');
@@ -1194,6 +1200,6 @@ document.addEventListener('keydown',e=>{
   if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey||e.isComposing||typeof page==='undefined')return;
   if(document.querySelector('dialog[open]')||e.target.closest('input,textarea,select,[contenteditable]'))return;
   const key=e.key.toLowerCase();
-  if(key==='z'&&['summary','select'].includes(page)&&storyRoster().some(item=>item.deleted||item.records.some(record=>record.deleted))){e.preventDefault();undoDelete();}
+  if(key==='z'&&['summary','select'].includes(page)&&window.RiggingActions.canUndoDelete(storyRoster())){e.preventDefault();undoDelete();}
   else if(key==='a'&&multiSelectMode&&['summary','levels'].includes(page)){e.preventDefault();rowIds().forEach(id=>rowSelection.add(id));refreshRowSelection();}
 });

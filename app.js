@@ -976,10 +976,10 @@ app.addEventListener('click', async e => {
   if (action === 'delete-record') { deleteRecord(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
-  if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); visibleRoster().forEach(window.RiggingSeed.clearForecast); }
-  if (action === 'reset') { softDelete(visibleRoster()); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
+  if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); }
+  if (action === 'reset') { clearRecords(visibleRoster(), { records: false, people: true }); state.selection = []; state.initialLevels = {}; state.draftExpectations = {}; state.draftProfessions = {}; state.draftRides = {}; state.draftStoryClasses = {}; state.rideMemory = {}; editingCharacters.clear(); activeRecord = null; query = ''; clearDrag(); notify(''); page = 'select'; render(); window.scrollTo(0, 0); }
   if (action === 'reset-list') {
-    softDelete(visibleRoster().flatMap(item => M.live(item)));
+    clearRecords(visibleRoster());
     editingCharacters.clear(); activeRecord = null;
     rememberListPosition(); animateListChange(returnToSummary);
   }
@@ -1000,7 +1000,7 @@ app.addEventListener('click', async e => {
       if (!existing || classAvailable(item.initialProfession) || Object.hasOwn(state.draftProfessions || {}, id)) item.initialProfession = setupProfession(id);
       rememberRides(id, state.draftRides?.[id]);
       if (existing && Object.hasOwn(state.draftProfessions || {}, id)) item.pendingProfession = item.initialProfession;
-      item.deleted = false; delete item.deletedAt; delete item.deletionBatch;
+      item.deleted = false; delete item.deletedAt; delete item.deletionBatch; delete item.deletedSeed;
       if (state.draftExpectations && Object.hasOwn(state.draftExpectations, id)) M.setRule(item, M.nextSeq(item), state.draftExpectations[id], false);
       if (!existing) state.roster.push(item);
     });

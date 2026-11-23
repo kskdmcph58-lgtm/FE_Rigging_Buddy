@@ -314,11 +314,7 @@ window.RiggingSeed = (() => {
     prune(item, index);
   }
 
-  function clearForecast(item) {
-    if (!item.seed) return;
-    for (const row of Object.values(item.seed.rows || {})) actions.revertSkipUnlock(item, row);
-    delete item.seed;
-  }
+  const clearForecast = actions.dropSeed;
 
   function rowDraft(state, item, c, index) {
     const row = queueRows(state, item, c, index + 1)[index];
@@ -610,6 +606,8 @@ window.RiggingSeed = (() => {
     }
     for (const n of Object.keys(item.seed.rows || {})) prune(item, Number(n));
     for (const record of item.records) { delete record.corrected; delete record.seedInput; delete record.anchor; }
+    // A seed found now replaces whatever 撤回 could have brought back.
+    delete item.deletedSeed;
     return { applied: true };
   }
 
