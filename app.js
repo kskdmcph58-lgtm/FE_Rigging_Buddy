@@ -883,6 +883,18 @@ app.addEventListener('click', async e => {
   if (b.dataset.action === 'select-all-rows') { rowIds().forEach(id => rowSelection.add(id)); refreshRowSelection(); return; }
   if (b.dataset.action === 'clear-row-selection') { rowSelection.clear(); selectionAnchor = null; refreshRowSelection(); return; }
   if (b.dataset.action === 'invert-rows') { rowIds().forEach(id => rowSelection.has(id) ? rowSelection.delete(id) : rowSelection.add(id)); refreshRowSelection(); return; }
+  if (b.dataset.action === 'clear-selected-records') {
+    const items = visibleRoster().filter(item => rowSelection.has(item.id));
+    if (!items.some(item => M.live(item).length || item.seed)) return;
+    const question = items.length === 1 ? `是否清空 ${char(items[0].id).name} 的升级记录？` : `是否清空所选 ${items.length} 位人物的升级记录？`;
+    if (!await confirmRecordDeletion(question, '清空', `自定义属性期望将保留。${items.some(item => item.seed) ? '已反推的种子和预测会一并清除。' : ''}`)) return;
+    // Only an unfinished record of one of these people goes; another person's draft stays.
+    if (items.some(item => item.id === heldRecordDraft?.draft?.id)) clearRecordDraft();
+    items.forEach(item => { seedMessages.delete(item.id); editingCharacters.delete(item.id); });
+    clearRecords(items);
+    rowSelection.clear(); selectionAnchor = null;
+    rememberListPosition(); animateListChange(returnToSummary); return;
+  }
   if (b.dataset.action === 'delete-selected-characters') {
     if (page === 'levels') {
       const ids = state.selection.filter(id => rowSelection.has(id));

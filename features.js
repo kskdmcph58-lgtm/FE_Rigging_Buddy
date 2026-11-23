@@ -170,7 +170,7 @@ function clearRowSelection() { rowSelection.clear(); selectionAnchor = null; mul
 function rowIds() { return page === 'levels' ? state.selection : visibleRoster().map(item => item.id); }
 function dragGrip() { return '<svg viewBox="0 0 16 24" width="16" height="24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="11" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="11" cy="18" r="2"/></svg>'; }
 function selectionToolbar(withToggle = true) {
-  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span><button class="danger" data-action="delete-selected-characters" hidden>删除人物</button><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置兵种</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
+  return `<div class="selection-toolbar-anchor"><div class="selection-toolbar-backdrop" aria-hidden="true"></div><div class="selection-toolbar">${withToggle ? '<button data-action="multi-select" aria-pressed="false">多选</button>' : ''}<span class="selection-count" aria-live="polite"></span>${page === 'summary' ? '<button class="danger" data-action="clear-selected-records" hidden>清空记录</button>' : ''}<button class="danger" data-action="delete-selected-characters" hidden>删除人物</button><div class="selection-actions" hidden><button data-action="select-all-rows">全选</button><button data-action="invert-rows">反选</button><button data-action="clear-row-selection">取消选择</button>${page === 'levels' ? '<button data-action="batch-profession" aria-haspopup="dialog">设置兵种</button>' : ''}<button data-action="batch-expectation">设置属性期望</button></div></div></div>`;
 }
 function layoutCompactSelectionToolbar(toolbar) {
   if (!compactSelectionToolbar.matches) { toolbar.classList.remove('selection-single-row'); return; }
@@ -178,16 +178,17 @@ function layoutCompactSelectionToolbar(toolbar) {
   const actions = toolbar.querySelector('.selection-actions');
   const count = toolbar.querySelector('.selection-count');
   const remove = toolbar.querySelector('[data-action="delete-selected-characters"]');
+  const clear = toolbar.querySelector('[data-action="clear-selected-records"]');
   if (!toggle || !actions || !count) return;
   const buttons = [...actions.querySelectorAll('button')];
   const text = document.createRange(); text.selectNodeContents(count);
   const actionWidth = buttons.reduce((width, button) => width + button.offsetWidth, 0)
     + Math.max(0, buttons.length - 1) * (parseFloat(getComputedStyle(actions).columnGap) || 0);
   const required = toggle.offsetWidth + actionWidth + text.getBoundingClientRect().width
-    + (remove && !remove.hidden ? remove.offsetWidth + 8 : 0) + 16;
+    + [remove, clear].reduce((width, button) => width + (button && !button.hidden ? button.offsetWidth + 8 : 0), 0) + 16;
   const single = !actions.hidden && toolbar.clientWidth >= required + 2;
   toolbar.classList.toggle('selection-single-row', single);
-  const order = single ? [toggle, actions, count, remove] : [toggle, count, remove, actions];
+  const order = single ? [toggle, actions, count, clear, remove] : [toggle, count, clear, remove, actions];
   order.filter(Boolean).forEach((node, index) => {
     if (toolbar.children[index] !== node) toolbar.insertBefore(node, toolbar.children[index] || null);
   });
@@ -283,20 +284,28 @@ function refreshRowSelection() {
   app.querySelectorAll('[data-action="delete-selected-characters"]').forEach(b => {
     b.disabled = !rowSelection.size; b.hidden = !multiSelectMode;
   });
+  // 清空记录 works on records and seed, so it needs a selected person who has either.
+  const clearable = visibleRoster().some(item => rowSelection.has(item.id) && (M.live(item).length || item.seed));
+  app.querySelectorAll('[data-action="clear-selected-records"]').forEach(b => {
+    b.disabled = !clearable; b.hidden = !multiSelectMode;
+  });
   // Match visual and keyboard order while keeping the desktop toggle anchored.
   app.querySelectorAll('.selection-toolbar').forEach(toolbar => {
     const toggle = toolbar.querySelector('[data-action="multi-select"]');
     const actions = toolbar.querySelector('.selection-actions');
     const count = toolbar.querySelector('.selection-count');
     const remove = toolbar.querySelector('[data-action="delete-selected-characters"]');
+    const clear = toolbar.querySelector('[data-action="clear-selected-records"]');
     if (!toggle || !actions) return;
     if (!compactSelectionToolbar.matches) {
       toolbar.prepend(actions);
       if (remove) toolbar.insertBefore(remove, count);
+      if (clear) toolbar.insertBefore(clear, remove || count);
       toolbar.append(toggle);
     } else {
       toolbar.prepend(toggle); toolbar.insertBefore(count, toggle.nextSibling);
       if (remove) toolbar.insertBefore(remove, count.nextSibling);
+      if (clear) toolbar.insertBefore(clear, remove || count.nextSibling);
       toolbar.append(actions);
     }
   });

@@ -4268,6 +4268,23 @@ html:not([data-input-mode="keyboard"]) .setup-level-dialog input:focus-visible {
   .selection-toolbar:has(>[data-action="delete-selected-characters"])>[data-action="multi-select"] {
     grid-column: 4;
   }
+  /* 清空记录 (summary only) sits before 删除人物; only while shown, so the toolbar without it is untouched. */
+  .selection-toolbar:has(>[data-action="clear-selected-records"]:not([hidden])) {
+    grid-template-columns: minmax(0,1fr) auto auto auto auto;
+  }
+  .selection-toolbar>[data-action="clear-selected-records"] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .selection-toolbar:has(>[data-action="clear-selected-records"]:not([hidden]))>[data-action="delete-selected-characters"] {
+    grid-column: 3;
+  }
+  .selection-toolbar:has(>[data-action="clear-selected-records"]:not([hidden]))>.selection-count {
+    grid-column: 4;
+  }
+  .selection-toolbar:has(>[data-action="clear-selected-records"]:not([hidden]))>[data-action="multi-select"] {
+    grid-column: 5;
+  }
   .selection-toolbar .selection-count:empty {
     display: none;
   }

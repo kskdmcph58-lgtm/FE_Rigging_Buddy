@@ -122,6 +122,8 @@
   #app.summary-page.multi-select-mode .summary-top [data-action="clear-row-selection"] { grid-row: 2; grid-column: 5 / 7; }
   #app.summary-page.multi-select-mode .summary-top [data-action="batch-expectation"] { grid-row: 3; grid-column: 1 / 4; }
   #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-row: 3; grid-column: 4 / 7; }
+  /* 清空记录 sits under 删除人物, so the two destructive actions line up and nothing above moves. */
+  #app.summary-page.multi-select-mode .summary-top [data-action="clear-selected-records"] { grid-row: 4; grid-column: 4 / 7; }
   /* Tablets: one line — count, the five actions, then 完成多选 at the trailing gutter. */
   @media (width > 600px) {
     #app.summary-page.multi-select-mode .summary-top .selection-toolbar {
@@ -135,6 +137,15 @@
     #app.summary-page.multi-select-mode .summary-top [data-action="batch-expectation"] { grid-row: 1; grid-column: 5; }
     #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-row: 1; grid-column: 6; }
     #app.summary-page.multi-select-mode .summary-top .selection-toolbar button[data-action="multi-select"] { grid-row: 1; grid-column: 8; }
+    /* 清空记录 as long as 删除人物 has the same width, so it sits right under it and the line above stays as it was. */
+    #app.summary-page.multi-select-mode .summary-top [data-action="clear-selected-records"] { grid-row: 2; grid-column: 6; }
+    /* Once the line has room for one more button, it joins it. */
+    @media (width >= 740px) {
+      #app.summary-page.multi-select-mode .summary-top .selection-toolbar { grid-template-columns: max-content repeat(6, max-content) minmax(0, 1fr) max-content; }
+      #app.summary-page.multi-select-mode .summary-top [data-action="clear-selected-records"] { grid-row: 1; grid-column: 6; }
+      #app.summary-page.multi-select-mode .summary-top [data-action="delete-selected-characters"] { grid-column: 7; }
+      #app.summary-page.multi-select-mode .summary-top .selection-toolbar button[data-action="multi-select"] { grid-column: 9; }
+    }
   }
 
   /* ---------- Display settings: a panel hanging from the navigation bar ----------
