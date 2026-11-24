@@ -104,6 +104,23 @@ window.RiggingSeed = (() => {
     const cap = recommendCap(state, row.part3 === true), unlockedOnly = recommendUnlockedOnly(state, item);
     return betterChoices(state, item, c, row).filter(choice => classTier(choice.profession) <= cap && (!unlockedOnly || actions.classUnlocked(item, choice.profession)));
   }
+  /* Whether a forecast card shows the 推荐 mark, kept per row and per everything the answer reads (rowChoices'
+     key, the row's points and rating, its rule, the cap and the scope). rowChoices keeps 600 lists, fewer than a
+     large roster's forecast rows, and a redraw visits them in the same order, so on its own it never hit there. */
+  const markCache = new Map();
+  function hasRecommendation(state, item, c, row) {
+    if (!ready() || row.status !== 'normal' || row.corrected) return false;
+    const unlockedOnly = recommendUnlockedOnly(state, item);
+    const key = [personId(c), row.seed, row.level, row.part3 ? 1 : 0, !row.part3 && state.route === 'other' ? 1 : 0,
+      row.stats.length + row.plus2.length, row.happy === true ? 1 : 0, recommendCap(state, row.part3 === true),
+      unlockedOnly ? item.unlockedClasses.join(',') : '', JSON.stringify(model.ruleAt(item, model.nextSeq(item) + row.index) ?? null)].join('|');
+    let marked = markCache.get(key);
+    if (marked !== undefined) return marked;
+    marked = recommendedChoices(state, item, c, row).length > 0;
+    if (markCache.size >= 20000) markCache.delete(markCache.keys().next().value);
+    markCache.set(key, marked);
+    return marked;
+  }
 
   /* 考试推荐: which classes beat the forecast most, to take their exam first. The rows are those after the
      newest 已升级 (or all of them) up to the level cap, skipped rows left out; the user may narrow them to a
@@ -655,6 +672,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, toggleHandDrawnMark, clearForecast, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, growthLevels, forecastLevels, growthTotals, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, toggleHandDrawnMark, clearForecast, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, hasRecommendation, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, growthLevels, forecastLevels, growthTotals, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

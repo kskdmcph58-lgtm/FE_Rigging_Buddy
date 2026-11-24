@@ -158,8 +158,9 @@ function renderSummary() {
   let boardHappy = visibleRoster().reduce((n, r) => n + M.live(r).filter(x => x.happy && x.status !== 'skipped' && !x.ratingPending).length, 0);
   const canUndo = window.RiggingActions.canUndoDelete(storyRoster());
   const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.status === 'skipped'));
-  const markup =
-    `<div class="summary-top"><div class="metrics"><div><b></b><span>人物</span></div><div><b></b><span>升级记录</span></div><div><b></b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${slotSettingsName()}${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button>${slotMenu()}<details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total || visibleRoster().some(item => item.seed) ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+  const top =
+    `<div class="summary-top"><div class="metrics"><div><b></b><span>人物</span></div><div><b></b><span>升级记录</span></div><div><b></b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${slotSettingsName()}${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button>${slotMenu()}<details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total || visibleRoster().some(item => item.seed) ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div>`;
+  const journals = visibleRoster().map(item => {
       const c = char(item.id);
       const phone = UI_MEDIA.mobileShell.matches;
       const editing = editingCharacters.has(c.id);
@@ -172,19 +173,61 @@ function renderSummary() {
       const canSeed = window.RiggingSeed.eligible(item, c);
       const startLabel = !canSeed ? '记录升级' : M.live(item).length ? '继续反推' : '开始反推';
       const mainAction = item.seed ? (window.RiggingSeed.hasCorrection(item) ? `<button class="primary" data-reseed="${c.id}">重新反推</button>` : `<button class="primary" data-exam="${c.id}">考试推荐</button>`) : `<button class="primary" data-start="${c.id}">${startLabel}</button>`;
-      return `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
+      return { id: c.id, html: `<article class="journal panel ${compact ? 'has-record-rail' : ''} ${expandedJournals.has(c.id) ? 'records-expanded' : ''}" draggable="false" data-sort-id="${c.id}" tabindex="0" aria-label="${c.name}，拖动排序，或按 Alt 加上下方向键">
         <div class="journal-head"><span class="drag-grip" aria-hidden="true">${dragGrip()}</span><span class="journal-portrait">${(!phone && portrait(c, 'list')) || portrait(c, 'narrow', '(width < 1750px) 178px, 116px')}${seedStatusMarkup(item, c)}</span><div class="journal-info"><h2>${c.name}</h2><p class="initial-level ${editing ? 'can-edit' : ''}" data-initial-level="${c.id}" ${editing ? 'tabindex="0" role="button"' : ''}>初始等级 ${item.initialLevel === null ? '暂无' : `LV ${item.initialLevel}`}${pencilIcon('initial-pencil')}</p>${expectationLink(item, editing)}</div></div>
         <div class="journal-actions">${mainAction}<button data-toggle-edit="${c.id}" aria-pressed="${editing}">${editing ? '完成编辑' : '编辑'}</button>${compact ? `<button class="expand-records" data-expand-records="${c.id}" aria-expanded="${expandedJournals.has(c.id)}">${expandedJournals.has(c.id) ? '收起' : '展开'}</button>` : ''}</div>
-        <div class="records">${M.live(item).length || queue.length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.status === 'skipped' ? '已跳过，' : r.status === 'upgraded' ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.status === 'skipped' ? '标记已升级' : r.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.status === 'skipped' ? 'skipped' : r.status === 'upgraded' ? 'upgraded' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, displayLevels[recordIndex]), shownClass(item, r).profession) : `<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${summaryClassMarkup(shownClass(item, r).profession, c.id, recordIndex, false)}${cardRatingMarkup(r.ratingPending ? null : r.happy, c.id, recordIndex, false)}</div>`}<strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${phone ? mobileCardSide(shownClass(item, r).profession, shownClass(item, r).ride, r.ratingPending ? null : r.happy, c.id, recordIndex, false, false) : ''}${r.status !== 'normal' ? `<span class="record-overlay ${r.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${r.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') + queue.map(row => `<button data-queue="${c.id}" data-index="${row.index}" data-growth="+${row.stats.length + row.plus2.length}" aria-label="${c.name} ${row.corrected ? '已修正' : '预测'} ${levelLabel(item, row.displayLevel)}，${row.status === 'skipped' ? '已跳过，' : row.status === 'upgraded' ? '已升级，' : ''}提升 ${row.stats.length} 点：${row.stats.join('、') || '无'}。考试至少 ${row.examMinimum}% 才能合格。${editing ? '修正这一条' : row.status === 'skipped' ? '标记已升级' : row.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip queue-row ${row.happy === null ? 'rating-pending' : row.happy ? 'happy' : 'angry'} ${row.status === 'skipped' ? 'skipped' : row.status === 'upgraded' ? 'upgraded' : ''} ${row.corrected ? 'corrected' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, row.displayLevel), row.profession) : `<div><b>${levelLabel(item, row.displayLevel)}</b>${summaryClassMarkup(row.profession, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0)}${cardRatingMarkup(row.happy, c.id, row.index, true)}</div>`}<strong>+${row.stats.length + row.plus2.length}</strong><p>${recordStats(row.stats)}</p>${queueExamMarkup(row)}${phone ? mobileCardSide(row.profession, row.ride, row.happy, c.id, row.index, true, window.RiggingSeed.recommendedChoices(state, item, c, row).length > 0) : ''}${row.handDrawnMark && row.status !== 'upgraded' ? HAND_DRAWN_MARK : ''}${row.status !== 'normal' ? `<span class="record-overlay ${row.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${row.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>`;
-    }).join('') || '<div class="panel empty">添加人物</div>'}</div>`;
+        <div class="records">${M.live(item).length || queue.length ? item.records.map((r, recordIndex) => r.deleted ? '' : `<button data-edit="${c.id}" data-index="${recordIndex}" data-growth="+${r.stats.length}" aria-label="${c.name} ${levelLabel(item, displayLevels[recordIndex])}，${r.status === 'skipped' ? '已跳过，' : r.status === 'upgraded' ? '已升级，' : ''}${r.ratingPending ? '待评价' : r.happy ? '满意' : '不满意'}，提升 ${r.stats.length} 点：${r.stats.join('、') || '无'}。${editing ? '编辑记录' : r.status === 'skipped' ? '标记已升级' : r.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip ${r.ratingPending ? 'rating-pending' : r.happy ? 'happy' : 'angry'} ${r.status === 'skipped' ? 'skipped' : r.status === 'upgraded' ? 'upgraded' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, displayLevels[recordIndex]), shownClass(item, r).profession) : `<div><b>${levelLabel(item, displayLevels[recordIndex])}</b>${summaryClassMarkup(shownClass(item, r).profession, c.id, recordIndex, false)}${cardRatingMarkup(r.ratingPending ? null : r.happy, c.id, recordIndex, false)}</div>`}<strong>+${r.stats.length}</strong><p>${recordStats(r.stats)}</p>${phone ? mobileCardSide(shownClass(item, r).profession, shownClass(item, r).ride, r.ratingPending ? null : r.happy, c.id, recordIndex, false, false) : ''}${r.status !== 'normal' ? `<span class="record-overlay ${r.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${r.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') + queue.map(row => `<button data-queue="${c.id}" data-index="${row.index}" data-growth="+${row.stats.length + row.plus2.length}" aria-label="${c.name} ${row.corrected ? '已修正' : '预测'} ${levelLabel(item, row.displayLevel)}，${row.status === 'skipped' ? '已跳过，' : row.status === 'upgraded' ? '已升级，' : ''}提升 ${row.stats.length} 点：${row.stats.join('、') || '无'}。考试至少 ${row.examMinimum}% 才能合格。${editing ? '修正这一条' : row.status === 'skipped' ? '标记已升级' : row.status === 'upgraded' ? '恢复原样' : '标记已跳过'}" class="record-chip queue-row ${row.happy === null ? 'rating-pending' : row.happy ? 'happy' : 'angry'} ${row.status === 'skipped' ? 'skipped' : row.status === 'upgraded' ? 'upgraded' : ''} ${row.corrected ? 'corrected' : ''} ${editing ? 'editable' : ''} ">${editing ? pencilIcon('edit-pencil') : ''}${phone ? mobileCardHead(levelLabel(item, row.displayLevel), row.profession) : `<div><b>${levelLabel(item, row.displayLevel)}</b>${summaryClassMarkup(row.profession, c.id, row.index, true, window.RiggingSeed.hasRecommendation(state, item, c, row))}${cardRatingMarkup(row.happy, c.id, row.index, true)}</div>`}<strong>+${row.stats.length + row.plus2.length}</strong><p>${recordStats(row.stats)}</p>${queueExamMarkup(row)}${phone ? mobileCardSide(row.profession, row.ride, row.happy, c.id, row.index, true, window.RiggingSeed.hasRecommendation(state, item, c, row)) : ''}${row.handDrawnMark && row.status !== 'upgraded' ? HAND_DRAWN_MARK : ''}${row.status !== 'normal' ? `<span class="record-overlay ${row.status === 'skipped' ? 'skip-overlay' : 'upgrade-overlay'}">${row.status === 'skipped' ? '已跳过' : '已升级'}</span>` : ''}</button>`).join('') : '<p class="empty">暂无记录</p>'}</div></article>` };
+    });
+  const board = list => `<div class="journals">${list.join('') || '<div class="panel empty">添加人物</div>'}</div>`;
   if (app.querySelector('.summary-top')) {
+    // A person whose markup is what their column already shows, untouched since, keeps their column as it is:
+    // a stand-in tells syncChildren to only put it in place, so one changed card does not walk every column.
+    const shown = takeJournalChanges();
     const template = document.createElement('template');
-    template.innerHTML = markup;
+    template.innerHTML = top + board(journals.map(({ id, html }) => shown.has(id) && journalMarkup.get(id) === html ? `<article data-sort-id="${id}" data-same></article>` : html));
     syncChildren(app, template.content);
-  } else app.innerHTML = markup;
+  } else app.innerHTML = top + board(journals.map(journal => journal.html));
+  journalMarkup = new Map(journals.map(({ id, html }) => [id, html]));
   // While the font gate hides the page (startup) a change cannot be seen, so it swaps without rolling.
   setMetrics([visibleRoster().length, boardTotal, boardHappy], document.documentElement.classList.contains('fonts-loading'));
   refreshRowSelection();
+  settleJournalChanges();
+}
+/* Which step 3 columns may be kept as they are on the next redraw: the markup each was last drawn from, and the
+   columns something else has written to since (an inline edit, a selection mark, a fade, a rail size). Changes a
+   redraw makes itself, and those of the decorations it runs right after (refreshRowSelection), are put again by
+   every redraw, so settleJournalChanges drops them; anything later marks its column for a full sync, as before. */
+let journalMarkup = new Map();
+const changedJournals = new Set();
+let journalsUnknown = true;
+function noteJournalChanges(records) {
+  for (const record of records) {
+    const target = record.target.nodeType === 1 ? record.target : record.target.parentNode;
+    if (!target?.isConnected) { journalsUnknown = true; return; }
+    const journal = target.closest('.journal');
+    if (journal) changedJournals.add(journal.dataset.sortId);
+  }
+}
+// Started on the first redraw: #app is defined after this file runs.
+let journalWatch = null;
+// The columns on the page that can be kept: drawn from known markup and not written to since.
+function takeJournalChanges() {
+  if (!journalWatch) {
+    journalWatch = new MutationObserver(noteJournalChanges);
+    journalWatch.observe(app, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  noteJournalChanges(journalWatch.takeRecords());
+  const keep = new Set();
+  if (!journalsUnknown) for (const journal of app.querySelectorAll(':scope>.journals>.journal[data-sort-id]')) {
+    if (!changedJournals.has(journal.dataset.sortId)) keep.add(journal.dataset.sortId);
+  }
+  return keep;
+}
+function settleJournalChanges() {
+  if (!journalWatch) takeJournalChanges();
+  journalWatch.takeRecords();
+  changedJournals.clear();
+  journalsUnknown = false;
 }
 /* The step 3 counters. Each number is written in place (the summary is never redrawn for it) and, when it changes
    while the page is shown, its changed digits roll like Apple's numericText: an increase brings the new digit up
@@ -317,6 +360,12 @@ function syncChildren(current, desired) {
       dropped.remove();
     }
     let node = id ? keyed.get(id) : cursor;
+    // renderSummary's stand-in for a column left as it is (see takeJournalChanges).
+    if (node && next.nodeType === 1 && next.hasAttribute('data-same')) {
+      if (node !== cursor) current.insertBefore(node, cursor);
+      cursor = node.nextSibling;
+      continue;
+    }
     if (!node || node.nodeType !== next.nodeType || node.nodeName !== next.nodeName || key(node) !== id) {
       node = next.cloneNode(true);
       current.insertBefore(node, cursor);

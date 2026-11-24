@@ -18,6 +18,8 @@
   };
   // Display state for this visit only: never saved, reset when step 3 is left.
   let sortMode = false, settingsOpen = false, nav = null, largeTitle = null, frame = 0;
+  // Watches #app for the changes that move the shell (set up at the end of this file).
+  let watch = null;
   const columnScroll = new Map();
   let boardScroll = 0;
   /* Where the board stood, kept for this tab only (sessionStorage), so a refresh reopens each column where it
@@ -643,6 +645,9 @@
     shadeBoardNames();
     settleBoard();
     playStoryMotion();
+    // Each step above measures after the writes before it, so one pass is complete: its own class writes must not
+    // schedule a second one (it measured the whole board again). Changes made by anything else still do.
+    watch?.takeRecords();
   }
   /* The sort and multi-select lists put 初始等级 on the name's line. Every row is its own grid, so the name
      column takes the widest name's width in all of them, measured, and the levels start at one edge. */
@@ -757,7 +762,8 @@
   const releaseCell = () => { pressedCell?.classList.remove('m-pressed'); pressedCell = null; };
   document.addEventListener('pointerup', releaseCell, true);
   document.addEventListener('pointercancel', releaseCell, true);
-  new MutationObserver(schedule).observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'disabled', 'hidden'] });
+  watch = new MutationObserver(schedule);
+  watch.observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'disabled', 'hidden'] });
   // Search history on touch: WebKit never focuses a tapped button, so the search box's focusout (app.js) sees no
   // relatedTarget and hides the list before the tap's click lands. Keeping focus in the field lets the click through.
   const keepSearchFocus = event => {

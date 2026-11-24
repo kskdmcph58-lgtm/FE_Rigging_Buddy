@@ -519,6 +519,8 @@ function render() {
   app.querySelectorAll('[name="part3"]').forEach(input => { input.checked = (input.value === 'on') === (state.part3 === true); input.disabled = input.value === 'off' && part3Locked(); });
   app.querySelectorAll('[name="route"]').forEach(input => { input.checked = (input.value === 'other') === (state.route === 'other'); });
   refreshRowSelection();
+  // The checks above are put again by every redraw; only later writes mark a step 3 column (ui/summary.js).
+  if (page === 'summary') settleJournalChanges();
   scheduleLocalSave();
   if (pageChanged) fadeInPage();
 }
