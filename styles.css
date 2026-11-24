@@ -1718,6 +1718,26 @@ main.has-bottom-bar {
   font-size: 14px;
   line-height: 20px;
 }
+/* 补录上一级: the back button's look, at the right end of its row. Out of the flow (the record layout is its
+   anchor), so with or without it nothing on the page moves. */
+.record-page .record-layout:has(>.record-insert) {
+  position: relative;
+}
+.record-page .record-insert {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 20px);
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
 .record-page .back svg {
   display: block;
   width: 16px;

@@ -114,7 +114,7 @@ function openQueueRow(b) {
     returnToSummary();
     return true;
   }
-  const draft = takeRecordDraft(id, undefined, index) || window.RiggingSeed.rowDraft(state, item, c, index);
+  const draft = takeRecordDraft(id, { queueIndex: index }) || window.RiggingSeed.rowDraft(state, item, c, index);
   if (!draft) return true;
   activeRecord = draft;
   page = 'record'; render(); window.scrollTo(0, 0);

@@ -36,6 +36,15 @@ async function deleteRecord() {
   clearRecordDraft();
   returnToSummary();
 }
+/* 补录上一级: leave the saved record for a blank one that goes in just before it. */
+function startInsertion() {
+  const d = activeRecord;
+  if (!d || d.editIndex === undefined) return;
+  const item = state.roster.find(r => r.id === d.id), anchor = item?.records[d.editIndex];
+  if (!window.RiggingActions.canInsertBefore(item, anchor)) return;
+  activeRecord = takeRecordDraft(d.id, { insertBefore: anchor.id }) || window.RiggingActions.newInsertDraft(state, d.id, anchor.id, char(d.id).part3Only === true);
+  render(); window.scrollTo(0, 0);
+}
 function saveRecord(next) {
   const d = activeRecord;
   if (!d || d.happy === null) return;
@@ -52,6 +61,12 @@ function saveRecord(next) {
   if (!result.saved) {
     if (result.reason === 'limit') {
       notify('记录已达上限，请导出备份');
+    } else if (result.reason === 'seed' || result.reason === 'missing') {
+      // The record it went before is gone, or a seed arrived: nothing left to insert into.
+      activeRecord = null;
+      clearRecordDraft();
+      returnToSummary();
+      notify(result.reason === 'seed' ? '已有种子，不能补录' : '这条记录已不存在，不能补录');
     }
     return;
   }
@@ -61,7 +76,8 @@ function saveRecord(next) {
   if (seedCanStart(item)) runSeedSearch(id);
 
   if (next) {
-    activeRecord = newRecordDraft(id);
+    // 补录 goes on before the same record, so several missed levels can be entered in a row.
+    activeRecord = d.insertBefore !== undefined ? window.RiggingActions.newInsertDraft(state, id, d.insertBefore, char(id).part3Only === true) : newRecordDraft(id);
     updateRecordLevel(item);
     hideExpectationTip();
     updateRecordControls();

@@ -55,6 +55,23 @@
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 2 2 10l8 8'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
   }
   #app.record-page>.back:active { background: transparent; opacity: .45; }
+  /* 补录上一级: the trailing item of the back button's row, in the same iOS text-button style, mirrored. */
+  #app.record-page .record-insert {
+    right: calc(8px - var(--m-gutter));
+    bottom: calc(100% + 4px);
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 4px 0 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--gold);
+    font: 400 17px/22px var(--font-ui);
+    box-shadow: none;
+  }
+  #app.record-page .record-insert:active { background: transparent; opacity: .45; }
   #app.record-page .record-layout { flex: 1; min-height: 0; display: flex; flex-direction: column; width: auto; max-width: none; margin: 0; }
   #app.record-page .stat-panel {
     flex: 1;
@@ -240,6 +257,7 @@
   #app.record-page .rating-rule-note { margin-top: 0; padding-top: 20px; }
   #app.record-page .ratings { margin-bottom: 24px; }
   #app.record-page .record-actions { margin-top: auto; }
+  #app.record-page .record-insert { right: 0; }
   #app.record-page .record-dock { display: contents; }
   #app.record-page .stat-panel::after { content: none; }
 }
@@ -248,6 +266,7 @@
 @media (height <= 500px) and (orientation:landscape) and (width < 1750px) {
   main#app.record-page { min-height: 100dvh; padding-bottom: 0; }
   #app.record-page>.back { margin-bottom: 0; }
+  #app.record-page .record-insert { bottom: 100%; }
   #app.record-page .stat-panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) clamp(240px, 36vw, 320px);
@@ -306,6 +325,7 @@
    bar fit without scrolling. */
 @media (max-height:700px) and (orientation:portrait) and (width < 1750px) {
   #app.record-page>.back { margin-bottom: 0; }
+  #app.record-page .record-insert { bottom: 100%; }
   #app.record-page .stat-panel { padding-top: 12px; }
   #app.record-page .stat-heading { --record-portrait: 56px; gap: 8px; }
   #app.record-page .stat-heading .record-character h2 { font-size: 16px; }

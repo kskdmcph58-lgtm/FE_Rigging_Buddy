@@ -2,9 +2,11 @@
 function renderRecord() {
   const d = activeRecord, c = char(d.id), item = state.roster.find(r => r.id === d.id);
   const history = d.editIndex !== undefined, editing = history || d.queueIndex !== undefined;
-  const next = history ? recordDisplayLevel(item, item.records[d.editIndex]) : editing ? window.RiggingSeed.rowDisplayLevel(item, d.queueIndex) : nextLevel(item);
+  const next = recordPageLevel(item, d), transition = levelTransition(item, next, d);
+  // 补录上一级: only from a saved record of someone without a seed.
+  const insert = history && window.RiggingActions.canInsertBefore(item, item.records[d.editIndex]) ? '<button class="record-insert" data-action="insert-before">补录上一级</button>' : '';
   app.innerHTML = `<button class="back" data-action="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button>` +
-    `<div class="record-layout"><aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c, 'small', '92px')}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${levelLabel(item, next - 1)} → ${levelLabel(item, next)}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><button class="record-rule-preview" data-expectation-detail="${d.id}" data-record-expectation><span class="record-rule-caption">属性期望</span><span class="record-rule-lines"></span></button><div class="ride-slot note-ride"></div></div><div class="record-dock"><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></div>${seedStatusMarkup(item, c)}</section></div>`;
+    `<div class="record-layout">${insert}<aside class="hero panel">${portrait(c, 'grid')}<div><h2>${c.name}</h2><div class="eyebrow">Level Up</div><div class="big-level">${upgradeLevelLabel(item, next)}</div><p>${transition}</p></div></aside><section class="panel stat-panel" aria-label="本次属性提升"><div class="stat-heading"><div class="record-character">${portrait(c, 'small', '92px')}<div><h2>${c.name}</h2><p class="record-level"><span class="record-level-current">${levelLabel(item, next)}</span><span class="record-level-transition">${transition}</span></p></div></div><span class="record-target-level">${levelLabel(item, next)}</span><span class="growth-total heading-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${professionMarkup(d.profession, true)}<div class="ride-slot heading-ride"></div></div><div class="stats"><span class="growth-total stats-growth" aria-live="polite"><strong>+${d.stats.length}</strong></span>${STATS.map((s, i) => `<button class="stat ${d.stats.includes(s) ? 'active' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}" data-stat="${s}" aria-pressed="${d.stats.includes(s)}"><span>${s}</span><b>${d.stats.includes(s) ? '+1' : '—'}</b></button>`).join('')}</div><div class="rating-rule-note"><button class="expectation-link" data-expectation-detail="${d.id}" data-record-expectation>属性期望</button><button class="record-rule-preview" data-expectation-detail="${d.id}" data-record-expectation><span class="record-rule-caption">属性期望</span><span class="record-rule-lines"></span></button><div class="ride-slot note-ride"></div></div><div class="record-dock"><div class="ratings"><button class="happy ${d.happy === true ? 'chosen' : ''}" data-rating="happy" aria-pressed="${d.happy === true}">${ratingIcon(true)} 满意</button><button class="angry ${d.happy === false ? 'chosen' : ''}" data-rating="angry" aria-pressed="${d.happy === false}">${ratingIcon(false)} 不满意</button></div><div class="record-actions"><button data-action="finish" ${d.happy === null ? 'disabled' : ''}>${editing ? '保存修改并返回' : '保存并结束'}</button>${editing ? '' : `<button class="primary" data-action="next" ${d.happy === null ? 'disabled' : ''}>保存 · 下一级</button>`}</div></div>${seedStatusMarkup(item, c)}</section></div>`;
   if (history) app.querySelector('.record-actions').insertAdjacentHTML('beforeend', '<button class="danger" data-action="delete-record">删除记录</button>');
   watchRecordDock();
   updateRecordControls();
@@ -81,11 +83,22 @@ function watchRecordDock() {
 const onRecordViewport = () => { if (page === 'record') fillRecordRulePreview(); };
 window.addEventListener('resize', onRecordViewport);
 window.visualViewport?.addEventListener('resize', onRecordViewport);
+/* The level the page records: a saved record's, a forecast row's, the inserted one's (the level of the record it
+   goes before), or the next one. */
+function recordPageLevel(item, d) {
+  if (d.editIndex !== undefined) return recordDisplayLevel(item, item.records[d.editIndex]);
+  if (d.queueIndex !== undefined) return window.RiggingSeed.rowDisplayLevel(item, d.queueIndex);
+  if (d.insertBefore !== undefined) return window.RiggingActions.insertionLevel(item, window.RiggingActions.insertionIndex(item, d));
+  return nextLevel(item);
+}
+function levelTransition(item, level, d) {
+  return `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}${d.insertBefore !== undefined ? '（补录）' : ''}`;
+}
 function updateRecordLevel(item) {
-  const level = nextLevel(item);
+  const level = recordPageLevel(item, activeRecord), transition = levelTransition(item, level, activeRecord);
   app.querySelector('.big-level').textContent = upgradeLevelLabel(item, level);
-  app.querySelector('.hero p').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
+  app.querySelector('.hero p').textContent = transition;
   app.querySelector('.record-level-current').textContent = levelLabel(item, level);
-  app.querySelector('.record-level-transition').textContent = `${levelLabel(item, level - 1)} → ${levelLabel(item, level)}`;
+  app.querySelector('.record-level-transition').textContent = transition;
   app.querySelector('.record-target-level').textContent = levelLabel(item, level);
 }

@@ -46,6 +46,28 @@ window.RiggingModel = (() => {
     for (const range of item.expectations || []) { if (range.from > seq) break; rule = range.rule; }
     return rule;
   }
+  /* 补录上一级: a record goes in just before an existing one (the anchor, at array index `index`). The anchor and
+     everything after it, deleted records too, move up one seq, and so does every expectation range that starts
+     there or later, so each old record keeps its rule. The new record takes the anchor's old seq and the rule in
+     force just before it. Before the very first record nothing comes earlier, so a range starting at the anchor
+     stays put and covers the new record as well. */
+  function insertionMoves(item, index) {
+    const seq = item.records[index].seq;
+    return index === 0 ? range => range.from > seq : range => range.from >= seq;
+  }
+  function insertionRule(item, index) {
+    const moves = insertionMoves(item, index);
+    let rule = null;
+    for (const range of item.expectations || []) { if (moves(range)) break; rule = range.rule; }
+    return rule;
+  }
+  function insertRecord(item, index, record) {
+    const seq = item.records[index].seq, moves = insertionMoves(item, index);
+    for (const range of item.expectations || []) if (moves(range)) range.from++;
+    for (const later of item.records.slice(index)) later.seq++;
+    item.records.splice(index, 0, { ...record, seq });
+    return item.records[index];
+  }
   function validRule(rule) {
     let count = 0;
     function visit(node, depth) {
@@ -339,5 +361,5 @@ window.RiggingModel = (() => {
     }
     return data;
   }
-  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, validRule, directRuleStat, validExpectationDraft, templateNameLimit, ruleSize, evaluate, setRule, validRide, renameClass, migrate, normalize };
+  return { stats, limits, copy, uid, live, nextSeq, level, displayLevels, nextLevel, recordParts, seedChain, ruleAt, insertionRule, insertRecord, validRule, directRuleStat, validExpectationDraft, templateNameLimit, ruleSize, evaluate, setRule, validRide, renameClass, migrate, normalize };
 })();

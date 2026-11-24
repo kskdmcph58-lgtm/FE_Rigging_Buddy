@@ -146,8 +146,30 @@ window.RiggingActions = (() => {
     }
   }
 
+  /* 补录上一级: a draft with insertBefore (a record id) is a new record that goes in just before that record.
+     Drafts name records by id, never by array index, because an insertion moves every later index. */
+  const insertionIndex = (item, draft) => item.records.findIndex(r => r.id === draft.insertBefore);
+  // The live record just before the anchor, if any.
+  const insertionPrevious = (item, index) => item.records.slice(0, index).findLast(r => !r.deleted) || null;
+  /* An inserted record is in the part of the record before it: never Part 1-2 after a Part 3 one. Before the first
+     record it follows the anchor's own mark. */
+  function insertionPart(item, index, part3Only = false) {
+    const previous = insertionPrevious(item, index);
+    if (!previous) return part3Only || item.records[index].part3 === true;
+    const live = model.live(item);
+    return model.recordParts(item, part3Only)[live.indexOf(previous)];
+  }
+  // A record may be inserted before a live record of a person without a seed.
+  const canInsertBefore = (item, record) => Boolean(item && record && !item.seed && !record.deleted && item.records.includes(record));
+  // The level the inserted record reaches: the anchor's display level now.
+  const insertionLevel = (item, index) => model.displayLevels(item)[index];
+
   function draftRule(state, draft) {
     const item = state.roster.find(i => i.id === draft.id);
+    if (draft.insertBefore !== undefined) {
+      const index = insertionIndex(item, draft);
+      return index < 0 ? null : model.insertionRule(item, index);
+    }
     return model.ruleAt(item, draft.editIndex === undefined ? model.nextSeq(item) + (draft.queueIndex || 0) : item.records[draft.editIndex].seq);
   }
 
@@ -155,6 +177,19 @@ window.RiggingActions = (() => {
     const item = state.roster.find(i => i.id === id);
     const profession = currentProfession(state, item);
     return { id, profession, ride: rememberedRide(state, id, rideKind(state, profession, id)), rides: {}, stats: [], happy: model.evaluate(model.ruleAt(item, model.nextSeq(item)), []), ratingSource: 'auto' };
+  }
+
+  /* A blank record to insert before `anchorId`: class and ride of the live record before it (as that record shows),
+     or the starting class and the remembered ride before the first one. */
+  function newInsertDraft(state, id, anchorId, part3Only = false) {
+    const item = state.roster.find(i => i.id === id), index = item.records.findIndex(r => r.id === anchorId);
+    const previous = insertionPrevious(item, index), part3 = insertionPart(item, index, part3Only);
+    let profession, ride;
+    if (previous) ({ profession, ride } = shownClass(state, item, previous));
+    else profession = classAvailable(state, item.initialProfession) ? item.initialProfession || null : null;
+    const kind = rideKind(state, profession, id, part3);
+    ride = previous ? usableRide(state, ride && { ...ride }, kind, id, part3) : rememberedRide(state, id, kind, undefined, part3);
+    return { id, insertBefore: anchorId, profession, ride: ride ? { ...ride } : null, rides: {}, stats: [], happy: model.evaluate(model.insertionRule(item, index), []), ratingSource: 'auto' };
   }
 
   function applyDraftRating(state, draft) {
@@ -165,11 +200,27 @@ window.RiggingActions = (() => {
   function saveRecord(state, draft) {
     if (!draft || draft.happy === null) return { saved: false, reason: 'pending' };
     const item = state.roster.find(r => r.id === draft.id);
-    const part3 = draft.editIndex === undefined ? state.part3 === true : model.recordParts(item)[model.live(item).indexOf(item.records[draft.editIndex])];
+    // The record id is what counts; the index is refreshed from it.
+    if (draft.editId !== undefined) {
+      draft.editIndex = item.records.findIndex(r => r.id === draft.editId);
+      if (draft.editIndex < 0) return { saved: false, reason: 'missing' };
+    }
+    const inserting = draft.insertBefore !== undefined, anchorIndex = inserting ? insertionIndex(item, draft) : -1;
+    if (inserting && !canInsertBefore(item, item.records[anchorIndex])) return { saved: false, reason: item.seed ? 'seed' : 'missing' };
+    const part3 = inserting ? insertionPart(item, anchorIndex) : draft.editIndex === undefined ? state.part3 === true : model.recordParts(item)[model.live(item).indexOf(item.records[draft.editIndex])];
     const kind = rideKind(state, draft.profession, draft.id, part3), ride = usableRide(state, draft.ride && { ...draft.ride }, kind, draft.id, part3);
     const usedRides = kind ? { ...draft.rides, [kind]: ride } : draft.rides;
     if (draft.editIndex === undefined && (model.nextSeq(item) > model.limits.seq || state.roster.reduce((n, r) => n + r.records.length, 0) >= model.limits.records)) {
       return { saved: false, reason: 'limit' };
+    }
+    if (inserting) {
+      // Earlier history: the next record's class and ride stay as they were.
+      const plus2 = (draft.plus2 ?? []).filter(stat => draft.stats.includes(stat));
+      // The Part 3 label is copied from the record it follows (the anchor before the first), so a lock from an
+      // earlier 已升级 stays derived here too.
+      const label = (insertionPrevious(item, anchorIndex) || item.records[anchorIndex]).part3 === true;
+      model.insertRecord(item, anchorIndex, { id: model.uid(), profession: draft.profession || null, ride, stats: [...draft.stats], ...(plus2.length ? { plus2 } : {}), part3: label || catalog.part3Only.has(draft.profession), status: 'normal', deleted: false, happy: draft.happy, ratingSource: draft.ratingSource || 'auto', createdAt: new Date().toISOString() });
+      return { saved: true, item };
     }
     // A +2 can only belong to a stat that rose, so a stats edit also drops a stale one.
     const plus2 = (draft.plus2 ?? (draft.editIndex !== undefined ? item.records[draft.editIndex].plus2 : null) ?? []).filter(stat => draft.stats.includes(stat));
@@ -348,6 +399,6 @@ window.RiggingActions = (() => {
   }
 
   return { classAvailable, classAllowed, classUnlocked, setClassUnlocked, revertSkipUnlock, setExamRange, currentProfession, shownClass, rideKind, rideOptions, usableRide, storedRide, rememberedRide, rememberRides, applyRecordClass, clearForecastClassOverrides,
-    draftRule, newRecordDraft, applyDraftRating, saveRecord, cycleRecordStatus,
+    draftRule, newRecordDraft, newInsertDraft, insertionIndex, insertionPart, insertionLevel, canInsertBefore, applyDraftRating, saveRecord, cycleRecordStatus,
     softDelete, clearRecords, dropSeed, canUndoDelete, undoDelete, planMove, setExpectations };
 })();

@@ -986,6 +986,7 @@ app.addEventListener('click', async e => {
   }
   if (['reset', 'reset-list'].includes(action) && !await confirmRecordDeletion(action === 'reset' ? '是否清空全部人物和记录？' : '是否清空所有升级记录？', '清空', action === 'reset-list' ? '自定义属性期望将保留。' : '')) return;
   if (action === 'delete-record') { deleteRecord(); return; }
+  if (action === 'insert-before') { startInsertion(); return; }
   if (['select', 'levels', 'summary'].includes(action)) { page = action; render(); }
   if (action === 'leave') { activeRecord = null; returnToSummary(); }
   if (['reset', 'reset-list'].includes(action)) { clearRecordDraft(); seedMessages.clear(); }
@@ -1210,8 +1211,17 @@ app.addEventListener('keydown', e => {
 function checkRecordDraft(d, data) {
   const item = data.roster.find(r => r.id === d?.id);
   if (!item || !Array.isArray(d.stats) || d.stats.some(s => !STATS.includes(s)) || ![true, false, null].includes(d.happy)) return false;
-  if (d.editIndex !== undefined && (!Number.isInteger(d.editIndex) || !item.records[d.editIndex])) return false;
+  // A saved record is named by its id (editId); drafts from before that named it by array index only.
+  if (d.editId !== undefined) {
+    d.editIndex = item.records.findIndex(r => r.id === d.editId);
+    if (d.editIndex < 0) return false;
+  } else if (d.editIndex !== undefined) {
+    if (!Number.isInteger(d.editIndex) || !item.records[d.editIndex]) return false;
+    d.editId = item.records[d.editIndex].id;
+  }
   if (d.queueIndex !== undefined && (!Number.isInteger(d.queueIndex) || d.queueIndex < 0 || !item.seed)) return false;
+  // 补录上一级: the record it goes before, still there, of someone still without a seed.
+  if (d.insertBefore !== undefined && (d.editIndex !== undefined || d.queueIndex !== undefined || !window.RiggingActions.canInsertBefore(item, item.records.find(r => r.id === d.insertBefore)))) return false;
   d.ratingSource ||= d.editIndex !== undefined ? item.records[d.editIndex].ratingSource : 'legacy';
   M.renameClass(d, 'profession'); M.renameClass(d, 'storyClass');
   // Snapshots from before mounts existed have neither field.
@@ -1229,8 +1239,19 @@ function writeRecordDraft() {
     else localStorage.removeItem(RECORD_DRAFT_KEY);
   } catch { /* The input still lives in this page. */ }
 }
+/* The saved record's page is the way to 补录上一级, so opening it unchanged keeps an insertion waiting before it. */
+function passingToInsertion(d) {
+  const held = heldRecordDraft?.draft;
+  if (d.editId === undefined || held?.id !== d.id || held.insertBefore !== d.editId) return false;
+  const record = state.roster.find(r => r.id === d.id)?.records[d.editIndex], same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  return Boolean(record) && same([...d.stats].sort(), [...record.stats].sort()) && same(d.plus2 ?? record.plus2 ?? [], record.plus2 ?? [])
+    && same(d.profession, record.profession) && same(d.ride, record.ride) && d.happy === (record.ratingPending ? null : record.happy);
+}
 function rememberRecordDraft() {
-  if (page === 'record' && activeRecord) {
+  if (page === 'record' && activeRecord && passingToInsertion(activeRecord)) {
+    if (!heldRecordDraft.open) return;
+    heldRecordDraft = { ...heldRecordDraft, open: false };
+  } else if (page === 'record' && activeRecord) {
     const item = state.roster.find(r => r.id === activeRecord.id);
     heldRecordDraft = { open: true, draft: activeRecord, base: window.RiggingActions.currentProfession(state, item) };
   } else if (heldRecordDraft?.open) heldRecordDraft = { ...heldRecordDraft, open: false };
@@ -1238,13 +1259,16 @@ function rememberRecordDraft() {
   writeRecordDraft();
 }
 function clearRecordDraft() { heldRecordDraft = null; writeRecordDraft(); }
-function takeRecordDraft(id, editIndex, queueIndex) {
+/* key names the page: { editId } a saved record, { queueIndex } a forecast row, { insertBefore } a record inserted
+   before that record id, nothing the next record. */
+function takeRecordDraft(id, { editId, queueIndex, insertBefore } = {}) {
   const held = heldRecordDraft;
-  if (held?.draft?.id !== id || held.draft.editIndex !== editIndex || held.draft.queueIndex !== queueIndex) return null;
+  if (held?.draft?.id !== id || held.draft.editId !== editId || held.draft.queueIndex !== queueIndex || held.draft.insertBefore !== insertBefore) return null;
   try {
     const draft = M.copy(held.draft), item = state.roster.find(r => r.id === id);
-    if (!checkRecordDraft(draft, state) || item.deleted || !inStory(char(id)) || item.records[editIndex]?.deleted) return null;
-    if (editIndex === undefined && queueIndex === undefined) {
+    if (!checkRecordDraft(draft, state) || item.deleted || !inStory(char(id)) || item.records[draft.editIndex]?.deleted) return null;
+    if (draft.insertBefore !== undefined && draft.ratingSource === 'auto') applyDraftRating(draft);
+    if (editId === undefined && queueIndex === undefined && insertBefore === undefined) {
       // Changes made on the list while this waited win over what it remembered.
       if (window.RiggingActions.currentProfession(state, item) !== held.base) {
         const fresh = newRecordDraft(id);
@@ -1255,9 +1279,19 @@ function takeRecordDraft(id, editIndex, queueIndex) {
     return draft;
   } catch { return null; }
 }
+/* A held draft from before drafts named records by id names its record by array index: pin it to that record's
+   id now, before an insertion can move the index, or drop it when the record is gone. */
+function upgradeHeldRecordDraft() {
+  const d = heldRecordDraft?.draft;
+  if (!d || d.editIndex === undefined || d.editId !== undefined) return;
+  const record = Number.isInteger(d.editIndex) ? state.roster.find(r => r.id === d.id)?.records[d.editIndex] : null;
+  if (record) d.editId = record.id; else heldRecordDraft = null;
+  writeRecordDraft();
+}
 function restoreRecordPage() {
   if (activeRecord || !heldRecordDraft?.open) return;
-  const draft = takeRecordDraft(heldRecordDraft.draft?.id, heldRecordDraft.draft?.editIndex, heldRecordDraft.draft?.queueIndex);
+  const { editId, queueIndex, insertBefore } = heldRecordDraft.draft || {};
+  const draft = takeRecordDraft(heldRecordDraft.draft?.id, { editId, queueIndex, insertBefore });
   if (draft) { activeRecord = draft; page = 'record'; }
 }
 // Only used for a same-tab deployment update; existing localStorage is untouched.
@@ -1298,6 +1332,7 @@ function restoreAfterAppUpdate() {
   } catch { /* Leave an unreadable snapshot untouched; do not modify user storage. */ }
 }
 restoreLocalState();
+upgradeHeldRecordDraft();
 restoreAfterAppUpdate();
 restoreRecordPage();
 render();

@@ -27,8 +27,11 @@ function restoreStoryClasses() {
   const d = activeRecord;
   if (!d || !locked(d.profession)) return;
   const item = state.roster.find(i => i.id === d.id);
+  // An inserted record in Part 3 keeps its Part 3 class, like a saved one.
+  if (d.insertBefore !== undefined && recordPart(d)) return;
   const restored = Object.hasOwn(d, 'storyClass') ? d.storyClass
     : d.editIndex !== undefined ? item.records[d.editIndex].profession || null
+    : d.insertBefore !== undefined ? window.RiggingActions.newInsertDraft(state, d.id, d.insertBefore, char(d.id).part3Only === true).profession
     : currentProfession(item);
   delete d.storyClass;
   // Editing a record saved with a Part 3 class leaves the draft, and that record's mount, alone.
@@ -60,6 +63,7 @@ function recordPart(d) {
   const item = state.roster.find(item => item.id === d.id), c = char(d.id);
   if (d.queueIndex !== undefined) return window.RiggingSeed.queueRows(state, item, c, d.queueIndex + 1)[d.queueIndex].part3;
   if (d.editIndex !== undefined) return M.recordParts(item, c.part3Only === true)[M.live(item).indexOf(item.records[d.editIndex])];
+  if (d.insertBefore !== undefined) return window.RiggingActions.insertionPart(item, window.RiggingActions.insertionIndex(item, d), c.part3Only === true);
   return state.part3 === true || c.part3Only === true;
 }
 function recordRideMarkup(d) {

@@ -613,6 +613,7 @@ window.RiggingSeed = (() => {
 
   function draftLevel(item, draft) {
     if (draft.queueIndex !== undefined) return rowDisplayLevel(item, draft.queueIndex) - 1;
+    if (draft.insertBefore !== undefined) return actions.insertionLevel(item, actions.insertionIndex(item, draft)) - 1;
     if (draft.editIndex === undefined) return model.nextLevel(item) - 1;
     return model.displayLevels(item)[draft.editIndex] - 1;
   }
@@ -621,6 +622,7 @@ window.RiggingSeed = (() => {
     if (!ready() || !eligible(item, c)) return false;
     const part3 = draft.queueIndex !== undefined ? queueRows(state, item, c, draft.queueIndex + 1)[draft.queueIndex]?.part3
       : draft.editIndex !== undefined ? model.recordParts(item, c.part3Only === true)[model.live(item).indexOf(item.records[draft.editIndex])]
+      : draft.insertBefore !== undefined ? actions.insertionPart(item, actions.insertionIndex(item, draft), c.part3Only === true)
       : state.part3 === true || c.part3Only === true;
     const event = eventOf(state, c, { level: draftLevel(item, draft), part3, profession: draft.profession, ride: draft.ride });
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
