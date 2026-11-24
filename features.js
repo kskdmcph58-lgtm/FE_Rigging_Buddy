@@ -456,20 +456,10 @@ window.addEventListener('resize',()=>{if(typeof page!=='undefined'&&['levels','s
 
 function softDelete(objects, seedItems = []) {
   window.RiggingActions.softDelete(state, objects, seedItems);
-  queueMicrotask(() => showUndoNotice(objects.length || seedItems.length));
 }
 // 清空记录: the people's records and seed in one batch, so a single 撤回 brings both back.
 function clearRecords(items, options) {
-  const count = items.reduce((n, item) => n + (options?.records === false ? 0 : M.live(item).length), 0) + (options?.people ? items.length : 0) || items.length;
   window.RiggingActions.clearRecords(state, items, options);
-  queueMicrotask(() => showUndoNotice(count));
-}
-function showUndoNotice(count) {
-  notify('');
-  const notice = document.querySelector('#notice');
-  notice.textContent = `已删除 ${count} 项 `;
-  const button = document.createElement('button'); button.textContent = '撤回'; button.onclick = undoDelete;
-  notice.append(button); dismissNoticeAfter(8000);
 }
 function undoDelete() {
   if (!window.RiggingActions.undoDelete(storyRoster())) return;

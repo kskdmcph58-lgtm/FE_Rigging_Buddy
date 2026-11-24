@@ -3303,15 +3303,6 @@ body.marquee-selecting,body.marquee-selecting * {
   color: var(--gold);
   border-color: #756f53;
 }
-#notice button {
-  padding: 0 8px;
-  min-height: var(--control-height);
-  border: 0;
-  color: var(--on-accent);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: underline;
-}
 .expectation-dialog {
   width: min(680px,calc(100% - 32px));
   max-height: 85vh;
