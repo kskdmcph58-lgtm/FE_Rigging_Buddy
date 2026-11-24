@@ -1109,7 +1109,8 @@ function bindTemplateSwipe(list, enabled) {
     if (!enabled() || !event.isPrimary || event.button !== 0) return;
     const row = event.target.closest('[data-template-row]');
     if (opened && row !== opened) reveal(null);
-    if (event.target.closest('.template-row-main')) gesture = { id: event.pointerId, row, x: event.clientX, y: event.clientY, active: false };
+    // Rows without a delete button (a save slot that cannot be deleted, ui/save-slots.js) do not swipe.
+    if (event.target.closest('.template-row-main') && row.querySelector('[data-delete-template]')) gesture = { id: event.pointerId, row, x: event.clientX, y: event.clientY, active: false };
   });
   list.addEventListener('pointermove', event => {
     if (gesture?.id !== event.pointerId || gesture.active) return;

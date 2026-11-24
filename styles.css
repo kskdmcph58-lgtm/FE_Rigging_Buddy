@@ -2276,6 +2276,39 @@ header {
     pointer-events: none;
   }
 }
+/* 存档 menu: the slots with a checkmark column before their names (every item keeps the column, as in a macOS
+   menu), then one separator before the backup commands. Long names end in an ellipsis. */
+.menu-panel.slot-menu button {
+  position: relative;
+  padding-left: 40px;
+}
+.menu-panel .menu-slot>span {
+  display: inline-block;
+  max-width: 16em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+.menu-panel .menu-check {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  visibility: hidden;
+}
+.menu-panel .menu-slot[aria-current="true"] .menu-check { visibility: visible; }
+.menu-panel .menu-separator {
+  height: 1px;
+  margin: 5px 8px;
+  border: 0;
+  background: var(--line);
+}
+@media(hover:hover) and (pointer:fine) {
+  .menu-panel.slot-menu button { padding-left: 30px; }
+  .menu-panel .menu-check { left: 9px; }
+}
 button {
   transition: background var(--motion-medium),border-color var(--motion-medium);
 }
@@ -3368,12 +3401,12 @@ body.marquee-selecting,body.marquee-selecting * {
     background: transparent;
   }
   .expectation-dialog button:is(.expectation-tool-actions > button, [data-use-template]):hover:not(:disabled) { color: var(--stat-active-text); }
-  .expectation-dialog button:is([data-edit-template], .expectation-template-name):hover:not(:disabled) { color: var(--gold); }
+  .expectation-dialog button:is([data-edit-template], [data-edit-slot], .expectation-template-name):hover:not(:disabled) { color: var(--gold); }
 }
 .expectation-dialog button:is(.expectation-tool-actions > button, .template-row-main > button):is(:active, .touch-pressed):not(:disabled) {
   background-color: color-mix(in srgb, var(--gold) 16%, transparent);
 }
-.expectation-dialog [data-delete-rule] {
+.expectation-dialog :is([data-delete-rule], [data-delete-slot]) {
   margin-right: auto;
 }
 .select-options:focus { outline: 0; }
@@ -3467,7 +3500,14 @@ body.marquee-selecting,body.marquee-selecting * {
   flex: 1 1 0;
   width: auto;
 }
-.template-row-main > :is([data-use-template], [data-edit-template]) {
+/* Save slot manager rows (ui/save-slots.js): checkmark, then the name over its people count and time. */
+.save-slots .slot-row-name { align-items: flex-start; }
+.save-slots .slot-check { flex: none; width: 16px; height: 16px; margin-top: 2px; color: var(--gold); visibility: hidden; }
+.save-slots .slot-row-name[aria-current="true"] .slot-check { visibility: visible; }
+.save-slots .slot-row-text { display: grid; gap: 2px; min-width: 0; }
+.save-slots .slot-row-meta { color: var(--muted); font-size: 12px; line-height: 16px; }
+.save-slots .slot-row-meta:empty { display: none; }
+.template-row-main > :is([data-use-template], [data-edit-template], [data-edit-slot]) {
   flex: none;
   padding-inline: 12px;
 }

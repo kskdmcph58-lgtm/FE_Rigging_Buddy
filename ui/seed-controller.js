@@ -67,12 +67,15 @@ async function searchSeed(id, opensRecord = false) {
   if (!item || item.deleted) return;
   const rework = Boolean(item.seed);
   const before = rework ? '原来的种子和队列没有变。' : '';
+  // Another save slot (or a restored backup) may replace the data while the search runs: its answer is then dropped.
+  const owner = state;
   showSeedMessage(id, '正在反推种子…');
   try {
     let result, applied = false;
     // Records saved during a search change the chain, so that answer is out of date.
     for (let tries = 0; tries < 3 && !applied; tries++) {
-      result = await window.RiggingSeed.search(state, item, c, { onProgress: progress => showSeedMessage(id, `正在反推种子… ${Math.floor(progress.ratio * 100)}%`) });
+      result = await window.RiggingSeed.search(state, item, c, { onProgress: progress => { if (state === owner) showSeedMessage(id, `正在反推种子… ${Math.floor(progress.ratio * 100)}%`); } });
+      if (state !== owner) return;
       if (result.status !== 'found') break;
       const outcome = window.RiggingSeed.applyFound(state, item, c, result);
       applied = outcome.applied;

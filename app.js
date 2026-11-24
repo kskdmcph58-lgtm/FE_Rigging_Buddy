@@ -5,6 +5,68 @@ const M = window.RiggingModel;
 const LOCAL_STATE_KEY = `rigging-buddy:save:${new URL('.', location.href).pathname}`;
 const LOCAL_PAGE_KEY = `${LOCAL_STATE_KEY}:page`;
 const RECORD_DRAFT_KEY = `${LOCAL_STATE_KEY}:record-draft`;
+/* Save slots (core/slots.js). LOCAL_STATE_KEY and RECORD_DRAFT_KEY stay the first slot's keys; the slot this tab
+   uses is activeSlot, and activeSaveKey()/recordDraftKey() name its keys. */
+const slots = window.RiggingSlots.create({ base: LOCAL_STATE_KEY, local: () => localStorage, session: () => sessionStorage });
+let activeSlot = slots.startId();
+let slotIndex = slots.readIndex();
+if (slotIndex) slots.remember(activeSlot);
+const activeSaveKey = () => slots.keyOf(activeSlot);
+const recordDraftKey = () => slots.draftKeyOf(activeSlot);
+const slotList = () => slots.list(slotIndex);
+const activeSlotEntry = () => slotList().find(slot => slot.id === activeSlot) || slotList()[0];
+const multipleSlots = () => slotList().length > 1;
+/* The expectation templates are shared by every slot and kept under their own key. In this page they stay in
+   state.expectationTemplates (features.js edits them there and backups export them); the slot's own save leaves
+   them out. `last` is the stored text; a key that cannot be read is never overwritten, and the templates then
+   stay inside the slot's save as before. */
+const sharedTemplates = {
+  last: null, blocked: false,
+  serialize() {
+    if (this.blocked) return this.last;
+    const list = state.expectationTemplates || [];
+    return list.length || this.last !== null ? JSON.stringify(list) : null;
+  },
+  write(text) { localStorage.setItem(slots.templatesKey, text); storageUsage = null; }
+};
+function readSharedTemplates() {
+  let raw = null;
+  try { raw = localStorage.getItem(slots.templatesKey) ?? null; } catch { raw = null; }
+  sharedTemplates.last = raw; sharedTemplates.blocked = false;
+  if (raw === null) return null;
+  try { return validate({ version: 2, roster: [], expectationTemplates: JSON.parse(raw) }).expectationTemplates || []; }
+  catch { sharedTemplates.blocked = true; return null; }
+}
+// Adds the templates of `extra` that `base` does not have (by id); nothing is removed.
+function mergeTemplates(base, extra) {
+  const list = M.copy(base || []), ids = new Set(list.map(template => template.id));
+  for (const template of extra || []) if (!ids.has(template.id)) { list.push(M.copy(template)); ids.add(template.id); }
+  return list;
+}
+// A slot's data with the shared templates (and any an older save or backup still carries) put in.
+function withTemplates(data, shared) {
+  const list = mergeTemplates(shared, data.expectationTemplates);
+  if (list.length) data.expectationTemplates = list; else delete data.expectationTemplates;
+  return data;
+}
+function serializeSlot() {
+  const data = M.normalize(state);
+  if (sharedTemplates.blocked) return JSON.stringify(data);
+  const { expectationTemplates, ...slot } = data;
+  return JSON.stringify(slot);
+}
+/* Storage hint: one notice, the first time in this page that a save takes this site's rigging-buddy keys past 80%
+   of the documented 5,000,000-character budget. Totals are read once and then kept up to date from each write. */
+let storageUsage = null, storageHintShown = false;
+function checkStorageUsage(previous, serialized) {
+  if (storageHintShown) return;
+  const change = serialized.length - (typeof previous === 'string' ? previous.length : 0);
+  try { storageUsage = storageUsage === null ? slots.usage() : storageUsage + change; } catch { return; }
+  const limit = slots.BUDGET * 0.8;
+  if (storageUsage <= limit || storageUsage - change > limit) return;
+  storageHintShown = true;
+  window.RiggingStorageStatus.hint(`本地存储已用约 ${Math.min(99, Math.round(storageUsage / slots.BUDGET * 100))}%，快到浏览器给本站的上限了。可以导出备份后删除不用的存档。`);
+}
 const trackedObjects = new WeakMap();
 let localSaveTimer, storageReady = false, storageBlocked = false, storageWarning = false, lastLocalSave = null;
 let storageIssue = '';
@@ -25,12 +87,19 @@ const persistence = window.RiggingPersistence.create({
     get lastSave() { return lastLocalSave; }, set lastSave(value) { lastLocalSave = value; },
     get timer() { return localSaveTimer; }, set timer(value) { localSaveTimer = value; }
   },
-  key: LOCAL_STATE_KEY,
+  key: activeSaveKey,
   getStorage: () => localStorage,
-  serialize: () => JSON.stringify(M.normalize(state)),
+  serialize: serializeSlot,
+  shared: sharedTemplates,
   onIssue: setStorageIssue,
+  onSaved(previous, serialized) {
+    if (slotIndex) try { slots.touch(activeSlot, visibleRoster().length); slotIndex = slots.readIndex(); } catch { /* Only the manager's row details. */ }
+    checkStorageUsage(previous, serialized);
+  },
   onRestore(data, followed = false) {
-    state=trackState(validate(data));
+    // A followed save keeps this page's templates (the templates key is followed on its own).
+    const templates = followed ? state.expectationTemplates : startupTemplates;
+    state=trackState(withTemplates(validate(data), templates));
     if (followed) { settleFollowedPage(); return; }
     // Pending additions can coexist with an existing roster; they do not imply
     // the user was viewing the level setup page.
@@ -44,7 +113,14 @@ const persistence = window.RiggingPersistence.create({
 function trackState(value) { return window.RiggingPersistence.track(value, trackedObjects, scheduleLocalSave); }
 function scheduleLocalSave() { persistence.schedule(); }
 function saveLocalState(replace = false) { return persistence.save(replace); }
-function restoreLocalState() { persistence.restore(); }
+// The templates key is read first, even when the slot's save is missing or unreadable, so a later save never
+// writes over templates this page has not loaded.
+let startupTemplates = null;
+function restoreLocalState() {
+  startupTemplates = readSharedTemplates();
+  persistence.restore();
+  if (startupTemplates?.length && !state.expectationTemplates) state = trackState({ ...M.copy(state), expectationTemplates: startupTemplates });
+}
 
 let state = trackState({ version: 2, roster: [], selection: [], initialLevels: {} });
 let activeRecord = null;
@@ -262,17 +338,128 @@ function backupFilename() {
   const time = `${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
   const random = crypto.getRandomValues(new Uint32Array(1))[0];
   const suffix = ((now.getTime() + random) % (36 ** 5)).toString(36).padStart(5, '0');
-  return `Rigging-Buddy-${date}_${time}_${suffix}.json`;
+  // With several slots the file says which one it holds (characters a file name cannot carry become _).
+  const slot = multipleSlots() ? `${activeSlotEntry().name.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')}-` : '';
+  return `Rigging-Buddy-${slot}${date}_${time}_${suffix}.json`;
 }
 function exportBackup(text = JSON.stringify(M.normalize(state), null, 2)) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
   const a = document.createElement('a'); a.href = url; a.download = backupFilename(); a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+/* ---------- Save slots: switching, creating, renaming, deleting (the manager is ui/save-slots.js) ---------- */
+const BASE_TITLE = document.title;
+function updateTitle() {
+  if (BASE_TITLE === undefined) return;
+  document.title = multipleSlots() ? `${activeSlotEntry().name} · ${BASE_TITLE}` : BASE_TITLE;
+}
+// Names shown outside the manager: the menu label, the shell's display settings and the tab title.
+function refreshSlotLabels() {
+  updateTitle();
+  if (page === 'summary' && !document.querySelector('dialog[open]')) {
+    const openMenus = [...app.querySelectorAll('.action-menu')].map(menu => menu.open);
+    renderSummary();
+    app.querySelectorAll('.action-menu').forEach((menu, index) => { menu.open = openMenus[index] || false; });
+  }
+}
+// The first slot's entry when the index is written for the first time (it has no entry before).
+const mainSlotSeed = () => ({ people: activeSlot === slots.MAIN ? visibleRoster().length : null });
+function emptySlotText() { return JSON.stringify(M.normalize({ version: 2, roster: [], selection: [], initialLevels: {} })); }
+function slotsChanged() {
+  slotIndex = slots.readIndex();
+  storageUsage = null;
+  if (slotIndex) slots.remember(activeSlot);
+  document.dispatchEvent(new Event('rigging-slots'));
+  refreshSlotLabels();
+}
+/* kind 'copy' (this slot as it is now) or 'empty'; or text (a restored backup). Returns the new slot, or null
+   with a notice when storage refused it. */
+function createSlot({ kind, text, name } = {}) {
+  const data = text ?? (kind === 'copy' ? serializeSlot() : emptySlotText());
+  const people = text ? JSON.parse(text).roster.filter(item => !item.deleted && inStory(char(item.id))).length : kind === 'copy' ? visibleRoster().length : 0;
+  try {
+    const slot = slots.add({ name, text: data, people, seed: mainSlotSeed() });
+    slotsChanged();
+    return slot;
+  } catch {
+    slotsChanged();
+    notify('存储空间不足，未能新建存档');
+    return null;
+  }
+}
+function renameSlot(id, name) {
+  try { slots.rename(id, name, mainSlotSeed()); } catch { notify('存储空间不足，名称未保存'); }
+  slotsChanged();
+}
+// The slot this page uses, and the last one left, cannot be deleted.
+const canDeleteSlot = id => id !== activeSlot && slotList().length > 1;
+function deleteSlot(id) {
+  if (!canDeleteSlot(id)) return false;
+  try { slots.remove(id); } catch { notify('删除失败'); }
+  slotsChanged();
+  return true;
+}
+// Everything that belongs to the page on screen rather than to the data: dialogs, menus, lists, tips.
+function closeTransientUi() {
+  closeStyledSelect();
+  hideExpectationTip();
+  document.querySelectorAll('dialog[open]').forEach(dialog => HTMLDialogElement.prototype.close.call(dialog));
+  document.querySelectorAll('.action-menu[open]').forEach(menu => { menu.open = false; });
+}
+/* No confirmation: this slot is saved first (a failed save keeps the page here), the other is loaded, and the page
+   opens on 升级记录 (选择人物 when the slot has nobody yet). dropCurrent: the slot was deleted elsewhere, nothing to save. */
+function switchSlot(id, { dropCurrent = false } = {}) {
+  const target = slotList().find(slot => slot.id === id);
+  if (!target || (id === activeSlot && !dropCurrent)) return false;
+  let raw, data;
+  try {
+    raw = localStorage.getItem(slots.keyOf(id));
+    data = validate(raw ? JSON.parse(raw) : JSON.parse(emptySlotText()));
+  } catch { notify(`「${target.name}」无法读取，未切换`); return false; }
+  closeTransientUi();
+  if (!dropCurrent) {
+    settleInlineEdit();
+    if (page === 'record') { activeRecord = null; page = 'summary'; }
+    rememberRecordDraft();
+    if (!storageBlocked && !saveLocalState()) { notify('此页更改尚未保存，未切换存档'); return false; }
+    try { slots.touch(activeSlot, visibleRoster().length); } catch { /* Only the manager's row details. */ }
+  }
+  clearTimeout(localSaveTimer);
+  parkInlineEdit();
+  const templates = state.expectationTemplates;
+  activeSlot = id;
+  slots.remember(id);
+  try { slots.markUsed(id); } catch { /* The tab still remembers it. */ }
+  slotIndex = slots.readIndex();
+  state = trackState(withTemplates(data, templates));
+  lastLocalSave = raw;
+  setStorageIssue('');
+  readRecordDraft(); upgradeHeldRecordDraft();
+  clearRowSelection(); editingCharacters.clear(); expandedJournals.clear(); forecastLengths.clear();
+  activeRecord = null; query = ''; recordReturnPosition = null;
+  seedMessages.clear(); dismissedSeedMessages.clear(); clearDrag();
+  // The shell forgets where its board stood (ui/mobile.js).
+  document.dispatchEvent(new Event('rigging-slot-switch'));
+  document.dispatchEvent(new Event('rigging-slots'));
+  page = visibleRoster().length ? 'summary' : 'select';
+  app.replaceChildren();
+  render();
+  window.scrollTo(0, 0);
+  updateTitle();
+  notify(`已切换到 ${target.name}`);
+  return true;
+}
+let importAsNewSlot = false;
+function chooseImport(asNewSlot = false) {
+  importAsNewSlot = asNewSlot;
+  document.querySelector('#import-file').click();
+}
 document.querySelector('#storage-status').addEventListener('click', e => {
   const action = e.target.closest('[data-storage-action]')?.dataset.storageAction;
   if (action === 'save') saveLocalState();
-  if (action === 'import') document.querySelector('#import-file').click();
+  if (action === 'import') chooseImport();
+  if (action === 'slots') openSlotManager();
+  if (action === 'dismiss') window.RiggingStorageStatus.hint('');
   if (action === 'export') exportBackup(storageIssue === 'read' && typeof lastLocalSave === 'string' ? lastLocalSave : undefined);
 });
 function ratingIcon(happy) {
@@ -871,6 +1058,9 @@ app.addEventListener('click', async e => {
   if (mount) { e.preventDefault(); e.stopPropagation(); openRidePicker(mount); return; }
   if (e.target.matches('input[data-level-input]')) e.target.select();
   const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.slotSwitch) { switchSlot(b.dataset.slotSwitch); return; }
+  if (b.dataset.action === 'slots') { openSlotManager(b); return; }
+  if (b.dataset.action === 'import-slot') { chooseImport(true); return; }
   if (b.dataset.expandRecords) {
     const journal = b.closest('.journal');
     setJournalExpanded(journal, !journal.classList.contains('records-expanded'));
@@ -1025,10 +1215,12 @@ app.addEventListener('click', async e => {
   }
   if (action === 'next' || action === 'finish') saveRecord(action === 'next');
   if (action === 'export') exportBackup();
-  if (action === 'import') document.querySelector('#import-file').click();
+  if (action === 'import') chooseImport();
 });
 let importRequest = 0;
-async function importFile(file) {
+/* asNewSlot (恢复为新存档): the backup becomes a new slot, named after the file, and the page switches to it.
+   Either way the backup's templates are added to the shared ones that are missing (by id); none are removed. */
+async function importFile(file, asNewSlot = false) {
   if (!file) return;
   const request = ++importRequest;
   let data;
@@ -1042,6 +1234,16 @@ async function importFile(file) {
     document.querySelector('#import-file').value = '';
   }
   if (request !== importRequest) return;
+  data.expectationTemplates = mergeTemplates(state.expectationTemplates, data.expectationTemplates);
+  if (!data.expectationTemplates.length) delete data.expectationTemplates;
+  if (asNewSlot) {
+    const { expectationTemplates, ...slotData } = data;
+    const slot = createSlot({ text: JSON.stringify(slotData), name: file.name.replace(/\.json$/i, '') });
+    if (!slot) return;
+    if (expectationTemplates) state.expectationTemplates = expectationTemplates;
+    switchSlot(slot.id);
+    return;
+  }
   // Retain the original nodes as well as data, including unfinished form input.
   const previous = { state, page, activeRecord, query, editing: [...editingCharacters],
     selected: [...rowSelection], selectionAnchor, selectionPage, multiSelectMode,
@@ -1080,7 +1282,7 @@ async function importFile(file) {
   window.scrollTo(0, 0); notify('');
 }
 
-document.querySelector('#import-file').addEventListener('change', e => importFile(e.target.files[0]));
+document.querySelector('#import-file').addEventListener('change', e => { const asNew = importAsNewSlot; importAsNewSlot = false; importFile(e.target.files[0], asNew); });
 function finishMouseSort(commit = false) {
   if (!mouseSort) return;
   const gesture = mouseSort;
@@ -1232,11 +1434,15 @@ function checkRecordDraft(d, data) {
 // One unsaved upgrade input, outside the save and backups. `open` means the page was
 // still showing it, so a reload returns there; otherwise it waits for that row to reopen.
 let heldRecordDraft = null;
-try { heldRecordDraft = JSON.parse(localStorage.getItem(RECORD_DRAFT_KEY) || 'null'); } catch { /* Optional storage. */ }
+// Each slot has its own (recordDraftKey()); switching slots reads the other one (readRecordDraft).
+function readRecordDraft() {
+  try { heldRecordDraft = JSON.parse(localStorage.getItem(recordDraftKey()) || 'null'); } catch { heldRecordDraft = null; }
+}
+readRecordDraft();
 function writeRecordDraft() {
   try {
-    if (heldRecordDraft) localStorage.setItem(RECORD_DRAFT_KEY, JSON.stringify(heldRecordDraft));
-    else localStorage.removeItem(RECORD_DRAFT_KEY);
+    if (heldRecordDraft) localStorage.setItem(recordDraftKey(), JSON.stringify(heldRecordDraft));
+    else localStorage.removeItem(recordDraftKey());
   } catch { /* The input still lives in this page. */ }
 }
 /* The saved record's page is the way to 补录上一级, so opening it unchanged keeps an insertion waiting before it. */
@@ -1295,13 +1501,16 @@ function restoreRecordPage() {
   if (draft) { activeRecord = draft; page = 'record'; }
 }
 // Only used for a same-tab deployment update; existing localStorage is untouched.
+// The first slot keeps the original key; another slot adds its id, so the update restores into the same slot
+// (the tab's active slot is in sessionStorage too and survives the update navigation).
 function updateSessionKey() {
-  return `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
+  const base = `rigging-buddy:update-session:v1:${new URL('.', window.location.href).pathname}`;
+  return activeSlot === slots.MAIN ? base : `${base}:slot:${activeSlot}`;
 }
 window.prepareForAppUpdate = revision => {
   if (mouseSort || touchSort || document.activeElement?.matches('input:not([name="part3"]):not([name="route"])') || app.querySelector('[data-initial-form]') || app.querySelector('#batch-level')?.value || document.querySelector('dialog[open]')) return false;
   try {
-    const snapshot = { schema: 1, revision, savedAt: Date.now(), state, page, query, activeRecord,
+    const snapshot = { schema: 1, revision, savedAt: Date.now(), slot: activeSlot, state, page, query, activeRecord,
       editingCharacters: [...editingCharacters], scrollY: window.scrollY };
     const serialized = JSON.stringify(snapshot);
     sessionStorage.setItem(updateSessionKey(), serialized);
@@ -1315,7 +1524,7 @@ function restoreAfterAppUpdate() {
   try {
     const key = updateSessionKey();
     const saved = JSON.parse(sessionStorage.getItem(key) || 'null');
-    if (!saved || saved.schema !== 1 || Date.now() - saved.savedAt > 24 * 60 * 60 * 1000) return;
+    if (!saved || saved.schema !== 1 || Date.now() - saved.savedAt > 24 * 60 * 60 * 1000 || (saved.slot ?? slots.MAIN) !== activeSlot) return;
     // A versioned update navigation must be present; ordinary visits start normally.
     if (new URL(window.location.href).searchParams.get('v') !== saved.revision) return;
     saved.state = validate(saved.state);
@@ -1374,16 +1583,19 @@ app.addEventListener('change', e => {
 });
 // Pages of this site follow each other: a save in one is taken up by the others. It waits while this page is
 // mid-gesture, in a dialog or typing, so nothing it holds goes stale, and applies on the next calm moment.
-let followedSave = null;
+let followedSave = null, followedTemplates = null, followedIndex = false;
 function followBusy() {
   return Boolean(mouseSort || touchSort || document.querySelector('dialog[open]') || document.activeElement?.matches('input,textarea,select,[contenteditable]'));
 }
 function applyFollowedSave() {
-  if (followedSave === null || (!document.hidden && followBusy())) return;
+  if ((followedSave === null && followedTemplates === null && !followedIndex) || (!document.hidden && followBusy())) return;
+  if (followedIndex) { followedIndex = false; if (followSlotIndex()) return; }
+  if (followedTemplates !== null) { followedTemplates = null; followSharedTemplates(); }
+  if (followedSave === null) return;
   followedSave = null;
   // Take what is stored now: if this page wrote after the other one, its own save is already the latest.
   let serialized;
-  try { serialized = localStorage.getItem(LOCAL_STATE_KEY); } catch { return; }
+  try { serialized = localStorage.getItem(activeSaveKey()); } catch { return; }
   if (serialized === null || serialized === lastLocalSave) return;
   const scrollY = window.scrollY;
   parkInlineEdit();
@@ -1397,9 +1609,37 @@ function settleFollowedPage() {
   if (page === 'summary' && !visibleRoster().length) page = state.selection.length ? 'levels' : 'select';
   if (page === 'levels' && !state.selection.length) page = visibleRoster().length ? 'summary' : 'select';
 }
+/* Another page changed the templates: take them as they are stored now. */
+function followSharedTemplates() {
+  const list = readSharedTemplates();
+  if (!list) return;
+  if (JSON.stringify(state.expectationTemplates || []) === JSON.stringify(list)) return;
+  if (list.length) state.expectationTemplates = list; else delete state.expectationTemplates;
+}
+/* Another page changed the slot list. If it deleted this page's slot, this page moves to the slot used last
+   (without saving: the slot is gone) and says so; otherwise only the names shown are refreshed. */
+function followSlotIndex() {
+  slotIndex = slots.readIndex();
+  document.dispatchEvent(new Event('rigging-slots'));
+  if (slotList().some(slot => slot.id === activeSlot)) { refreshSlotLabels(); return false; }
+  const gone = activeSlot, next = slotIndex?.last || slotList()[0].id;
+  if (!switchSlot(next, { dropCurrent: true })) return false;
+  try { localStorage.removeItem(slots.keyOf(gone)); localStorage.removeItem(slots.draftKeyOf(gone)); } catch { /* Already gone. */ }
+  notify(`此存档已在其他页面删除，已切换到 ${activeSlotEntry().name}`);
+  return true;
+}
 window.addEventListener('storage', e => {
-  if (e.key !== LOCAL_STATE_KEY || e.storageArea !== localStorage || e.newValue === null) return;
-  followedSave = e.newValue;
+  if (e.storageArea !== localStorage) return;
+  // Sizes changed elsewhere: count again at the next save.
+  storageUsage = null;
+  if (e.key === slots.indexKey) {
+    followedIndex = true;
+    // The manager lists the slots; it follows at once, the page when it is calm.
+    slotIndex = slots.readIndex();
+    document.dispatchEvent(new Event('rigging-slots'));
+  } else if (e.key === slots.templatesKey && e.newValue !== null) followedTemplates = e.newValue;
+  else if (e.key === activeSaveKey() && e.newValue !== null) followedSave = e.newValue;
+  else return;
   applyFollowedSave();
 });
 document.addEventListener('close', () => setTimeout(applyFollowedSave), true);

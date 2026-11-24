@@ -134,6 +134,23 @@ document.addEventListener('keydown', e => {
     e.preventDefault(); e.stopImmediatePropagation(); toggleCardRating(e.target);
   }
 }, true);
+/* 存档 menu (was 备份): the slots, checkmark on this page's, then 管理存档 and the backup commands. With several
+   slots the label names the active one, cut to six characters (the full name is its tooltip). In the shell this
+   menu feeds the 更多 action sheet (ui/mobile.js), which shows 管理存档 as 存档 and leaves the slot rows out. */
+function slotLabel(name) {
+  const chars = Array.from(name);
+  return chars.length > 6 ? `${chars.slice(0, 5).join('')}…` : name;
+}
+function slotMenu() {
+  const list = slotList(), active = activeSlotEntry(), many = list.length > 1;
+  const check = '<svg class="menu-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7"/></svg>';
+  const label = many ? `存档 · ${escapeValue(slotLabel(active.name))}` : '存档';
+  return `<details class="action-menu" name="summary-tools"><summary${many ? ` title="${escapeValue(active.name)}"` : ''}>${label} <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel slot-menu">${list.map(slot => `<button class="menu-slot" data-slot-switch="${slot.id}" aria-current="${slot.id === active.id}">${check}<span>${escapeValue(slot.name)}</span></button>`).join('')}<button data-action="slots" data-sheet-label="存档" aria-haspopup="dialog">管理存档</button><hr class="menu-separator"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button><button data-action="import-slot">恢复为新存档</button></div></details>`;
+}
+// Shell 显示设置: the active slot's name at the top, only once there are several.
+function slotSettingsName() {
+  return multipleSlots() ? `<p class="m-settings-slot"><span>存档</span>${escapeValue(activeSlotEntry().name)}</p>` : '';
+}
 function renderSummary() {
   const total = visibleRoster().reduce((n, r) => n + M.live(r).length, 0);
   // The two counters count what the board holds: live records plus the forecast rows loaded as cards (see setMetrics).
@@ -142,7 +159,7 @@ function renderSummary() {
   const canUndo = window.RiggingActions.canUndoDelete(storyRoster());
   const hasSkipped = visibleRoster().some(item => M.live(item).some(record => record.status === 'skipped'));
   const markup =
-    `<div class="summary-top"><div class="metrics"><div><b></b><span>人物</span></div><div><b></b><span>升级记录</span></div><div><b></b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button><details class="action-menu" name="summary-tools"><summary>备份 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="export">导出备份</button><button class="import-zone" data-action="import">恢复备份</button></div></details><details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total || visibleRoster().some(item => item.seed) ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
+    `<div class="summary-top"><div class="metrics"><div><b></b><span>人物</span></div><div><b></b><span>升级记录</span></div><div><b></b><span>满意升级</span></div></div>${UI_MEDIA.mobileShell.matches ? `<div class="m-settings">${slotSettingsName()}${part3Switch()}${routeSwitch()}${recommendFilter()}</div>` : `${part3Switch()}${routeSwitch()}${recommendFilter()}`}<div class="summary-controls">${selectionToolbar()}<div class="actions summary-actions"><button class="primary" data-action="select"><svg class="add-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>添加人物</span></button>${slotMenu()}<details class="action-menu" name="summary-tools"><summary>更多 <svg class="menu-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary><div class="menu-panel"><button data-action="undo-delete" ${canUndo ? '' : 'disabled'}>撤回上次删除</button><button class="menu-danger" data-action="clear-skipped" ${hasSkipped ? '' : 'disabled'}>清空已跳过</button><button class="menu-danger" data-action="reset-list" ${total || visibleRoster().some(item => item.seed) ? '' : 'disabled'}>清空升级记录</button><button class="menu-danger" data-action="reset">清空全部</button></div></details></div></div></div><div class="journals">${visibleRoster().map(item => {
       const c = char(item.id);
       const phone = UI_MEDIA.mobileShell.matches;
       const editing = editingCharacters.has(c.id);

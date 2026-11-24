@@ -42,6 +42,13 @@
     }, 200);
   }
   let knownBoard = null;
+  // Another save slot (app.js switchSlot): its board starts at rest, and the stored positions are dropped.
+  document.addEventListener('rigging-slot-switch', () => {
+    clearTimeout(saveTimer);
+    columnScroll.clear(); recordCounts.clear();
+    boardScroll = 0; reloaded = null; knownBoard = null; boardShown = false; sortMode = false;
+    try { sessionStorage.removeItem(POSITIONS_KEY); } catch { /* Optional storage. */ }
+  });
 
   const onSummary = () => page === 'summary';
   const listMode = () => sortMode || app.classList.contains('multi-select-mode');
@@ -105,7 +112,7 @@
       trailing.push(local('settings', { label: '显示设置', icon: ICONS.settings, kind: 'icon', aria: '剧情范围、路线与兵种推荐范围', pressed: settingsOpen }));
       const add = find('.summary-actions [data-action="select"]');
       if (add) trailing.push(proxy(add, { icon: ICONS.add, kind: 'icon', aria: '添加人物' }));
-      trailing.push(local('more', { label: '更多', icon: ICONS.more, kind: 'icon', aria: '备份与更多操作' }));
+      trailing.push(local('more', { label: '更多', icon: ICONS.more, kind: 'icon', aria: '存档与更多操作' }));
     }
     return { leading, trailing };
   }
@@ -474,15 +481,14 @@
     if (info && !info.frame && Math.abs(target.scrollTop - info.set) >= 1 && folds(target)) scheduleColumnReturn(target);
   }
 
-  /* ---------- Action sheet for step 3's backup and maintenance menus ---------- */
-  function openMoreSheet(trigger) {
-    if (document.querySelector('dialog[open]')) return;
-    const groups = [...app.querySelectorAll('.summary-actions .action-menu .menu-panel')]
-      .map(panel => [...panel.querySelectorAll('button')]);
+  /* ---------- Action sheets ----------
+     groups: lists of {label, danger, disabled, run}; 取消 at the bottom. Step 3's 更多 lists the 存档 and 更多 menus
+     with it; the slot manager's 新建 (ui/save-slots.js) uses it too. */
+  function openActionSheet(groups, { label, trigger }) {
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog m-sheet';
-    dialog.setAttribute('aria-label', '备份与更多操作');
-    dialog.innerHTML = `<div class="m-sheet-body"><div class="m-sheet-groups">${groups.map((buttons, group) => `<div class="m-sheet-group">${buttons.map((button, index) => `<button type="button" class="${button.classList.contains('menu-danger') ? 'danger-text' : ''}" data-sheet="${group}:${index}" ${button.disabled ? 'disabled' : ''}>${escapeValue(button.textContent.trim())}</button>`).join('')}</div>`).join('')}</div><footer><button type="button" data-sheet-close autofocus>取消</button></footer></div><div class="m-sheet-edge" aria-hidden="true"></div>`;
+    dialog.setAttribute('aria-label', label);
+    dialog.innerHTML = `<div class="m-sheet-body"><div class="m-sheet-groups">${groups.map((items, group) => `<div class="m-sheet-group">${items.map((item, index) => `<button type="button" class="${item.danger ? 'danger-text' : ''}" data-sheet="${group}:${index}" ${item.disabled ? 'disabled' : ''}>${escapeValue(item.label)}</button>`).join('')}</div>`).join('')}</div><footer><button type="button" data-sheet-close autofocus>取消</button></footer></div><div class="m-sheet-edge" aria-hidden="true"></div>`;
     let chosen = null, leaving = false;
     /* Cancelling leaves the way the sheet came in (HIG Motion: dismiss along the axis of the reveal): it slides
        back down while the dimming fades, then closes. Choosing an action closes at once, so that action's own
@@ -506,7 +512,7 @@
         dialog.close();
         // Run the original item inside this tap: iOS Safari only opens the file picker (恢复备份) or starts a
         // download (导出备份) during a user gesture, and the sheet is already closed so its confirmation opens cleanly.
-        if (chosen.isConnected && !chosen.disabled) chosen.click();
+        chosen.run();
       } else if (event.target.closest('[data-sheet-close]')) dismiss();
       // An action sheet, like iOS: a tap on the dimmed page outside the groups cancels it. The tool dialogs
       // keep the general rule (exit button or Esc only).
@@ -514,10 +520,23 @@
     });
     dialog.addEventListener('close', () => {
       retireDialog(dialog);
-      if (!chosen && trigger.isConnected) trigger.focus({ preventScroll: true });
+      if (!chosen && trigger?.isConnected) trigger.focus({ preventScroll: true });
     }, { once: true });
     document.body.append(dialog);
     dialog.showModal();
+  }
+  window.openActionSheet = openActionSheet;
+  // The slot rows stay in the desktop menu: in the shell, slots are switched in the manager (存档).
+  function openMoreSheet(trigger) {
+    if (document.querySelector('dialog[open]')) return;
+    const groups = [...app.querySelectorAll('.summary-actions .action-menu .menu-panel')]
+      .map(panel => [...panel.querySelectorAll('button:not([data-slot-switch])')].map(button => ({
+        label: button.dataset.sheetLabel || button.textContent.trim(),
+        danger: button.classList.contains('menu-danger'),
+        disabled: button.disabled,
+        run: () => { if (button.isConnected && !button.disabled) button.click(); }
+      })));
+    openActionSheet(groups, { label: '存档与更多操作', trigger });
   }
 
   /* ---------- Lifecycle ---------- */

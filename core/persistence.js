@@ -18,7 +18,11 @@ window.RiggingPersistence = (() => {
     return proxy;
   }
 
-  function create({ runtime, key, getStorage, serialize, onIssue, onRestore }) {
+  /* `key` may be a function: the save slot this tab uses (core/slots.js). `shared` is data kept under its own
+     key for every slot (the expectation templates): {serialize, write, last}; it is written before the slot, so
+     moving it out of an old save never loses it. `onSaved(previous, serialized)` follows a successful write. */
+  function create({ runtime, key, getStorage, serialize, shared, onIssue, onRestore, onSaved }) {
+    const keyOf = typeof key === 'function' ? key : () => key;
     function schedule() {
       if (!runtime.ready || runtime.blocked) return;
       clearTimeout(runtime.timer); runtime.timer = setTimeout(save, 150);
@@ -28,17 +32,23 @@ window.RiggingPersistence = (() => {
       if (!runtime.ready || (runtime.blocked && replace !== true)) return false;
       try {
         const serialized = serialize();
-        if (serialized === runtime.lastSave && !runtime.issue && replace !== true) return true;
+        const extra = shared ? shared.serialize() : null, extraChanged = Boolean(shared) && extra !== shared.last;
+        if (serialized === runtime.lastSave && !extraChanged && !runtime.issue && replace !== true) return true;
+        if (extraChanged) { shared.write(extra); shared.last = extra; }
         // No tab conflict: another page's save reaches this one through the storage event (app.js), and the
         // latest write wins.
-        getStorage().setItem(key, serialized); runtime.lastSave = serialized; onIssue(); return true;
+        const previous = runtime.lastSave;
+        if (serialized !== previous || runtime.issue || replace === true) getStorage().setItem(keyOf(), serialized);
+        runtime.lastSave = serialized; onIssue();
+        onSaved?.(previous, serialized);
+        return true;
       } catch {
         onIssue('write'); return false;
       }
     }
     function restore() {
       try {
-        runtime.lastSave = getStorage().getItem(key);
+        runtime.lastSave = getStorage().getItem(keyOf());
         if (runtime.lastSave) onRestore(JSON.parse(runtime.lastSave));
       } catch {
         onIssue('read');
