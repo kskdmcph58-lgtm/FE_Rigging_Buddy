@@ -1124,18 +1124,22 @@ function wireWheel(wheel, { settle }) {
   wheel.addEventListener('pointercancel', release);
   return { go };
 }
+// Each exam dialog's radio groups get their own names, so a closing dialog's switches never join the next one's.
+let examDialogCount = 0;
 function examDialog(item, c, stats) {
   return new Promise(resolve => {
     const actions = window.RiggingActions, seed = window.RiggingSeed, highest = stats.part3 || state.part3 === true || c.part3Only === true ? 5 : 3;
     const icon = name => `<img src="${imageSrc(`assets/classes/${window.PROFESSIONS.icons[name]}.webp`)}" alt="" draggable="false">`;
     const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id, stats.part3) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
     const counted = stats.levels.length > 0, ranged = counted && stats.min < stats.max;
-    // iOS segmented controls in the project's colours: the view (考试推荐 | 成长对比), and 成长对比's 基准. Radio semantics,
-    // so the picker stack's return focus (aria-pressed) never lands on them.
-    const SWITCHES = { mode: ['视图', [['exam', '考试推荐'], ['growth', '成长对比']]], basis: ['基准', [['class', '当前职业'], ['forecast', '当前现状']]] };
+    // The view (考试推荐 | 成长对比) and 成长对比's 基准 and 总量 | 净值: the toolbar's segmented control (routeSwitch) as it is.
+    // Its raised block sits on the second option when that input's value is "other"; data-value carries the meaning.
+    // Native radios: arrow keys move within a group, and the picker stack's return focus (aria-pressed) never lands here.
+    const SWITCHES = { mode: ['视图', [['exam', '考试推荐'], ['growth', '成长对比']]], basis: ['基准', [['class', '当前职业'], ['forecast', '当前现状']]], show: ['数值', [['total', '总量'], ['net', '净值']]] };
+    const radioName = `exam-${++examDialogCount}`;
     const growthSwitch = (name, extra = '') => {
-      const [label, options] = SWITCHES[name];
-      return `<div class="growth-switch${extra ? ` ${extra}` : ''}" role="radiogroup" aria-label="${label}" data-switch="${name}">${options.map(([value, text], i) => `<button type="button" role="radio" data-value="${value}" aria-checked="${!i}" tabindex="${i ? -1 : 0}">${text}</button>`).join('')}</div>`;
+      const [label, options] = SWITCHES[name], group = `${radioName}-${name}${extra ? `-${extra}` : ''}`;
+      return `<div class="route-segment${extra ? ` ${extra}` : ''}" role="radiogroup" aria-label="${label}" data-switch="${name}">${options.map(([value, text], i) => `<label><input type="radio" name="${group}" value="${i ? 'other' : value}" data-value="${value}"${i ? '' : ' checked'}><span>${text}</span></label>`).join('')}</div>`;
     };
     let range = counted ? seed.examRange(item, stats) : { from: null, to: null };
     let entries = [];
@@ -1322,16 +1326,12 @@ function examDialog(item, c, stats) {
         if (!cache.has(keyOf(option))) cache.set(keyOf(option), seed.growthLevels(state, c, stats, option) || []);
         return cache.get(keyOf(option));
       };
-      let mode = 'exam', basisKind = 'class', basis = null, picks = null, offered = false;
+      let mode = 'exam', basisKind = 'class', basis = null, picks = null, offered = false, show = 'total';
       const scrolls = { exam: 0, growth: 0 };
       const sum = list => list.reduce((a, b) => a + b, 0);
       const kindOf = name => rideKind(name, item.id, part3);
       const rideOf = (name, kind = kindOf(name)) => kind ? rememberedRide(item.id, kind, undefined, part3) : null;
-      const setSwitch = (name, value) => dialog.querySelectorAll(`[data-switch="${name}"] [role="radio"]`).forEach(button => {
-        const on = button.dataset.value === value;
-        button.setAttribute('aria-checked', String(on));
-        button.tabIndex = on ? 0 : -1;
-      });
+      const setSwitch = (name, value) => dialog.querySelectorAll(`[data-switch="${name}"] input`).forEach(input => { input.checked = input.dataset.value === value; });
       const rideName = ride => window.RIDES.byId[ride.id]?.name ?? '';
       const rideLine = (kind, ride) => {
         if (!kind) return '';
@@ -1341,15 +1341,14 @@ function examDialog(item, c, stats) {
       };
       const optionRows = option => `<span class="better-class">${icon(option.profession)}<span class="game-text">${option.profession}</span></span>${rideLine(kindOf(option.profession), option.ride)}`;
       const optionWords = option => `${option.profession}${kindOf(option.profession) ? `，${option.ride ? `${rideName(option.ride)} 友好LV${option.ride.level}` : '无配属'}` : ''}`;
-      // The level-up board: each stat's total; against the 基准 a gain or loss frames the cell, writes the difference and
-      // draws a thin diverging bar on the cell's bottom edge, on one scale for every card (the largest difference is a half).
-      // A cell holds five figures beside a two-character name, as 考试推荐's +12−3 does; a three-figure total with a
-      // two-figure difference would not, so there the frame, the bar and the card's label carry the difference alone.
+      // The level-up board. 总量: each stat's total; 净值: its difference from the 基准 (— when the same). Either way a gain
+      // or loss frames the cell and draws a thin diverging bar on its bottom edge, on one scale for every card (the largest
+      // difference is a half). The 基准 always shows its totals, unmarked.
       const board = (totals, diff = null, scale = 1) => `<span class="mini-stats" aria-hidden="true">${STATS.map((stat, i) => {
-        const value = totals[i], d = diff ? diff[i] : 0, fits = stat === 'HP' || `${value}${Math.abs(d)}`.length < 5;
-        const delta = !fits ? '' : d > 0 ? `<i class="exam-up">+${d}</i>` : d < 0 ? `<i class="exam-down">−${-d}</i>` : '';
+        const value = totals[i], d = diff ? diff[i] : 0;
+        const text = !diff || show === 'total' ? value || '—' : d > 0 ? `<i class="exam-up">+${d}</i>` : d < 0 ? `<i class="exam-down">−${-d}</i>` : '—';
         const bar = d ? `<i class="growth-bar ${d > 0 ? 'up' : 'down'}" style="--bar:${Math.abs(d) / scale}"></i>` : '';
-        return `<span class="mini-stat ${value ? 'active' : ''} ${d > 0 ? 'more' : d < 0 ? 'less' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}"><span>${stat}</span><b>${value || '—'}${delta}</b>${bar}</span>`;
+        return `<span class="mini-stat ${value ? 'active' : ''} ${d > 0 ? 'more' : d < 0 ? 'less' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}"><span>${stat}</span><b>${text}</b>${bar}</span>`;
       }).join('')}</span>`;
       const signed = d => d > 0 ? `+${d}` : d < 0 ? `−${-d}` : '±0';
       const changes = diff => STATS.map((stat, i) => diff[i] ? `${stat}${diff[i] > 0 ? '多' : '少'} ${Math.abs(diff[i])}` : '').filter(Boolean).join('，');
@@ -1380,9 +1379,10 @@ function examDialog(item, c, stats) {
         const node = card => {
           const key = encodeURIComponent(keyOf(card.option)), total = sum(card.totals);
           const words = `${optionWords(card.option)}，合计 ${total} 点，${card.delta ? `比基准${card.delta > 0 ? '多' : '少'} ${Math.abs(card.delta)} 点` : '与基准相同'}${changes(card.diff) ? `：${changes(card.diff)}` : ''}`;
-          return `<div class="better-node exam-node growth-node" data-key="${key}" role="group" aria-label="${words}"><span class="better-card"><span class="exam-gain"><b>${total}</b><small class="${card.delta > 0 ? 'up' : card.delta < 0 ? 'down' : 'same'}">${signed(card.delta)}</small></span>${board(card.totals, card.diff, scale)}</span><span class="better-ridebox"><span class="better-entry">${optionRows(card.option)}<span class="growth-actions"><button type="button" class="growth-action" data-growth-basis="${key}">设为基准</button><button type="button" class="growth-action" data-growth-remove="${key}">移除</button></span></span></span></div>`;
+          return `<div class="better-node exam-node growth-node" data-key="${key}" role="group" aria-label="${words}"><span class="better-card"><span class="exam-gain"><b>${show === 'total' ? total : signed(card.delta)}</b></span>${board(card.totals, card.diff, scale)}</span><span class="better-ridebox"><span class="better-entry">${optionRows(card.option)}<span class="growth-actions"><button type="button" class="growth-action" data-growth-basis="${key}">设为基准</button><button type="button" class="growth-action" data-growth-remove="${key}">移除</button></span></span></span></div>`;
         };
-        col.innerHTML = `<div class="exam-nodes growth-nodes">${baseNode}</div><h3 class="better-caption">对比</h3><div class="exam-nodes growth-nodes">${cards.map(node).join('')}</div>${cards.length ? '' : '<p class="better-none">点“添加职业”选择要对比的兵种</p>'}`;
+        col.innerHTML = `<div class="exam-nodes growth-nodes">${baseNode}</div><div class="growth-head"><h3 class="better-caption">对比</h3>${growthSwitch('show')}</div><div class="exam-nodes growth-nodes">${cards.map(node).join('')}</div>${cards.length ? '' : '<p class="better-none">点“添加职业”选择要对比的兵种</p>'}`;
+        setSwitch('show', show);
       };
       const redraw = () => examAnimate(dialog, draw, col);
       const pickOf = key => picks.find(option => encodeURIComponent(keyOf(option)) === key);
@@ -1463,22 +1463,18 @@ function examDialog(item, c, stats) {
         map.scrollTop = scrolls[mode];
         syncCaptionTop();
       };
-      // Segmented controls: a click picks; the arrow keys move along the group (radio semantics), Tab leaves it.
-      dialog.addEventListener('keydown', e => {
-        const button = e.target.closest('.growth-switch [role="radio"]');
-        if (!button || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
-        e.preventDefault();
-        const all = [...button.parentElement.children], next = all[(all.indexOf(button) + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? all.length - 1 : 1)) % all.length];
-        next.click(); next.focus({ preventScroll: true });
+      dialog.addEventListener('change', e => {
+        const name = e.target.closest('[data-switch]')?.dataset.switch, value = e.target.dataset.value;
+        if (name === 'mode') setMode(value);
+        else if (name === 'basis' && value !== basisKind) { basisKind = value; redraw(); }
+        else if (name === 'show' && value !== show) {
+          show = value;
+          draw();
+          col.querySelector(`[data-switch="show"] [data-value="${show}"]`).focus({ preventScroll: true });
+        }
       });
       const click = e => {
-        const option = e.target.closest('.growth-switch [role="radio"]');
-        if (option) {
-          const name = option.closest('[data-switch]').dataset.switch, value = option.dataset.value;
-          if (name === 'mode') setMode(value);
-          else if (value !== basisKind) { basisKind = value; redraw(); }
-          return true;
-        }
+        if (e.target.closest('[data-switch]')) return true;
         if (e.target.closest('[data-growth-add]')) { openAdd(); return true; }
         if (e.target.closest('[data-growth-change]')) { openChange(); return true; }
         const remove = e.target.closest('[data-growth-remove]'), promote = e.target.closest('[data-growth-basis]');
