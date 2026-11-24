@@ -129,7 +129,9 @@ window.RiggingSeed = (() => {
       const choices = betterChoices(context, item, c, row);
       // 强烈推荐: the choices that raise the most points on this level, one or several.
       const most = Math.max(...choices.map(points));
-      levels.push({ level: row.displayLevel, options: choices.map(choice => {
+      // row: what 成长对比 needs to grow any class on this level (its seed, real level, part) and what the forecast gives.
+      levels.push({ level: row.displayLevel, row: { seed: row.seed, level: row.level, part3: row.part3, profession: row.profession, ride: row.ride,
+        gains: model.stats.map(stat => amount(row, stat)) }, options: choices.map(choice => {
         const diff = model.stats.map(stat => amount(choice, stat) - amount(row, stat));
         return { key: `${choice.profession}|${choice.ride?.id ?? ''}|${choice.ride?.level ?? 0}`, profession: choice.profession, ride: choice.ride, strong: points(choice) === most,
           gain: diff.map(d => Math.max(0, d)), loss: diff.map(d => Math.max(0, -d)) };
@@ -189,6 +191,31 @@ window.RiggingSeed = (() => {
     }
     entries.sort((a, b) => b.gainTotal - a.gainTotal || a.lossTotal - b.lossTotal || b.count - a.count);
     return { rows, entries };
+  }
+
+  /* 成长对比: what one class, with one ride at one friendship level, would raise on every level examStats counted,
+     as if the person stayed in it. Each level uses its own seed, real level (战车兵 35/45, 战象兵 45) and part, so the
+     result is what the forecast would show with that class on every card. A level where the class cannot be held
+     (a Part 3 class on a level kept in 第1-2部) counts as the forecast has it, as the forecast itself does. Per level, in
+     model.stats order; a +2 counts 2. One simulation per level, so it is computed when asked and summed per range by
+     growthTotals. */
+  function growthLevels(state, c, stats, option) {
+    const id = personId(c), jobId = jobs.get(option.profession);
+    if (!id || !jobId) return null;
+    return stats.levels.map(({ level, row }) => {
+      if (!actions.classAllowed(state, c.id, option.profession, row.part3)) return { level, gains: row.gains };
+      const { growth, guarantee } = computeGrowth(state, c.id, { person: game.persons[id], jobId, level: row.level, part3: row.part3, ride: option.ride });
+      const gains = statsOf(engine.simulateLevel(row.seed, { kind: 'level', growth, guarantee, room: new Array(9).fill(UNCAPPED), advanceBefore: 0 }).gains);
+      return { level, gains: model.stats.map(stat => gains.plus2.includes(stat) ? 2 : gains.stats.includes(stat) ? 1 : 0) };
+    });
+  }
+  // 当前现状: the forecast as it stands, each level with its own class and ride.
+  const forecastLevels = stats => stats.levels.map(({ level, row }) => ({ level, gains: row.gains }));
+  // The sum of each stat over a level range (display levels, both ends included).
+  function growthTotals(levels, from, to) {
+    const totals = model.stats.map(() => 0);
+    for (const { level, gains } of levels) if (level >= from && level <= to) gains.forEach((value, i) => { totals[i] += value; });
+    return totals;
   }
 
   // Null when the class is unknown, so nothing can be calculated for this row.
@@ -628,6 +655,6 @@ window.RiggingSeed = (() => {
     return Boolean(event) && event.growth[game.stats.indexOf(stat)] > 100;
   }
 
-  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, toggleHandDrawnMark, clearForecast, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
+  return { MIN_RECORDS, load, ready, eligible, queueRows, rowDisplayLevel, cycleRowStatus, toggleHandDrawnMark, clearForecast, rowDraft, draftPrediction, saveRow, applyRowClass, toggleRowHappy, betterChoices, recommendedChoices, classTier, recommendCap, recommendUnlockedOnly, examStats, examRange, examEntries, growthLevels, forecastLevels, growthTotals, hasCorrection, search, applyFound, chainKey, correctionTarget, canPlus2,
     internals: { personId: c => personId(c), jobOf: name => jobs.get(name), eventOf, get game() { return game; } } };
 })();

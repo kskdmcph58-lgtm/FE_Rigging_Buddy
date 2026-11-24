@@ -976,13 +976,14 @@ function examMiniStats(entry) {
 }
 /* Filtering and level changes animate like 其他选择 (about 0.2s, nothing under Reduce Motion): cards that stay
    slide to their new place, cards that go fade out where they stood, new ones fade in. Cards are matched by
-   class and rides, since a level change draws them afresh. */
-function examAnimate(dialog, change) {
+   class and rides, since a level change draws them afresh. root narrows the cards to one view (成长对比 keeps the
+   考试推荐 columns hidden beside its own); ghosts still go in the dialog. */
+function examAnimate(dialog, change, root = dialog) {
   const frame = dialog.getBoundingClientRect(), before = new Map();
-  for (const node of dialog.querySelectorAll('.exam-node')) if (!node.hidden) before.set(node.dataset.key, { node, box: node.getBoundingClientRect() });
+  for (const node of root.querySelectorAll('.exam-node')) if (!node.hidden) before.set(node.dataset.key, { node, box: node.getBoundingClientRect() });
   change();
   if (reduceMotion()) return;
-  const shown = new Map([...dialog.querySelectorAll('.exam-node')].filter(node => !node.hidden).map(node => [node.dataset.key, node]));
+  const shown = new Map([...root.querySelectorAll('.exam-node')].filter(node => !node.hidden).map(node => [node.dataset.key, node]));
   for (const [key, { node, box }] of before) {
     if (shown.has(key)) continue;
     const ghost = node.cloneNode(true);
@@ -1129,6 +1130,13 @@ function examDialog(item, c, stats) {
     const icon = name => `<img src="${imageSrc(`assets/classes/${window.PROFESSIONS.icons[name]}.webp`)}" alt="" draggable="false">`;
     const words = entry => `${entry.profession}${entry.kind ? '，' + (anyRide(entry.kind, entry.rides, item.id, stats.part3) ? '任意配属' : betterRideText(entry.rides)) : ''}，共推荐 ${entry.count} 次，强烈推荐 ${entry.strong} 次，共多 ${entry.gainTotal} 点${entry.lossTotal ? `、少 ${entry.lossTotal} 点` : ''}`;
     const counted = stats.levels.length > 0, ranged = counted && stats.min < stats.max;
+    // iOS segmented controls in the project's colours: the view (考试推荐 | 成长对比), and 成长对比's 基准. Radio semantics,
+    // so the picker stack's return focus (aria-pressed) never lands on them.
+    const SWITCHES = { mode: ['视图', [['exam', '考试推荐'], ['growth', '成长对比']]], basis: ['基准', [['class', '当前职业'], ['forecast', '当前现状']]] };
+    const growthSwitch = (name, extra = '') => {
+      const [label, options] = SWITCHES[name];
+      return `<div class="growth-switch${extra ? ` ${extra}` : ''}" role="radiogroup" aria-label="${label}" data-switch="${name}">${options.map(([value, text], i) => `<button type="button" role="radio" data-value="${value}" aria-checked="${!i}" tabindex="${i ? -1 : 0}">${text}</button>`).join('')}</div>`;
+    };
     let range = counted ? seed.examRange(item, stats) : { from: null, to: null };
     let entries = [];
     const compute = () => {
@@ -1163,14 +1171,19 @@ function examDialog(item, c, stats) {
     const levelOptions = counted ? stats.levels.map(row => ({ value: row.level, label: level(row.level) })) : [];
     // Narrow layout: two compact buttons showing the choice; each opens its wheels in a bottom sheet.
     const chevron = PICK_CHEVRON;
-    const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span></span>${chevron}</button>` : ''}</div>`;
+    // 成长对比 shares this row: its 基准 switch takes the 阶级 button's place (only ranged rows can differ from the first).
+    const picks = !filterable && !ranged ? '' : `<div class="exam-picks">${ranged ? `<div class="growth-basis-pick" hidden>${growthSwitch('basis')}</div>` : ''}${filterable ? `<button type="button" class="exam-pick" data-pick="tier" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">阶级</span><span class="exam-pick-value" data-pick-value="tier"></span></span>${chevron}</button>` : ''}${ranged ? `<button type="button" class="exam-pick" data-pick="levels" aria-haspopup="dialog"><span class="exam-pick-text"><span class="exam-pick-label">等级</span><span class="exam-pick-value better-level" data-pick-value="levels"></span></span>${chevron}</button>` : ''}</div>`;
     const dialog = document.createElement('dialog');
     dialog.className = 'app-dialog better-dialog exam-dialog';
     animateMobilePickerClose(dialog);
     const stack = createPickerStack();
     stack.add(dialog);
     dialog.setAttribute('aria-labelledby', 'exam-title');
-    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2></header><div class="exam-map"><aside class="exam-side"><div class="exam-filters">${slider}${levelSlider}</div>${picks}<h3 class="better-caption exam-collapse-caption"><button type="button" class="exam-collapse" aria-expanded="true" aria-controls="exam-locked-list">未解锁${chevron}</button></h3></aside><section class="exam-col exam-locked" id="exam-locked-list"></section><section class="exam-col exam-unlocked"></section></div><footer class="better-actions"><button data-dismiss>关闭</button></footer>`;
+    /* The 考试推荐 | 成长对比 switch sits where nothing was: the title bar's right end on the desktop; in the narrow layout the
+       right end of the header's last row (beside 未解锁), held there by a zero-height sticky strip so it stays when
+       已解锁's heading takes that row over. 成长对比 adds its own column and the 添加职业 button, both hidden until used. */
+    const basisGroup = ranged ? `<div class="growth-basis" hidden><h3 class="better-caption">基准</h3>${growthSwitch('basis')}</div>` : '';
+    dialog.innerHTML = `<header><h2 id="exam-title">${c.name} 的考试推荐</h2>${growthSwitch('mode', 'exam-mode-head')}</header><div class="exam-map"><aside class="exam-side"><div class="exam-filters">${slider}${levelSlider}${basisGroup}</div>${picks}<h3 class="better-caption exam-collapse-caption"><button type="button" class="exam-collapse" aria-expanded="true" aria-controls="exam-locked-list">未解锁${chevron}</button></h3></aside><div class="exam-mode-float">${growthSwitch('mode')}</div><section class="exam-col exam-locked" id="exam-locked-list"></section><section class="exam-col exam-unlocked"></section><section class="growth-col" aria-label="成长对比" hidden></section></div><footer class="better-actions"><button type="button" data-growth-add hidden>添加职业</button><button data-dismiss>关闭</button></footer>`;
     const track = dialog.querySelector('.tier-slider');
     const filter = () => {
       for (const box of dialog.querySelectorAll('.exam-node')) box.hidden = Number(box.dataset.tier) > cap;
@@ -1218,7 +1231,8 @@ function examDialog(item, c, stats) {
       if (next.from === range.from && next.to === range.to) return;
       range = { ...next };
       actions.setExamRange(item, range, stats);
-      examAnimate(dialog, () => { compute(); draw(); });
+      if (growth.active()) examAnimate(dialog, () => { compute(); draw(); growth.draw(); }, growth.col);
+      else examAnimate(dialog, () => { compute(); draw(); });
     };
     if (track) wireTierSlider(track, highest, () => cap, setCap);
     const disposeLevelRange = levels ? wireLevelRange(levels, { min: stats.min, max: stats.max, get: () => shown, show: showRange, commit: commitRange }) : null;
@@ -1293,7 +1307,202 @@ function examDialog(item, c, stats) {
       collapseAnimations.add(animation);
       return animation.finished;
     };
+    /* 成长对比: the total each stat would grow over the chosen levels if the person stayed in one class, against a
+       基准. 当前职业 is one class, ride and friendship LV on every counted level (first the next level's); 当前现状 is the
+       forecast as it stands, offered only when a level in the range has another class or ride than the next level.
+       The picks and the 基准 live in this dialog only: nothing is written, and they start afresh on the next open.
+       Each option's levels are grown once (RiggingSeed.growthLevels) and summed per range. */
+    const growth = (() => {
+      const col = dialog.querySelector('.growth-col'), addButton = dialog.querySelector('[data-growth-add]');
+      const part3 = stats.part3, first = counted ? stats.levels[0].row : null;
+      const keyOf = option => `${option.profession}|${option.ride?.id ?? ''}|${option.ride?.level ?? 0}`;
+      const same = (a, b) => keyOf(a) === keyOf(b);
+      const cache = new Map();
+      const levelsOf = option => {
+        if (!cache.has(keyOf(option))) cache.set(keyOf(option), seed.growthLevels(state, c, stats, option) || []);
+        return cache.get(keyOf(option));
+      };
+      let mode = 'exam', basisKind = 'class', basis = null, picks = null, offered = false;
+      const scrolls = { exam: 0, growth: 0 };
+      const sum = list => list.reduce((a, b) => a + b, 0);
+      const kindOf = name => rideKind(name, item.id, part3);
+      const rideOf = (name, kind = kindOf(name)) => kind ? rememberedRide(item.id, kind, undefined, part3) : null;
+      const setSwitch = (name, value) => dialog.querySelectorAll(`[data-switch="${name}"] [role="radio"]`).forEach(button => {
+        const on = button.dataset.value === value;
+        button.setAttribute('aria-checked', String(on));
+        button.tabIndex = on ? 0 : -1;
+      });
+      const rideName = ride => window.RIDES.byId[ride.id]?.name ?? '';
+      const rideLine = (kind, ride) => {
+        if (!kind) return '';
+        const line = ride ? `<span class="better-ride better-ride-wrap">${rideIcon(kind, ride)}<span class="better-ride-text"><span>${rideName(ride)}</span><span class="better-hearts">${heartIcon(ride.level)}</span></span></span>`
+          : `<span class="better-ride">${rideIcon(kind, null)}<span>无配属</span></span>`;
+        return `<span class="better-rides">${line}</span>`;
+      };
+      const optionRows = option => `<span class="better-class">${icon(option.profession)}<span class="game-text">${option.profession}</span></span>${rideLine(kindOf(option.profession), option.ride)}`;
+      const optionWords = option => `${option.profession}${kindOf(option.profession) ? `，${option.ride ? `${rideName(option.ride)} 友好LV${option.ride.level}` : '无配属'}` : ''}`;
+      // The level-up board: each stat's total; against the 基准 a gain or loss frames the cell, writes the difference and
+      // draws a thin diverging bar on the cell's bottom edge, on one scale for every card (the largest difference is a half).
+      // A cell holds five figures beside a two-character name, as 考试推荐's +12−3 does; a three-figure total with a
+      // two-figure difference would not, so there the frame, the bar and the card's label carry the difference alone.
+      const board = (totals, diff = null, scale = 1) => `<span class="mini-stats" aria-hidden="true">${STATS.map((stat, i) => {
+        const value = totals[i], d = diff ? diff[i] : 0, fits = stat === 'HP' || `${value}${Math.abs(d)}`.length < 5;
+        const delta = !fits ? '' : d > 0 ? `<i class="exam-up">+${d}</i>` : d < 0 ? `<i class="exam-down">−${-d}</i>` : '';
+        const bar = d ? `<i class="growth-bar ${d > 0 ? 'up' : 'down'}" style="--bar:${Math.abs(d) / scale}"></i>` : '';
+        return `<span class="mini-stat ${value ? 'active' : ''} ${d > 0 ? 'more' : d < 0 ? 'less' : ''}" style="--row:${i < 5 ? i + 1 : i - 3};--col:${i < 5 ? 1 : 2}"><span>${stat}</span><b>${value || '—'}${delta}</b>${bar}</span>`;
+      }).join('')}</span>`;
+      const signed = d => d > 0 ? `+${d}` : d < 0 ? `−${-d}` : '±0';
+      const changes = diff => STATS.map((stat, i) => diff[i] ? `${stat}${diff[i] > 0 ? '多' : '少'} ${Math.abs(diff[i])}` : '').filter(Boolean).join('，');
+      // The distinct classes and rides the forecast uses in the range, in order.
+      const forecastOptions = () => {
+        const list = [];
+        for (const { level, row } of stats.levels) if (level >= range.from && level <= range.to && !list.some(option => same(option, row))) list.push({ profession: row.profession, ride: row.ride });
+        return list;
+      };
+      const draw = () => {
+        if (!counted) { col.innerHTML = '<p class="better-none">没有可以统计的预测</p>'; return; }
+        offered = stats.levels.some(({ level, row }) => level >= range.from && level <= range.to && !same(row, first));
+        if (!offered) basisKind = 'class';
+        dialog.querySelectorAll('.growth-basis, .growth-basis-pick').forEach(box => { box.hidden = !offered; });
+        setSwitch('basis', basisKind);
+        const base = seed.growthTotals(basisKind === 'forecast' ? seed.forecastLevels(stats) : levelsOf(basis), range.from, range.to), baseTotal = sum(base);
+        const cards = picks.map((option, order) => {
+          const totals = seed.growthTotals(levelsOf(option), range.from, range.to);
+          return { option, order, totals, diff: totals.map((value, i) => value - base[i]), delta: sum(totals) - baseTotal };
+        }).sort((a, b) => b.delta - a.delta || a.order - b.order);
+        const scale = Math.max(1, ...cards.flatMap(card => card.diff.map(Math.abs)));
+        const tag = '<span class="growth-tag">基准</span>';
+        const baseBox = basisKind === 'forecast'
+          ? `${tag}<span class="growth-note">当前预测</span>${forecastOptions().map(optionRows).join('')}`
+          : `${tag}${optionRows(basis)}<span class="growth-actions"><button type="button" class="growth-action" data-growth-change aria-haspopup="dialog">更换职业</button></span>`;
+        const baseWords = basisKind === 'forecast' ? '基准：当前预测' : `基准：${optionWords(basis)}`;
+        const baseNode = `<div class="better-node exam-node growth-node growth-base" data-key="basis:${encodeURIComponent(basisKind === 'forecast' ? 'forecast' : keyOf(basis))}" role="group" aria-label="${baseWords}，合计 ${baseTotal} 点"><span class="better-card"><span class="exam-gain"><b>${baseTotal}</b></span>${board(base)}</span><span class="better-ridebox"><span class="better-entry">${baseBox}</span></span></div>`;
+        const node = card => {
+          const key = encodeURIComponent(keyOf(card.option)), total = sum(card.totals);
+          const words = `${optionWords(card.option)}，合计 ${total} 点，${card.delta ? `比基准${card.delta > 0 ? '多' : '少'} ${Math.abs(card.delta)} 点` : '与基准相同'}${changes(card.diff) ? `：${changes(card.diff)}` : ''}`;
+          return `<div class="better-node exam-node growth-node" data-key="${key}" role="group" aria-label="${words}"><span class="better-card"><span class="exam-gain"><b>${total}</b><small class="${card.delta > 0 ? 'up' : card.delta < 0 ? 'down' : 'same'}">${signed(card.delta)}</small></span>${board(card.totals, card.diff, scale)}</span><span class="better-ridebox"><span class="better-entry">${optionRows(card.option)}<span class="growth-actions"><button type="button" class="growth-action" data-growth-basis="${key}">设为基准</button><button type="button" class="growth-action" data-growth-remove="${key}">移除</button></span></span></span></div>`;
+        };
+        col.innerHTML = `<div class="exam-nodes growth-nodes">${baseNode}</div><h3 class="better-caption">对比</h3><div class="exam-nodes growth-nodes">${cards.map(node).join('')}</div>${cards.length ? '' : '<p class="better-none">点“添加职业”选择要对比的兵种</p>'}`;
+      };
+      const redraw = () => examAnimate(dialog, draw, col);
+      const pickOf = key => picks.find(option => encodeURIComponent(keyOf(option)) === key);
+      // 设为基准: the card and the 当前职业 基准 trade places, so neither is lost.
+      const makeBasis = option => {
+        const old = basis;
+        picks = picks.filter(pick => !same(pick, option));
+        if (old && !same(old, option) && !picks.some(pick => same(pick, old))) picks.push(old);
+        basis = { ...option };
+        basisKind = 'class';
+      };
+      // Picker layers opened from here, on the dialog's own stack (same dimming, exit and Esc).
+      const layers = () => {
+        const opened = [];
+        return { opened, add(layer) { stack.add(layer); opened.push(layer); }, get closing() { return stack.closing; } };
+      };
+      const closeLayers = opened => {
+        const open = opened.filter(layer => layer.open);
+        const group = { duration: 220, startTime: document.timeline.currentTime, distance: Math.max(0, ...open.map(layer => layer.getBoundingClientRect().height)) + 24 };
+        open.forEach(layer => { layer.pickerGroupExit = group; layer.close(); });
+      };
+      // After the stack has put focus back on the dialog, move it to the button that opened the menu.
+      const refocus = selector => setTimeout(() => { if (dialog.open && !stack.closing) dialog.querySelector(selector)?.focus({ preventScroll: true }); });
+      // 添加职业: the class menu as a multi-pick. A class without a mount toggles; a mounted class goes on to its ride and
+      // friendship LV (as the card flows do), and each confirmed ride is one more card.
+      const openAdd = () => {
+        const stackLayers = layers();
+        const press = () => stackLayers.opened[0]?.querySelectorAll('[data-class]').forEach(button => button.setAttribute('aria-pressed', String(picks.some(pick => pick.profession === button.dataset.class))));
+        professionDialog(null, false, false, chosen => {
+          const kind = kindOf(chosen);
+          if (!kind) {
+            const option = { profession: chosen, ride: null };
+            if (picks.some(pick => same(pick, option))) picks = picks.filter(pick => !same(pick, option));
+            else if (basisKind !== 'class' || !same(basis, option)) picks.push(option);
+            press(); redraw();
+            return;
+          }
+          const had = picks.findLast(pick => pick.profession === chosen);
+          rideDialog(kind, had ? had.ride : rideOf(chosen, kind), ride => {
+            const option = { profession: chosen, ride };
+            if (!picks.some(pick => same(pick, option)) && (basisKind !== 'class' || !same(basis, option))) picks.push(option);
+            stackLayers.opened.at(-1).close();
+            press(); redraw();
+          }, () => {}, true, item.id, stackLayers, part3);
+        }, () => refocus('[data-growth-add]'), [item.id], stackLayers, part3);
+        stackLayers.opened[0].querySelector('#profession-title').textContent = '添加职业';
+        press();
+      };
+      // 更换职业 on the 基准 card: the same menu, one pick.
+      const openChange = () => {
+        const stackLayers = layers();
+        professionDialog(basis.profession, false, false, chosen => {
+          const kind = kindOf(chosen), done = ride => { makeBasis({ profession: chosen, ride }); closeLayers(stackLayers.opened); redraw(); };
+          if (!kind) { done(null); return; }
+          rideDialog(kind, kind === kindOf(basis.profession) ? basis.ride : rideOf(chosen, kind), done, () => {}, true, item.id, stackLayers, part3);
+        }, () => refocus('[data-growth-change]'), [item.id], stackLayers, part3);
+        stackLayers.opened[0].querySelector('#profession-title').textContent = '基准职业';
+      };
+      const setMode = next => {
+        if (next === mode) return;
+        details.close();
+        stopCollapseAnimation();
+        scrolls[mode] = map.scrollTop;
+        mode = next;
+        const on = mode === 'growth';
+        if (on && !picks) {
+          // The first visit in this open: the next level's class and ride, against the classes marked 已解锁 (with the
+          // ride last used for their mount).
+          basis = first ? { profession: first.profession, ride: first.ride } : null;
+          picks = (item.unlockedClasses || []).filter(name => name !== basis?.profession && actions.classAllowed(state, item.id, name, part3)).map(name => ({ profession: name, ride: rideOf(name) }));
+        }
+        dialog.classList.toggle('growth-mode', on);
+        dialog.querySelector('#exam-title').textContent = `${c.name} 的${on ? '成长对比' : '考试推荐'}`;
+        setSwitch('mode', mode);
+        col.hidden = !on; addButton.hidden = !on || !counted;
+        if (on) draw();
+        else { col.innerHTML = ''; dialog.querySelectorAll('.growth-basis, .growth-basis-pick').forEach(box => { box.hidden = true; }); }
+        map.scrollTop = scrolls[mode];
+        syncCaptionTop();
+      };
+      // Segmented controls: a click picks; the arrow keys move along the group (radio semantics), Tab leaves it.
+      dialog.addEventListener('keydown', e => {
+        const button = e.target.closest('.growth-switch [role="radio"]');
+        if (!button || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+        e.preventDefault();
+        const all = [...button.parentElement.children], next = all[(all.indexOf(button) + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? all.length - 1 : 1)) % all.length];
+        next.click(); next.focus({ preventScroll: true });
+      });
+      const click = e => {
+        const option = e.target.closest('.growth-switch [role="radio"]');
+        if (option) {
+          const name = option.closest('[data-switch]').dataset.switch, value = option.dataset.value;
+          if (name === 'mode') setMode(value);
+          else if (value !== basisKind) { basisKind = value; redraw(); }
+          return true;
+        }
+        if (e.target.closest('[data-growth-add]')) { openAdd(); return true; }
+        if (e.target.closest('[data-growth-change]')) { openChange(); return true; }
+        const remove = e.target.closest('[data-growth-remove]'), promote = e.target.closest('[data-growth-basis]');
+        if (remove) {
+          // Focus moves to the next card's 移除 (or 添加职业), as a list does after a delete.
+          const at = [...col.querySelectorAll('[data-growth-remove]')].indexOf(remove);
+          picks = picks.filter(pick => pick !== pickOf(remove.dataset.growthRemove));
+          redraw();
+          const rest = [...col.querySelectorAll('[data-growth-remove]')];
+          (rest[Math.min(at, rest.length - 1)] || addButton).focus({ preventScroll: true });
+          return true;
+        }
+        if (promote) {
+          makeBasis(pickOf(promote.dataset.growthBasis));
+          redraw();
+          col.querySelector('[data-growth-change]')?.focus({ preventScroll: true });
+          return true;
+        }
+        return false;
+      };
+      return { col, draw, click, active: () => mode === 'growth' };
+    })();
     dialog.addEventListener('click', e => {
+      if (growth.click(e)) return;
       const collapse = e.target.closest('.exam-collapse');
       if (collapse) {
         const collapsing = collapse.getAttribute('aria-expanded') === 'true';
@@ -1344,7 +1553,8 @@ function examDialog(item, c, stats) {
     let captionFrame = 0, captionPush = null;
     const pushCaption = () => {
       captionFrame = 0;
-      if (!dialog.classList.contains('better-mobile')) {
+      // 成长对比 hides both lists, so nothing pushes the header's last row.
+      if (!dialog.classList.contains('better-mobile') || growth.active()) {
         map.style.removeProperty('--exam-caption-shift');
         captionPush = null;
         return;
@@ -1359,8 +1569,11 @@ function examDialog(item, c, stats) {
     };
     const queueCaption = () => { if (!captionFrame) captionFrame = requestAnimationFrame(pushCaption); };
     const syncCaptionTop = () => {
-      if (dialog.classList.contains('better-mobile')) map.style.setProperty('--exam-caption-top', `${side.offsetHeight + parseFloat(getComputedStyle(side).top) - lockedCaption.offsetHeight}px`);
-      else map.style.removeProperty('--exam-caption-top');
+      if (dialog.classList.contains('better-mobile')) {
+        map.style.setProperty('--exam-caption-top', `${side.offsetHeight + parseFloat(getComputedStyle(side).top) - lockedCaption.offsetHeight}px`);
+        // Where the header ends once stuck: the view switch's strip sticks there.
+        map.style.setProperty('--exam-side-bottom', `${side.offsetHeight + parseFloat(getComputedStyle(side).top)}px`);
+      } else { map.style.removeProperty('--exam-caption-top'); map.style.removeProperty('--exam-side-bottom'); }
       queueCaption();
     };
     const headerObserver = new ResizeObserver(syncCaptionTop);

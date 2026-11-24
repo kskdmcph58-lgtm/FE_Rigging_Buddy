@@ -5030,6 +5030,55 @@ html[data-input-mode="keyboard"] .wheel:focus { box-shadow:inset 0 0 0 2px var(-
 .exam-dialog.better-mobile .better-ride { white-space:normal; }
 .exam-dialog.better-mobile button.exam-unlock { position:relative; min-height:32px; }
 .exam-dialog.better-mobile button.exam-unlock::after { content:''; position:absolute; inset:-6px; }
+/* 成长对比 (examDialog's second view). Its switches are iOS segmented controls in the project's colours: a dark track,
+   the chosen segment lifted in gold, no hover fill. The view switch is 27px tall, the title's own line, so the title bar
+   keeps its height; on touch each segment's hit area runs to 44px without growing the control. */
+.growth-switch { display:inline-flex; flex:none; gap:2px; padding:2px; border-radius:8px; background:var(--surface-input); }
+.exam-dialog .growth-switch > button { position:relative; min-width:0; min-height:23px; margin:0; padding:0 8px; border:0; border-radius:6px; background:transparent; color:var(--muted); font:13px/23px var(--font-ui); white-space:nowrap; transition:color var(--motion-medium), background-color var(--motion-medium); }
+.exam-dialog .growth-switch > button[aria-checked="true"] { background:#d8c39424; box-shadow:inset 0 0 0 1px #d8c39466; color:var(--gold); }
+@media (hover:hover) and (pointer:fine) {
+  .exam-dialog .growth-switch > button:hover:not(:disabled) { border-color:transparent; background:transparent; color:var(--text); }
+  .exam-dialog .growth-switch > button[aria-checked="true"]:hover:not(:disabled) { background:#d8c39424; color:var(--gold); }
+}
+.exam-dialog .growth-switch > button:is(:active,.touch-pressed):not([aria-checked="true"]) { background-color:#ffffff0d; }
+.exam-dialog .growth-switch > button:focus-visible { outline:2px solid var(--gold); outline-offset:1px; }
+@media (pointer:coarse) { .exam-dialog .growth-switch > button::after { content:''; position:absolute; inset:-10.5px 0; } }
+/* Desktop: the view switch at the title bar's right end. Narrow: a zero-height strip sticks where the header ends and
+   holds it at the right of the header's last row (beside 未解锁), above 已解锁's heading when that takes the row. */
+.exam-dialog.better-mobile .exam-mode-head { display:none; }
+.exam-mode-float { display:none; }
+.exam-dialog.better-mobile .exam-mode-float { display:block; position:sticky; top:var(--exam-side-bottom,0px); z-index:4; height:0; }
+.exam-dialog.better-mobile .exam-mode-float > .growth-switch { position:absolute; right:0; bottom:13px; }
+/* In 成长对比 the 阶级 filter, both 考试推荐 columns and 未解锁's fold give way; the fold's row keeps its height. */
+.exam-dialog.growth-mode :is(.tier-filter, .exam-col, [data-pick="tier"]) { display:none; }
+.exam-dialog.growth-mode .exam-collapse { visibility:hidden; }
+:is(.growth-col, .growth-basis, .growth-basis-pick)[hidden], .exam-dialog button[data-growth-add][hidden] { display:none; }
+.exam-dialog:not(.better-mobile) button[data-growth-add] { margin-right:auto; }
+.growth-col { display:grid; grid-column:2 / -1; align-content:start; gap:16px; min-width:0; }
+.growth-basis { display:grid; justify-items:start; gap:10px; }
+.exam-dialog.better-mobile .growth-col { gap:12px; }
+/* Narrow: the 基准 switch takes the 阶级 button's place, as tall as the buttons in that row. */
+.exam-dialog.better-mobile .growth-basis-pick:not([hidden]) { display:flex; flex:none; }
+.growth-basis-pick .growth-switch { box-sizing:border-box; min-height:44px; padding:3px; border:1px solid var(--control-line); border-radius:var(--control-radius); }
+.exam-dialog .growth-basis-pick .growth-switch > button { min-height:36px; line-height:36px; }
+.exam-dialog .growth-basis-pick .growth-switch > button::after { display:none; }
+@media (max-width:359px) { .exam-dialog .growth-basis-pick .growth-switch > button { padding:0 6px; font-size:12px; } }
+/* The 基准 card: the current-row tint of 其他选择, its tag, and absolute totals without frames or bars. */
+.growth-base .better-card, .growth-base .better-ridebox { border-color:#d8c39466; background:#d8c39412; }
+.growth-tag { justify-self:start; padding:0 6px; border:1px solid var(--control-line); border-radius:6px; color:var(--gold); font:12px/18px var(--font-ui); }
+.growth-note { color:var(--muted); font:12px/16px var(--font-ui); }
+/* Compared cards: each stat's total, the difference beside it, and a thin bar on the cell's bottom edge growing right
+   (more, green) or left (less, red) from the middle; --bar is the share of the largest difference in view. */
+.growth-node .mini-stat { position:relative; }
+.growth-bar { position:absolute; bottom:0; left:50%; width:calc(var(--bar) * (50% - 6px)); height:2px; border-radius:1px; background:var(--green); }
+.growth-bar.down { translate:-100% 0; background:var(--red); }
+.growth-node .exam-gain small.up { color:var(--green); }
+.growth-node .exam-gain small.same { color:var(--muted); }
+.growth-actions { display:flex; flex-wrap:wrap; gap:6px 8px; margin-top:2px; }
+.exam-dialog button.growth-action { width:auto; min-height:28px; margin:0; padding:2px 10px; border-radius:8px; font:12px/16px var(--font-ui); }
+.exam-dialog.better-mobile .growth-actions { gap:12px 8px; }
+.exam-dialog.better-mobile button.growth-action { position:relative; min-height:32px; }
+.exam-dialog.better-mobile button.growth-action::after { content:''; position:absolute; inset:-6px -4px; }
 /* 考试推荐 details (ui/exam-detail.js). Entry: the class or ride name is a button with an info glyph tight after
    it; the whole row is its hit area (a pseudo-element, so no row moves). On touch the area grows toward 44px into
    the gaps around the row, never over another row or the 标为已解锁 button. */
