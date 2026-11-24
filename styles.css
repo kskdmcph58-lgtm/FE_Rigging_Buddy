@@ -1342,6 +1342,16 @@ button.danger {
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
 }
+/* A card away from the screen (ui/summary.js CARD_WINDOW): the same box with no content, a quiet frame until it
+   comes near. The height is a drawn card's, measured, since a card's height comes from its content.
+   #app#app: above every shell and state rule for the card (happy, upgraded, hover...), without @layer. */
+#app#app .record-chip.card-pending {
+  height: var(--pending-card-height, auto);
+  background: var(--surface-field);
+  border-color: var(--line);
+  box-shadow: none;
+}
+#app#app .record-chip.card-pending::before,#app#app .record-chip.card-pending::after { content: none; }
 .record-chip .record-overlay {
   border-radius: inherit;
 }
@@ -4185,7 +4195,9 @@ main.levels-page { padding-left:60px; padding-right:24px; }
   .levels-page .levels .setup-toolbar { display:grid; grid-template-columns:auto auto minmax(0,1fr); margin-left:-16px; gap:8px; margin-bottom:4px; }
   .levels-page .setup-toolbar>.part3-segment { grid-column:1 / span 2; grid-row:1; }
   .levels-page .setup-toolbar>.route-segment { grid-column:1 / span 2; grid-row:2; }
-  .levels-page .setup-toolbar:has(>.route-segment)>button { grid-row:3; }
+  /* The two buttons by attribute, not "button": a tag inside a :has() rule makes Blink restyle every button on the
+     page whenever any :has() is checked again, which every inserted node does (docs/PERFORMANCE.md, 2026-11-24). */
+  .levels-page .setup-toolbar:has(>.route-segment)>:is([data-action="batch"],[data-setup-profession]) { grid-row:3; }
   .levels-page .setup-toolbar>button { grid-row:2; justify-self:start; }
   .levels-page .setup-toolbar>button[data-action="batch"] { grid-column:1; }
   .levels-page .setup-toolbar>button[data-setup-profession] { grid-column:2; }

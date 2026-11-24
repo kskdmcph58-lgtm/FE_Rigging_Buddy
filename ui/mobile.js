@@ -632,12 +632,16 @@
       ['m-sort-mode', 'm-settings-open', 'm-board'].forEach(name => app.classList.remove(name));
       app.style.removeProperty('--m-board-height'); app.style.removeProperty('--m-list-name');
       root.classList.remove('m-fit');
+      // Out of the shell a card has the desktop's height again; the stand-ins follow (ui/summary.js).
+      sizePendingCards();
       return;
     }
     if (!onSummary()) { sortMode = false; settingsOpen = false; }
     applyClasses();
     refreshNav();
     layoutBoard();
+    // The board's classes give a card its height: the stand-ins take it before settleBoard places the columns.
+    sizePendingCards();
     // Locking the board page drops the page scrollbar, which widens the bar on a desktop browser: place the
     // title again in the same frame, so the brand does not jump sideways one frame later.
     layoutTitle();
@@ -648,6 +652,8 @@
     // Each step above measures after the writes before it, so one pass is complete: its own class writes must not
     // schedule a second one (it measured the whole board again). Changes made by anything else still do.
     watch?.takeRecords();
+    // The board may stand somewhere new now (restored, or out of a list mode): the cards near it are drawn before paint.
+    checkCards();
   }
   /* The sort and multi-select lists put 初始等级 on the name's line. Every row is its own grid, so the name
      column takes the widest name's width in all of them, measured, and the levels start at one edge. */
@@ -764,6 +770,9 @@
   document.addEventListener('pointercancel', releaseCell, true);
   watch = new MutationObserver(schedule);
   watch.observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'disabled', 'hidden'] });
+  // ui/summary.js swaps cards for stand-ins of the same size and back: nothing here depends on that, so those writes
+  // do not cost a pass over the whole board. Writes made before still schedule one.
+  window.RiggingBoard = { quiet(run) { if (watch.takeRecords().length) schedule(); run(); watch.takeRecords(); } };
   // Search history on touch: WebKit never focuses a tapped button, so the search box's focusout (app.js) sees no
   // relatedTarget and hides the list before the tap's click lands. Keeping focus in the field lets the click through.
   const keepSearchFocus = event => {

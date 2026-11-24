@@ -446,7 +446,6 @@ function switchSlot(id, { dropCurrent = false } = {}) {
   render();
   window.scrollTo(0, 0);
   updateTitle();
-  notify(`已切换到 ${target.name}`);
   return true;
 }
 let importAsNewSlot = false;

@@ -267,14 +267,18 @@ function refreshRowSelection() {
     if (!check.querySelector(':scope>svg')) check.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg>';
     return [row, check];
   });
-  const tops = checks.map(([row]) => {
-    if (row.matches('.level-row') && UI_MEDIA.narrowLayout.matches) return '48px';
-    if (row.matches('.journal') && UI_MEDIA.wideJournalSelection.matches) return '';
-    const image = row.querySelector('img');
-    const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
-    return avatar ? `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (UI_MEDIA.narrowLayout.matches ? 22 : 10)}px` : null;
-  });
-  checks.forEach(([, check], index) => { if (tops[index] !== null) check.style.top = tops[index]; });
+  // The checks show only in multi-select (styles.css), and placing them measures every row after the redraw's writes,
+  // a whole layout pass: they are placed when they show.
+  if (multiSelectMode) {
+    const tops = checks.map(([row]) => {
+      if (row.matches('.level-row') && UI_MEDIA.narrowLayout.matches) return '48px';
+      if (row.matches('.journal') && UI_MEDIA.wideJournalSelection.matches) return '';
+      const image = row.querySelector('img');
+      const avatar = image?.getBoundingClientRect().width ? image : row.querySelector('strong');
+      return avatar ? `${avatar.getBoundingClientRect().top - row.getBoundingClientRect().top + avatar.offsetHeight / 2 - (UI_MEDIA.narrowLayout.matches ? 22 : 10)}px` : null;
+    });
+    checks.forEach(([, check], index) => { if (tops[index] !== null) check.style.top = tops[index]; });
+  }
   app.querySelectorAll('[data-action="multi-select"]').forEach(b => {
     b.textContent = multiSelectMode ? '完成多选' : '多选'; b.setAttribute('aria-pressed', String(multiSelectMode));
   });
